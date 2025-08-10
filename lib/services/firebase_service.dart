@@ -1,0 +1,127 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:logger/logger.dart';
+import '../firebase_options.dart';
+
+class FirebaseService {
+  static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  static String? _fcmToken;
+  static final Logger _logger = Logger();
+
+  // Initialize Firebase
+  static Future<void> initialize() async {
+    try {
+      // Check if Firebase is already initialized
+      if (Firebase.apps.isEmpty) {
+        await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
+      }
+    } catch (e) {
+      _logger.w('Firebase already initialized: $e');
+    }
+
+    // Request permission for notifications
+    NotificationSettings settings = await _messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    // Get FCM token
+    _fcmToken = await _messaging.getToken();
+
+    // === AUTOMATSKA PROVERA FCM STATUSA ===
+    _logger.i('==============================');
+    _logger.i(
+        '✅ FCM TEST OK: Firebase initialized: [32m${Firebase.apps.isNotEmpty}[0m');
+    _logger.i('✅ FCM Token: $_fcmToken');
+    _logger.i('✅ User granted permission: ${settings.authorizationStatus}');
+    _logger.i('✅ Ready for push notifications!');
+    _logger.i('==============================');
+
+    // Handle foreground messages
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      _logger.i(
+          '🔔 Nova poruka: ${message.notification?.title} - ${message.notification?.body}');
+      if (message.data.isNotEmpty) {
+        _logger.i('🔔 [FCM] Data payload: ${message.data}');
+      }
+    });
+
+    // Handle background message taps
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _logger.i('🔔 [FCM] onMessageOpenedApp event!');
+    });
+  }
+
+  // Get current FCM token
+  static String? get fcmToken => _fcmToken;
+
+  // Send push notification to specific topics or tokens
+  static Future<void> sendPushNotification({
+    required String title,
+    required String body,
+    Map<String, dynamic>? data,
+    String? topic,
+    List<String>? tokens,
+  }) async {
+    // Note: In production, this should be called from your backend/server
+    // For now, this is just a placeholder function
+    _logger.i('Would send push notification:');
+    _logger.i('Title: $title');
+    _logger.i('Body: $body');
+    _logger.i('Data: $data');
+    _logger.i('Topic: $topic');
+    _logger.i('Tokens: $tokens');
+  }
+
+  // Subscribe to topic (for all drivers/users)
+  static Future<void> subscribeToTopic(String topic) async {
+    await _messaging.subscribeToTopic(topic);
+    _logger.i('Subscribed to topic: $topic');
+  }
+
+  // Unsubscribe from topic
+  static Future<void> unsubscribeFromTopic(String topic) async {
+    await _messaging.unsubscribeFromTopic(topic);
+    _logger.i('Unsubscribed from topic: $topic');
+  }
+
+  // Subscribe user to driver-specific notifications
+  static Future<void> subscribeToDriverNotifications(String vozac) async {
+    await subscribeToTopic('driver_$vozac');
+    await subscribeToTopic('all_drivers'); // General notifications
+    await subscribeToTopic(
+        'svi_vozaci'); // Dodata pretplata na topic "svi_vozaci"
+  }
+
+  // Test notification (local)
+  static Future<void> sendTestNotification() async {
+    if (kDebugMode) {
+    }
+  }
+
+  // Get current FCM token for testing
+  static String? getCurrentToken() {
+    return _fcmToken;
+  }
+
+  // Test Firebase connection
+  static Future<void> testFirebaseConnection() async {
+    if (kDebugMode) {
+    }
+  }
+
+  /// Dohvata logovanog vozača iz SharedPreferences
+  static Future<String?> getCurrentDriver() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('current_driver');
+  }
+}

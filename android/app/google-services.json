@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "560128463615",
+    "project_id": "gavra-android-notifications",
+    "storage_bucket": "gavra-android-notifications.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:560128463615:android:73649e7e949e5109a3b2ca",
+        "android_client_info": {
+          "package_name": "com.gavra013.gavra_android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLPuj01U_KGE--s246gT7WMmEbE_-w8bo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
