@@ -48,10 +48,6 @@ workflows:
         notify:
           success: true
           failure: true
-      app_store_connect:
-        auth: integration
-        submit_to_app_store: false # Postaviti na true kada želiš automatsko objavljivanje
-        submit_to_testflight: true
 
   android-workflow:
     name: Gavra Bus Android Build
