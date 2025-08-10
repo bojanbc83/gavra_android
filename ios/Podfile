@@ -37,15 +37,18 @@ target 'Runner' do
   pod 'GoogleMaps'
   pod 'Firebase/Core'
   pod 'Firebase/Messaging'
+  
+  # 🔧 Fix protobuf compilation issues
+  pod 'Protobuf', '~> 3.21.0'
 end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
     
-    # 📱 iOS 12.0+ support
+    # 📱 iOS 14.0+ support for Google Maps and Firebase compatibility
     target.build_configurations.each do |config|
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= []
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PERMISSION_LOCATION=1'
     end
