@@ -3,8 +3,8 @@ workflows:
     name: Gavra Bus iOS Build
     max_build_duration: 120
     instance_type: mac_mini_m1
-    integrations:
-      app_store_connect: codemagic
+    # integrations:
+    #   app_store_connect: codemagic
     environment:
       flutter: stable
       xcode: latest
@@ -18,10 +18,8 @@ workflows:
       - name: Set up app signing
         script: |
           set -ex
-          # Ovaj korak će Codemagic automatski uraditi preko App Store Connect integracije
-          app-store-connect fetch-signing-files $APP_ID \
-            --type IOS_APP_STORE \
-            --create
+          # Privremeno preskačemo automatsko signing za test build
+          echo "App signing će biti podešeno kasnije"
       - name: Set up signing certificate
         script: |
           set -ex
