@@ -25,7 +25,7 @@ workflows:
           find . -name "Podfile" -execdir pod install \;
       - name: Flutter build ipa
         script: |
-          flutter build ipa --release \
+          flutter build ios --release --no-codesign \
             --build-name=1.0.$BUILD_NUMBER \
             --build-number=$BUILD_NUMBER
     artifacts:
