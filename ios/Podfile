@@ -33,9 +33,12 @@ target 'Runner' do
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
   
-  # Remove explicit Firebase pods - let Flutter manage them
   # 🛰️ Only add GoogleMaps which might not be managed by Flutter
   pod 'GoogleMaps'
+  
+  # 🔧 Force specific working versions to avoid protobuf issues
+  pod 'GoogleDataTransport', '9.2.5'
+  pod 'nanopb', '2.30909.0', :modular_headers => false
 end
 
 post_install do |installer|

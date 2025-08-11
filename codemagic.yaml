@@ -19,6 +19,7 @@ workflows:
           echo "App signing will be configured later"
       - name: Get Flutter packages
         script: |
+          flutter clean
           flutter packages pub get
       - name: Clean and install CocoaPods dependencies
         script: |
@@ -29,6 +30,7 @@ workflows:
           pod deintegrate || true
           # Ensure Flutter generated files exist before pod install
           cd ..
+          flutter clean
           flutter pub get
           cd ios
           pod install --repo-update
