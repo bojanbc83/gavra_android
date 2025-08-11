@@ -22,8 +22,12 @@ workflows:
           flutter packages pub get
       - name: Install CocoaPods dependencies
         script: |
-          find . -name "Podfile" -execdir pod deintegrate \; || true
-          find . -name "Podfile" -execdir pod install --repo-update \;
+          cd ios
+          rm -rf Pods
+          rm -f Podfile.lock
+          pod cache clean --all
+          pod deintegrate || true
+          pod install --repo-update
       - name: Flutter build ipa
         script: |
           flutter build ios --release --no-codesign \
