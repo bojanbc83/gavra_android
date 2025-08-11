@@ -4,7 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart'; // DODANO za direktne p
 import '../models/putnik.dart';
 import '../models/realtime_route_data.dart'; // 🛰️ DODANO za realtime tracking
 import '../services/advanced_route_optimization_service.dart';
-import '../services/firebase_service.dart';
+// import '../services/firebase_service.dart';
 import '../services/depozit_service.dart'; // 💸 DODANO za real-time depozit
 import '../services/realtime_notification_counter_service.dart'; // 🔔 DODANO za notification count
 import '../services/realtime_gps_service.dart'; // 🛰️ DODANO za GPS tracking

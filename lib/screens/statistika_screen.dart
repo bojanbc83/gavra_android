@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 // import '../services/putnik_service.dart';
 // import '../services/mesecne_karte_service.dart';
-import '../services/firebase_service.dart';
+// import '../services/firebase_service.dart';
 import '../services/realtime_notification_service.dart';
 import '../services/statistika_service.dart';
 import '../services/local_notification_service.dart';

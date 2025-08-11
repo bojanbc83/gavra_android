@@ -1,4 +1,9 @@
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:logger/logger.dart';
+// import '../firebase_options.dart'; 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -104,8 +109,7 @@ class FirebaseService {
 
   // Test notification (local)
   static Future<void> sendTestNotification() async {
-    if (kDebugMode) {
-    }
+    if (kDebugMode) {}
   }
 
   // Get current FCM token for testing
@@ -115,8 +119,7 @@ class FirebaseService {
 
   // Test Firebase connection
   static Future<void> testFirebaseConnection() async {
-    if (kDebugMode) {
-    }
+    if (kDebugMode) {}
   }
 
   /// Dohvata logovanog vozača iz SharedPreferences

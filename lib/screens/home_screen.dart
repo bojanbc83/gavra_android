@@ -18,7 +18,7 @@ import 'danas_screen.dart';
 import 'admin_screen.dart';
 import 'welcome_screen.dart';
 
-import '../services/firebase_service.dart';
+// import '../services/firebase_service.dart';
 import '../services/local_notification_service.dart';
 import '../main.dart' show globalThemeToggler; // Za theme toggle
 import '../services/printing_service.dart';

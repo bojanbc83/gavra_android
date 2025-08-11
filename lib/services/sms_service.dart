@@ -3,7 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/putnik.dart';
-import 'firebase_service.dart';
+// import 'firebase_service.dart';
 import 'package:flutter/foundation.dart';
 
 class SMSService {
