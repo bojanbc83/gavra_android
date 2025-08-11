@@ -4,7 +4,8 @@ import 'package:supabase_flutter/supabase_flutter.dart'; // DODANO za direktne p
 import '../models/putnik.dart';
 import '../models/realtime_route_data.dart'; // 🛰️ DODANO za realtime tracking
 import '../services/advanced_route_optimization_service.dart';
-// import '../services/firebase_service.dart';
+import '../services/firebase_service_ios.dart'
+    as FirebaseServiceIOS; // 🍎 iOS Compatible
 import '../services/depozit_service.dart'; // 💸 DODANO za real-time depozit
 import '../services/realtime_notification_counter_service.dart'; // 🔔 DODANO za notification count
 import '../services/realtime_gps_service.dart'; // 🛰️ DODANO za GPS tracking
@@ -313,7 +314,7 @@ class _DanasScreenState extends State<DanasScreen> {
     // Inicijalizuj heads-up i zvuk notifikacije
     LocalNotificationService.initialize(context);
     RealtimeNotificationService.listenForForegroundNotifications(context);
-    FirebaseService.getCurrentDriver().then((driver) {
+    FirebaseServiceIOS.FirebaseService.getCurrentDriver().then((driver) {
       if (driver != null && driver.isNotEmpty) {
         RealtimeNotificationService.initialize();
       }
@@ -382,7 +383,8 @@ class _DanasScreenState extends State<DanasScreen> {
   }
 
   Future<void> _initializeCurrentDriver() async {
-    _currentDriver = await FirebaseService.getCurrentDriver();
+    _currentDriver =
+        await FirebaseServiceIOS.FirebaseService.getCurrentDriver();
     // Učitaj depozit tek kada se vozač učita
     if (_currentDriver != null) {
       _initializeDepozit();
