@@ -351,6 +351,10 @@ class PutnikService {
       if (putnik.mesecnaKarta == true) {
         debugPrint('📊 [DODAJ PUTNIKA] Dodajem MESEČNOG putnika...');
         // MESEČNI PUTNIK - dodaj u mesecni_putnici tabelu
+        final now = DateTime.now();
+        final firstDayOfMonth = DateTime(now.year, now.month, 1);
+        final lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
+
         final insertData = {
           'putnik_ime': putnik.ime,
           'tip': 'radnik', // Default tip
@@ -363,6 +367,13 @@ class PutnikService {
           'radni_dani': putnik.dan,
           'status': 'radi', // ✅ JEDNOSTAVNO - default radi
           'aktivan': true, // Koristi postojeću aktivan kolonu umesto obrisan
+          // 🔧 DODAJ OBAVEZNA POLJA:
+          'datum_pocetka_meseca':
+              firstDayOfMonth.toIso8601String().split('T')[0],
+          'datum_kraja_meseca': lastDayOfMonth.toIso8601String().split('T')[0],
+          'cena': 0.0, // Default cena
+          'broj_putovanja': 0,
+          'broj_otkazivanja': 0,
         };
 
         debugPrint('📊 [DODAJ PUTNIKA] Insert data: $insertData');

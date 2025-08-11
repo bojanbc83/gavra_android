@@ -421,6 +421,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final imeController = TextEditingController();
     final adresaController = TextEditingController();
     bool mesecnaKarta = false;
+    bool manuelnoOznaceno = false; // 🔧 NOVO: prati da li je manuelno označeno
 
     // Povuci dozvoljena imena iz mesecni_putnici tabele
     final lista = await MesecniPutnikService.getAllMesecniPutnici();
@@ -474,7 +475,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         dozvoljenaImena.contains(ime.trim());
                     if (isMesecniPutnik != mesecnaKarta) {
                       setStateDialog(() {
-                        mesecnaKarta = isMesecniPutnik;
+                        // 🔧 SAMO ažuriraj checkbox ako NIJE manuelno označeno
+                        if (!manuelnoOznaceno) {
+                          mesecnaKarta = isMesecniPutnik;
+                        }
                       });
                     }
                   },
@@ -549,7 +553,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   subtitle: const Text('Označite ako putnik ima mesečnu kartu'),
                   value: mesecnaKarta,
                   onChanged: (value) {
-                    setStateDialog(() => mesecnaKarta = value ?? false);
+                    setStateDialog(() {
+                      mesecnaKarta = value ?? false;
+                      manuelnoOznaceno =
+                          true; // 🔧 Označi da je manuelno podešeno
+                    });
                   },
                   controlAffinity: ListTileControlAffinity.leading,
                 ),
