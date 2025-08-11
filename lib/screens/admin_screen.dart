@@ -1,5 +1,6 @@
 import '../widgets/dug_button.dart';
-// import '../services/firebase_service.dart';
+import '../services/firebase_service_ios.dart'
+    as FirebaseServiceIOS; // 🍎 iOS Compatible
 import '../services/realtime_notification_service.dart';
 import '../services/local_notification_service.dart';
 import '../services/statistika_service.dart'; // DODANO za jedinstvenu logiku pazara
@@ -54,7 +55,7 @@ class _AdminScreenState extends State<AdminScreen> {
     // 💸 DEPOZIT SYNC - SA REAL-TIME
     DepozitService.startRealtimeSync();
 
-    FirebaseService.getCurrentDriver().then((driver) {
+    FirebaseServiceIOS.FirebaseService.getCurrentDriver().then((driver) {
       if (driver != null && driver.isNotEmpty) {
         RealtimeNotificationService.initialize();
         _initializeDepoziti(); // Učitaj depozite iz baze
@@ -86,7 +87,8 @@ class _AdminScreenState extends State<AdminScreen> {
 
   void _loadCurrentDriver() async {
     try {
-      final driver = await FirebaseService.getCurrentDriver().timeout(
+      final driver =
+          await FirebaseServiceIOS.FirebaseService.getCurrentDriver().timeout(
         const Duration(seconds: 5),
         onTimeout: () {
           return null;
