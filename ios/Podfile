@@ -35,9 +35,6 @@ target 'Runner' do
   
   # 🛰️ Only add GoogleMaps which might not be managed by Flutter
   pod 'GoogleMaps'
-  
-  # 🔧 Use nanopb with correct configuration for protobuf functions
-  pod 'nanopb', '~> 2.30909.0', :modular_headers => false, :inhibit_warnings => true
 end
 
 post_install do |installer|
@@ -57,13 +54,10 @@ post_install do |installer|
       config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
       config.build_settings['DEFINES_MODULE'] = 'YES'
       
-      # 🔧 Linker flags for nanopb protobuf symbol resolution
-      config.build_settings['OTHER_LDFLAGS'] ||= []
-      config.build_settings['OTHER_LDFLAGS'] << '-lnanopb'
-      
-      # 🔧 Additional protobuf preprocessor definitions
+      # 🔧 Global protobuf preprocessor definitions
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PB_ENABLE_MALLOC=1'
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PB_FIELD_32BIT=1'
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PB_NO_PACKED_STRUCTS=1'
       
       # 🔧 Firebase version definition fix
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'Firebase_VERSION=10.25.0'
