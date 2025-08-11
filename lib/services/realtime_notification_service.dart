@@ -4,11 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'local_notification_service.dart';
+import 'package:logger/logger.dart';
 
 class RealtimeNotificationService {
-  /// Pozovi ovu metodu iz glavnog widgeta (npr. u initState) da bi popup i zvuk radili u foregroundu
+  static final Logger _logger = Logger();
+  
+  /// DISABLED for iOS - Firebase messaging replaced with OneSignal only
   static void listenForForegroundNotifications(BuildContext context) {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    _logger.i('🔔 Firebase messaging DISABLED for iOS - using OneSignal only');
+    // Firebase messaging functionality disabled for iOS builds
+    // All notifications are handled by OneSignal instead
+  }
       // Proveri da li je notifikacija za tekući dan
       final bool isForToday = _isNotificationForToday(message);
 
