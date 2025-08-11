@@ -385,9 +385,10 @@ class PutnikService {
       // Proverava da li je putnik za današnji dan u nedelji
       if (putnik.dan == todayName) {
         debugPrint('📡 [DODAJ PUTNIKA] Šaljem real-time notifikaciju...');
-        await RealtimeNotificationService.sendRealtimeNotification(
-          type: 'novi_putnik',
-          putnik: putnik,
+        RealtimeNotificationService.sendRealtimeNotification(
+          'Novi putnik',
+          'Dodjen je novi putnik ${putnik.ime}',
+          {'type': 'novi_putnik', 'putnik': putnik.ime},
         );
         debugPrint('✅ [DODAJ PUTNIKA] Real-time notifikacija poslata');
       } else {
@@ -860,9 +861,10 @@ class PutnikService {
       if (danLowerCase.contains(todayLowerCase) || putnikDan == todayName) {
         debugPrint(
             '📬 Šaljem notifikaciju za otkazivanje putnika: ${response['putnik_ime']} za dan: $todayName (putnikDan: $putnikDan)');
-        await RealtimeNotificationService.sendRealtimeNotification(
-          type: 'otkazan_putnik',
-          putnik: response,
+        RealtimeNotificationService.sendRealtimeNotification(
+          'Otkazan putnik',
+          'Otkazan je putnik ${response['putnik_ime']}',
+          {'type': 'otkazan_putnik', 'putnik': response['putnik_ime']},
         );
       } else {
         debugPrint(

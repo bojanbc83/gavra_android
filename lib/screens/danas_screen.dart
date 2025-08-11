@@ -315,7 +315,7 @@ class _DanasScreenState extends State<DanasScreen> {
     RealtimeNotificationService.listenForForegroundNotifications(context);
     FirebaseService.getCurrentDriver().then((driver) {
       if (driver != null && driver.isNotEmpty) {
-        RealtimeNotificationService.initialize(driver);
+        RealtimeNotificationService.initialize();
       }
     });
     // Dodato: NIŠTA - koristimo direktne supabase pozive bez cache

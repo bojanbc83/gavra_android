@@ -181,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     // Inicijalizuj realtime notifikacije za aktivnog vozača
     FirebaseService.getCurrentDriver().then((driver) {
       if (driver != null && driver.isNotEmpty) {
-        RealtimeNotificationService.initialize(driver);
+        RealtimeNotificationService.initialize();
       }
     });
   }

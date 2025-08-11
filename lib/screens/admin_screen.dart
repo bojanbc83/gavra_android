@@ -56,7 +56,7 @@ class _AdminScreenState extends State<AdminScreen> {
 
     FirebaseService.getCurrentDriver().then((driver) {
       if (driver != null && driver.isNotEmpty) {
-        RealtimeNotificationService.initialize(driver);
+        RealtimeNotificationService.initialize();
         _initializeDepoziti(); // Učitaj depozite iz baze
       }
     }).catchError((e) {

@@ -45,7 +45,7 @@ class _StatistikaScreenState extends State<StatistikaScreen>
     LocalNotificationService.initialize(context);
     FirebaseService.getCurrentDriver().then((driver) {
       if (driver != null && driver.isNotEmpty && mounted) {
-        RealtimeNotificationService.initialize(driver);
+        RealtimeNotificationService.initialize();
         RealtimeNotificationService.listenForForegroundNotifications(context);
       }
     });
