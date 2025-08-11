@@ -60,6 +60,10 @@ post_install do |installer|
       # 🔧 Firebase version definition fix
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'Firebase_VERSION=10.25.0'
       
+      # 🔧 Flutter Firebase plugin definitions
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_NAME=@"flutter-fire-core"'
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_VERSION=@"2.32.0"'
+      
       # 🔧 Aggressive protobuf fixes for GoogleDataTransport regardless of version
       if target.name.include?('GoogleDataTransport') || target.name == 'GoogleDataTransport'
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= []
@@ -75,6 +79,19 @@ post_install do |installer|
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= []
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PB_FIELD_32BIT=1'
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PB_NO_PACKED_STRUCTS=1'
+      end
+      
+      # 🔧 Firebase Flutter plugin specific fixes
+      if target.name.include?('firebase_core') || target.name == 'firebase_core'
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= []
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_NAME=@"flutter-fire-core"'
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_VERSION=@"2.32.0"'
+      end
+      
+      if target.name.include?('firebase_messaging') || target.name == 'firebase_messaging'
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= []
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_NAME=@"flutter-fire-messaging"'
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_VERSION=@"14.7.10"'
       end
     end
   end
