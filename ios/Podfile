@@ -29,73 +29,16 @@ flutter_ios_podfile_setup
 
 target 'Runner' do
   use_frameworks!
-  # Disable modular headers to fix Firebase header inclusion issues
-  # use_modular_headers!
-
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
-  
-  # 🛰️ Only add GoogleMaps which might not be managed by Flutter
-  pod 'GoogleMaps'
 end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
     
-    # 📱 iOS 14.0+ support for Google Maps and Firebase compatibility
+    # Simple iOS 14.0+ compatibility
     target.build_configurations.each do |config|
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
-      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= []
-      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PERMISSION_LOCATION=1'
-      
-      # 🔧 Comprehensive protobuf compilation fixes
-      config.build_settings['GCC_C_LANGUAGE_STANDARD'] = 'gnu11'
-      config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'gnu++17'
-      config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = 'NO'
-      config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
-      config.build_settings['DEFINES_MODULE'] = 'YES'
-      
-      # 🔧 Global protobuf preprocessor definitions
-      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PB_ENABLE_MALLOC=1'
-      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PB_FIELD_32BIT=1'
-      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PB_NO_PACKED_STRUCTS=1'
-      
-      # 🔧 Firebase version definition fix
-      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'Firebase_VERSION=10.25.0'
-      
-      # 🔧 Flutter Firebase plugin definitions (Objective-C string format)
-      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_NAME=@\"flutter-fire-core\"'
-      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_VERSION=@\"2.32.0\"'
-      
-      # 🔧 Aggressive protobuf fixes for GoogleDataTransport regardless of version
-      if target.name.include?('GoogleDataTransport') || target.name == 'GoogleDataTransport'
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= []
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PB_FIELD_32BIT=1'
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PB_NO_PACKED_STRUCTS=1'
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PB_ENABLE_MALLOC=1'
-        config.build_settings['CLANG_WARN_STRICT_PROTOTYPES'] = 'NO'
-        config.build_settings['GCC_WARN_ABOUT_MISSING_PROTOTYPES'] = 'NO'
-      end
-      
-      # 🔧 nanopb specific fixes
-      if target.name.include?('nanopb') || target.name == 'nanopb'
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= []
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PB_FIELD_32BIT=1'
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PB_NO_PACKED_STRUCTS=1'
-      end
-      
-      # 🔧 Firebase Flutter plugin specific fixes
-      if target.name.include?('firebase_core') || target.name == 'firebase_core'
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= []
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_NAME=@\"flutter-fire-core\"'
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_VERSION=@\"2.32.0\"'
-      end
-      
-      if target.name.include?('firebase_messaging') || target.name == 'firebase_messaging'
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= []
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_NAME=@\"flutter-fire-messaging\"'
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_VERSION=@\"14.7.10\"'
-      end
     end
   end
 end
