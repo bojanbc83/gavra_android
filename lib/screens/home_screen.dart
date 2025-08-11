@@ -7,6 +7,8 @@ import '../models/putnik.dart';
 import '../services/putnik_service.dart';
 import '../services/mesecni_putnik_service.dart';
 import '../services/realtime_notification_service.dart';
+import '../services/firebase_service_ios.dart'
+    as FirebaseServiceIOS; // 🍎 iOS Compatible
 import '../services/update_checker.dart';
 import '../utils/vozac_boja.dart'; // Dodato za centralizovane boje vozača
 
@@ -18,7 +20,6 @@ import 'danas_screen.dart';
 import 'admin_screen.dart';
 import 'welcome_screen.dart';
 
-// import '../services/firebase_service.dart';
 import '../services/local_notification_service.dart';
 import '../main.dart' show globalThemeToggler; // Za theme toggle
 import '../services/printing_service.dart';
@@ -179,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     LocalNotificationService.initialize(context);
     RealtimeNotificationService.listenForForegroundNotifications(context);
     // Inicijalizuj realtime notifikacije za aktivnog vozača
-    FirebaseService.getCurrentDriver().then((driver) {
+    FirebaseServiceIOS.FirebaseService.getCurrentDriver().then((driver) {
       if (driver != null && driver.isNotEmpty) {
         RealtimeNotificationService.initialize();
       }
@@ -187,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Future<void> _initializeCurrentDriver() async {
-    final driver = await FirebaseService.getCurrentDriver();
+    final driver = await FirebaseServiceIOS.FirebaseService.getCurrentDriver();
     setState(() {
       // Osiguraj da _currentDriver uvek ima validnu vrednost
       _currentDriver = driver; // Ne postavljaj fallback 'Nepoznat'
