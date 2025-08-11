@@ -20,13 +20,17 @@ workflows:
       - name: Get Flutter packages
         script: |
           flutter packages pub get
-      - name: Install CocoaPods dependencies
+      - name: Clean and install CocoaPods dependencies
         script: |
           cd ios
           rm -rf Pods
           rm -f Podfile.lock
-          pod cache clean --all
+          pod cache clean --all || true
           pod deintegrate || true
+          # Ensure Flutter generated files exist before pod install
+          cd ..
+          flutter pub get
+          cd ios
           pod install --repo-update
       - name: Flutter build ipa
         script: |
