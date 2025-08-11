@@ -37,9 +37,6 @@ target 'Runner' do
   pod 'GoogleMaps'
   pod 'Firebase/Core'
   pod 'Firebase/Messaging'
-  
-  # 🔧 Fix protobuf compilation issues
-  pod 'Protobuf', '~> 3.21.0'
 end
 
 post_install do |installer|
@@ -51,6 +48,11 @@ post_install do |installer|
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= []
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PERMISSION_LOCATION=1'
+      
+      # 🔧 Fix protobuf compilation issues
+      config.build_settings['GCC_C_LANGUAGE_STANDARD'] = 'gnu11'
+      config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'gnu++17'
+      config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = 'NO'
     end
   end
 end
