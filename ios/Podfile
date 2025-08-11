@@ -62,9 +62,9 @@ post_install do |installer|
       # 🔧 Firebase version definition fix
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'Firebase_VERSION=10.25.0'
       
-      # 🔧 Flutter Firebase plugin definitions
-      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_NAME=\"flutter-fire-core\"'
-      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_VERSION=\"2.32.0\"'
+      # 🔧 Flutter Firebase plugin definitions (Objective-C string format)
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_NAME=@\"flutter-fire-core\"'
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_VERSION=@\"2.32.0\"'
       
       # 🔧 Aggressive protobuf fixes for GoogleDataTransport regardless of version
       if target.name.include?('GoogleDataTransport') || target.name == 'GoogleDataTransport'
@@ -86,14 +86,14 @@ post_install do |installer|
       # 🔧 Firebase Flutter plugin specific fixes
       if target.name.include?('firebase_core') || target.name == 'firebase_core'
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= []
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_NAME=\"flutter-fire-core\"'
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_VERSION=\"2.32.0\"'
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_NAME=@\"flutter-fire-core\"'
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_VERSION=@\"2.32.0\"'
       end
       
       if target.name.include?('firebase_messaging') || target.name == 'firebase_messaging'
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= []
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_NAME=\"flutter-fire-messaging\"'
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_VERSION=\"14.7.10\"'
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_NAME=@\"flutter-fire-messaging\"'
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'LIBRARY_VERSION=@\"14.7.10\"'
       end
     end
   end
