@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // Firebase imports - conditionally used
 // import 'package:firebase_core/firebase_core.dart';
 // import 'package:firebase_messaging/firebase_messaging.dart';
@@ -32,14 +33,15 @@ void Function()? globalThemeToggler;
 void Function()? globalThemeRefresher;
 
 /// 📬 GLOBALNI BACKGROUND MESSAGE HANDLER
+/// Firebase background handler - DISABLED for iOS
 /// Ovo mora biti top-level funkcija da bi radila kad je app zatvoren
-@pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  _logger.i('📬 Background message received: ${message.notification?.title}');
-  // Pozovi RealtimeNotificationService da obradi poruku
-  await RealtimeNotificationService.handleBackgroundMessage(message);
-}
+// @pragma('vm:entry-point')
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   await Firebase.initializeApp();
+//   _logger.i('📬 Background message received: ${message.notification?.title}');
+//   // Pozovi RealtimeNotificationService da obradi poruku
+//   await RealtimeNotificationService.handleBackgroundMessage(message);
+// }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,20 +56,20 @@ void main() async {
     _logger.i('🔔 OneSignal player ID: ${state.current.id}');
   });
 
-  // Firebase initialization
-  try {
-    _logger.i('🔄 Initializing Firebase...');
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-
-    // Registruj background message handler
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-    _logger.i('✅ Firebase initialized with background handler');
-  } catch (e) {
-    _logger.e('❌ Firebase initialization failed: $e');
-  }
+  // Firebase initialization - DISABLED for iOS
+  // try {
+  //   _logger.i('🔄 Initializing Firebase...');
+  //   await Firebase.initializeApp(
+  //     options: DefaultFirebaseOptions.currentPlatform,
+  //   );
+  //
+  //   // Registruj background message handler
+  //   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  //
+  //   _logger.i('✅ Firebase initialized with background handler');
+  // } catch (e) {
+  //   _logger.e('❌ Firebase initialization failed: $e');
+  // }
 
   try {
     _logger.i('🔄 Initializing Supabase...');
@@ -91,6 +93,12 @@ void main() async {
 
   _logger.i('🚀 Starting app with Bolovanje/Godišnji updates...');
   runApp(const MyApp());
+}
+
+// Simple helper instead of FirebaseService.getCurrentDriver()
+Future<String?> getCurrentDriver() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('current_driver');
 }
 
 class MyApp extends StatefulWidget {
@@ -127,14 +135,20 @@ class _MyAppState extends State<MyApp> {
 
       // UVEK inicijalizuj realtime notifikacije, bez obzira na to da li je app bio zatvoren
       // Dohvati vozača iz SharedPreferences
-      final vozacId = await FirebaseService.getCurrentDriver();
+      final vozacId = await getCurrentDriver();
       _logger.i('🔄 Pronađen vozač iz SharedPreferences: $vozacId');
 
       if (vozacId != null && vozacId.isNotEmpty) {
         _logger.i('✅ Inicijalizujem notifikacije za vozača: $vozacId');
-        await RealtimeNotificationService.initialize(vozacId);
-        if (mounted) {
-          RealtimeNotificationService.listenForForegroundNotifications(context);
+        // Only initialize Firebase-based notifications on Android
+        try {
+          await RealtimeNotificationService.initialize(vozacId);
+          if (mounted) {
+            RealtimeNotificationService.listenForForegroundNotifications(
+                context);
+          }
+        } catch (e) {
+          _logger.w('⚠️ Firebase notifications disabled: $e');
         }
       } else {
         _logger.w('⚠️ Nema logovanog vozača - notifikacije neće raditi');
@@ -188,7 +202,7 @@ class _MyAppState extends State<MyApp> {
   void _startPeriodicGpsSending() {
     // 🕐 KORISTI TIMER MANAGER za GPS slanje - SPREČAVA MEMORY LEAK
     (() async {
-      final vozacId = await FirebaseService.getCurrentDriver();
+      final vozacId = await getCurrentDriver();
       if (vozacId == null || vozacId.isEmpty) return;
 
       // Otkaži postojeći GPS timer ako postoji
@@ -199,7 +213,7 @@ class _MyAppState extends State<MyApp> {
         'gps_periodic_sender',
         const Duration(minutes: 1),
         () async {
-          final currentVozacId = await FirebaseService.getCurrentDriver();
+          final currentVozacId = await getCurrentDriver();
           if (currentVozacId != null && currentVozacId.isNotEmpty) {
             GpsService.sendCurrentLocation(vozacId: currentVozacId);
           }
@@ -313,7 +327,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _initializeCurrentDriver() async {
-    final driver = await FirebaseService.getCurrentDriver();
+    final driver = await getCurrentDriver();
     if (mounted) {
       setState(() {
         _currentDriver = driver;
