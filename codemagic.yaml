@@ -1,6 +1,6 @@
 workflows:
   ios-workflow:
-    name: Gavra Bus iOS Build (No Firebase)
+    name: Gavra Bus iOS Build (WITH Firebase)
     max_build_duration: 120
     instance_type: mac_mini_m1
     environment:
@@ -12,17 +12,55 @@ workflows:
         BUNDLE_ID: com.gavra.gavra013
         XCODE_WORKSPACE: "Runner.xcworkspace"
         XCODE_SCHEME: "Runner"
-        SKIP_FIREBASE: "true"
+        SKIP_FIREBASE: "false" # Enable Firebase for iOS
     scripts:
       - name: Set up app signing
         script: |
           set -ex
           echo "App signing will be configured later"
-      - name: Remove Firebase from iOS build
+      - name: Ensure GoogleService-Info.plist exists
         script: |
-          # Remove Firebase related files that might cause issues
-          rm -f ios/Runner/GoogleService-Info.plist || true
-          rm -f ios/firebase_app_id_file.json || true
+          # Check if GoogleService-Info.plist exists
+          if [ ! -f ios/Runner/GoogleService-Info.plist ]; then
+            echo "⚠️ WARNING: GoogleService-Info.plist not found!"
+            echo "Please download it from Firebase Console and add to ios/Runner/"
+            echo "For now, creating placeholder..."
+            mkdir -p ios/Runner
+            cat > ios/Runner/GoogleService-Info.plist << 'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>PLACEHOLDER_API_KEY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>560128463615</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.gavra.gavra013</string>
+	<key>PROJECT_ID</key>
+	<string>gavra-android-notifications</string>
+	<key>STORAGE_BUCKET</key>
+	<string>gavra-android-notifications.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>PLACEHOLDER_GOOGLE_APP_ID</string>
+</dict>
+</plist>
+EOF
+          else
+            echo "✅ GoogleService-Info.plist found"
+          fi
       - name: Get Flutter packages
         script: |
           flutter clean
@@ -39,12 +77,11 @@ workflows:
           flutter pub get
           cd ios
           pod install --repo-update
-      - name: Flutter build ipa (No Firebase)
+      - name: Flutter build ipa (WITH Firebase)
         script: |
           flutter build ios --release --no-codesign \
             --build-name=1.0.$BUILD_NUMBER \
-            --build-number=$BUILD_NUMBER \
-            --dart-define=SKIP_FIREBASE=true
+            --build-number=$BUILD_NUMBER
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
