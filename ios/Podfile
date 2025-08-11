@@ -36,9 +36,8 @@ target 'Runner' do
   # 🛰️ Only add GoogleMaps which might not be managed by Flutter
   pod 'GoogleMaps'
   
-  # 🔧 Force specific working versions to avoid protobuf issues
-  pod 'GoogleDataTransport', '9.2.5'
-  pod 'nanopb', '2.30909.0', :modular_headers => false
+  # 🔧 Let Firebase manage GoogleDataTransport version, but fix nanopb
+  pod 'nanopb', '~> 2.30909.0', :modular_headers => false
 end
 
 post_install do |installer|
@@ -58,8 +57,18 @@ post_install do |installer|
       config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
       config.build_settings['DEFINES_MODULE'] = 'YES'
       
-      # 🔧 Specific fixes for GoogleDataTransport protobuf issues
-      if target.name == 'GoogleDataTransport'
+      # 🔧 Aggressive protobuf fixes for GoogleDataTransport regardless of version
+      if target.name.include?('GoogleDataTransport') || target.name == 'GoogleDataTransport'
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= []
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PB_FIELD_32BIT=1'
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PB_NO_PACKED_STRUCTS=1'
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PB_ENABLE_MALLOC=1'
+        config.build_settings['CLANG_WARN_STRICT_PROTOTYPES'] = 'NO'
+        config.build_settings['GCC_WARN_ABOUT_MISSING_PROTOTYPES'] = 'NO'
+      end
+      
+      # 🔧 nanopb specific fixes
+      if target.name.include?('nanopb') || target.name == 'nanopb'
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= []
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PB_FIELD_32BIT=1'
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PB_NO_PACKED_STRUCTS=1'
