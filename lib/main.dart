@@ -142,7 +142,7 @@ class _MyAppState extends State<MyApp> {
         _logger.i('✅ Inicijalizujem notifikacije za vozača: $vozacId');
         // Only initialize Firebase-based notifications on Android
         try {
-          await RealtimeNotificationService.initialize(vozacId);
+          await RealtimeNotificationService.initialize();
           if (mounted) {
             RealtimeNotificationService.listenForForegroundNotifications(
                 context);
@@ -153,7 +153,7 @@ class _MyAppState extends State<MyApp> {
       } else {
         _logger.w('⚠️ Nema logovanog vozača - notifikacije neće raditi');
         // Ipak se pretplati na osnovne topike za sve vozače
-        await RealtimeNotificationService.subscribeToDriverTopics('anonymous');
+        await RealtimeNotificationService.subscribeToDriverTopics(null);
       }
 
       // 📱 POKRETANJE SMS SERVISA za automatsko slanje poruka
