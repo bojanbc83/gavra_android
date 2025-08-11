@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 
 // import '../services/putnik_service.dart';
 // import '../services/mesecne_karte_service.dart';
-// import '../services/firebase_service.dart';
+import '../services/firebase_service_ios.dart'
+    as FirebaseServiceIOS; // 🍎 iOS Compatible
 import '../services/realtime_notification_service.dart';
 import '../services/statistika_service.dart';
 import '../services/local_notification_service.dart';
@@ -43,7 +44,7 @@ class _StatistikaScreenState extends State<StatistikaScreen>
     _checkDriver();
     // Inicijalizuj heads-up i zvuk notifikacije
     LocalNotificationService.initialize(context);
-    FirebaseService.getCurrentDriver().then((driver) {
+    FirebaseServiceIOS.FirebaseService.getCurrentDriver().then((driver) {
       if (driver != null && driver.isNotEmpty && mounted) {
         RealtimeNotificationService.initialize();
         RealtimeNotificationService.listenForForegroundNotifications(context);
@@ -58,7 +59,7 @@ class _StatistikaScreenState extends State<StatistikaScreen>
   }
 
   Future<void> _checkDriver() async {
-    final driver = await FirebaseService.getCurrentDriver();
+    final driver = await FirebaseServiceIOS.FirebaseService.getCurrentDriver();
     setState(() {
       _currentDriver = driver;
       _checkedDriver = true;
