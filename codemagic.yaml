@@ -1,6 +1,6 @@
 workflows:
   ios-workflow:
-    name: Gavra Bus iOS Build
+    name: Gavra Bus iOS Build (No Firebase)
     max_build_duration: 120
     instance_type: mac_mini_m1
     environment:
@@ -12,11 +12,17 @@ workflows:
         BUNDLE_ID: com.gavra.gavra013
         XCODE_WORKSPACE: "Runner.xcworkspace"
         XCODE_SCHEME: "Runner"
+        SKIP_FIREBASE: "true"
     scripts:
       - name: Set up app signing
         script: |
           set -ex
           echo "App signing will be configured later"
+      - name: Remove Firebase from iOS build
+        script: |
+          # Remove Firebase related files that might cause issues
+          rm -f ios/Runner/GoogleService-Info.plist || true
+          rm -f ios/firebase_app_id_file.json || true
       - name: Get Flutter packages
         script: |
           flutter clean
@@ -28,18 +34,17 @@ workflows:
           rm -f Podfile.lock
           pod cache clean --all || true
           pod deintegrate || true
-          # Ensure Flutter generated files exist before pod install
           cd ..
           flutter clean
           flutter pub get
           cd ios
           pod install --repo-update
-      - name: Flutter build ipa
+      - name: Flutter build ipa (No Firebase)
         script: |
           flutter build ios --release --no-codesign \
             --build-name=1.0.$BUILD_NUMBER \
             --build-number=$BUILD_NUMBER \
-            --verbose
+            --dart-define=SKIP_FIREBASE=true
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log

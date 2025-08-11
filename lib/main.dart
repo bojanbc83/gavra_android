@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// Firebase imports - conditionally used
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:logger/logger.dart';
-import 'firebase_options.dart';
+// import 'firebase_options.dart';
 import 'supabase_client.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/loading_screen.dart';
 import 'services/realtime_notification_service.dart';
 import 'services/update_checker.dart';
-import 'services/firebase_service.dart';
+// import 'services/firebase_service.dart';
 import 'services/local_notification_service.dart';
 import 'services/theme_service.dart';
 import 'services/gps_service.dart';
