@@ -31,11 +31,11 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
           
-      # 🐦 Setup Flutter Stable
+      # 🐦 Setup Flutter Latest Stable
       - name: 🐦 Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: '3.32.5'
           channel: 'stable'
           cache: true
           
