@@ -36,7 +36,7 @@ workflows:
     environment:
       ios_signing:
         # Automatic certificate and provisioning profile creation
-        distribution_type: app_store
+        distribution_type: development
         bundle_identifier: com.gavra013.gavraAndroid
     scripts:
       - name: Verify iOS Firebase configuration
