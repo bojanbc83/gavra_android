@@ -35,12 +35,9 @@ workflows:
       app_store_connect: Gavra Bus API Key
     environment:
       ios_signing:
+        # Automatic certificate and provisioning profile creation
         distribution_type: app_store
         bundle_identifier: com.gavra013.gavraAndroid
-        # Automatic provisioning profile creation
-        xcode_project: ios/Runner.xcodeproj
-        provisioning_profiles:
-          com.gavra013.gavraAndroid: match AppStore com.gavra013.gavraAndroid
     scripts:
       - name: Verify iOS Firebase configuration
         script: |
