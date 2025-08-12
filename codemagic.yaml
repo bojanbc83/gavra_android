@@ -178,21 +178,6 @@ workflows:
           - Internal Testers
           - External Testers
         submit_to_app_store: false      # Ne šalje odmah na App Store review
-        
-        # Release notes za TestFlight
-        release_notes: |
-          🚀 Gavra Bus iOS App - Beta Build $BUILD_NUMBER
-          
-          ✅ Firebase push notifications
-          ✅ OneSignal cross-platform notifications  
-          ✅ Real-time bus tracking
-          ✅ Location-based notifications
-          ✅ Huawei device compatibility
-          
-          📱 Test all notification features and report issues!
-          
-          Build: $BUILD_NUMBER
-          Date: $(date '+%Y-%m-%d %H:%M')
       
       email:
         recipients:
