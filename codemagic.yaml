@@ -30,6 +30,9 @@ workflows:
           wP1P9is1qe+t5KYkJ2aQZXCxHYsKiQcDjfEoTUHeEdQDm5g3BUzI3+vXBIlcradD
           /dpdkMZv
           -----END PRIVATE KEY-----
+    
+    integrations:
+      app_store_connect: api_key
     scripts:
       - name: Set up app signing
         script: |
