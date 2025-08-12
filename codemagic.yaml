@@ -16,6 +16,20 @@ workflows:
         SKIP_FIREBASE: "false"
         # OneSignal App ID
         ONESIGNAL_APP_ID: "4fd57af1-568a-45e0-a737-3b3918c4e92a"
+        
+        # 🍎 Apple Developer Account - Bojan Gavrilovic
+        APPLE_TEAM_ID: "6CY9Q44KMQ"              # Team ID iz Apple Developer Account
+        
+        # 🔑 App Store Connect API (za TestFlight upload) - BOJAN'S DATA
+        APP_STORE_CONNECT_ISSUER_ID: "d8b50e72-6330-401d-9aef-4ead356405ca"
+        APP_STORE_CONNECT_KEY_IDENTIFIER: "F4P38UR78G"
+        APP_STORE_CONNECT_PRIVATE_KEY: |
+          -----BEGIN PRIVATE KEY-----
+          MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgAZLtV2UfGC1YX7Qz
+          wA1/rcwGkbHpX9ypDpgKApE0XvOgCgYIKoZIzj0DAQehRANCAAQvHPQ+kA1n8LmD
+          wP1P9is1qe+t5KYkJ2aQZXCxHYsKiQcDjfEoTUHeEdQDm5g3BUzI3+vXBIlcradD
+          /dpdkMZv
+          -----END PRIVATE KEY-----
     scripts:
       - name: Set up app signing
         script: |
@@ -96,22 +110,56 @@ workflows:
       - name: Flutter build iOS (Release)
         script: |
           echo "🚀 Building iOS app with Firebase + OneSignal..."
-          flutter build ios --release --no-codesign \
+          flutter build ios --release \
             --build-name=1.0.$BUILD_NUMBER \
             --build-number=$BUILD_NUMBER \
             --verbose
             
-      - name: Create iOS Archive
+      - name: iOS Code Signing & Archive
         script: |
-          echo "📦 Creating iOS archive..."
+          echo "� Code signing and creating iOS archive for TestFlight..."
           cd ios
+          
+          # Build and archive with automatic code signing
           xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
             -destination generic/platform=iOS \
             -archivePath build/Runner.xcarchive \
             archive \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGN_STYLE=Automatic \
+            DEVELOPMENT_TEAM=$APPLE_TEAM_ID \
+            CODE_SIGN_IDENTITY="iPhone Distribution"
+            
+      - name: Export IPA for TestFlight
+        script: |
+          echo "📱 Exporting IPA for App Store Connect/TestFlight..."
+          cd ios
+          
+          # Create export options for App Store distribution
+          cat > ExportOptions.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>uploadBitcode</key>
+            <false/>
+            <key>uploadSymbols</key>
+            <true/>
+            <key>compileBitcode</key>
+            <false/>
+          </dict>
+          </plist>
+          EOF
+          
+          # Export IPA
+          xcodebuild -exportArchive \
+            -archivePath build/Runner.xcarchive \
+            -exportPath build \
+            -exportOptionsPlist ExportOptions.plist \
+            -verbose
             
     artifacts:
       - build/ios/ipa/*.ipa
@@ -120,6 +168,32 @@ workflows:
       - flutter_drive.log
       
     publishing:
+      # 🚀 TestFlight automatski upload na App Store Connect
+      app_store_connect:
+        auth: integration     # Koristi Codemagic Apple Developer integration
+        
+        # TestFlight configuration
+        submit_to_testflight: true
+        beta_groups:                    # Optional: automatic beta tester groups
+          - Internal Testers
+          - External Testers
+        submit_to_app_store: false      # Ne šalje odmah na App Store review
+        
+        # Release notes za TestFlight
+        release_notes: |
+          🚀 Gavra Bus iOS App - Beta Build $BUILD_NUMBER
+          
+          ✅ Firebase push notifications
+          ✅ OneSignal cross-platform notifications  
+          ✅ Real-time bus tracking
+          ✅ Location-based notifications
+          ✅ Huawei device compatibility
+          
+          📱 Test all notification features and report issues!
+          
+          Build: $BUILD_NUMBER
+          Date: $(date '+%Y-%m-%d %H:%M')
+      
       email:
         recipients:
           - gavra.bus@example.com
