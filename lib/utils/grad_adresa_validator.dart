@@ -1,6 +1,24 @@
 /// 🏘️ UTIL ZA VALIDACIJU GRADOVA I ADRESA
-/// Ograničava aplikaciju na opštine Bela Crkva i Vršac (uključujući sva naselja)
+/// Ograničava aplikaciju na opštine Bela Crkva i Vršac
 class GradAdresaValidator {
+  /// 🔍 JEDNOSTAVNO GRAD POREĐENJE - samo 2 glavna grada
+  /// ✅ LOGIKA: Bela Crkva ili Vršac - sve ostalo se ignoriše
+  static bool isGradMatch(
+      String? putnikGrad, String? putnikAdresa, String selectedGrad) {
+    final normalizedSelectedGrad = normalizeString(selectedGrad);
+
+    // 🎯 JEDNOSTAVNA LOGIKA - samo 2 glavna grada
+    final selectedBelaCrkva = normalizedSelectedGrad.contains('bela');
+    final selectedVrsac = normalizedSelectedGrad.contains('vrsac');
+
+    // ✅ AKO JE SELEKTOVAN BILO KOJI OD 2 GLAVNA GRADA, PRIKAŽI SVE PUTNIKE
+    if (selectedBelaCrkva || selectedVrsac) {
+      return true; // Prikaži sve putnike bez obzira na njihov grad
+    }
+
+    return false; // Fallback - trebalo bi da se nikad ne desi
+  }
+
   /// 🏘️ NASELJA I ADRESE OPŠTINE BELA CRKVA
   static const List<String> naseljaOpstineBelaCrkva = [
     'bela crkva',
@@ -101,65 +119,6 @@ class GradAdresaValidator {
 
     // Dozvoli ako pripada bilo kojoj opštini
     return belongsToBelaCrkva || belongsToVrsac;
-  }
-
-  /// 🔍 POBOLJŠANO GRAD POREĐENJE - sa cross-search logikom između opština
-  /// 🎯 LOGIKA: Prvo traži u svojoj opštini, zatim proširi na drugu opštinu
-  /// 🗺️ GOOGLE MAPS FRIENDLY: Dozvoljava bilo koju adresu u validnim opštinama
-  static bool isGradMatch(
-      String? putnikGrad, String? putnikAdresa, String selectedGrad) {
-    final normalizedPutnikGrad = normalizeString(putnikGrad);
-    final normalizedSelectedGrad = normalizeString(selectedGrad);
-    final normalizedPutnikAdresa = normalizeString(putnikAdresa);
-
-    // Prvo proveri da li je adresa u dozvoljenim opštinama
-    if (!isAdresaInAllowedCity(putnikAdresa, putnikGrad)) {
-      return false;
-    }
-
-    // 🎯 OPŠTINSKA LOGIKA - bilo koja adresa u opštini je validna
-    final putnikFromBelaCrkva = naseljaOpstineBelaCrkva.any((naselje) =>
-            normalizedPutnikGrad.contains(naselje) ||
-            normalizedPutnikAdresa.contains(naselje)) ||
-        // Ili ako je grad eksplicitno "bela crkva"
-        normalizedPutnikGrad.contains('bela');
-
-    final putnikFromVrsac = naseljaOpstineVrsac.any((naselje) =>
-            normalizedPutnikGrad.contains(naselje) ||
-            normalizedPutnikAdresa.contains(naselje)) ||
-        // Ili ako je grad eksplicitno "vršac"
-        normalizedPutnikGrad.contains('vrsac');
-
-    // Proveri da li je selektovana opština Bela Crkva
-    final selectedBelaCrkva = normalizedSelectedGrad.contains('bela');
-
-    // Proveri da li je selektovana opština Vršac
-    final selectedVrsac = normalizedSelectedGrad.contains('vrsac');
-
-    // 🎯 CROSS-SEARCH LOGIKA
-    if (selectedBelaCrkva) {
-      // Prvo traži u opštini Bela Crkva
-      if (putnikFromBelaCrkva) {
-        return true;
-      }
-      // Zatim proširi pretragu na opštinu Vršac
-      if (putnikFromVrsac) {
-        return true;
-      }
-    }
-
-    if (selectedVrsac) {
-      // Prvo traži u opštini Vršac
-      if (putnikFromVrsac) {
-        return true;
-      }
-      // Zatim proširi pretragu na opštinu Bela Crkva
-      if (putnikFromBelaCrkva) {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   /// 📍 VALIDUJ ADRESU PRILIKOM DODAVANJA PUTNIKA

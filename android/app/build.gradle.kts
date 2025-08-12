@@ -49,6 +49,22 @@ dependencies {
     
     // Add Firebase Cloud Messaging
     implementation("com.google.firebase:firebase-messaging")
+    
+    // 🚀 OneSignal Dependency Resolution - Force compatible versions
+    implementation("androidx.work:work-runtime:2.8.1") {
+        because("OneSignal requires work-runtime")
+    }
+    implementation("androidx.cardview:cardview:1.0.0") {
+        because("OneSignal in-app-messages requires cardview")
+    }
+    implementation("androidx.browser:browser:1.3.0") {
+        because("OneSignal in-app-messages requires browser")
+    }
+    
+    // Force Firebase messaging version for OneSignal compatibility
+    implementation("com.google.firebase:firebase-messaging:23.4.0") {
+        because("OneSignal requires firebase-messaging [21.0.0, 23.4.99]")
+    }
 }
 
 flutter {

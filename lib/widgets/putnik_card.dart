@@ -355,8 +355,9 @@ class _PutnikCardState extends State<PutnikCard> {
   Future<void> _pozoviBroj() async {
     if (_putnik.brojTelefona != null && _putnik.brojTelefona!.isNotEmpty) {
       try {
-        // 📞 INSTANT POZIV - koristi novi PermissionService
-        final hasPermission = await PermissionService.ensurePhonePermission();
+        // 📞 HUAWEI KOMPATIBILNO - koristi Huawei specifičnu logiku
+        final hasPermission =
+            await PermissionService.ensurePhonePermissionHuawei();
         if (!hasPermission) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -399,8 +400,9 @@ class _PutnikCardState extends State<PutnikCard> {
   Future<void> _posaljiSMS() async {
     if (_putnik.brojTelefona != null && _putnik.brojTelefona!.isNotEmpty) {
       try {
-        // 📱 INSTANT SMS - koristi novi PermissionService
-        final hasPermission = await PermissionService.ensureSmsPermission();
+        // 📱 HUAWEI KOMPATIBILNO - koristi Huawei specifičnu logiku
+        final hasPermission =
+            await PermissionService.ensureSmsPermissionHuawei();
         if (!hasPermission) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(

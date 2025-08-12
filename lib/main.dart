@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// Firebase imports - conditionally used
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:firebase_messaging/firebase_messaging.dart';
+// Firebase imports - enabled for multi-channel notifications
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:logger/logger.dart';
-// import 'firebase_options.dart';
+import 'firebase_options.dart';
 import 'supabase_client.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/loading_screen.dart';
 import 'services/realtime_notification_service.dart';
 import 'services/update_checker.dart';
-// import 'services/firebase_service.dart';
+// import 'services/firebase_service.dart'; // Unused
 import 'services/local_notification_service.dart';
 import 'services/theme_service.dart';
 import 'services/gps_service.dart';
 import 'services/timer_manager.dart';
 import 'services/sms_service.dart';
-import 'services/permission_service.dart';
+// import 'services/permission_service.dart'; // Moved to WelcomeScreen
 import 'dart:async';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
@@ -32,15 +32,20 @@ void Function()? globalThemeToggler;
 void Function()? globalThemeRefresher;
 
 /// 📬 GLOBALNI BACKGROUND MESSAGE HANDLER
-/// Firebase background handler - DISABLED for iOS
+/// Firebase background handler for multi-channel notifications
 /// Ovo mora biti top-level funkcija da bi radila kad je app zatvoren
-// @pragma('vm:entry-point')
-// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   await Firebase.initializeApp();
-//   _logger.i('📬 Background message received: ${message.notification?.title}');
-//   // Pozovi RealtimeNotificationService da obradi poruku
-//   await RealtimeNotificationService.handleBackgroundMessage(message);
-// }
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  _logger.i('📬 Background message received: ${message.notification?.title}');
+  // Pozovi LocalNotificationService da obradi poruku
+  await LocalNotificationService.showRealtimeNotification(
+    title: message.notification?.title ?? 'Gavra Notification',
+    body: message.notification?.body ?? 'Nova poruka',
+    payload: message.data['type'] ?? 'firebase_background',
+    playCustomSound: true,
+  );
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,20 +60,20 @@ void main() async {
     _logger.i('🔔 OneSignal player ID: ${state.current.id}');
   });
 
-  // Firebase initialization - DISABLED for iOS
-  // try {
-  //   _logger.i('🔄 Initializing Firebase...');
-  //   await Firebase.initializeApp(
-  //     options: DefaultFirebaseOptions.currentPlatform,
-  //   );
-  //
-  //   // Registruj background message handler
-  //   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  //
-  //   _logger.i('✅ Firebase initialized with background handler');
-  // } catch (e) {
-  //   _logger.e('❌ Firebase initialization failed: $e');
-  // }
+  // Firebase initialization - ENABLED for multi-channel notifications
+  try {
+    _logger.i('🔄 Initializing Firebase...');
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+    // Registruj background message handler
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+    _logger.i('✅ Firebase initialized with background handler');
+  } catch (e) {
+    _logger.e('❌ Firebase initialization failed: $e');
+  }
 
   try {
     _logger.i('🔄 Initializing Supabase...');
@@ -112,7 +117,7 @@ class _MyAppState extends State<MyApp> {
   String? _initError;
   bool _nocniRezim = false;
   String? _currentDriver; // Dodano za temu
-  bool _permissionsRequested = false; // Dodano za tracking permission request
+  // bool _permissionsRequested = false; // Removed - permissions now handled in WelcomeScreen
 
   @override
   void initState() {
@@ -139,20 +144,37 @@ class _MyAppState extends State<MyApp> {
 
       if (vozacId != null && vozacId.isNotEmpty) {
         _logger.i('✅ Inicijalizujem notifikacije za vozača: $vozacId');
-        // Only initialize Firebase-based notifications on Android
+        // Initialize multi-channel notification system
         try {
+          // First request notification permissions
+          _logger.i('🔔 Requesting notification permissions...');
+          final hasPermissions = await RealtimeNotificationService
+              .requestNotificationPermissions();
+          _logger.i('🔔 Notification permissions result: $hasPermissions');
+
           await RealtimeNotificationService.initialize();
           if (mounted) {
             RealtimeNotificationService.listenForForegroundNotifications(
                 context);
           }
+          // Subscribe to Firebase topics for this driver
+          await RealtimeNotificationService.subscribeToDriverTopics(vozacId);
         } catch (e) {
-          _logger.w('⚠️ Firebase notifications disabled: $e');
+          _logger.w('⚠️ Notification system error: $e');
         }
       } else {
         _logger.w('⚠️ Nema logovanog vozača - notifikacije neće raditi');
-        // Ipak se pretplati na osnovne topike za sve vozače
-        await RealtimeNotificationService.subscribeToDriverTopics(null);
+        // Ipak zatraži dozvole i pretplati se na osnovne topike za sve vozače
+        try {
+          _logger.i('🔔 Requesting notification permissions...');
+          final hasPermissions = await RealtimeNotificationService
+              .requestNotificationPermissions();
+          _logger.i('🔔 Notification permissions result: $hasPermissions');
+
+          await RealtimeNotificationService.subscribeToDriverTopics(null);
+        } catch (e) {
+          _logger.w('⚠️ Notification permissions error: $e');
+        }
       }
 
       // 📱 POKRETANJE SMS SERVISA za automatsko slanje poruka
@@ -174,28 +196,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _requestPermissionsWhenReady() async {
-    if (_permissionsRequested) return; // Pozovi samo jednom
-
-    _permissionsRequested = true;
-
-    // Čekaj duže da se MaterialApp potpuno učita - ISPRAVKA za MaterialLocalizations
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (mounted) {
-      try {
-        _logger.i('🔄 Requesting permissions now that MaterialApp is ready...');
-        final permissionsGranted =
-            await PermissionService.requestAllPermissionsOnFirstLaunch(context);
-        if (permissionsGranted) {
-          _logger.i('✅ All permissions granted successfully');
-        } else {
-          _logger.w(
-              '⚠️ Some permissions were denied - app will work with limited functionality');
-        }
-      } catch (e) {
-        _logger.e('❌ Permission request failed: $e');
-      }
-    }
+    _logger.i('🔄 Permissions will be requested when first screen is ready...');
+    // ⚠️ Permissions se sada pozivaju iz WelcomeScreen ili HomeScreen umesto odavde
+    // jer ovaj context nije unutar MaterialApp strukture i izaziva MaterialLocalizations grešku
   }
 
   void _startPeriodicGpsSending() {

@@ -23,7 +23,16 @@ import '../services/local_notification_service.dart';
 import '../utils/grad_adresa_validator.dart'; // 🏘️ NOVO za validaciju gradova
 
 class DanasScreen extends StatefulWidget {
-  const DanasScreen({Key? key}) : super(key: key);
+  final String? highlightPutnikIme;
+  final String? filterGrad;
+  final String? filterVreme;
+
+  const DanasScreen({
+    Key? key,
+    this.highlightPutnikIme,
+    this.filterGrad,
+    this.filterVreme,
+  }) : super(key: key);
 
   @override
   State<DanasScreen> createState() => _DanasScreenState();
@@ -308,7 +317,23 @@ class _DanasScreenState extends State<DanasScreen> {
   @override
   void initState() {
     super.initState();
-    _initializeCurrentTime(); // ✅ SINHRONIZACIJA - postavi trenutno vreme i grad kao home_screen
+
+    // ✅ SETUP FILTERS FROM NOTIFICATION DATA
+    if (widget.filterGrad != null) {
+      _selectedGrad = widget.filterGrad!;
+      debugPrint('🔔 [NOTIFICATION] Setting filter grad: ${widget.filterGrad}');
+    }
+    if (widget.filterVreme != null) {
+      _selectedVreme = widget.filterVreme!;
+      debugPrint(
+          '🔔 [NOTIFICATION] Setting filter vreme: ${widget.filterVreme}');
+    }
+
+    // Ako nema filter podataka iz notifikacije, koristi default logiku
+    if (widget.filterGrad == null || widget.filterVreme == null) {
+      _initializeCurrentTime(); // ✅ SINHRONIZACIJA - postavi trenutno vreme i grad kao home_screen
+    }
+
     _initializeCurrentDriver();
     _loadPutnici();
     // Inicijalizuj heads-up i zvuk notifikacije
@@ -334,6 +359,13 @@ class _DanasScreenState extends State<DanasScreen> {
     RealtimeGpsService.startTracking().catchError((e) {
       debugPrint('🚨 GPS tracking failed: $e');
     });
+
+    // 🔔 SHOW NOTIFICATION MESSAGE IF PASSENGER NAME PROVIDED
+    if (widget.highlightPutnikIme != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showNotificationMessage();
+      });
+    }
   }
 
   void _initializeRealtimeTracking() {
@@ -367,6 +399,46 @@ class _DanasScreenState extends State<DanasScreen> {
         );
       }
     });
+  }
+
+  // 🔔 SHOW NOTIFICATION MESSAGE WHEN OPENED FROM NOTIFICATION
+  void _showNotificationMessage() {
+    if (widget.highlightPutnikIme == null) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.notification_important, color: Colors.white),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '🔔 Otvoreno iz notifikacije',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                  Text(
+                    'Putnik: ${widget.highlightPutnikIme} | ${widget.filterGrad} ${widget.filterVreme}',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: Colors.blue[700],
+        duration: const Duration(seconds: 4),
+        action: SnackBarAction(
+          label: 'OK',
+          textColor: Colors.white,
+          onPressed: () {},
+        ),
+      ),
+    );
   }
 
   /// 🔍 GRAD POREĐENJE - razlikuj mesečne i obične putnike

@@ -1,6 +1,7 @@
 workflows:
+  # 🍎 iOS Workflow - Complete Firebase + OneSignal
   ios-workflow:
-    name: Gavra Bus iOS Build (WITH Firebase)
+    name: Gavra Bus iOS Build (Firebase + OneSignal)
     max_build_duration: 120
     instance_type: mac_mini_m1
     environment:
@@ -13,25 +14,56 @@ workflows:
         XCODE_WORKSPACE: "Runner.xcworkspace"
         XCODE_SCHEME: "Runner"
         SKIP_FIREBASE: "false"
+        # OneSignal App ID
+        ONESIGNAL_APP_ID: "4fd57af1-568a-45e0-a737-3b3918c4e92a"
     scripts:
       - name: Set up app signing
         script: |
           set -ex
-          echo "App signing will be configured later"
-      - name: Verify GoogleService-Info.plist exists
+          echo "🍎 App signing will be configured later"
+          
+      - name: Verify iOS Firebase configuration
         script: |
+          echo "🔥 Checking Firebase iOS configuration..."
           if [ -f ios/Runner/GoogleService-Info.plist ]; then
             echo "✅ GoogleService-Info.plist found"
+            plutil -p ios/Runner/GoogleService-Info.plist | head -10
           else
             echo "❌ GoogleService-Info.plist not found!"
             exit 1
           fi
+          
+      - name: Verify iOS Firebase Service
+        script: |
+          echo "🔥 Checking Firebase Service iOS implementation..."
+          if [ -f lib/services/firebase_service_ios.dart ]; then
+            echo "✅ Firebase Service iOS found"
+            head -20 lib/services/firebase_service_ios.dart
+          else
+            echo "❌ Firebase Service iOS missing!"
+            exit 1
+          fi
+          
+      - name: Verify iOS Audio Assets
+        script: |
+          echo "🔊 Checking iOS audio assets..."
+          if [ -f ios/Runner/Sounds/gavra.mp3 ]; then
+            echo "✅ iOS audio asset found"
+            ls -la ios/Runner/Sounds/
+          else
+            echo "❌ iOS audio asset missing!"
+            exit 1
+          fi
+          
       - name: Get Flutter packages
         script: |
+          echo "📦 Getting Flutter packages..."
           flutter clean
-          flutter packages pub get
+          flutter pub get
+          
       - name: Clean and install CocoaPods dependencies
         script: |
+          echo "🍃 Installing CocoaPods dependencies..."
           cd ios
           rm -rf Pods
           rm -f Podfile.lock
@@ -41,13 +73,121 @@ workflows:
           flutter clean
           flutter pub get
           cd ios
-          pod install --repo-update
-      - name: Flutter build ipa (WITH Firebase)
+          pod install --repo-update --verbose
+          
+      - name: Verify iOS Build Configuration
         script: |
+          echo "⚙️ Verifying iOS build configuration..."
+          cd ios
+          # Check Info.plist for permissions
+          if grep -q "NSLocationWhenInUseUsageDescription" Runner/Info.plist; then
+            echo "✅ Location permissions configured"
+          else
+            echo "❌ Location permissions missing!"
+          fi
+          
+          # Check for Firebase configuration
+          if grep -q "FirebaseApp.configure" Runner/AppDelegate.swift; then
+            echo "✅ Firebase configured in AppDelegate"
+          else
+            echo "❌ Firebase not configured in AppDelegate!"
+          fi
+          
+      - name: Flutter build iOS (Release)
+        script: |
+          echo "🚀 Building iOS app with Firebase + OneSignal..."
           flutter build ios --release --no-codesign \
             --build-name=1.0.$BUILD_NUMBER \
-            --build-number=$BUILD_NUMBER
+            --build-number=$BUILD_NUMBER \
+            --verbose
+            
+      - name: Create iOS Archive
+        script: |
+          echo "📦 Creating iOS archive..."
+          cd ios
+          xcodebuild -workspace Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -destination generic/platform=iOS \
+            -archivePath build/Runner.xcarchive \
+            archive \
+            CODE_SIGNING_ALLOWED=NO
+            
     artifacts:
       - build/ios/ipa/*.ipa
+      - ios/build/Runner.xcarchive
       - /tmp/xcodebuild_logs/*.log
       - flutter_drive.log
+      
+    publishing:
+      email:
+        recipients:
+          - gavra.bus@example.com
+        notify:
+          success: true
+          failure: true
+      slack:
+        channel: '#gavra-builds'
+        notify_on_build_start: true
+        notify:
+          success: true
+          failure: true
+      
+  # 🤖 Android Workflow - Complete Firebase + OneSignal  
+  android-workflow:
+    name: Gavra Bus Android Build (Firebase + OneSignal)
+    max_build_duration: 60
+    instance_type: linux_x2
+    environment:
+      flutter: stable
+      vars:
+        ONESIGNAL_APP_ID: "4fd57af1-568a-45e0-a737-3b3918c4e92a"
+    scripts:
+      - name: Verify Android Firebase configuration
+        script: |
+          echo "🔥 Checking Firebase Android configuration..."
+          if [ -f android/app/google-services.json ]; then
+            echo "✅ google-services.json found"
+          else
+            echo "❌ google-services.json not found!"
+            exit 1
+          fi
+          
+      - name: Verify Android Permissions
+        script: |
+          echo "📱 Checking Android permissions..."
+          if grep -q "ACCESS_FINE_LOCATION" android/app/src/main/AndroidManifest.xml; then
+            echo "✅ Location permissions configured"
+          else
+            echo "❌ Location permissions missing!"
+          fi
+          
+          if grep -q "onesignal_app_id" android/app/src/main/AndroidManifest.xml; then
+            echo "✅ OneSignal configured"
+          else
+            echo "❌ OneSignal not configured!"
+          fi
+          
+      - name: Get Flutter packages  
+        script: |
+          flutter clean
+          flutter pub get
+          
+      - name: Flutter build APK (Release)
+        script: |
+          echo "🚀 Building Android app with Firebase + OneSignal..."
+          flutter build apk --release \
+            --build-name=1.0.$BUILD_NUMBER \
+            --build-number=$BUILD_NUMBER
+            
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
+      - flutter_drive.log
+      
+    publishing:
+      email:
+        recipients:
+          - gavra.bus@example.com
+        notify:
+          success: true
+          failure: true

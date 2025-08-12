@@ -399,7 +399,15 @@ class PutnikService {
         RealtimeNotificationService.sendRealtimeNotification(
           'Novi putnik',
           'Dodjen je novi putnik ${putnik.ime}',
-          {'type': 'novi_putnik', 'putnik': putnik.ime},
+          {
+            'type': 'novi_putnik',
+            'putnik': {
+              'ime': putnik.ime,
+              'grad': putnik.grad,
+              'vreme': putnik.polazak,
+              'dan': putnik.dan,
+            }
+          },
         );
         debugPrint('✅ [DODAJ PUTNIKA] Real-time notifikacija poslata');
       } else {
@@ -418,7 +426,10 @@ class PutnikService {
   Stream<List<Putnik>> streamKombinovaniPutnici() {
     debugPrint('🔄 [PUTNIK SERVICE] Pokretam kombinovani real-time stream...');
 
-    // Pokušaj real-time stream sa error handling
+    // Danas - za filtriranje dnevnih putnika
+    final danas = DateTime.now().toIso8601String().split('T')[0];
+
+    // Pokušaj real-time stream sa error handling i ograničenjem
     return StreamZip([
       // Stream mesečnih putnika sa error handling
       supabase
@@ -429,12 +440,12 @@ class PutnikService {
             debugPrint('❌ [PUTNIK SERVICE] Greška u mesečni stream: $error');
             return <dynamic>[]; // Vrati prazan niz u slučaju greške
           }),
-      // Stream dnevnih putnika sa error handling
+      // Stream dnevnih putnika SAMO ZA DANAS
       supabase
           .from('putovanja_istorija')
           .stream(primaryKey: ['id'])
-          .order('created_at', ascending: false)
-          .limit(100)
+          .eq('datum', danas) // 🎯 SAMO DANAŠNJI PUTNICI!
+          .order('vreme_polaska', ascending: true) // Sort po vremenu polaska
           .handleError((error) {
             debugPrint('❌ [PUTNIK SERVICE] Greška u dnevni stream: $error');
             return <dynamic>[]; // Vrati prazan niz u slučaju greške
@@ -505,63 +516,6 @@ class PutnikService {
       debugPrint('❌ [PUTNIK SERVICE] Finalna greška: $error');
       return <Putnik>[]; // Vrati prazan niz umesto crash-a
     });
-  }
-
-  /// 🚨 FALLBACK - Statičko učitavanje kada real-time ne radi
-  Stream<List<Putnik>> _fallbackStaticStream() {
-    return Stream.periodic(const Duration(seconds: 30), (_) {
-      return _loadStaticData();
-    }).asyncMap((future) => future);
-  }
-
-  /// � Statičko učitavanje podataka
-  Future<List<Putnik>> _loadStaticData() async {
-    debugPrint('🔄 [PUTNIK SERVICE] Fallback - statičko učitavanje...');
-    try {
-      List<Putnik> sviPutnici = [];
-
-      // 1. Učitaj mesečne putnike
-      final mesecniData = await supabase
-          .from('mesecni_putnici')
-          .select('*')
-          .eq('aktivan', true)
-          .neq('obrisan', true)
-          .order('created_at', ascending: false);
-
-      for (final item in mesecniData) {
-        final mesecniPutnici = Putnik.fromMesecniPutniciMultiple(item);
-        sviPutnici.addAll(mesecniPutnici);
-      }
-
-      // 2. Učitaj dnevne putnike
-      final dnevniData = await supabase
-          .from('putovanja_istorija')
-          .select('*')
-          .eq('tip_putnika', 'dnevni')
-          .neq('obrisan', true)
-          .order('created_at', ascending: false)
-          .limit(100);
-
-      for (final item in dnevniData) {
-        final putnik = Putnik.fromPutovanjaIstorija(item);
-        sviPutnici.add(putnik);
-      }
-
-      // Sortiranje
-      sviPutnici.sort((a, b) {
-        if (a.jeOtkazan && !b.jeOtkazan) return 1;
-        if (!a.jeOtkazan && b.jeOtkazan) return -1;
-        return (b.vremeDodavanja ?? DateTime.now())
-            .compareTo(a.vremeDodavanja ?? DateTime.now());
-      });
-
-      debugPrint(
-          '📈 [PUTNIK SERVICE] Fallback ukupno putnika: ${sviPutnici.length}');
-      return sviPutnici;
-    } catch (e) {
-      debugPrint('❌ [PUTNIK SERVICE] Greška u fallback: $e');
-      return <Putnik>[];
-    }
   }
 
   /// ✅ STREAM SVIH PUTNIKA (iz mesecni_putnici tabele - workaround za RLS)
@@ -875,7 +829,15 @@ class PutnikService {
         RealtimeNotificationService.sendRealtimeNotification(
           'Otkazan putnik',
           'Otkazan je putnik ${response['putnik_ime']}',
-          {'type': 'otkazan_putnik', 'putnik': response['putnik_ime']},
+          {
+            'type': 'otkazan_putnik',
+            'putnik': {
+              'ime': response['putnik_ime'],
+              'grad': response['grad'],
+              'vreme': response['vreme_polaska'] ?? response['polazak'],
+              'dan': response['dan'],
+            }
+          },
         );
       } else {
         debugPrint(

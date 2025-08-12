@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:convert';
 import '../main.dart';
 import '../screens/danas_screen.dart';
@@ -153,7 +154,7 @@ class LocalNotificationService {
     }
   }
 
-  /// Handle notification tap - navigate to passenger
+  /// Handle notification tap - navigate to passenger with filters
   static Future<void> _handleNotificationTap(
       NotificationResponse response) async {
     try {
@@ -163,6 +164,8 @@ class LocalNotificationService {
       // Parse payload to get passenger info
       String? putnikIme;
       String? notificationType;
+      String? putnikGrad;
+      String? putnikVreme;
 
       if (response.payload != null) {
         try {
@@ -176,16 +179,36 @@ class LocalNotificationService {
           // Extract passenger name from different possible formats
           if (putnikData is Map<String, dynamic>) {
             putnikIme = putnikData['ime'] ?? putnikData['name'];
+            putnikGrad = putnikData['grad'];
+            putnikVreme = putnikData['vreme'] ?? putnikData['polazak'];
           } else if (putnikData is String) {
             // Try to parse if it's JSON string
             try {
               final putnikMap = jsonDecode(putnikData);
               if (putnikMap is Map<String, dynamic>) {
                 putnikIme = putnikMap['ime'] ?? putnikMap['name'];
+                putnikGrad = putnikMap['grad'];
+                putnikVreme = putnikMap['vreme'] ?? putnikMap['polazak'];
               }
             } catch (e) {
               // If not JSON, use as direct string
               putnikIme = putnikData;
+            }
+          }
+
+          // 🔍 DOHVATI PUTNIK PODATKE IZ BAZE ako nisu u payload-u
+          if (putnikIme != null &&
+              (putnikGrad == null || putnikVreme == null)) {
+            try {
+              final putnikInfo = await _fetchPutnikFromDatabase(putnikIme);
+              if (putnikInfo != null) {
+                putnikGrad = putnikGrad ?? putnikInfo['grad'];
+                putnikVreme = putnikVreme ??
+                    putnikInfo['polazak'] ??
+                    putnikInfo['vreme_polaska'];
+              }
+            } catch (e) {
+              // Ignore database fetch errors - fallback to basic navigation
             }
           }
         } catch (e) {
@@ -193,10 +216,14 @@ class LocalNotificationService {
         }
       }
 
-      // Navigate to dagens screen
+      // Navigate to dagens screen with filter parameters
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => const DanasScreen(),
+          builder: (context) => DanasScreen(
+            highlightPutnikIme: putnikIme,
+            filterGrad: putnikGrad,
+            filterVreme: putnikVreme,
+          ),
         ),
       );
 
@@ -275,5 +302,57 @@ class LocalNotificationService {
   /// Dispose audio player
   static Future<void> dispose() async {
     await _audioPlayer.dispose();
+  }
+
+  /// 🔍 FETCH PUTNIK DATA FROM DATABASE BY NAME
+  static Future<Map<String, dynamic>?> _fetchPutnikFromDatabase(
+      String putnikIme) async {
+    try {
+      final supabase = Supabase.instance.client;
+
+      // Traži u putovanja_istorija tabeli (dnevni putnici)
+      final dnevniResult = await supabase
+          .from('putovanja_istorija')
+          .select('putnik_ime, grad, vreme_polaska, dan, polazak')
+          .eq('putnik_ime', putnikIme)
+          .eq('obrisan', false)
+          .order('created_at', ascending: false)
+          .limit(1);
+
+      if (dnevniResult.isNotEmpty) {
+        final data = dnevniResult.first;
+        return {
+          'grad': data['grad'],
+          'polazak': data['vreme_polaska'] ?? data['polazak'],
+          'dan': data['dan'],
+          'tip': 'dnevni'
+        };
+      }
+
+      // Traži u mesecni_putnici tabeli
+      final mesecniResult = await supabase
+          .from('mesecni_putnici')
+          .select('putnik_ime, grad, polazak, dan')
+          .eq('putnik_ime', putnikIme)
+          .eq('aktivan', true)
+          .eq('obrisan', false)
+          .order('created_at', ascending: false)
+          .limit(1);
+
+      if (mesecniResult.isNotEmpty) {
+        final data = mesecniResult.first;
+        return {
+          'grad': data['grad'],
+          'polazak': data['polazak'],
+          'dan': data['dan'],
+          'tip': 'mesecni'
+        };
+      }
+
+      return null;
+    } catch (e) {
+      // Return null on error - fallback to basic navigation
+      return null;
+    }
   }
 }

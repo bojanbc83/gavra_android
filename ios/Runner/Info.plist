@@ -31,23 +31,32 @@
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Gavra Bus koristi lokaciju za realtime praćenje vozača i optimizaciju ruta.</string>
 	
-	<!-- 📱 Push Notifications -->
+	<!-- 📱 Push Notifications & Background Modes -->
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
 		<string>remote-notification</string>
+		<string>background-processing</string>
+		<string>background-fetch</string>
 	</array>
+	
+	<!-- 🔔 Notification Permissions -->
+	<key>NSUserNotificationUsageDescription</key>
+	<string>Gavra Bus šalje obaveštenja o novim putnicima i promenama u voznji.</string>
 	
 	<!-- 🎵 Audio for notifications -->
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Gavra Bus može koristiti audio za notifikacije vozačima.</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Gavra Bus koristi audio za zvuk notifikacija.</string>
 	
 	<!-- 📞 Phone Calls Permission -->
 	<key>NSPhoneUsageDescription</key>
 	<string>Gavra Bus omogućava pozivanje putnika direktno iz aplikacije.</string>
 	
-	<!-- 📨 SMS Permission for iOS -->
+	<!-- 📨 SMS & Contacts Permission for iOS -->
 	<key>NSContactsUsageDescription</key>
+	<string>Gavra Bus može pristupiti kontaktima za slanje SMS poruka putnicima.</string>
 	<string>Gavra Bus može pristupiti kontaktima za slanje SMS poruka putnicima.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

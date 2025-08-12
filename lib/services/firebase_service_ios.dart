@@ -1,15 +1,32 @@
-// Firebase Service - DISABLED FOR iOS BUILDS
-// This service is replaced with OneSignal for iOS compatibility
+// Firebase Service - FULL iOS SUPPORT
+// Full Firebase implementation identical to Android for complete feature parity
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:logger/logger.dart';
+import '../screens/danas_screen.dart';
+import '../screens/home_screen.dart';
+import 'local_notification_service.dart';
 
 class FirebaseService {
   static final Logger _logger = Logger();
 
-  /// iOS Compatible - No Firebase initialization needed
+  /// Full Firebase initialization for iOS - identical to Android
   static Future<void> initialize() async {
-    _logger.i('🍎 FirebaseService DISABLED for iOS - using OneSignal instead');
+    try {
+      await FirebaseMessaging.instance.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true,
+      );
+      _logger.i('🍎 Firebase messaging permissions granted for iOS');
+    } catch (e) {
+      _logger.e('🍎 Error initializing Firebase for iOS: $e');
+    }
   }
 
   /// iOS Compatible - Returns stored driver or 'anonymous'
@@ -36,34 +53,131 @@ class FirebaseService {
     }
   }
 
-  /// iOS Compatible - No FCM setup needed
+  /// Full FCM setup for iOS - identical to Android
   static Future<void> setupFCMNotifications() async {
-    _logger.i('🍎 FCM Setup DISABLED for iOS - using OneSignal');
+    try {
+      // Get FCM token
+      String? token = await FirebaseMessaging.instance.getToken();
+      if (token != null) {
+        _logger.i('🍎 iOS FCM Token: ${token.substring(0, 50)}...');
+      }
+
+      // Handle token refresh
+      FirebaseMessaging.instance.onTokenRefresh.listen((String token) {
+        _logger.i('🍎 iOS FCM Token refreshed: ${token.substring(0, 50)}...');
+      });
+    } catch (e) {
+      _logger.e('🍎 Error setting up FCM for iOS: $e');
+    }
   }
 
-  /// iOS Compatible - No FCM listeners needed
+  /// Full foreground notification listener for iOS - identical to Android
   static void setupForegroundNotificationListener(BuildContext context) {
-    _logger.i('🍎 FCM Listeners DISABLED for iOS - using OneSignal');
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      _logger.i(
+          '🍎 iOS Foreground message received: ${message.notification?.title}');
+
+      // Show local notification with smart navigation
+      LocalNotificationService.showRealtimeNotification(
+        title: message.notification?.title ?? 'Gavra Bus',
+        body: message.notification?.body ?? 'Nova notifikacija',
+        payload: message.data.isNotEmpty
+            ? message.data.toString()
+            : '{"type": "general", "message": "${message.notification?.body ?? ""}"}',
+      );
+    });
+
+    // Handle notification tap when app is in foreground/background
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _logger.i('🍎 iOS Notification tapped: ${message.notification?.title}');
+      _handleNotificationTap(context, message.data);
+    });
   }
 
-  /// iOS Compatible - No FCM background handler needed
+  /// Full background handler for iOS - identical to Android
   static void setupBackgroundNotificationHandler() {
-    _logger.i('🍎 FCM Background DISABLED for iOS - using OneSignal');
+    FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundHandler);
   }
 
-  /// iOS Compatible - Mock function for compatibility
+  /// Background message handler for iOS
+  static Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
+    _logger.i('🍎 iOS Background message: ${message.notification?.title}');
+
+    // Show notification with smart navigation data
+    await LocalNotificationService.showRealtimeNotification(
+      title: message.notification?.title ?? 'Gavra Bus',
+      body: message.notification?.body ?? 'Nova notifikacija',
+      payload: message.data.isNotEmpty
+          ? message.data.toString()
+          : '{"type": "general", "message": "${message.notification?.body ?? ""}"}',
+    );
+  }
+
+  /// Handle notification tap with smart navigation for iOS
+  static void _handleNotificationTap(
+      BuildContext context, Map<String, dynamic> data) {
+    try {
+      // Parse notification data for smart navigation
+      String? putnikIme = data['putnik_ime'];
+      String? grad = data['grad'];
+      String? vreme = data['vreme'];
+
+      if (putnikIme != null || grad != null || vreme != null) {
+        // Navigate to DanasScreen with auto-filters
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => DanasScreen(
+              highlightPutnikIme: putnikIme,
+              filterGrad: grad,
+              filterVreme: vreme,
+            ),
+          ),
+        );
+      } else {
+        // Default navigation
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      }
+    } catch (e) {
+      _logger.e('🍎 Error handling notification tap: $e');
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    }
+  }
+
+  /// Full topic subscription for iOS - identical to Android
   static Future<void> subscribeToTopic(String topic) async {
-    _logger.i('🍎 Topic subscription DISABLED for iOS: $topic');
+    try {
+      await FirebaseMessaging.instance.subscribeToTopic(topic);
+      _logger.i('🍎 iOS subscribed to topic: $topic');
+    } catch (e) {
+      _logger.e('🍎 Error subscribing to topic $topic: $e');
+    }
   }
 
-  /// iOS Compatible - Mock function for compatibility
+  /// Full topic unsubscription for iOS - identical to Android
   static Future<void> unsubscribeFromTopic(String topic) async {
-    _logger.i('🍎 Topic unsubscription DISABLED for iOS: $topic');
+    try {
+      await FirebaseMessaging.instance.unsubscribeFromTopic(topic);
+      _logger.i('🍎 iOS unsubscribed from topic: $topic');
+    } catch (e) {
+      _logger.e('🍎 Error unsubscribing from topic $topic: $e');
+    }
   }
 
-  /// iOS Compatible - Mock function for compatibility
+  /// Full FCM token retrieval for iOS - identical to Android
   static Future<String?> getToken() async {
-    _logger.i('🍎 FCM Token DISABLED for iOS - using OneSignal');
-    return null;
+    try {
+      String? token = await FirebaseMessaging.instance.getToken();
+      if (token != null) {
+        _logger.i('🍎 iOS FCM Token retrieved: ${token.substring(0, 50)}...');
+      }
+      return token;
+    } catch (e) {
+      _logger.e('🍎 Error getting FCM token: $e');
+      return null;
+    }
   }
 }

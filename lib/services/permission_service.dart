@@ -320,4 +320,53 @@ class PermissionService {
       debugPrint('❌ Error opening settings: $e');
     }
   }
+
+  /// 🔧 HUAWEI SPECIFIČNA LOGIKA - Graceful handling na Huawei uređajima
+  static Future<bool> ensureSmsPermissionHuawei() async {
+    try {
+      // Prvo pokušaj standardni pristup
+      final status = await Permission.sms.status;
+      if (status.isGranted || status.isLimited) {
+        return true;
+      }
+
+      // Huawei specifično - pokušaj zahtev
+      final result = await Permission.sms.request();
+
+      // Ako Huawei blokira dozvolu, nastavi sa URL launcher pristupom
+      if (result.isDenied || result.isPermanentlyDenied) {
+        debugPrint('🍎 HUAWEI: SMS dozvola odbijena, koristim URL launcher');
+        return true; // Vraća true jer će koristiti URL launcher
+      }
+
+      return result.isGranted || result.isLimited;
+    } catch (e) {
+      debugPrint(
+          '🍎 HUAWEI: SMS permission error, fallback to URL launcher: $e');
+      return true; // Fallback na URL launcher
+    }
+  }
+
+  /// 📞 HUAWEI SPECIFIČNA LOGIKA - Phone permission
+  static Future<bool> ensurePhonePermissionHuawei() async {
+    try {
+      final status = await Permission.phone.status;
+      if (status.isGranted || status.isLimited) {
+        return true;
+      }
+
+      final result = await Permission.phone.request();
+
+      // Huawei fallback
+      if (result.isDenied || result.isPermanentlyDenied) {
+        debugPrint('🍎 HUAWEI: Phone dozvola odbijena, koristim tel: URI');
+        return true; // Vraća true jer će koristiti tel: URI
+      }
+
+      return result.isGranted || result.isLimited;
+    } catch (e) {
+      debugPrint('🍎 HUAWEI: Phone permission error, fallback to tel: URI: $e');
+      return true; // Fallback na tel: URI
+    }
+  }
 }
