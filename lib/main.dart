@@ -8,6 +8,10 @@ import 'package:logger/logger.dart';
 import 'firebase_options.dart';
 import 'supabase_client.dart';
 import 'screens/welcome_screen.dart';
+
+// 🚀 TestFlight Ready - Build trigger for iOS deployment with complete automation
+// ✅ Firebase + OneSignal + Huawei compatibility + Real-time Supabase sync
+// ✅ Automatic TestFlight upload with Apple Developer API integration
 import 'screens/loading_screen.dart';
 import 'services/realtime_notification_service.dart';
 import 'services/update_checker.dart';
