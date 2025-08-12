@@ -15,7 +15,6 @@ import 'screens/welcome_screen.dart';
 // 🤖 + GitHub Actions Android workflow for unlimited free APK delivery
 import 'screens/loading_screen.dart';
 import 'services/realtime_notification_service.dart';
-import 'services/update_checker.dart';
 // import 'services/firebase_service.dart'; // Unused
 import 'services/local_notification_service.dart';
 import 'services/theme_service.dart';
@@ -91,16 +90,7 @@ void main() async {
     _logger.e('❌ Supabase initialization failed: $e');
   }
 
-  // Inicijalizuj auto-update sistem
-  try {
-    _logger.i('🔄 Initializing auto-updates...');
-    await UpdateChecker.initializeAutoUpdates();
-    _logger.i('✅ Auto-updates initialized - daily check at 20:00');
-  } catch (e) {
-    _logger.e('❌ Auto-update initialization failed: $e');
-  }
-
-  _logger.i('🚀 Starting app with Bolovanje/Godišnji updates...');
+  _logger.i('� Starting app with professional CI/CD automation...');
   runApp(const MyApp());
 }
 

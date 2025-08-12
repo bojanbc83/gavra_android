@@ -53,9 +53,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final StreamController<String> _selectedGradSubject =
       StreamController<String>.broadcast();
 
-  // UPDATE PROGRESS TRACKING
-  bool _updateInProgress = false;
-
   String? _currentDriver;
 
   // CACHE UKLONJEN - nepotrebne varijable uklonjene
@@ -308,50 +305,27 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  // ENHANCED UPDATE FUNCTION sa progress tracking
-  Future<void> _performUpdateWithProgress() async {
-    setState(() {
-      _updateInProgress = true;
-    });
-
-    try {
-      // Pozovi pravi UpdateChecker sa callback funkcijom
-      final result = await UpdateChecker.checkDownloadAndInstall(
-        onProgress: (String message, double progress) {
-          // Progress callback - može se proširiti kasnije ako treba
-        },
-      );
-
-      // Finalno stanje
-      setState(() {
-        _updateInProgress = false;
-      });
-
-      // Prikaži rezultat korisniku
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result),
-          duration: const Duration(seconds: 5),
-          backgroundColor: result.contains('❌') || result.contains('Greška')
-              ? Colors.red
-              : Colors.green,
+  // GitHub Actions + Apple TestFlight automation has replaced manual updates
+  Future<void> _showAutomationInfo() async {
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('🚀 Automatska Ažuriranja'),
+        content: const Text(
+          'Aplikacija se sada automatski ažurira preko:\n\n'
+          '📱 Android: GitHub Actions sa email delivery\n'
+          '🍎 iOS: Codemagic sa TestFlight upload\n\n'
+          'Nema potrebe za manuelne update-ove! 😊',
         ),
-      );
-    } catch (e) {
-      setState(() {
-        _updateInProgress = false;
-      });
-
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Greška pri update-u: $e'),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 5),
-        ),
-      );
-    }
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Razumem'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _logout() async {
@@ -1277,9 +1251,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           Expanded(
                             flex: 25,
                             child: InkWell(
-                              onTap: _updateInProgress
-                                  ? () {}
-                                  : _performUpdateWithProgress,
+                              onTap: _showAutomationInfo,
                               borderRadius: BorderRadius.circular(14),
                               child: Container(
                                 height: 28,
@@ -1301,17 +1273,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Icon(
-                                          _updateInProgress
-                                              ? Icons.hourglass_empty
-                                              : Icons.system_update,
+                                          Icons.auto_awesome,
                                           size: 12,
                                           color: Colors.white,
                                         ),
                                         const SizedBox(height: 1),
                                         Text(
-                                          _updateInProgress
-                                              ? 'Update...'
-                                              : 'Update',
+                                          'Auto',
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w700,
                                             fontSize: 10,
