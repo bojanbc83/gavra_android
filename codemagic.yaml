@@ -48,9 +48,9 @@ workflows:
           include: true
     environment:
       ios_signing:
-        # Automatic code signing - let Codemagic manage certificates
+        # Automatic code signing - let Codemagic manage everything automatically
         distribution_type: app_store
-        bundle_identifier: com.gavra013.gavraAndroid
+        # Remove bundle_identifier to let Codemagic auto-detect from project
     scripts:
       - name: Verify iOS Firebase configuration
         script: |
