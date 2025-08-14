@@ -142,10 +142,11 @@ workflows:
           echo "Using Flutter build with automatic signing"
           flutter pub get
           
-          # Configure project with Team ID
+          # Configure project with Team ID 
           cd ios
-          sed -i '' '/PRODUCT_BUNDLE_IDENTIFIER = com.gavra013.gavraAndroid;/a\
-          				DEVELOPMENT_TEAM = 6CY9Q44KMQ;' Runner.xcodeproj/project.pbxproj
+          # Add DEVELOPMENT_TEAM after each PRODUCT_BUNDLE_IDENTIFIER
+          sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER = com.gavra013.gavraAndroid;/&\
+				DEVELOPMENT_TEAM = 6CY9Q44KMQ;/g' Runner.xcodeproj/project.pbxproj
           echo "Team ID added to project.pbxproj"
           
           # Build using Flutter command with automatic signing
