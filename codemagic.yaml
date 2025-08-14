@@ -30,8 +30,13 @@ workflows:
           wP1P9is1qe+t5KYkJ2aQZXCxHYsKiQcDjfEoTUHeEdQDm5g3BUzI3+vXBIlcradD
           /dpdkMZv
           -----END PRIVATE KEY-----
-    
-    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.gavra013.gavraAndroid
+        # Manual code signing - zamenite sa vašim encrypted vrednostima iz Codemagic dashboard-a
+        # signing_certificate: Encrypted(...) # Upload ios_distribution.cer u Codemagic
+        # provisioning_profile: Encrypted(...) # Upload Gavra_013_App_Store_Profile.mobileprovision u Codemagic
+    triggering:
       events:
         - push
         - tag
@@ -48,11 +53,6 @@ workflows:
           include: true
     integrations:
       app_store_connect: codemagic_app_store_connect
-    environment:
-      ios_signing:
-        # Back to automatic code signing - simplest approach
-        distribution_type: app_store
-        bundle_identifier: com.gavra013.gavraAndroid
     scripts:
       - name: Verify iOS Firebase configuration
         script: |
@@ -125,6 +125,13 @@ workflows:
             echo "❌ Firebase not configured in AppDelegate!"
           fi
           
+      - name: Import Provisioning Profile
+        script: |
+          echo "📱 Importing provisioning profile..."
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp Gavra_013_App_Store_Profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          echo "✅ Provisioning profile imported"
+          
       - name: Flutter build iOS (Release)
         script: |
           echo "🚀 Building iOS app with Firebase + OneSignal..."
@@ -138,15 +145,17 @@ workflows:
           echo "📦 Code signing and creating iOS archive for TestFlight..."
           cd ios
           
-          # Build and archive with automatic code signing
+          # Build and archive with manual code signing
           xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
             -destination generic/platform=iOS \
             -archivePath build/Runner.xcarchive \
             archive \
-            CODE_SIGN_STYLE=Automatic \
-            DEVELOPMENT_TEAM=$APPLE_TEAM_ID
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM=$APPLE_TEAM_ID \
+            PROVISIONING_PROFILE="9d19a2c5-a4fb-484f-859d-6da68676cc9c" \
+            CODE_SIGN_IDENTITY="iPhone Distribution: Bojan Gavrilovic (6CY9Q44KMQ)"
             
       - name: Export IPA for TestFlight
         script: |
