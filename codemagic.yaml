@@ -51,11 +51,9 @@ workflows:
           include: true
     environment:
       ios_signing:
-        # Manual certificate and provisioning profile (uploaded to Codemagic)
-        provisioning_profiles:
-          - Gavra_013_App_Store_Profile
-        certificates:
-          - ios_distribution
+        # Automatic code signing - let Codemagic manage certificates
+        distribution_type: app_store
+        bundle_identifier: com.gavra013.gavraAndroid
     scripts:
       - name: Verify iOS Firebase configuration
         script: |
@@ -138,7 +136,7 @@ workflows:
             
       - name: iOS Code Signing & Archive
         script: |
-          echo "� Code signing and creating iOS archive for TestFlight..."
+          echo "📦 Code signing and creating iOS archive for TestFlight..."
           cd ios
           
           # Build and archive with automatic code signing
@@ -149,8 +147,7 @@ workflows:
             -archivePath build/Runner.xcarchive \
             archive \
             CODE_SIGN_STYLE=Automatic \
-            DEVELOPMENT_TEAM=$APPLE_TEAM_ID \
-            CODE_SIGN_IDENTITY="iPhone Distribution"
+            DEVELOPMENT_TEAM=$APPLE_TEAM_ID
             
       - name: Export IPA for TestFlight
         script: |
