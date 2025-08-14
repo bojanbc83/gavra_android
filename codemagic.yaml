@@ -33,9 +33,6 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.gavra013.gavraAndroid
-        # Koristimo environment variables umesto hardcoded vrednosti
-        signing_certificate: $IOS_DIST_CERTIFICATE
-        provisioning_profile: $IOS_PROVISIONING_PROFILE
     triggering:
       events:
         - push
@@ -54,6 +51,34 @@ workflows:
     integrations:
       app_store_connect: codemagic_app_store_connect
     scripts:
+      - name: Setup iOS Code Signing
+        script: |
+          echo "🔐 Setting up iOS code signing certificates..."
+          
+          # Create keychain
+          security create-keychain -p "" build.keychain
+          security list-keychains -s build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "" build.keychain
+          security set-keychain-settings -t 3600 -u build.keychain
+          
+          # Import certificate and private key
+          echo "$IOS_DIST_CERTIFICATE" | base64 --decode > ios_distribution.cer
+          echo "$IOS_DIST_SIGNING_KEY" > ios_distribution.key
+          
+          # Import certificate to keychain
+          security import ios_distribution.cer -k build.keychain -T /usr/bin/codesign
+          security import ios_distribution.key -k build.keychain -T /usr/bin/codesign
+          
+          # Set key partition list
+          security set-key-partition-list -S apple-tool:,apple: -s -k "" build.keychain
+          
+          # Install provisioning profile
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "$IOS_PROVISIONING_PROFILE" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
+          
+          echo "✅ iOS code signing setup completed"
+          
       - name: Verify iOS Firebase configuration
         script: |
           echo "🔥 Checking Firebase iOS configuration..."
