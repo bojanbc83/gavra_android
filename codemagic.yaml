@@ -33,9 +33,9 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.gavra013.gavraAndroid
-        # Manual code signing - zamenite sa vašim encrypted vrednostima iz Codemagic dashboard-a
-        # signing_certificate: Encrypted(...) # Upload ios_distribution.cer u Codemagic
-        # provisioning_profile: Encrypted(...) # Upload Gavra_013_App_Store_Profile.mobileprovision u Codemagic
+        # Koristimo environment variables umesto hardcoded vrednosti
+        signing_certificate: $IOS_DIST_CERTIFICATE
+        provisioning_profile: $IOS_PROVISIONING_PROFILE
     triggering:
       events:
         - push
@@ -125,13 +125,6 @@ workflows:
             echo "❌ Firebase not configured in AppDelegate!"
           fi
           
-      - name: Import Provisioning Profile
-        script: |
-          echo "📱 Importing provisioning profile..."
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp Gavra_013_App_Store_Profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
-          echo "✅ Provisioning profile imported"
-          
       - name: Flutter build iOS (Release)
         script: |
           echo "🚀 Building iOS app with Firebase + OneSignal..."
@@ -145,17 +138,16 @@ workflows:
           echo "📦 Code signing and creating iOS archive for TestFlight..."
           cd ios
           
-          # Build and archive with manual code signing
+          # Pokušaj sa automatic code signing i explicit team
           xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
             -destination generic/platform=iOS \
             -archivePath build/Runner.xcarchive \
             archive \
-            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_STYLE=Automatic \
             DEVELOPMENT_TEAM=$APPLE_TEAM_ID \
-            PROVISIONING_PROFILE="9d19a2c5-a4fb-484f-859d-6da68676cc9c" \
-            CODE_SIGN_IDENTITY="iPhone Distribution: Bojan Gavrilovic (6CY9Q44KMQ)"
+            -allowProvisioningUpdates
             
       - name: Export IPA for TestFlight
         script: |
