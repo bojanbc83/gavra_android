@@ -9,8 +9,8 @@ workflows:
       xcode: latest
       cocoapods: default
       vars:
-        APP_ID: com.gavra013.gavraAndroid
-        BUNDLE_ID: com.gavra013.gavraAndroid
+        APP_ID: com.gavra.gavra013
+        BUNDLE_ID: com.gavra.gavra013
         XCODE_WORKSPACE: "Runner.xcworkspace"
         XCODE_SCHEME: "Runner"
         SKIP_FIREBASE: "false"
