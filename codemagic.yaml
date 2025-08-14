@@ -189,23 +189,6 @@ workflows:
           - "Internal Testers"
           - "Gavra Bus Beta"
         submit_to_app_store: false      # Ne šalje odmah na App Store review
-        
-        # TestFlight metadata
-        beta_build_localizations:
-          - locale: en-US
-            whats_new: |
-              🚌 Gavra Bus Beta Build
-              • Firebase integration
-              • OneSignal push notifications
-              • Real-time location tracking
-              • Enhanced user experience
-          - locale: sr-RS
-            whats_new: |
-              🚌 Gavra Bus Beta verzija
-              • Firebase integracija
-              • OneSignal push obaveštenja
-              • Real-time praćenje lokacije
-              • Poboljšano korisničko iskustvo
       
       email:
         recipients:
