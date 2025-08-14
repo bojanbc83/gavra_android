@@ -1,4 +1,4 @@
-﻿workflows:
+workflows:
   ios-workflow:
     name: Gavra Bus iOS Build (Firebase + OneSignal)
     max_build_duration: 120
@@ -207,7 +207,3 @@
         notify:
           success: true
           failure: true
-Invalid yaml configuration:
-1 validation error in codemagic.yaml:
-ios-workflow -> publishing -> app_store_connect ->
-  Authentication information is missing. Either inherit App Store Connect API key from integrations or use API key, key identifier and issuer identifier or use Apple ID and App-specific password for authentication.
