@@ -4,7 +4,7 @@ workflows:
     max_build_duration: 120
     instance_type: mac_mini_m1
     environment:
-      flutter: stable
+      flutter: 3.24.3
       xcode: latest
       cocoapods: default
       vars:
@@ -41,9 +41,34 @@ workflows:
         - pattern: 'v*'
           include: true
     scripts:
+      - name: Set build number
+        script: |
+          #!/bin/bash
+          set -e  # Exit on any error
+          echo "Setting build number..."
+          export BUILD_NUMBER=${BUILD_NUMBER:-$(($(date +%s) / 60))}
+          echo "Build number: $BUILD_NUMBER"
+          
+      - name: Check environment versions
+        script: |
+          set -e
+          echo "Current working directory: $(pwd)"
+          echo "Available disk space:"
+          df -h .
+          echo "Checking Flutter version..."
+          flutter --version
+          echo "Checking Xcode version..."
+          xcodebuild -version
+          echo "Checking CocoaPods version..."
+          pod --version
+          
       - name: Verify iOS Code Signing Setup
         script: |
           echo "Checking iOS code signing setup..."
+          
+          # Unlock keychain for code signing
+          security unlock-keychain -p "" ~/Library/Keychains/login.keychain-db || true
+          
           echo "Available certificates in keychain:"
           security find-identity -v -p codesigning || true
           echo ""
@@ -65,7 +90,9 @@ workflows:
           
       - name: Get Flutter packages
         script: |
+          set -e
           echo "Getting Flutter packages..."
+          flutter precache --ios
           flutter clean
           flutter pub get
           
@@ -77,11 +104,25 @@ workflows:
           rm -f Podfile.lock
           pod cache clean --all || true
           pod deintegrate || true
+          
+          # Update pod repo first
+          echo "Updating pod repo..."
+          pod repo update || true
+          
           cd ..
           flutter clean
           flutter pub get
           cd ios
-          pod install --repo-update --verbose
+          
+          # Try different strategies for pod install
+          echo "Trying pod install..."
+          if ! pod install; then
+            echo "Normal install failed, trying with verbose..."
+            if ! pod install --verbose; then
+              echo "Verbose failed, trying with repo update..."
+              pod install --repo-update --verbose || (echo "All pod install strategies failed" && exit 1)
+            fi
+          fi
           
       - name: Flutter build iOS (Release)
         script: |
@@ -104,6 +145,7 @@ workflows:
             CODE_SIGN_STYLE=Automatic \
             DEVELOPMENT_TEAM=6CY9Q44KMQ \
             PRODUCT_BUNDLE_IDENTIFIER=com.gavra013.gavraAndroid \
+            IPHONEOS_DEPLOYMENT_TARGET=14.0 \
             FLUTTER_BUILD_NAME=1.0.$BUILD_NUMBER \
             FLUTTER_BUILD_NUMBER=$BUILD_NUMBER \
             -verbose
@@ -112,6 +154,7 @@ workflows:
         script: |
           echo "Exporting IPA for App Store Connect/TestFlight..."
           cd ios
+          mkdir -p build
           xcodebuild -exportArchive \
             -archivePath build/Runner.xcarchive \
             -exportPath build \
@@ -128,12 +171,20 @@ workflows:
     artifacts:
       - ios/build/Runner.ipa
       - ios/build/Runner.xcarchive
+      - ios/build/*.ipa
+      - "**/*.ipa"
       - flutter_drive.log
       
     publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        beta_groups:
+          - Internal Testing
+        submit_to_app_store: false
       email:
         recipients:
-          - gavra.bus@example.com
+          - gavriconi19@gmail.com
         notify:
           success: true
           failure: true
@@ -196,7 +247,7 @@ workflows:
     publishing:
       email:
         recipients:
-          - gavra.bus@example.com
+          - gavriconi19@gmail.com
         notify:
           success: true
           failure: true
