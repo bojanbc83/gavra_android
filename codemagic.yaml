@@ -100,6 +100,7 @@ workflows:
             -destination generic/platform=iOS \
             -archivePath build/Runner.xcarchive \
             archive \
+            -allowProvisioningUpdates \
             CODE_SIGN_STYLE=Automatic \
             DEVELOPMENT_TEAM=6CY9Q44KMQ \
             PRODUCT_BUNDLE_IDENTIFIER=com.gavra013.gavraAndroid \
