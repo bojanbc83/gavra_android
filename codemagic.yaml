@@ -88,7 +88,6 @@ workflows:
           echo "Building iOS app with Firebase + OneSignal..."
           echo "Using xcodebuild with Team ID only"
           flutter pub get
-          flutter packages get
           cd ios
           # Configure automatic signing in project
           sed -i '' 's/CODE_SIGN_STYLE = Manual;/CODE_SIGN_STYLE = Automatic;/g' Runner.xcodeproj/project.pbxproj || true
@@ -187,8 +186,8 @@ workflows:
         script: |
           echo "Building Android app with Firebase + OneSignal..."
           flutter build apk --release \
-            --build-name=1.0. \
-            --build-number=
+            --build-name=1.0.$BUILD_NUMBER \
+            --build-number=$BUILD_NUMBER
             
     artifacts:
       - build/app/outputs/flutter-apk/app-release.apk
