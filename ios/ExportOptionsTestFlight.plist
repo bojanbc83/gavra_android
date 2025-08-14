@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
     <key>destination</key>
-    <string>export</string>
+    <string>upload</string>
     <key>method</key>
     <string>app-store</string>
     <key>provisioningProfiles</key>
@@ -27,5 +27,8 @@
     <false/>
     <key>thinning</key>
     <string>&lt;none&gt;</string>
+    <!-- TestFlight specifične opcije -->
+    <key>testFlightInternalTestingOnly</key>
+    <false/>
 </dict>
 </plist>

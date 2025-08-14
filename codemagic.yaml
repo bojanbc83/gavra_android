@@ -9,8 +9,8 @@ workflows:
       xcode: latest
       cocoapods: default
       vars:
-        APP_ID: com.gavra.gavra013
-        BUNDLE_ID: com.gavra.gavra013
+        APP_ID: com.gavra013.gavraAndroid
+        BUNDLE_ID: com.gavra013.gavraAndroid
         XCODE_WORKSPACE: "Runner.xcworkspace"
         XCODE_SCHEME: "Runner"
         SKIP_FIREBASE: "false"
@@ -33,6 +33,22 @@ workflows:
     
     integrations:
       app_store_connect: Gavra Bus API Key
+      
+    triggering:
+      events:
+        - push
+        - tag
+        - pull_request
+      branch_patterns:
+        - pattern: main
+          include: true
+          source: true
+        - pattern: develop
+          include: true
+          source: true
+      tag_patterns:
+        - pattern: 'v*'
+          include: true
     environment:
       ios_signing:
         # Manual certificate and provisioning profile (uploaded to Codemagic)
@@ -141,36 +157,29 @@ workflows:
           echo "📱 Exporting IPA for App Store Connect/TestFlight..."
           cd ios
           
-          # Create export options for App Store distribution
-          cat > ExportOptions.plist << EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>app-store</string>
-            <key>uploadBitcode</key>
-            <false/>
-            <key>uploadSymbols</key>
-            <true/>
-            <key>compileBitcode</key>
-            <false/>
-          </dict>
-          </plist>
-          EOF
-          
-          # Export IPA
+          # Export IPA using TestFlight export options
           xcodebuild -exportArchive \
             -archivePath build/Runner.xcarchive \
             -exportPath build \
-            -exportOptionsPlist ExportOptions.plist \
+            -exportOptionsPlist ExportOptionsTestFlight.plist \
             -verbose
+            
+          # Verify IPA was created
+          if [ -f build/Runner.ipa ]; then
+            echo "✅ IPA successfully created for TestFlight upload"
+            ls -la build/Runner.ipa
+          else
+            echo "❌ IPA creation failed!"
+            exit 1
+          fi
             
     artifacts:
       - build/ios/ipa/*.ipa
+      - ios/build/*.ipa
       - ios/build/Runner.xcarchive
       - /tmp/xcodebuild_logs/*.log
       - flutter_drive.log
+      - ios/build/Logs/
       
     publishing:
       # 🚀 TestFlight automatski upload na App Store Connect
@@ -180,9 +189,26 @@ workflows:
         # TestFlight configuration
         submit_to_testflight: true
         beta_groups:                    # Optional: automatic beta tester groups
-          - Internal Testers
-          - External Testers
+          - "Internal Testers"
+          - "Gavra Bus Beta"
         submit_to_app_store: false      # Ne šalje odmah na App Store review
+        
+        # TestFlight metadata
+        beta_build_localizations:
+          - locale: en-US
+            whats_new: |
+              🚌 Gavra Bus Beta Build
+              • Firebase integration
+              • OneSignal push notifications
+              • Real-time location tracking
+              • Enhanced user experience
+          - locale: sr-RS
+            whats_new: |
+              🚌 Gavra Bus Beta verzija
+              • Firebase integracija
+              • OneSignal push obaveštenja
+              • Real-time praćenje lokacije
+              • Poboljšano korisničko iskustvo
       
       email:
         recipients:
