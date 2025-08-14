@@ -50,9 +50,7 @@ workflows:
       app_store_connect: codemagic_app_store_connect
     environment:
       ios_signing:
-        # Manual code signing - use specific provisioning profile
-        distribution_type: app_store
-        bundle_identifier: com.gavra013.gavraAndroid
+        # Manual code signing - use specific provisioning profile only
         provisioning_profiles:
           - profile: Gavra_013_App_Store_Profile
             bundle_id: com.gavra013.gavraAndroid
