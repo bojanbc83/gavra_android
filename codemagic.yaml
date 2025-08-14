@@ -45,8 +45,6 @@ workflows:
       tag_patterns:
         - pattern: 'v*'
           include: true
-    integrations:
-      app_store_connect: codemagic_app_store_connect
     scripts:
       - name: Manual Certificate Setup
         script: |
