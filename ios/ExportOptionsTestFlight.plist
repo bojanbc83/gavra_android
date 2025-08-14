@@ -6,15 +6,10 @@
     <string>upload</string>
     <key>method</key>
     <string>app-store</string>
-    <key>provisioningProfiles</key>
-    <dict>
-        <key>com.gavra013.gavraAndroid</key>
-        <string>Gavra_013_App_Store_Profile</string>
-    </dict>
     <key>signingCertificate</key>
     <string>Apple Distribution</string>
     <key>signingStyle</key>
-    <string>manual</string>
+    <string>automatic</string>
     <key>stripSwiftSymbols</key>
     <true/>
     <key>teamID</key>
