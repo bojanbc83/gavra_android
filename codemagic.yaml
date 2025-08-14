@@ -31,10 +31,7 @@ workflows:
           /dpdkMZv
           -----END PRIVATE KEY-----
     
-    integrations:
-      app_store_connect: Gavra Bus API Key
-      
-    triggering:
+    environment:
       events:
         - push
         - tag
@@ -181,13 +178,12 @@ workflows:
     publishing:
       # 🚀 TestFlight automatski upload na App Store Connect
       app_store_connect:
-        auth: integration     # Koristi Codemagic Apple Developer integration
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
         
         # TestFlight configuration
         submit_to_testflight: true
-        beta_groups:                    # Optional: automatic beta tester groups
-          - "Internal Testers"
-          - "Gavra Bus Beta"
         submit_to_app_store: false      # Ne šalje odmah na App Store review
       
       email:
