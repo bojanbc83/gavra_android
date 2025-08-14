@@ -3,6 +3,8 @@ workflows:
     name: Gavra Bus iOS Build (Firebase + OneSignal)
     max_build_duration: 120
     instance_type: mac_mini_m1
+    integrations:
+      app_store_connect: Gavra Bus API Key
     environment:
       flutter: 3.24.3
       xcode: latest
