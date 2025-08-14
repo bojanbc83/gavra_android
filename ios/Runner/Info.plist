@@ -44,12 +44,6 @@
 	<key>NSUserNotificationUsageDescription</key>
 	<string>Gavra Bus šalje obaveštenja o novim putnicima i promenama u voznji.</string>
 	
-	<!-- 🎵 Audio for notifications -->
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Gavra Bus može koristiti audio za notifikacije vozačima.</string>
-	<key>NSAppleMusicUsageDescription</key>
-	<string>Gavra Bus koristi audio za zvuk notifikacija.</string>
-	
 	<!-- 📞 Phone Calls Permission -->
 	<key>NSPhoneUsageDescription</key>
 	<string>Gavra Bus omogućava pozivanje putnika direktno iz aplikacije.</string>
@@ -79,5 +73,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	
+	<!-- 🗺️ Google Maps API Key for iOS -->
+	<key>GMSApiKey</key>
+	<string>AIzaSyBOhQKU9YoA1z_h_N_y_XhbOL5gHWZXqPY</string>
 </dict>
 </plist>
