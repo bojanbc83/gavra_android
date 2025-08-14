@@ -38,7 +38,7 @@ dependencies:
   googleapis: any
   googleapis_auth: any
   shimmer: ^3.0.0
-  device_info_plus: ^11.5.0
+  device_info_plus: ^10.1.0
   android_intent_plus: ^5.3.0
   # flutter_sms: ^2.3.3 # Problematičan namespace - zamijenjen sa url_launcher SMS pozivima
   # sms_advanced: ^1.0.1 # Alternativa sa automatskim slanjem - isto ima namespace problem

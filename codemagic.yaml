@@ -6,7 +6,7 @@ workflows:
     integrations:
       app_store_connect: Gavra Bus API Key
     environment:
-      flutter: 3.24.3
+      flutter: stable
       xcode: latest
       cocoapods: default
       vars:
