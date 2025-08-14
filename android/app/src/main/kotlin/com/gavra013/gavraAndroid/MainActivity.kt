@@ -1,4 +1,4 @@
-package com.gavra013.gavra_android
+package com.gavra013.gavraAndroid
 
 import android.content.Intent
 import android.net.Uri

@@ -31,11 +31,7 @@ workflows:
           /dpdkMZv
           -----END PRIVATE KEY-----
     
-    # Automatic iOS signing - let Apple handle certificates
     environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.gavra013.gavraAndroid
       events:
         - push
         - tag
