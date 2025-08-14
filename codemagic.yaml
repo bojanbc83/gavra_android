@@ -86,6 +86,12 @@ workflows:
       - name: Flutter build iOS (Release)
         script: |
           echo "Building iOS app with Firebase + OneSignal..."
+          echo "Configuring iOS project for automatic signing..."
+          cd ios
+          # Configure automatic signing in project
+          sed -i '' 's/CODE_SIGN_STYLE = Manual;/CODE_SIGN_STYLE = Automatic;/g' Runner.xcodeproj/project.pbxproj || true
+          sed -i '' 's/DEVELOPMENT_TEAM = "";/DEVELOPMENT_TEAM = "6CY9Q44KMQ";/g' Runner.xcodeproj/project.pbxproj || true
+          cd ..
           flutter build ios --release \
             --build-name=1.0.$BUILD_NUMBER \
             --build-number=$BUILD_NUMBER \
