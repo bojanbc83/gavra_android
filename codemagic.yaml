@@ -50,7 +50,7 @@ workflows:
       ios_signing:
         # Automatic code signing - let Codemagic manage certificates
         distribution_type: app_store
-        bundle_identifier: com.gavra013.gavraAndroid
+        bundle_identifier: com.gavra.gavra013
     scripts:
       - name: Verify iOS Firebase configuration
         script: |

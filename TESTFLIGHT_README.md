@@ -44,7 +44,7 @@ xcodebuild -exportArchive -archivePath build/Runner.xcarchive -exportPath build 
 
 | Setting | Value |
 |---------|--------|
-| Bundle ID | com.gavra013.gavraAndroid |
+| Bundle ID | com.gavra.gavra013 |
 | Team ID | 6CY9Q44KMQ |
 | Code Signing | Manual |
 | Certificate | Apple Distribution |

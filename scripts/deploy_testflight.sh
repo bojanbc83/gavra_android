@@ -130,7 +130,7 @@ upload_to_testflight() {
         xcrun altool --upload-app \
             --type ios \
             --file ios/build/Runner.ipa \
-            --primary-bundle-id com.gavra013.gavraAndroid \
+            --primary-bundle-id com.gavra.gavra013 \
             --apiKey F4P38UR78G \
             --apiIssuer d8b50e72-6330-401d-9aef-4ead356405ca
         

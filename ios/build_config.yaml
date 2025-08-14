@@ -4,17 +4,17 @@
 # Build environments
 environments:
   development:
-    bundle_id: com.gavra013.gavraAndroid.dev
+    bundle_id: com.gavra.gavra013.dev
     app_name: "Gavra Bus Dev"
     firebase_config: ios/Firebase/GoogleService-Info-dev.plist
     
   staging:
-    bundle_id: com.gavra013.gavraAndroid.staging
+    bundle_id: com.gavra.gavra013.staging
     app_name: "Gavra Bus Staging"
     firebase_config: ios/Firebase/GoogleService-Info-staging.plist
     
   production:
-    bundle_id: com.gavra013.gavraAndroid
+    bundle_id: com.gavra.gavra013
     app_name: "Gavra 013"
     firebase_config: ios/Runner/GoogleService-Info.plist
 
