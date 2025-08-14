@@ -3,6 +3,8 @@ workflows:
     name: Gavra Bus iOS Build (Firebase + OneSignal)
     max_build_duration: 120
     instance_type: mac_mini_m1
+    integrations:
+      app_store_connect: codemagic
     environment:
       flutter: 3.24.3
       xcode: latest
@@ -144,7 +146,6 @@ workflows:
             -allowProvisioningUpdates \
             CODE_SIGN_STYLE=Automatic \
             DEVELOPMENT_TEAM=6CY9Q44KMQ \
-            PRODUCT_BUNDLE_IDENTIFIER=com.gavra013.gavraAndroid \
             IPHONEOS_DEPLOYMENT_TARGET=14.0 \
             FLUTTER_BUILD_NAME=1.0.$BUILD_NUMBER \
             FLUTTER_BUILD_NUMBER=$BUILD_NUMBER \
