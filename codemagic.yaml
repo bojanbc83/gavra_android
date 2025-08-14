@@ -21,13 +21,6 @@ workflows:
         APP_STORE_CONNECT_ISSUER_ID: "d8b50e72-6330-401d-9aef-4ead356405ca"
         APP_STORE_CONNECT_KEY_IDENTIFIER: "F4P38UR78G"
         CM_CERTIFICATE_PATH: "/tmp/api_key.p8"
-        APP_STORE_CONNECT_PRIVATE_KEY: |
-          -----BEGIN PRIVATE KEY-----
-          MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgAZLtV2UfGC1YX7Qz
-          wA1/rcwGkbHpX9ypDpgKApE0XvOgCgYIKoZIzj0DAQehRANCAAQvHPQ+kA1n8LmD
-          wP1P9is1qe+t5KYkJ2aQZXCxHYsKiQcDjfEoTUHeEdQDm5g3BUzI3+vXBIlcradD
-          /dpdkMZv
-          -----END PRIVATE KEY-----
     triggering:
       events:
         - push
@@ -55,11 +48,16 @@ workflows:
       - name: Setup App Store Connect API Key
         script: |
           set -e
-          echo "Setting up App Store Connect API key..."
-          echo "$APP_STORE_CONNECT_PRIVATE_KEY" > /tmp/api_key.p8
-          chmod 600 /tmp/api_key.p8
-          echo "API key saved to /tmp/api_key.p8"
-          ls -la /tmp/api_key.p8
+          echo "Setting up App Store Connect API key from environment..."
+          
+          # Use Codemagic's built-in certificate path from integration
+          if [ -n "$CM_CERTIFICATE_PATH" ]; then
+            echo "Using Codemagic integration certificate: $CM_CERTIFICATE_PATH"
+            ls -la "$CM_CERTIFICATE_PATH"
+          else
+            echo "ERROR: CM_CERTIFICATE_PATH not set! Check Codemagic App Store Connect integration."
+            exit 1
+          fi
           
       - name: Check environment versions
         script: |
@@ -159,15 +157,19 @@ workflows:
           
           # Now archive with xcodebuild using App Store Connect integration
           cd ios
+          
+          # Use Codemagic's built-in certificate path
+          echo "Using API key path: $CM_CERTIFICATE_PATH"
+          
           xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
             -destination generic/platform=iOS \
             -archivePath build/Runner.xcarchive \
             archive \
-            -authenticationKeyPath $CM_CERTIFICATE_PATH \
-            -authenticationKeyID $APP_STORE_CONNECT_KEY_IDENTIFIER \
-            -authenticationKeyIssuerID $APP_STORE_CONNECT_ISSUER_ID \
+            -authenticationKeyPath "$CM_CERTIFICATE_PATH" \
+            -authenticationKeyID "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+            -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
             CODE_SIGN_STYLE=Automatic \
             DEVELOPMENT_TEAM=6CY9Q44KMQ \
             IPHONEOS_DEPLOYMENT_TARGET=14.0
@@ -181,9 +183,9 @@ workflows:
             -archivePath build/Runner.xcarchive \
             -exportPath build \
             -exportOptionsPlist ExportOptionsTestFlight.plist \
-            -authenticationKeyPath $CM_CERTIFICATE_PATH \
-            -authenticationKeyID $APP_STORE_CONNECT_KEY_IDENTIFIER \
-            -authenticationKeyIssuerID $APP_STORE_CONNECT_ISSUER_ID
+            -authenticationKeyPath "$CM_CERTIFICATE_PATH" \
+            -authenticationKeyID "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+            -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID"
           if [ -f build/Runner.ipa ]; then
             echo "IPA successfully created!"
             ls -la build/Runner.ipa
