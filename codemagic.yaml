@@ -86,14 +86,18 @@ workflows:
       - name: Flutter build iOS (Release)
         script: |
           echo "Building iOS app with Firebase + OneSignal..."
-          echo "Using xcodebuild directly instead of flutter build ios"
+          echo "Using xcodebuild with App Store Connect API authentication"
           flutter pub get
           flutter packages get
           cd ios
           # Configure automatic signing in project
           sed -i '' 's/CODE_SIGN_STYLE = Manual;/CODE_SIGN_STYLE = Automatic;/g' Runner.xcodeproj/project.pbxproj || true
           sed -i '' 's/DEVELOPMENT_TEAM = "";/DEVELOPMENT_TEAM = "6CY9Q44KMQ";/g' Runner.xcodeproj/project.pbxproj || true
-          # Build directly with xcodebuild
+          
+          # Create temporary App Store Connect API key file
+          echo "$APP_STORE_CONNECT_PRIVATE_KEY" > /tmp/api_key.p8
+          
+          # Build with App Store Connect API authentication
           xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
@@ -101,6 +105,9 @@ workflows:
             -archivePath build/Runner.xcarchive \
             archive \
             -allowProvisioningUpdates \
+            -authenticationKeyPath /tmp/api_key.p8 \
+            -authenticationKeyID $APP_STORE_CONNECT_KEY_IDENTIFIER \
+            -authenticationKeyIssuerID $APP_STORE_CONNECT_ISSUER_ID \
             CODE_SIGN_STYLE=Automatic \
             DEVELOPMENT_TEAM=6CY9Q44KMQ \
             PRODUCT_BUNDLE_IDENTIFIER=com.gavra013.gavraAndroid \
