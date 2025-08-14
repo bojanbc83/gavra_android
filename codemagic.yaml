@@ -144,7 +144,7 @@ workflows:
           cd ios
           # Add DEVELOPMENT_TEAM after each PRODUCT_BUNDLE_IDENTIFIER
           sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER = com.gavra013.gavraAndroid;/&\
-				DEVELOPMENT_TEAM = 6CY9Q44KMQ;/g' Runner.xcodeproj/project.pbxproj
+          DEVELOPMENT_TEAM = 6CY9Q44KMQ;/g' Runner.xcodeproj/project.pbxproj
           echo "Team ID added to project.pbxproj"
           
           # Build using Flutter command with automatic signing
