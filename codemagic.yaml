@@ -87,8 +87,9 @@ workflows:
         script: |
           echo "Building iOS app with Firebase + OneSignal..."
           flutter build ios --release \
-            --build-name=1.0. \
-            --build-number= \
+            --build-name=1.0.$BUILD_NUMBER \
+            --build-number=$BUILD_NUMBER \
+            --no-codesign \
             --verbose
             
       - name: iOS Code Signing & Archive
