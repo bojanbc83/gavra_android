@@ -1,6 +1,16 @@
 workflows:
-  # 🍎 iOS Workflow - Complete Firebase + OneSignal
-  ios-workflow:
+  # 🍎 iOS Workflow - Complete Fireba      - name: Verify iOS Code Signing Setup
+        script: |
+          echo "📋 Checking iOS code signing setup..."
+          echo "Available certificates in keychain:"
+          security find-identity -v -p codesigning || true
+          echo ""
+          echo "Available provisioning profiles:"
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || true
+          echo ""
+          echo "Team ID: $APPLE_TEAM_ID"
+          
+      - name: DEBUG Environment Variables  ios-workflow:
     name: Gavra Bus iOS Build (Firebase + OneSignal)
     max_build_duration: 120
     instance_type: mac_mini_m1
@@ -21,13 +31,7 @@ workflows:
         # 🍎 Apple Developer Account - Bojan Gavrilovic
         APPLE_TEAM_ID: "6CY9Q44KMQ"              # Team ID iz Apple Developer Account
         
-        # 🔐 iOS Code Signing Certificates (Base64 encoded)
-        CM_CERTIFICATE: |
-          LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZ1ekNDQktPZ0F3SUJBZ0lRYTd1eWQxUm5Ra0dJYXdudlpvRFNjVEFOQmdrcWhraUc5dzBCQVFzRkFEQjEKTVVRd1FnWURWUVFERER0QmNIQnNaU0JYYjNKc1pIZHBaR1VnUkdWMlpXeHZjR1Z5SUZKbGJHRjBhVzl1Y3lCRApaWEowYVdacFkyRjBhVzl1SUVGMWRHaHZjbWwwZVRFTE1Ba0dBMVVFQ3d3Q1J6TXhFekFSQmdOVkJBb01Da0Z3ClkweGxJRWx1WXk0eEN6QUpCZ05WQkFZVEFsVlRNQjRYRFRJMU1EZ3hNakUxTVRZMU0xb1hEVEkyTURneE1qRTEKTVRZMU1sb3dnWll4R2pBWUJnb0praWFKay9Jc1pBRUJEQW8yUTFrNVVUUTBTMDFSTVRzd09RWURWUVFERERKcApaR2h2Ym1VZ1JHbHpkSEpwWW5WMGFXOXVPaUJDYjJwaGJpQkhaWGR5YVd4dmRtbGpJQ2cyUTFrNVVUUTBTMDFSCktURVRNQkVHQTFVRUN3d0tOa05aT1ZFMFJFdE5VVEVWTUI4R0ExVUVDZ3dRUW05cVlXNGdSMkYyY21sc2IzWnBZakVMCk1Ba0dBMVVFQmhNQ1VsTXdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUFBNElCRHdBd2dnRUtBb0lCQVFDb05Va0YKMTJJVFpQSWIwL29JN09kQmxWQTJpS002cENkU3RPbFJrK2RUL2pSbW1DOGpoVVRoYkdqKzNkaTVSZUVTSVBOSApkZ2dMMEhCcXA1SWlyRWIrOCtVR0tGYzkzWkZ0NjFndTdXQnRvK3JGbGM1bnoxd01oSnZZcDlKUDlZeXBYVzNFCmlFeS9qQ2MxcGJ3ZHVhelU2eUlGSFZsbjUyOFZWOG9zMHdrM0lTLzBGbFU0d1IwTHpWYWdZOGRFNmp1N0JUYmoKL3JNeUtaOVdlTlU1bFFscjRPNGdSNWFINVZFNE1xN2VOa1ZNREh4b0pEZi80NlhkL1h3SytoKzBjZUZYc0h2MApqYW5xbk9neDdXSEVaUUJIZTVTSENXZ0xra1U3NXYvR1RTYWpEY2dDemhzWHUxQzgzSjhhV1g5RG9mVmhkWWpWCkVyZ29NZVB
-        CM_PROVISIONING_PROFILE: |
-          TUlJU2ZReUpLb1pJaHZjTkFRY0NvSUlOZERDQ0RYQUNBUUVeQU3dERZOIU44SE5EEh1bnZ5WVhKemFXOXVBZ0VCTUEwTUNG...
-        
-        # 🔑 App Store Connect API (za TestFlight upload) - BOJAN'S DATA
+        #  App Store Connect API (za TestFlight upload) - BOJAN'S DATA
         APP_STORE_CONNECT_ISSUER_ID: "d8b50e72-6330-401d-9aef-4ead356405ca"
         APP_STORE_CONNECT_KEY_IDENTIFIER: "F4P38UR78G"
         APP_STORE_CONNECT_PRIVATE_KEY: |
@@ -53,31 +57,7 @@ workflows:
         - pattern: 'v*'
           include: true
     scripts:
-      - name: Manual Certificate Setup
-        script: |
-          echo "🔐 Manual certificate and provisioning profile setup..."
-          
-          # Create certificates directory
-          mkdir -p ~/certificates
-          
-          # Decode and install certificate
-          echo "$CM_CERTIFICATE" | base64 --decode > ~/certificates/ios_dist.p12
-          echo "$CM_PROVISIONING_PROFILE" | base64 --decode > ~/certificates/profile.mobileprovision
-          
-          # Install certificate in keychain
-          security import ~/certificates/ios_dist.p12 -k ~/Library/Keychains/login.keychain-db -T /usr/bin/codesign -T /usr/bin/security -P ""
-          
-          # Install provisioning profile
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp ~/certificates/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
-          
-          # List what we have
-          echo "Installed certificates:"
-          security find-identity -v -p codesigning
-          echo "Installed profiles:"
-          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
-          
-      - name: DEBUG Environment Variables
+      - name: Verify iOS Code Signing Setup
         script: |
           echo "🔍 DEBUG: Checking Environment Variables..."
           echo "CM_CERTIFICATE (first 100 chars):"
@@ -177,21 +157,19 @@ workflows:
           cd ios
           
           # Setup manual code signing with environment variables
-          echo "🔐 Setting up manual code signing..."
+          echo "🔐 Setting up automatic code signing..."
           echo "Team ID: $APPLE_TEAM_ID"
-          echo "Full Bundle ID: 6CY9Q44KMQ.com.gavra013.gavraAndroid"
           
-          # Build archive with manual code signing using environment variables
+          # Build archive with automatic code signing
           xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
             -destination generic/platform=iOS \
             -archivePath build/Runner.xcarchive \
             archive \
-            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_STYLE=Automatic \
             DEVELOPMENT_TEAM=$APPLE_TEAM_ID \
             PRODUCT_BUNDLE_IDENTIFIER=com.gavra013.gavraAndroid \
-            PROVISIONING_PROFILE_SPECIFIER="Gavra 013 App Store Profile" \
             -verbose
             
       - name: Export IPA for TestFlight
