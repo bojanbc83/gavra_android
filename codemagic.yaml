@@ -86,24 +86,14 @@ workflows:
       - name: Flutter build iOS (Release)
         script: |
           echo "Building iOS app with Firebase + OneSignal..."
-          echo "Configuring iOS project for automatic signing..."
+          echo "Using xcodebuild directly instead of flutter build ios"
+          flutter pub get
+          flutter packages get
           cd ios
           # Configure automatic signing in project
           sed -i '' 's/CODE_SIGN_STYLE = Manual;/CODE_SIGN_STYLE = Automatic;/g' Runner.xcodeproj/project.pbxproj || true
           sed -i '' 's/DEVELOPMENT_TEAM = "";/DEVELOPMENT_TEAM = "6CY9Q44KMQ";/g' Runner.xcodeproj/project.pbxproj || true
-          cd ..
-          flutter build ios --release \
-            --build-name=1.0.$BUILD_NUMBER \
-            --build-number=$BUILD_NUMBER \
-            --no-codesign \
-            --verbose
-            
-      - name: iOS Code Signing & Archive
-        script: |
-          echo "Creating iOS archive for TestFlight with automatic code signing..."
-          cd ios
-          echo "Setting up automatic code signing..."
-          echo "Team ID: "
+          # Build directly with xcodebuild
           xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
@@ -111,8 +101,10 @@ workflows:
             -archivePath build/Runner.xcarchive \
             archive \
             CODE_SIGN_STYLE=Automatic \
-            DEVELOPMENT_TEAM= \
+            DEVELOPMENT_TEAM=6CY9Q44KMQ \
             PRODUCT_BUNDLE_IDENTIFIER=com.gavra013.gavraAndroid \
+            FLUTTER_BUILD_NAME=1.0.$BUILD_NUMBER \
+            FLUTTER_BUILD_NUMBER=$BUILD_NUMBER \
             -verbose
             
       - name: Export IPA for TestFlight
