@@ -110,7 +110,22 @@ workflows:
           echo "Available provisioning profiles:"
           ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || true
           echo ""
-          echo "Team ID: "
+          echo "Team ID: $APPLE_TEAM_ID"
+          
+          # Import any provisioning profiles from project
+          echo "Importing provisioning profiles from project..."
+          if [ -f "../Gavra_013_App_Store_Profile_NEW.mobileprovision" ]; then
+            echo "Found NEW provisioning profile"
+            cp "../Gavra_013_App_Store_Profile_NEW.mobileprovision" ~/Library/MobileDevice/Provisioning\ Profiles/
+          fi
+          if [ -f "../Gavra_013_App_Store_Profile.mobileprovision" ]; then
+            echo "Found original provisioning profile"
+            cp "../Gavra_013_App_Store_Profile.mobileprovision" ~/Library/MobileDevice/Provisioning\ Profiles/
+          fi
+          
+          # Show imported profiles
+          echo "Profiles after import:"
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "No profiles directory"
           
       - name: Verify iOS Firebase configuration
         script: |
@@ -237,6 +252,20 @@ workflows:
           # Build archive
           echo "Attempting archive with App Store Connect authentication..."
           
+          # Try to fix provisioning profile issues
+          echo "=== FIXING PROVISIONING ISSUES ==="
+          
+          # Create provisioning profiles directory if it doesn't exist
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
+          
+          # Set up keychain and certificates properly
+          security list-keychains -s ~/Library/Keychains/login.keychain-db
+          security default-keychain -s ~/Library/Keychains/login.keychain-db
+          security unlock-keychain -p "" ~/Library/Keychains/login.keychain-db
+          
+          # Try to download provisioning profiles automatically
+          echo "Setting up automatic provisioning..."
+          
           # Check if we have API key file or need to use env vars only
           if [ -f "$CM_CERTIFICATE_PATH" ] && [ "$USE_ENV_VARS_ONLY" != "true" ]; then
             echo "Using API key file: $CM_CERTIFICATE_PATH"
@@ -253,20 +282,37 @@ workflows:
               DEVELOPMENT_TEAM=6CY9Q44KMQ \
               IPHONEOS_DEPLOYMENT_TARGET=14.0 \
               -allowProvisioningUpdates \
+              -allowProvisioningDeviceRegistration \
               -verbose
           else
             echo "Using automatic signing without API key file..."
+            echo "Trying with manual provisioning profile..."
+            
+            # Try with manual provisioning first
             xcodebuild -workspace Runner.xcworkspace \
               -scheme Runner \
               -configuration Release \
               -destination generic/platform=iOS \
               -archivePath build/Runner.xcarchive \
               archive \
-              CODE_SIGN_STYLE=Automatic \
+              CODE_SIGN_STYLE=Manual \
               DEVELOPMENT_TEAM=6CY9Q44KMQ \
+              PROVISIONING_PROFILE_SPECIFIER="Gavra 013 App Store Profile" \
               IPHONEOS_DEPLOYMENT_TARGET=14.0 \
-              -allowProvisioningUpdates \
-              -verbose
+              -verbose || {
+                echo "Manual provisioning failed, trying automatic..."
+                xcodebuild -workspace Runner.xcworkspace \
+                  -scheme Runner \
+                  -configuration Release \
+                  -destination generic/platform=iOS \
+                  -archivePath build/Runner.xcarchive \
+                  archive \
+                  CODE_SIGN_STYLE=Automatic \
+                  DEVELOPMENT_TEAM=6CY9Q44KMQ \
+                  IPHONEOS_DEPLOYMENT_TARGET=14.0 \
+                  -allowProvisioningUpdates \
+                  -verbose
+              }
           fi
             
           # Verify archive was created
