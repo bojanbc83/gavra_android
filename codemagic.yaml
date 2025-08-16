@@ -273,28 +273,26 @@ workflows:
           # Ensure we have the export options file
           if [ ! -f "ios/ExportOptionsTestFlight.plist" ]; then
             echo "Creating ExportOptionsTestFlight.plist..."
-            cat > ios/ExportOptionsTestFlight.plist << 'PLISTEOF'
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>method</key>
-    <string>app-store</string>
-    <key>teamID</key>
-    <string>6CY9Q44KMQ</string>
-    <key>uploadBitcode</key>
-    <false/>
-    <key>uploadSymbols</key>
-    <true/>
-    <key>compileBitcode</key>
-    <false/>
-    <key>signingStyle</key>
-    <string>automatic</string>
-    <key>destination</key>
-    <string>export</string>
-</dict>
-</plist>
-PLISTEOF
+            echo '<?xml version="1.0" encoding="UTF-8"?>' > ios/ExportOptionsTestFlight.plist
+            echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> ios/ExportOptionsTestFlight.plist
+            echo '<plist version="1.0">' >> ios/ExportOptionsTestFlight.plist
+            echo '<dict>' >> ios/ExportOptionsTestFlight.plist
+            echo '    <key>method</key>' >> ios/ExportOptionsTestFlight.plist
+            echo '    <string>app-store</string>' >> ios/ExportOptionsTestFlight.plist
+            echo '    <key>teamID</key>' >> ios/ExportOptionsTestFlight.plist
+            echo '    <string>6CY9Q44KMQ</string>' >> ios/ExportOptionsTestFlight.plist
+            echo '    <key>uploadBitcode</key>' >> ios/ExportOptionsTestFlight.plist
+            echo '    <false/>' >> ios/ExportOptionsTestFlight.plist
+            echo '    <key>uploadSymbols</key>' >> ios/ExportOptionsTestFlight.plist
+            echo '    <true/>' >> ios/ExportOptionsTestFlight.plist
+            echo '    <key>compileBitcode</key>' >> ios/ExportOptionsTestFlight.plist
+            echo '    <false/>' >> ios/ExportOptionsTestFlight.plist
+            echo '    <key>signingStyle</key>' >> ios/ExportOptionsTestFlight.plist
+            echo '    <string>automatic</string>' >> ios/ExportOptionsTestFlight.plist
+            echo '    <key>destination</key>' >> ios/ExportOptionsTestFlight.plist
+            echo '    <string>export</string>' >> ios/ExportOptionsTestFlight.plist
+            echo '</dict>' >> ios/ExportOptionsTestFlight.plist
+            echo '</plist>' >> ios/ExportOptionsTestFlight.plist
           fi
           
           # Try flutter build ipa with automatic signing
