@@ -191,17 +191,24 @@ workflows:
             echo "DEVELOPMENT_TEAM already exists in project.pbxproj"
           else
             echo "Adding DEVELOPMENT_TEAM to project.pbxproj"
-            # Try different sed approaches for compatibility
-            if sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER = com.gavra013.gavraAndroid;/&\
-            DEVELOPMENT_TEAM = 6CY9Q44KMQ;/g' Runner.xcodeproj/project.pbxproj 2>/dev/null; then
-              echo "Team ID added successfully with sed -i ''"
-            elif sed -i 's/PRODUCT_BUNDLE_IDENTIFIER = com.gavra013.gavraAndroid;/&\
-            DEVELOPMENT_TEAM = 6CY9Q44KMQ;/g' Runner.xcodeproj/project.pbxproj 2>/dev/null; then
-              echo "Team ID added successfully with sed -i"
+            # Try different sed approaches for compatibility - fix indentation
+            if sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER = com.gavra013.gavraAndroid;/&\'$'\n\t\t\t\tDEVELOPMENT_TEAM = 6CY9Q44KMQ;/g' Runner.xcodeproj/project.pbxproj 2>/dev/null; then
+              echo "Team ID added successfully with sed -i '' (proper indentation)"
+            elif sed -i 's/PRODUCT_BUNDLE_IDENTIFIER = com.gavra013.gavraAndroid;/&\n\t\t\t\tDEVELOPMENT_TEAM = 6CY9Q44KMQ;/g' Runner.xcodeproj/project.pbxproj 2>/dev/null; then
+              echo "Team ID added successfully with sed -i (proper indentation)"
             else
               echo "WARNING: Could not add DEVELOPMENT_TEAM automatically"
               echo "Manual verification needed..."
             fi
+          fi
+          
+          # Verify the modification worked properly
+          echo "Verifying DEVELOPMENT_TEAM was added correctly..."
+          if grep -A 1 -B 1 "DEVELOPMENT_TEAM = 6CY9Q44KMQ" Runner.xcodeproj/project.pbxproj; then
+            echo "DEVELOPMENT_TEAM verification successful"
+          else
+            echo "DEVELOPMENT_TEAM verification failed - restoring backup"
+            cp Runner.xcodeproj/project.pbxproj.backup Runner.xcodeproj/project.pbxproj
           fi
           
           # Build using Flutter command with automatic signing
@@ -211,13 +218,26 @@ workflows:
           # Ensure iOS is cached
           flutter precache --ios --no-android --no-web
           
-          # Build with detailed output
-          flutter build ios \
+          # Build with detailed output and error capture
+          echo "Running flutter build ios with detailed logging..."
+          if ! flutter build ios \
             --release \
             --verbose \
             --build-name=1.0.$BUILD_NUMBER \
             --build-number=$BUILD_NUMBER \
-            --no-tree-shake-icons
+            --no-tree-shake-icons; then
+            echo "ERROR: flutter build ios failed!"
+            echo "Checking for specific error details..."
+            
+            # Check if it's a signing issue
+            if flutter build ios --release --verbose 2>&1 | grep -i "signing\|provision\|certificate\|team"; then
+              echo "Detected signing-related errors in flutter build ios"
+            fi
+            
+            echo "Continuing to attempt IPA build anyway..."
+          else
+            echo "flutter build ios completed successfully"
+          fi
           
           # Now archive with xcodebuild using App Store Connect integration
           cd ios
