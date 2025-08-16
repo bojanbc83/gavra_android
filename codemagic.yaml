@@ -142,23 +142,42 @@ workflows:
           
           # Configure project with Team ID 
           cd ios
+          
+          # Backup original project file
+          cp Runner.xcodeproj/project.pbxproj Runner.xcodeproj/project.pbxproj.backup
+          
           # Add DEVELOPMENT_TEAM after each PRODUCT_BUNDLE_IDENTIFIER
           if grep -q "DEVELOPMENT_TEAM = 6CY9Q44KMQ" Runner.xcodeproj/project.pbxproj; then
             echo "DEVELOPMENT_TEAM already exists in project.pbxproj"
           else
             echo "Adding DEVELOPMENT_TEAM to project.pbxproj"
-            sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER = com.gavra013.gavraAndroid;/&\
-            DEVELOPMENT_TEAM = 6CY9Q44KMQ;/g' Runner.xcodeproj/project.pbxproj
-            echo "Team ID added to project.pbxproj"
+            # Try different sed approaches for compatibility
+            if sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER = com.gavra013.gavraAndroid;/&\
+            DEVELOPMENT_TEAM = 6CY9Q44KMQ;/g' Runner.xcodeproj/project.pbxproj 2>/dev/null; then
+              echo "Team ID added successfully with sed -i ''"
+            elif sed -i 's/PRODUCT_BUNDLE_IDENTIFIER = com.gavra013.gavraAndroid;/&\
+            DEVELOPMENT_TEAM = 6CY9Q44KMQ;/g' Runner.xcodeproj/project.pbxproj 2>/dev/null; then
+              echo "Team ID added successfully with sed -i"
+            else
+              echo "WARNING: Could not add DEVELOPMENT_TEAM automatically"
+              echo "Manual verification needed..."
+            fi
           fi
           
           # Build using Flutter command with automatic signing
           cd ..
           echo "Starting Flutter iOS build..."
+          
+          # Ensure iOS is cached
+          flutter precache --ios --no-android --no-web
+          
+          # Build with detailed output
           flutter build ios \
             --release \
+            --verbose \
             --build-name=1.0.$BUILD_NUMBER \
-            --build-number=$BUILD_NUMBER
+            --build-number=$BUILD_NUMBER \
+            --no-tree-shake-icons
           
           # Now archive with xcodebuild using App Store Connect integration
           cd ios
@@ -179,11 +198,20 @@ workflows:
           
           echo "Building archive with xcodebuild..."
           
+          # Show current certificates and profiles
+          echo "=== CERTIFICATES ==="
+          security find-identity -v -p codesigning | head -5
+          echo "=== PROVISIONING PROFILES ==="
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ | head -5 || echo "No profiles found"
+          echo "========================="
+          
           # Clean any previous builds
+          echo "Cleaning previous builds..."
           xcodebuild clean -workspace Runner.xcworkspace -scheme Runner -configuration Release
           
           # Build archive
-          xcodebuild -workspace Runner.xcworkspace \
+          echo "Attempting archive with App Store Connect authentication..."
+          if xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
             -destination generic/platform=iOS \
@@ -196,7 +224,22 @@ workflows:
             DEVELOPMENT_TEAM=6CY9Q44KMQ \
             IPHONEOS_DEPLOYMENT_TARGET=14.0 \
             -allowProvisioningUpdates \
-            -verbose
+            -verbose; then
+            echo "Archive successful with App Store Connect auth!"
+          else
+            echo "App Store Connect auth failed, trying without auth flags..."
+            xcodebuild -workspace Runner.xcworkspace \
+              -scheme Runner \
+              -configuration Release \
+              -destination generic/platform=iOS \
+              -archivePath build/Runner.xcarchive \
+              archive \
+              CODE_SIGN_STYLE=Automatic \
+              DEVELOPMENT_TEAM=6CY9Q44KMQ \
+              IPHONEOS_DEPLOYMENT_TARGET=14.0 \
+              -allowProvisioningUpdates \
+              -verbose
+          fi
             
           # Verify archive was created
           if [ ! -d "build/Runner.xcarchive" ]; then
