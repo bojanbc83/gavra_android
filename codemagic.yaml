@@ -273,7 +273,7 @@ workflows:
           # Ensure we have the export options file
           if [ ! -f "ios/ExportOptionsTestFlight.plist" ]; then
             echo "Creating ExportOptionsTestFlight.plist..."
-            cat > ios/ExportOptionsTestFlight.plist << 'EOF'
+            cat > ios/ExportOptionsTestFlight.plist << 'PLISTEOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -294,7 +294,7 @@ workflows:
     <string>export</string>
 </dict>
 </plist>
-EOF
+PLISTEOF
           fi
           
           # Try flutter build ipa with automatic signing
