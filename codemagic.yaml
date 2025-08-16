@@ -297,64 +297,125 @@ workflows:
           
           # Try flutter build ipa with automatic signing
           echo "Building IPA with Flutter (automatic signing)..."
+          
+          # First try without export options to see if basic build works
+          echo "Attempting basic flutter build ipa without custom export options..."
           if flutter build ipa \
             --release \
             --build-name=1.0.$BUILD_NUMBER \
-            --build-number=$BUILD_NUMBER \
-            --export-options-plist=ios/ExportOptionsTestFlight.plist; then
-            echo "Flutter build ipa succeeded!"
+            --build-number=$BUILD_NUMBER; then
+            echo "Basic Flutter build ipa succeeded!"
             
-            # Move the ipa to the expected location for artifacts
+            # Check where the IPA was created
+            echo "Looking for generated IPA files..."
+            find . -name "*.ipa" -type f 2>/dev/null || echo "No IPA files found with find"
+            
+            # Check common locations
             if [ -f "build/ios/ipa/gavra_android.ipa" ]; then
               mkdir -p ios/build
               cp "build/ios/ipa/gavra_android.ipa" ios/build/Runner.ipa
               echo "IPA copied to ios/build/Runner.ipa"
               ls -la ios/build/Runner.ipa
+            elif [ -f "build/ios/ipa/Runner.ipa" ]; then
+              mkdir -p ios/build
+              cp "build/ios/ipa/Runner.ipa" ios/build/Runner.ipa
+              echo "IPA copied from Runner.ipa to ios/build/Runner.ipa"
+              ls -la ios/build/Runner.ipa
             else
-              echo "IPA not found at expected location!"
-              find build -name "*.ipa" -type f 2>/dev/null || echo "No IPA files found"
-              exit 1
+              echo "IPA not found at expected locations, checking build directory..."
+              ls -la build/ios/ipa/ 2>/dev/null || echo "No build/ios/ipa directory"
+              ls -la build/ios/ 2>/dev/null || echo "No build/ios directory"
+              
+              # Try to find any IPA file
+              IPA_FILE=$(find build -name "*.ipa" -type f | head -1)
+              if [ -n "$IPA_FILE" ]; then
+                echo "Found IPA at: $IPA_FILE"
+                mkdir -p ios/build
+                cp "$IPA_FILE" ios/build/Runner.ipa
+                echo "IPA copied to ios/build/Runner.ipa"
+                ls -la ios/build/Runner.ipa
+              else
+                echo "ERROR: No IPA file found anywhere in build directory"
+                exit 1
+              fi
             fi
           else
-            echo "Flutter build ipa failed, trying xcodebuild with manual signing..."
-            cd ios
+            echo "Basic Flutter build ipa failed. Checking detailed error..."
+            echo "Trying with export options plist..."
             
-            # Manual signing as fallback
-            if [ -f "$CM_CERTIFICATE_PATH" ] && [ "$USE_ENV_VARS_ONLY" != "true" ]; then
-              echo "Using API key file with manual signing: $CM_CERTIFICATE_PATH"
-              xcodebuild -workspace Runner.xcworkspace \
-                -scheme Runner \
-                -configuration Release \
-                -destination generic/platform=iOS \
-                -archivePath build/Runner.xcarchive \
-                archive \
-                -authenticationKeyPath "$CM_CERTIFICATE_PATH" \
-                -authenticationKeyID "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
-                -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
-                CODE_SIGN_STYLE=Manual \
-                DEVELOPMENT_TEAM=6CY9Q44KMQ \
-                PROVISIONING_PROFILE_SPECIFIER="Gavra 013 App Store Profile" \
-                IPHONEOS_DEPLOYMENT_TARGET=14.0 \
-                -verbose || {
-                echo "XCODEBUILD WITH MANUAL SIGNING FAILED!"
+            if flutter build ipa \
+              --release \
+              --build-name=1.0.$BUILD_NUMBER \
+              --build-number=$BUILD_NUMBER \
+              --export-options-plist=ios/ExportOptionsTestFlight.plist; then
+              echo "Flutter build ipa with export options succeeded!"
+              
+              # Move the ipa to the expected location for artifacts
+              if [ -f "build/ios/ipa/gavra_android.ipa" ]; then
+                mkdir -p ios/build
+                cp "build/ios/ipa/gavra_android.ipa" ios/build/Runner.ipa
+                echo "IPA copied to ios/build/Runner.ipa"
+                ls -la ios/build/Runner.ipa
+              else
+                echo "IPA not found at expected location!"
+                find build -name "*.ipa" -type f 2>/dev/null || echo "No IPA files found"
                 exit 1
-              }
+              fi
             else
-              echo "Trying xcodebuild without API key..."
-              xcodebuild -workspace Runner.xcworkspace \
+              echo "Flutter build ipa with export options also failed!"
+              echo "Attempting direct xcodebuild approach with detailed logging..."
+              cd ios
+              
+              # Show detailed environment for debugging
+              echo "=== DETAILED ENVIRONMENT DEBUG ==="
+              echo "Current directory: $(pwd)"
+              echo "Available certificates:"
+              security find-identity -v -p codesigning
+              echo "Available provisioning profiles:"
+              find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec security cms -D -i {} \; 2>/dev/null | grep -A 3 -B 3 "Name\|TeamIdentifier\|UUID" || echo "No profiles or can't read them"
+              echo "Team ID from environment: $APPLE_TEAM_ID"
+              echo "Bundle ID: com.gavra013.gavraAndroid"
+              
+              # Try a simple build first to isolate the issue
+              echo "Trying basic xcodebuild archive without auth parameters..."
+              if xcodebuild -workspace Runner.xcworkspace \
                 -scheme Runner \
                 -configuration Release \
                 -destination generic/platform=iOS \
                 -archivePath build/Runner.xcarchive \
                 archive \
-                CODE_SIGN_STYLE=Manual \
+                CODE_SIGN_STYLE=Automatic \
                 DEVELOPMENT_TEAM=6CY9Q44KMQ \
-                PROVISIONING_PROFILE_SPECIFIER="Gavra 013 App Store Profile" \
                 IPHONEOS_DEPLOYMENT_TARGET=14.0 \
-                -verbose || {
-                echo "ALL BUILD METHODS FAILED!"
-                exit 1
-              }
+                -allowProvisioningUpdates \
+                -verbose; then
+                echo "Basic xcodebuild archive succeeded!"
+              else
+                echo "Basic xcodebuild also failed. This suggests a fundamental signing issue."
+                echo "Let's try manual signing approach..."
+                
+                # Manual signing as last resort
+                echo "Attempting manual signing with provisioning profile..."
+                xcodebuild -workspace Runner.xcworkspace \
+                  -scheme Runner \
+                  -configuration Release \
+                  -destination generic/platform=iOS \
+                  -archivePath build/Runner.xcarchive \
+                  archive \
+                  CODE_SIGN_STYLE=Manual \
+                  DEVELOPMENT_TEAM=6CY9Q44KMQ \
+                  PROVISIONING_PROFILE_SPECIFIER="Gavra 013 App Store Profile" \
+                  IPHONEOS_DEPLOYMENT_TARGET=14.0 \
+                  -verbose || {
+                  echo "ALL BUILD METHODS FAILED!"
+                  echo "Final diagnostics:"
+                  echo "1. Workspace structure:"
+                  ls -la Runner.xcworkspace/
+                  echo "2. Project settings:"
+                  grep -A 5 -B 5 "PRODUCT_BUNDLE_IDENTIFIER\|DEVELOPMENT_TEAM" Runner.xcodeproj/project.pbxproj || echo "Could not grep project file"
+                  exit 1
+                }
+              fi
             fi
           fi
             
