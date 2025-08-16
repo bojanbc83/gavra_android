@@ -53,10 +53,35 @@ workflows:
           # Use Codemagic's built-in certificate path from integration
           if [ -n "$CM_CERTIFICATE_PATH" ]; then
             echo "Using Codemagic integration certificate: $CM_CERTIFICATE_PATH"
-            ls -la "$CM_CERTIFICATE_PATH"
+            if [ -f "$CM_CERTIFICATE_PATH" ]; then
+              echo "API key file found!"
+              ls -la "$CM_CERTIFICATE_PATH"
+            else
+              echo "WARNING: API key file not found at $CM_CERTIFICATE_PATH"
+              echo "Checking for alternative paths..."
+              find /tmp -name "*.p8" -type f 2>/dev/null || echo "No .p8 files found in /tmp"
+              
+              # Try to use environment variables directly without file
+              if [ -n "$APP_STORE_CONNECT_KEY_IDENTIFIER" ] && [ -n "$APP_STORE_CONNECT_ISSUER_ID" ]; then
+                echo "Will use App Store Connect env vars directly in build step"
+                export USE_ENV_VARS_ONLY=true
+              else
+                echo "ERROR: No API key file and no environment variables!"
+                echo "Available environment variables:"
+                env | grep -E "(APP_STORE|CM_|APPLE)" || echo "No relevant env vars found"
+                exit 1
+              fi
+            fi
           else
-            echo "ERROR: CM_CERTIFICATE_PATH not set! Check Codemagic App Store Connect integration."
-            exit 1
+            echo "WARNING: CM_CERTIFICATE_PATH not set!"
+            echo "Checking if we can use environment variables directly..."
+            if [ -n "$APP_STORE_CONNECT_KEY_IDENTIFIER" ] && [ -n "$APP_STORE_CONNECT_ISSUER_ID" ]; then
+              echo "Will proceed with env vars only"
+              export USE_ENV_VARS_ONLY=true
+            else
+              echo "ERROR: No certificate path and no environment variables!"
+              exit 1
+            fi
           fi
           
       - name: Check environment versions
@@ -211,23 +236,26 @@ workflows:
           
           # Build archive
           echo "Attempting archive with App Store Connect authentication..."
-          if xcodebuild -workspace Runner.xcworkspace \
-            -scheme Runner \
-            -configuration Release \
-            -destination generic/platform=iOS \
-            -archivePath build/Runner.xcarchive \
-            archive \
-            -authenticationKeyPath "$CM_CERTIFICATE_PATH" \
-            -authenticationKeyID "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
-            -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
-            CODE_SIGN_STYLE=Automatic \
-            DEVELOPMENT_TEAM=6CY9Q44KMQ \
-            IPHONEOS_DEPLOYMENT_TARGET=14.0 \
-            -allowProvisioningUpdates \
-            -verbose; then
-            echo "Archive successful with App Store Connect auth!"
+          
+          # Check if we have API key file or need to use env vars only
+          if [ -f "$CM_CERTIFICATE_PATH" ] && [ "$USE_ENV_VARS_ONLY" != "true" ]; then
+            echo "Using API key file: $CM_CERTIFICATE_PATH"
+            xcodebuild -workspace Runner.xcworkspace \
+              -scheme Runner \
+              -configuration Release \
+              -destination generic/platform=iOS \
+              -archivePath build/Runner.xcarchive \
+              archive \
+              -authenticationKeyPath "$CM_CERTIFICATE_PATH" \
+              -authenticationKeyID "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+              -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
+              CODE_SIGN_STYLE=Automatic \
+              DEVELOPMENT_TEAM=6CY9Q44KMQ \
+              IPHONEOS_DEPLOYMENT_TARGET=14.0 \
+              -allowProvisioningUpdates \
+              -verbose
           else
-            echo "App Store Connect auth failed, trying without auth flags..."
+            echo "Using automatic signing without API key file..."
             xcodebuild -workspace Runner.xcworkspace \
               -scheme Runner \
               -configuration Release \
@@ -261,14 +289,25 @@ workflows:
           fi
           
           # Export IPA
-          xcodebuild -exportArchive \
-            -archivePath build/Runner.xcarchive \
-            -exportPath build \
-            -exportOptionsPlist ExportOptionsTestFlight.plist \
-            -authenticationKeyPath "$CM_CERTIFICATE_PATH" \
-            -authenticationKeyID "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
-            -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
-            -verbose
+          echo "Exporting IPA..."
+          if [ -f "$CM_CERTIFICATE_PATH" ] && [ "$USE_ENV_VARS_ONLY" != "true" ]; then
+            echo "Using API key file for export"
+            xcodebuild -exportArchive \
+              -archivePath build/Runner.xcarchive \
+              -exportPath build \
+              -exportOptionsPlist ExportOptionsTestFlight.plist \
+              -authenticationKeyPath "$CM_CERTIFICATE_PATH" \
+              -authenticationKeyID "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+              -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
+              -verbose
+          else
+            echo "Using automatic export without API key file"
+            xcodebuild -exportArchive \
+              -archivePath build/Runner.xcarchive \
+              -exportPath build \
+              -exportOptionsPlist ExportOptionsTestFlight.plist \
+              -verbose
+          fi
             
           # Verify IPA was created
           if [ -f build/Runner.ipa ]; then
