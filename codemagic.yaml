@@ -262,14 +262,28 @@ workflows:
           # Ensure iOS is cached
           flutter precache --ios --no-android --no-web
           
-          # Use flutter build ipa directly - it handles signing better than xcodebuild
-          echo "Building IPA with Flutter (automatic signing)..."
-          flutter build ipa \
-            --release \
+          # Build iOS using xcodebuild with explicit App Store signing
+          echo "Building iOS app with explicit App Store signing..."
+          
+          # First, build flutter iOS without signing
+          flutter build ios --release \
             --build-name=1.0.$BUILD_NUMBER \
             --build-number=$BUILD_NUMBER \
-            --verbose || {
-            echo "ERROR: Flutter build ipa failed!"
+            --no-codesign
+          
+          # Then archive with xcodebuild using App Store profile
+          cd ios
+          xcodebuild -workspace Runner.xcworkspace \
+            -scheme Runner \
+            -archivePath build/Runner.xcarchive \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            CODE_SIGN_STYLE=Manual \
+            PROVISIONING_PROFILE_SPECIFIER="Gavra Bus App Store Profile" \
+            CODE_SIGN_IDENTITY="Apple Distribution: Bojan Gavrilovic (6CY9Q44KMQ)" \
+            DEVELOPMENT_TEAM=6CY9Q44KMQ \
+            archive || {
+            echo "ERROR: Xcode archive failed!"
             echo "Checking build environment..."
             echo "Available certificates:"
             security find-identity -v -p codesigning || echo "No certificates found"
@@ -277,6 +291,17 @@ workflows:
             echo "Bundle ID: com.gavra013.gavraAndroid"
             exit 1
           }
+          
+          # Export IPA for App Store
+          xcodebuild -exportArchive \
+            -archivePath build/Runner.xcarchive \
+            -exportPath build \
+            -exportOptionsPlist ExportOptionsTestFlight.plist || {
+            echo "ERROR: IPA export failed!"
+            exit 1
+          }
+          
+          cd ..
           
           # Verify IPA was created
           if [ -f "build/ios/ipa/gavra_android.ipa" ]; then
