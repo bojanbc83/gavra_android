@@ -426,6 +426,8 @@ workflows:
     publishing:
       app_store_connect:
         api_key: Gavra Bus New API Key
+        key_id: L5CZWBQU22
+        issuer_id: d8b50e72-6330-401d-9aef-4ead356405ca
         submit_to_testflight: true
         beta_groups:
           - Internal Testing
