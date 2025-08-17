@@ -236,6 +236,35 @@ workflows:
           echo "Setting up keychain for code signing..."
           security unlock-keychain -p "" ~/Library/Keychains/login.keychain-db
           
+          # Try to install certificate using Codemagic CLI if available
+          echo "Attempting to install certificates using Codemagic CLI..."
+          if command -v codemagic &> /dev/null; then
+            echo "Codemagic CLI found, installing Team certificates..."
+            codemagic certificates install || echo "CLI certificate install failed"
+          else
+            echo "Codemagic CLI not found, checking environment..."
+          fi
+          
+          # Check if certificate files exist in common Codemagic paths
+          echo "Looking for certificate files in Codemagic paths..."
+          find /tmp -name "*.p12" -o -name "*.cer" -o -name "*.pem" 2>/dev/null | head -10
+          
+          # Try to find and install any P12 certificates
+          for cert_file in /tmp/*.p12 /tmp/**/*.p12 /var/tmp/*.p12; do
+            if [ -f "$cert_file" ]; then
+              echo "Found P12 certificate: $cert_file"
+              echo "Installing certificate in keychain..."
+              security import "$cert_file" -k ~/Library/Keychains/login.keychain-db -P "" -T /usr/bin/codesign -T /usr/bin/security || echo "Certificate import failed"
+            fi
+          done
+          
+          # Check environment variables for certificate content
+          if [ -n "$CM_CERTIFICATE" ]; then
+            echo "Found CM_CERTIFICATE environment variable"
+            echo "$CM_CERTIFICATE" | base64 -d > /tmp/ios_distribution.p12
+            security import /tmp/ios_distribution.p12 -k ~/Library/Keychains/login.keychain-db -P "" -T /usr/bin/codesign -T /usr/bin/security || echo "Env cert import failed"
+          fi
+          
           # List all available certificates in Team settings
           echo "Checking for Team certificates..."
           security find-identity -v -p codesigning
@@ -281,6 +310,10 @@ workflows:
               /usr/libexec/PlistBuddy -c "Print :Name" /dev/stdin <<< $(security cms -D -i "$profile") 2>/dev/null || echo "Could not read profile name"
             fi
           done
+          
+          # Final debug - show all environment variables related to certificates
+          echo "Certificate-related environment variables:"
+          env | grep -E "(CERT|P12|PEM|KEY)" || echo "No certificate env vars found"
           
           # Don't fail if certificates/profiles missing - let xcodebuild try automatic provisioning
           if [ "$cert_count" -eq "0" ]; then
