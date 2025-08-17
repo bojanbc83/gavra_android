@@ -14,7 +14,7 @@ workflows:
         BUNDLE_ID: com.gavra.gavra013
         APPLE_TEAM_ID: "6CY9Q44KMQ"
         APP_STORE_CONNECT_ISSUER_ID: "d8b50e72-6330-401d-9aef-4ead356405ca"
-        APP_STORE_CONNECT_KEY_IDENTIFIER: "L5CZWBQU22"
+        APP_STORE_CONNECT_KEY_IDENTIFIER: "F4P3BUR78G"
     triggering:
       events:
         - push
@@ -108,7 +108,7 @@ workflows:
     publishing:
       app_store_connect:
         api_key: Gavra Bus New API Key
-        key_id: L5CZWBQU22
+        key_id: F4P3BUR78G
         issuer_id: d8b50e72-6330-401d-9aef-4ead356405ca
         submit_to_testflight: true
         beta_groups:
