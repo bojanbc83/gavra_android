@@ -236,13 +236,37 @@ workflows:
           echo "Setting up keychain for code signing..."
           security unlock-keychain -p "" ~/Library/Keychains/login.keychain-db
           
+          # CRITICAL: Create P12 certificate from project files!
+          echo "Creating P12 certificate from project files..."
+          if [ -f "../apple_ios_distribution.key" ] && [ -f "../ios_distribution.cer" ]; then
+            echo "Found certificate files - creating P12..."
+            openssl pkcs12 -export -out /tmp/ios_distribution.p12 \
+              -inkey ../apple_ios_distribution.key \
+              -in ../ios_distribution.cer \
+              -name "Gavra Bus Distribution" \
+              -passout pass:
+            
+            echo "Installing P12 certificate in keychain..."
+            security import /tmp/ios_distribution.p12 \
+              -k ~/Library/Keychains/login.keychain-db \
+              -P "" \
+              -T /usr/bin/codesign \
+              -T /usr/bin/security || echo "P12 import failed"
+          else
+            echo "ERROR: Certificate files not found!"
+            echo "Looking for:"
+            echo "  ../apple_ios_distribution.key"
+            echo "  ../ios_distribution.cer"
+            ls -la ../ | grep -E "\.(key|cer)$" || echo "No key/cer files found"
+          fi
+          
           # Try to install certificate using Codemagic CLI if available
           echo "Attempting to install certificates using Codemagic CLI..."
           if command -v codemagic &> /dev/null; then
             echo "Codemagic CLI found, installing Team certificates..."
             codemagic certificates install || echo "CLI certificate install failed"
           else
-            echo "Codemagic CLI not found, checking environment..."
+            echo "Codemagic CLI not found"
           fi
           
           # Check if certificate files exist in common Codemagic paths
@@ -315,14 +339,12 @@ workflows:
           echo "Certificate-related environment variables:"
           env | grep -E "(CERT|P12|PEM|KEY)" || echo "No certificate env vars found"
           
-          # Don't fail if certificates/profiles missing - let xcodebuild try automatic provisioning
-          if [ "$cert_count" -eq "0" ]; then
+          # Show final certificate status
+          if [ "$cert_count" -gt "0" ]; then
+            echo "SUCCESS: Found $cert_count distribution certificates!"
+            security find-identity -v -p codesigning | grep "Apple Distribution\|iPhone Distribution"
+          else
             echo "WARNING: No distribution certificates found in keychain!"
-            echo "Will rely on automatic provisioning with -allowProvisioningUpdates"
-          fi
-          
-          if [ "$profile_count" -eq "0" ]; then
-            echo "WARNING: No provisioning profiles found!"
             echo "Will rely on automatic provisioning with -allowProvisioningUpdates"
           fi
           
