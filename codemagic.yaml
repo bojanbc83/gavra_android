@@ -15,12 +15,6 @@ workflows:
         APPLE_TEAM_ID: "6CY9Q44KMQ"
         APP_STORE_CONNECT_ISSUER_ID: "d8b50e72-6330-401d-9aef-4ead356405ca"
         APP_STORE_CONNECT_KEY_IDENTIFIER: "F4P3BUR78G"
-        APPLE_DEVELOPER_PORTAL_ISSUER_ID: "d8b50e72-6330-401d-9aef-4ead356405ca"
-        APPLE_DEVELOPER_PORTAL_KEY_IDENTIFIER: "L5CZWBQU22"
-      apple_developer_portal:
-        issuer_id: "d8b50e72-6330-401d-9aef-4ead356405ca"
-        key_id: "L5CZWBQU22"
-        private_key: $APPLE_DEVELOPER_PORTAL_PRIVATE_KEY
     triggering:
       events:
         - push
