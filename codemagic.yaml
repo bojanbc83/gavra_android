@@ -5,11 +5,6 @@ workflows:
     instance_type: mac_mini_m1
     integrations:
       app_store_connect: Gavra Bus New API Key
-      code_signing:
-        certificates:
-          - certificate_reference: Gavra Bus Distribution
-        provisioning_profiles:
-          - profile_reference: Gavra 013 App Store Profile
     environment:
       flutter: stable
       xcode: latest
@@ -241,55 +236,64 @@ workflows:
           echo "Setting up keychain for code signing..."
           security unlock-keychain -p "" ~/Library/Keychains/login.keychain-db
           
-          # Install certificates from Codemagic integration
-          echo "Installing certificates from code_signing integration..."
-          
-          # Verify certificates are installed
-          echo "Checking installed certificates:"
+          # List all available certificates in Team settings
+          echo "Checking for Team certificates..."
           security find-identity -v -p codesigning
           
-          # Check provisioning profiles
-          echo "Checking provisioning profiles:"
-          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
+          # Create provisioning profiles directory
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
           
-          # If no profiles found, try to download them
-          if [ ! -d ~/Library/MobileDevice/Provisioning\ Profiles ] || [ -z "$(ls -A ~/Library/MobileDevice/Provisioning\ Profiles 2>/dev/null)" ]; then
-            echo "No provisioning profiles found, attempting to download..."
-            mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
-            
-            # Copy profiles from project if available
-            if [ -f "../Gavra_013_App_Store_Profile_NEW.mobileprovision" ]; then
-              echo "Installing NEW provisioning profile from project"
-              cp "../Gavra_013_App_Store_Profile_NEW.mobileprovision" ~/Library/MobileDevice/Provisioning\ Profiles/
-            fi
-            if [ -f "../Gavra_013_App_Store_Profile.mobileprovision" ]; then
-              echo "Installing original provisioning profile from project"
-              cp "../Gavra_013_App_Store_Profile.mobileprovision" ~/Library/MobileDevice/Provisioning\ Profiles/
-            fi
+          # Copy provisioning profiles from project
+          echo "Installing provisioning profiles from project..."
+          if [ -f "../Gavra_013_App_Store_Profile_NEW.mobileprovision" ]; then
+            echo "Installing NEW provisioning profile"
+            cp "../Gavra_013_App_Store_Profile_NEW.mobileprovision" ~/Library/MobileDevice/Provisioning\ Profiles/
+          fi
+          if [ -f "../Gavra_013_App_Store_Profile.mobileprovision" ]; then
+            echo "Installing original provisioning profile"
+            cp "../Gavra_013_App_Store_Profile.mobileprovision" ~/Library/MobileDevice/Provisioning\ Profiles/
+          fi
+          
+          # Use App Store Connect API to fetch provisioning profiles if available
+          if [ -n "$APP_STORE_CONNECT_KEY_IDENTIFIER" ] && [ -n "$APP_STORE_CONNECT_ISSUER_ID" ]; then
+            echo "Attempting to fetch provisioning profiles via App Store Connect API..."
+            # This will download profiles automatically for the team
+            xcrun altool --list-profiles \
+              --apiKey "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+              --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID" \
+              --type ios 2>/dev/null || echo "API profile fetch failed, using manual profiles"
           fi
           
           # Final verification
           echo "Final certificate check:"
-          cert_count=$(security find-identity -v -p codesigning | grep -c "Apple Distribution" || echo "0")
-          echo "Found $cert_count Apple Distribution certificates"
+          cert_count=$(security find-identity -v -p codesigning | grep -c "Apple Distribution\|iPhone Distribution" || echo "0")
+          echo "Found $cert_count distribution certificates"
           
           echo "Final profile check:"
-          profile_count=$(ls ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision 2>/dev/null | wc -l || echo "0")
+          profile_count=$(ls ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision 2>/dev/null | wc -l | tr -d ' ' || echo "0")
           echo "Found $profile_count provisioning profiles"
           
+          # List profile details for debugging
+          echo "Profile details:"
+          for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
+            if [ -f "$profile" ]; then
+              echo "Profile: $(basename "$profile")"
+              /usr/libexec/PlistBuddy -c "Print :Name" /dev/stdin <<< $(security cms -D -i "$profile") 2>/dev/null || echo "Could not read profile name"
+            fi
+          done
+          
+          # Don't fail if certificates/profiles missing - let xcodebuild try automatic provisioning
           if [ "$cert_count" -eq "0" ]; then
-            echo "ERROR: No Apple Distribution certificates found!"
-            echo "This will cause signing to fail."
-            exit 1
+            echo "WARNING: No distribution certificates found in keychain!"
+            echo "Will rely on automatic provisioning with -allowProvisioningUpdates"
           fi
           
           if [ "$profile_count" -eq "0" ]; then
-            echo "ERROR: No provisioning profiles found!"
-            echo "This will cause signing to fail."
-            exit 1
+            echo "WARNING: No provisioning profiles found!"
+            echo "Will rely on automatic provisioning with -allowProvisioningUpdates"
           fi
           
-          echo "Certificate and profile setup completed successfully!"
+          echo "Certificate and profile setup completed!"
           
       - name: Flutter build iOS (Release)
         script: |
