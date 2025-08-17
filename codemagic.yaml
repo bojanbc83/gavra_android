@@ -4,7 +4,7 @@ workflows:
     max_build_duration: 120
     instance_type: mac_mini_m1
     integrations:
-      app_store_connect: Gavra Bus New API Key
+      app_store_connect: Gavra Bus API Key 2
     environment:
       flutter: stable
       xcode: latest
@@ -106,14 +106,6 @@ workflows:
       - "**/*.ipa"
       
     publishing:
-      app_store_connect:
-        api_key: Gavra Bus New API Key
-        key_id: F4P3BUR78G
-        issuer_id: d8b50e72-6330-401d-9aef-4ead356405ca
-        submit_to_testflight: true
-        beta_groups:
-          - Internal Testing
-        submit_to_app_store: false
       email:
         recipients:
           - gavriconi19@gmail.com
