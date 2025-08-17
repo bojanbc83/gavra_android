@@ -5,11 +5,6 @@ workflows:
     instance_type: mac_mini_m1
     integrations:
       app_store_connect: Gavra Bus New API Key
-      code_signing:
-        certificates:
-          - ios_distribution: Gavra Bus Distribution
-        provisioning_profiles:
-          - com.gavra013.gavraAndroid: Gavra 013 App Store Profile
     environment:
       flutter: stable
       xcode: latest
@@ -430,7 +425,7 @@ workflows:
       
     publishing:
       app_store_connect:
-        auth: integration
+        api_key: Gavra Bus New API Key
         submit_to_testflight: true
         beta_groups:
           - Internal Testing
