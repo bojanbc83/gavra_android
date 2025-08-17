@@ -302,6 +302,7 @@ workflows:
             -archivePath build/Runner.xcarchive \
             -configuration Release \
             -destination 'generic/platform=iOS' \
+            -allowProvisioningUpdates \
             CODE_SIGN_STYLE=Manual \
             PROVISIONING_PROFILE_SPECIFIER="Gavra 013 App Store Profile" \
             CODE_SIGN_IDENTITY="Apple Distribution: Bojan Gavrilovic (6CY9Q44KMQ)" \
@@ -313,6 +314,7 @@ workflows:
               -archivePath build/Runner.xcarchive \
               -configuration Release \
               -destination 'generic/platform=iOS' \
+              -allowProvisioningUpdates \
               CODE_SIGN_STYLE=Automatic \
               DEVELOPMENT_TEAM=6CY9Q44KMQ \
               archive || {
