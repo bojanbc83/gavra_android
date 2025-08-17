@@ -5,6 +5,7 @@ workflows:
     instance_type: mac_mini_m1
     integrations:
       app_store_connect: Gavra Bus API Key 2
+      apple_developer_portal: Gavra Bus New API Key
     environment:
       flutter: stable
       xcode: latest
@@ -15,6 +16,8 @@ workflows:
         APPLE_TEAM_ID: "6CY9Q44KMQ"
         APP_STORE_CONNECT_ISSUER_ID: "d8b50e72-6330-401d-9aef-4ead356405ca"
         APP_STORE_CONNECT_KEY_IDENTIFIER: "F4P3BUR78G"
+        APPLE_DEVELOPER_PORTAL_ISSUER_ID: "d8b50e72-6330-401d-9aef-4ead356405ca"
+        APPLE_DEVELOPER_PORTAL_KEY_IDENTIFIER: "L5CZWBQU22"
     triggering:
       events:
         - push
