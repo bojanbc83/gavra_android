@@ -352,15 +352,14 @@ workflows:
           
       - name: Flutter build iOS (Release)
         script: |
-          echo "Building iOS app with Firebase + OneSignal..."
-          echo "Using simplified Flutter build approach..."
+          echo "Building iOS app using Fastlane..."
+          echo "This should finally solve the signing issues!"
           
-          # Activate App Store Connect integration before building
-          echo "Activating App Store Connect integration..."
+          # Activate App Store Connect integration
           if [ -n "$APP_STORE_CONNECT_KEY_IDENTIFIER" ] && [ -n "$APP_STORE_CONNECT_ISSUER_ID" ]; then
             echo "App Store Connect credentials available"
           else
-            echo "WARNING: App Store Connect credentials not found!"
+            echo "ERROR: App Store Connect credentials not found!"
             exit 1
           fi
           
@@ -372,40 +371,46 @@ workflows:
           # Backup original project file
           cp Runner.xcodeproj/project.pbxproj Runner.xcodeproj/project.pbxproj.backup
           
-          # Add DEVELOPMENT_TEAM after each PRODUCT_BUNDLE_IDENTIFIER
-          if grep -q "DEVELOPMENT_TEAM = 6CY9Q44KMQ" Runner.xcodeproj/project.pbxproj; then
-            echo "DEVELOPMENT_TEAM already exists in project.pbxproj"
-          else
+          # Add DEVELOPMENT_TEAM
+          if ! grep -q "DEVELOPMENT_TEAM = 6CY9Q44KMQ" Runner.xcodeproj/project.pbxproj; then
             echo "Adding DEVELOPMENT_TEAM to project.pbxproj"
             sed -i.bak 's/PRODUCT_BUNDLE_IDENTIFIER = com.gavra013.gavraAndroid;/&\'$'\n\t\t\t\tDEVELOPMENT_TEAM = 6CY9Q44KMQ;/g' Runner.xcodeproj/project.pbxproj
           fi
           
-          # Verify the modification worked
-          echo "Verifying DEVELOPMENT_TEAM was added..."
+          # Verify Team ID was added
+          echo "DEVELOPMENT_TEAM configuration:"
           grep -A 1 -B 1 "DEVELOPMENT_TEAM = 6CY9Q44KMQ" Runner.xcodeproj/project.pbxproj || echo "Team ID not found"
           
           cd ..
           
-          # Try Flutter's built-in iOS archive command - much simpler!
-          echo "Using Flutter's built-in iOS archive..."
-          flutter build ipa \
-            --release \
+          # Build iOS app without signing first
+          echo "Building Flutter iOS app..."
+          flutter build ios --release \
             --build-name=1.0.$BUILD_NUMBER \
             --build-number=$BUILD_NUMBER \
-            --export-method=app-store \
-            --verbose || {
+            --no-codesign
+          
+          # Use Fastlane for signing and upload
+          cd ios
+          
+          echo "Using Fastlane for iOS signing and TestFlight upload..."
+          
+          # Install Fastlane if not available
+          if ! command -v fastlane &> /dev/null; then
+            echo "Installing Fastlane..."
+            gem install fastlane
+          fi
+          
+          # Setup Fastlane environment
+          export FASTLANE_SKIP_UPDATE_CHECK=1
+          export FASTLANE_HIDE_GITHUB_ISSUES=1
+          export FL_OUTPUT_DIR="build"
+          
+          # Run Fastlane build and upload
+          fastlane build_and_upload || {
+            echo "Fastlane failed! Trying manual xcodebuild approach..."
             
-            echo "Flutter IPA build failed! Trying manual approach..."
-            
-            # Fallback: Build without signing, then archive manually
-            echo "Building iOS without signing first..."
-            flutter build ios --release \
-              --build-name=1.0.$BUILD_NUMBER \
-              --build-number=$BUILD_NUMBER \
-              --no-codesign
-            
-            cd ios
-            echo "Manual archive with automatic signing only..."
+            # Fallback to xcodebuild
             xcodebuild -workspace Runner.xcworkspace \
               -scheme Runner \
               -archivePath build/Runner.xcarchive \
@@ -415,14 +420,15 @@ workflows:
               CODE_SIGN_STYLE=Automatic \
               DEVELOPMENT_TEAM=6CY9Q44KMQ \
               archive || {
-              echo "ERROR: All signing approaches failed!"
-              echo "Final debug info:"
+              echo "ERROR: All build approaches failed!"
+              echo "Final certificate status:"
               security find-identity -v -p codesigning
+              echo "Final profile status:"
               ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
               exit 1
             }
             
-            # Export IPA manually
+            # Manual IPA export
             xcodebuild -exportArchive \
               -archivePath build/Runner.xcarchive \
               -exportPath build \
@@ -430,21 +436,21 @@ workflows:
               echo "ERROR: IPA export failed!"
               exit 1
             }
-            
-            cd ..
           }
           
-          # Check for IPA in Flutter's default location first
-          if [ -f "build/ios/ipa/Runner.ipa" ]; then
+          cd ..
+          
+          # Verify IPA was created
+          if [ -f "ios/build/Runner.ipa" ]; then
+            echo "iOS build successful!"
+            ls -la ios/build/Runner.ipa
+          elif [ -f "build/ios/ipa/Runner.ipa" ]; then
             echo "Flutter IPA build successful!"
             mkdir -p ios/build
             cp "build/ios/ipa/Runner.ipa" ios/build/Runner.ipa
             ls -la ios/build/Runner.ipa
-          elif [ -f "ios/build/Runner.ipa" ]; then
-            echo "Manual IPA build successful!"
-            ls -la ios/build/Runner.ipa
           else
-            echo "ERROR: No IPA found anywhere!"
+            echo "ERROR: No IPA found!"
             echo "Checking all possible locations:"
             find . -name "*.ipa" -type f 2>/dev/null || echo "No IPA files found"
             exit 1
