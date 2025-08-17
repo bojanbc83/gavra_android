@@ -63,7 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '560128463615',
     projectId: 'gavra-android-notifications',
     storageBucket: 'gavra-android-notifications.firebasestorage.app',
-    iosClientId: '560128463615-PLACEHOLDER.apps.googleusercontent.com',
-    iosBundleId: 'com.gavra013.gavraAndroid',
+    iosClientId:
+        '560128463615-3d4f41059763e4b2a3b2ca.apps.googleusercontent.com',
+    iosBundleId: 'com.gavra.gavra013',
   );
 }
