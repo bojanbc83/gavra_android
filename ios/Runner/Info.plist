@@ -51,7 +51,6 @@
 	<!-- 📨 SMS & Contacts Permission for iOS -->
 	<key>NSContactsUsageDescription</key>
 	<string>Gavra Bus može pristupiti kontaktima za slanje SMS poruka putnicima.</string>
-	<string>Gavra Bus može pristupiti kontaktima za slanje SMS poruka putnicima.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
