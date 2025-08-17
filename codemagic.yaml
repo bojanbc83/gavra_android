@@ -90,16 +90,17 @@ workflows:
         script: |
           cd ios
           
+          # Set to MANUAL code signing 
+          echo "Setting up MANUAL code signing..."
+          sed -i.bak 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' Runner.xcodeproj/project.pbxproj || true
+          
           # Ensure DEVELOPMENT_TEAM is set in all configurations
           if ! grep -q "DEVELOPMENT_TEAM = 6CY9Q44KMQ" Runner.xcodeproj/project.pbxproj; then
             echo "Adding DEVELOPMENT_TEAM to project.pbxproj"
             sed -i.bak 's/PRODUCT_BUNDLE_IDENTIFIER = com.gavra.gavra013;/&\'$'\n\t\t\t\tDEVELOPMENT_TEAM = 6CY9Q44KMQ;/g' Runner.xcodeproj/project.pbxproj
           fi
           
-          # Set to automatic code signing
-          sed -i.bak 's/CODE_SIGN_STYLE = Manual;/CODE_SIGN_STYLE = Automatic;/g' Runner.xcodeproj/project.pbxproj || true
-          
-          echo "✅ iOS project configured for automatic signing"
+          echo "✅ iOS project configured for MANUAL signing"
           cd ..
           
       - name: Build iOS app
