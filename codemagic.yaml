@@ -112,6 +112,20 @@ workflows:
           echo ""
           echo "Team ID: $APPLE_TEAM_ID"
           
+          # Download provisioning profiles from Codemagic/Apple Developer
+          echo "Downloading App Store provisioning profile..."
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
+          
+          # Try to use Codemagic's automatic provisioning profile fetch
+          if [ -n "$APP_STORE_CONNECT_KEY_IDENTIFIER" ] && [ -n "$APP_STORE_CONNECT_ISSUER_ID" ]; then
+            echo "Fetching provisioning profiles using App Store Connect API..."
+            # This will download all profiles for the team automatically
+            xcrun altool --list-profiles \
+              --apiKey "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+              --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID" \
+              --type ios || echo "Profile fetch failed, continuing with manual import"
+          fi
+          
           # Import any provisioning profiles from project
           echo "Importing provisioning profiles from project..."
           if [ -f "../Gavra_013_App_Store_Profile_NEW.mobileprovision" ]; then
@@ -126,6 +140,15 @@ workflows:
           # Show imported profiles
           echo "Profiles after import:"
           ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "No profiles directory"
+          
+          # List details of imported profiles
+          echo "Profile details:"
+          for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
+            if [ -f "$profile" ]; then
+              echo "Profile: $profile"
+              /usr/libexec/PlistBuddy -c "Print :Name" /dev/stdin <<< $(security cms -D -i "$profile") 2>/dev/null || echo "Could not read profile name"
+            fi
+          done
           
       - name: Verify iOS Firebase configuration
         script: |
@@ -273,6 +296,7 @@ workflows:
           
           # Then archive with xcodebuild using App Store profile
           cd ios
+          echo "Attempting manual signing with App Store profile..."
           xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -archivePath build/Runner.xcarchive \
@@ -283,13 +307,25 @@ workflows:
             CODE_SIGN_IDENTITY="Apple Distribution: Bojan Gavrilovic (6CY9Q44KMQ)" \
             DEVELOPMENT_TEAM=6CY9Q44KMQ \
             archive || {
-            echo "ERROR: Xcode archive failed!"
-            echo "Checking build environment..."
-            echo "Available certificates:"
-            security find-identity -v -p codesigning || echo "No certificates found"
-            echo "Team ID: $APPLE_TEAM_ID"
-            echo "Bundle ID: com.gavra013.gavraAndroid"
-            exit 1
+            echo "Manual signing failed! Trying automatic signing..."
+            xcodebuild -workspace Runner.xcworkspace \
+              -scheme Runner \
+              -archivePath build/Runner.xcarchive \
+              -configuration Release \
+              -destination 'generic/platform=iOS' \
+              CODE_SIGN_STYLE=Automatic \
+              DEVELOPMENT_TEAM=6CY9Q44KMQ \
+              archive || {
+              echo "ERROR: Both manual and automatic signing failed!"
+              echo "Checking build environment..."
+              echo "Available certificates:"
+              security find-identity -v -p codesigning || echo "No certificates found"
+              echo "Available profiles:"
+              ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "No profiles"
+              echo "Team ID: $APPLE_TEAM_ID"
+              echo "Bundle ID: com.gavra013.gavraAndroid"
+              exit 1
+            }
           }
           
           # Export IPA for App Store
