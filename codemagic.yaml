@@ -406,35 +406,36 @@ workflows:
           export FASTLANE_HIDE_GITHUB_ISSUES=1
           export FL_OUTPUT_DIR="build"
           
-          # Run Fastlane build and upload
-          fastlane build_and_upload || {
-            echo "Fastlane failed! Trying manual xcodebuild approach..."
+          # Try PURE AUTOMATIC signing first
+          echo "ATTEMPT 1: Pure automatic signing with -allowProvisioningUpdates"
+          xcodebuild -workspace Runner.xcworkspace \
+            -scheme Runner \
+            -archivePath build/Runner.xcarchive \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -allowProvisioningUpdates \
+            CODE_SIGN_STYLE=Automatic \
+            DEVELOPMENT_TEAM=6CY9Q44KMQ \
+            archive || {
             
-            # Fallback to xcodebuild
-            xcodebuild -workspace Runner.xcworkspace \
-              -scheme Runner \
-              -archivePath build/Runner.xcarchive \
-              -configuration Release \
-              -destination 'generic/platform=iOS' \
-              -allowProvisioningUpdates \
-              CODE_SIGN_STYLE=Automatic \
-              DEVELOPMENT_TEAM=6CY9Q44KMQ \
-              archive || {
-              echo "ERROR: All build approaches failed!"
-              echo "Final certificate status:"
-              security find-identity -v -p codesigning
-              echo "Final profile status:"
-              ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
-              exit 1
-            }
-            
-            # Manual IPA export
-            xcodebuild -exportArchive \
-              -archivePath build/Runner.xcarchive \
-              -exportPath build \
-              -exportOptionsPlist ExportOptionsTestFlight.plist || {
-              echo "ERROR: IPA export failed!"
-              exit 1
+            echo "ATTEMPT 2: Flutter build ipa with automatic signing"
+            cd ..
+            flutter build ipa \
+              --build-name=1.0.$BUILD_NUMBER \
+              --build-number=$BUILD_NUMBER \
+              --export-method=app-store \
+              --verbose || {
+              
+              echo "ATTEMPT 3: Fastlane as last resort"
+              cd ios
+              fastlane build_and_upload || {
+                echo "ERROR: ALL THREE APPROACHES FAILED!"
+                echo "Final certificate status:"
+                security find-identity -v -p codesigning
+                echo "Final profile status:"
+                ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
+                exit 1
+              }
             }
           }
           
