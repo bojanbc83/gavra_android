@@ -15,7 +15,7 @@ platform :ios do
       export_options: {
         teamID: "6CY9Q44KMQ",
         provisioningProfiles: {
-          "com.gavra013.gavraAndroid" => "Gavra 013 App Store Profile"
+          "com.gavra.gavra013" => "Gavra 013 App Store Profile"
         }
       }
     )

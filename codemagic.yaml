@@ -371,10 +371,12 @@ workflows:
           # Backup original project file
           cp Runner.xcodeproj/project.pbxproj Runner.xcodeproj/project.pbxproj.backup
           
-          # Add DEVELOPMENT_TEAM
+          # Add DEVELOPMENT_TEAM if not already present
           if ! grep -q "DEVELOPMENT_TEAM = 6CY9Q44KMQ" Runner.xcodeproj/project.pbxproj; then
             echo "Adding DEVELOPMENT_TEAM to project.pbxproj"
             sed -i.bak 's/PRODUCT_BUNDLE_IDENTIFIER = com.gavra.gavra013;/&\'$'\n\t\t\t\tDEVELOPMENT_TEAM = 6CY9Q44KMQ;/g' Runner.xcodeproj/project.pbxproj
+          else
+            echo "DEVELOPMENT_TEAM already configured!"
           fi
           
           # Verify Team ID was added
@@ -387,8 +389,7 @@ workflows:
           echo "Building Flutter iOS app..."
           flutter build ios --release \
             --build-name=1.0.$BUILD_NUMBER \
-            --build-number=$BUILD_NUMBER \
-            --no-codesign
+            --build-number=$BUILD_NUMBER
           
           # Use Fastlane for signing and upload
           cd ios
