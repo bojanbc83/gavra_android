@@ -178,6 +178,19 @@ workflows:
         script: |
           echo "Building iOS app with Firebase + OneSignal..."
           echo "Using Flutter build with automatic signing"
+          
+          # Activate App Store Connect integration before building
+          echo "Activating App Store Connect integration..."
+          if [ -n "$APP_STORE_CONNECT_KEY_IDENTIFIER" ] && [ -n "$APP_STORE_CONNECT_ISSUER_ID" ]; then
+            echo "App Store Connect credentials available - setting up authentication"
+            export FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD=""
+            export FASTLANE_SESSION=""
+            echo "App Store Connect integration ready"
+          else
+            echo "WARNING: App Store Connect credentials not found!"
+            exit 1
+          fi
+          
           flutter pub get
           
           # Configure project with Team ID 
@@ -218,238 +231,39 @@ workflows:
           # Ensure iOS is cached
           flutter precache --ios --no-android --no-web
           
-          # Build with detailed output and error capture
-          echo "Running flutter build ios with detailed logging..."
-          if ! flutter build ios \
+          # Use flutter build ipa directly - it handles signing better than xcodebuild
+          echo "Building IPA with Flutter (automatic signing)..."
+          flutter build ipa \
             --release \
-            --verbose \
             --build-name=1.0.$BUILD_NUMBER \
             --build-number=$BUILD_NUMBER \
-            --no-tree-shake-icons; then
-            echo "ERROR: flutter build ios failed!"
-            echo "Checking for specific error details..."
-            
-            # Check if it's a signing issue
-            if flutter build ios --release --verbose 2>&1 | grep -i "signing\|provision\|certificate\|team"; then
-              echo "Detected signing-related errors in flutter build ios"
-            fi
-            
-            echo "Continuing to attempt IPA build anyway..."
-          else
-            echo "flutter build ios completed successfully"
-          fi
-          
-          # Now archive with xcodebuild using App Store Connect integration
-          cd ios
-          
-          # Create build directory
-          mkdir -p build
-          
-          # Use Codemagic's built-in certificate path
-          echo "Using API key path: $CM_CERTIFICATE_PATH"
-          
-          # Verify the workspace exists  
-          if [ ! -d "Runner.xcworkspace" ]; then
-            echo "ERROR: Runner.xcworkspace directory not found!"
-            echo "Available files in ios directory:"
-            ls -la
+            --verbose || {
+            echo "ERROR: Flutter build ipa failed!"
+            echo "Checking build environment..."
+            echo "Available certificates:"
+            security find-identity -v -p codesigning || echo "No certificates found"
+            echo "Team ID: $APPLE_TEAM_ID"
+            echo "Bundle ID: com.gavra013.gavraAndroid"
             exit 1
-          fi
+          }
           
-          echo "Building archive with xcodebuild..."
-          
-          # Show current certificates and profiles
-          echo "=== CERTIFICATES ==="
-          security find-identity -v -p codesigning | head -5
-          echo "=== PROVISIONING PROFILES ==="
-          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ | head -5 || echo "No profiles found"
-          echo "========================="
-          
-          # Clean any previous builds
-          echo "Cleaning previous builds..."
-          xcodebuild clean -workspace Runner.xcworkspace -scheme Runner -configuration Release
-          
-          # Build archive
-          echo "Attempting archive with App Store Connect authentication..."
-          
-          # Try to fix provisioning profile issues
-          echo "=== FIXING PROVISIONING ISSUES ==="
-          
-          # Create provisioning profiles directory if it doesn't exist
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
-          
-          # Set up keychain and certificates properly
-          security list-keychains -s ~/Library/Keychains/login.keychain-db
-          security default-keychain -s ~/Library/Keychains/login.keychain-db
-          security unlock-keychain -p "" ~/Library/Keychains/login.keychain-db
-          
-          # Try to download provisioning profiles automatically
-          echo "Setting up automatic provisioning..."
-          
-          # Use Flutter's build ipa command which handles signing better
-          echo "Using Flutter build ipa for better signing management..."
-          cd ..
-          
-          # Ensure we have the export options file
-          if [ ! -f "ios/ExportOptionsTestFlight.plist" ]; then
-            echo "Creating ExportOptionsTestFlight.plist..."
-            echo '<?xml version="1.0" encoding="UTF-8"?>' > ios/ExportOptionsTestFlight.plist
-            echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> ios/ExportOptionsTestFlight.plist
-            echo '<plist version="1.0">' >> ios/ExportOptionsTestFlight.plist
-            echo '<dict>' >> ios/ExportOptionsTestFlight.plist
-            echo '    <key>method</key>' >> ios/ExportOptionsTestFlight.plist
-            echo '    <string>app-store</string>' >> ios/ExportOptionsTestFlight.plist
-            echo '    <key>teamID</key>' >> ios/ExportOptionsTestFlight.plist
-            echo '    <string>6CY9Q44KMQ</string>' >> ios/ExportOptionsTestFlight.plist
-            echo '    <key>uploadBitcode</key>' >> ios/ExportOptionsTestFlight.plist
-            echo '    <false/>' >> ios/ExportOptionsTestFlight.plist
-            echo '    <key>uploadSymbols</key>' >> ios/ExportOptionsTestFlight.plist
-            echo '    <true/>' >> ios/ExportOptionsTestFlight.plist
-            echo '    <key>compileBitcode</key>' >> ios/ExportOptionsTestFlight.plist
-            echo '    <false/>' >> ios/ExportOptionsTestFlight.plist
-            echo '    <key>signingStyle</key>' >> ios/ExportOptionsTestFlight.plist
-            echo '    <string>automatic</string>' >> ios/ExportOptionsTestFlight.plist
-            echo '    <key>destination</key>' >> ios/ExportOptionsTestFlight.plist
-            echo '    <string>export</string>' >> ios/ExportOptionsTestFlight.plist
-            echo '</dict>' >> ios/ExportOptionsTestFlight.plist
-            echo '</plist>' >> ios/ExportOptionsTestFlight.plist
-          fi
-          
-          # Try flutter build ipa with automatic signing
-          echo "Building IPA with Flutter (automatic signing)..."
-          
-          # First try without export options to see if basic build works
-          echo "Attempting basic flutter build ipa without custom export options..."
-          if flutter build ipa \
-            --release \
-            --build-name=1.0.$BUILD_NUMBER \
-            --build-number=$BUILD_NUMBER; then
-            echo "Basic Flutter build ipa succeeded!"
-            
-            # Check where the IPA was created
-            echo "Looking for generated IPA files..."
-            find . -name "*.ipa" -type f 2>/dev/null || echo "No IPA files found with find"
-            
-            # Check common locations
-            if [ -f "build/ios/ipa/gavra_android.ipa" ]; then
-              mkdir -p ios/build
-              cp "build/ios/ipa/gavra_android.ipa" ios/build/Runner.ipa
-              echo "IPA copied to ios/build/Runner.ipa"
-              ls -la ios/build/Runner.ipa
-            elif [ -f "build/ios/ipa/Runner.ipa" ]; then
-              mkdir -p ios/build
-              cp "build/ios/ipa/Runner.ipa" ios/build/Runner.ipa
-              echo "IPA copied from Runner.ipa to ios/build/Runner.ipa"
-              ls -la ios/build/Runner.ipa
-            else
-              echo "IPA not found at expected locations, checking build directory..."
-              ls -la build/ios/ipa/ 2>/dev/null || echo "No build/ios/ipa directory"
-              ls -la build/ios/ 2>/dev/null || echo "No build/ios directory"
-              
-              # Try to find any IPA file
-              IPA_FILE=$(find build -name "*.ipa" -type f | head -1)
-              if [ -n "$IPA_FILE" ]; then
-                echo "Found IPA at: $IPA_FILE"
-                mkdir -p ios/build
-                cp "$IPA_FILE" ios/build/Runner.ipa
-                echo "IPA copied to ios/build/Runner.ipa"
-                ls -la ios/build/Runner.ipa
-              else
-                echo "ERROR: No IPA file found anywhere in build directory"
-                exit 1
-              fi
-            fi
+          # Verify IPA was created
+          if [ -f "build/ios/ipa/gavra_android.ipa" ]; then
+            mkdir -p ios/build
+            cp "build/ios/ipa/gavra_android.ipa" ios/build/Runner.ipa
+            echo "IPA created successfully!"
+            ls -la ios/build/Runner.ipa
+          elif [ -f "build/ios/ipa/Runner.ipa" ]; then
+            mkdir -p ios/build
+            cp "build/ios/ipa/Runner.ipa" ios/build/Runner.ipa
+            echo "IPA created successfully!"
+            ls -la ios/build/Runner.ipa
           else
-            echo "Basic Flutter build ipa failed. Checking detailed error..."
-            echo "Trying with export options plist..."
-            
-            if flutter build ipa \
-              --release \
-              --build-name=1.0.$BUILD_NUMBER \
-              --build-number=$BUILD_NUMBER \
-              --export-options-plist=ios/ExportOptionsTestFlight.plist; then
-              echo "Flutter build ipa with export options succeeded!"
-              
-              # Move the ipa to the expected location for artifacts
-              if [ -f "build/ios/ipa/gavra_android.ipa" ]; then
-                mkdir -p ios/build
-                cp "build/ios/ipa/gavra_android.ipa" ios/build/Runner.ipa
-                echo "IPA copied to ios/build/Runner.ipa"
-                ls -la ios/build/Runner.ipa
-              else
-                echo "IPA not found at expected location!"
-                find build -name "*.ipa" -type f 2>/dev/null || echo "No IPA files found"
-                exit 1
-              fi
-            else
-              echo "Flutter build ipa with export options also failed!"
-              echo "Attempting direct xcodebuild approach with detailed logging..."
-              cd ios
-              
-              # Show detailed environment for debugging
-              echo "=== DETAILED ENVIRONMENT DEBUG ==="
-              echo "Current directory: $(pwd)"
-              echo "Available certificates:"
-              security find-identity -v -p codesigning
-              echo "Available provisioning profiles:"
-              find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec security cms -D -i {} \; 2>/dev/null | grep -A 3 -B 3 "Name\|TeamIdentifier\|UUID" || echo "No profiles or can't read them"
-              echo "Team ID from environment: $APPLE_TEAM_ID"
-              echo "Bundle ID: com.gavra013.gavraAndroid"
-              
-              # Try a simple build first to isolate the issue
-              echo "Trying basic xcodebuild archive without auth parameters..."
-              if xcodebuild -workspace Runner.xcworkspace \
-                -scheme Runner \
-                -configuration Release \
-                -destination generic/platform=iOS \
-                -archivePath build/Runner.xcarchive \
-                archive \
-                CODE_SIGN_STYLE=Automatic \
-                DEVELOPMENT_TEAM=6CY9Q44KMQ \
-                IPHONEOS_DEPLOYMENT_TARGET=14.0 \
-                -allowProvisioningUpdates \
-                -verbose; then
-                echo "Basic xcodebuild archive succeeded!"
-              else
-                echo "Basic xcodebuild also failed. This suggests a fundamental signing issue."
-                echo "Let's try manual signing approach..."
-                
-                # Try automatic signing as last resort
-                echo "Attempting automatic signing..."
-                xcodebuild -workspace Runner.xcworkspace \
-                  -scheme Runner \
-                  -configuration Release \
-                  -destination generic/platform=iOS \
-                  -archivePath build/Runner.xcarchive \
-                  archive \
-                  CODE_SIGN_STYLE=Automatic \
-                  DEVELOPMENT_TEAM=6CY9Q44KMQ \
-                  IPHONEOS_DEPLOYMENT_TARGET=14.0 \
-                  -allowProvisioningUpdates \
-                  -verbose || {
-                  echo "ALL BUILD METHODS FAILED!"
-                  echo "Final diagnostics:"
-                  echo "1. Workspace structure:"
-                  ls -la Runner.xcworkspace/
-                  echo "2. Project settings:"
-                  grep -A 5 -B 5 "PRODUCT_BUNDLE_IDENTIFIER\|DEVELOPMENT_TEAM" Runner.xcodeproj/project.pbxproj || echo "Could not grep project file"
-                  exit 1
-                }
-              fi
-            fi
-          fi
-            
-          # Check if we have an IPA already (from Flutter build) or need to create archive
-          cd ios
-          if [ -f "build/Runner.ipa" ]; then
-            echo "IPA already created by Flutter build - skipping archive step"
-          elif [ ! -d "build/Runner.xcarchive" ]; then
-            echo "ERROR: Neither IPA nor archive was created!"
-            echo "Available files in build directory:"
-            ls -la build/ || echo "No build directory"
+            echo "ERROR: IPA not found at expected locations!"
+            echo "Checking build directory:"
+            ls -la build/ios/ipa/ 2>/dev/null || echo "No build/ios/ipa directory"
+            find build -name "*.ipa" -type f 2>/dev/null || echo "No IPA files found"
             exit 1
-          else
-            echo "Archive created successfully - will export IPA"
           fi
             
       - name: Export IPA for TestFlight
