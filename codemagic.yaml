@@ -414,18 +414,18 @@ workflows:
                 echo "Basic xcodebuild also failed. This suggests a fundamental signing issue."
                 echo "Let's try manual signing approach..."
                 
-                # Manual signing as last resort
-                echo "Attempting manual signing with provisioning profile..."
+                # Try automatic signing as last resort
+                echo "Attempting automatic signing..."
                 xcodebuild -workspace Runner.xcworkspace \
                   -scheme Runner \
                   -configuration Release \
                   -destination generic/platform=iOS \
                   -archivePath build/Runner.xcarchive \
                   archive \
-                  CODE_SIGN_STYLE=Manual \
+                  CODE_SIGN_STYLE=Automatic \
                   DEVELOPMENT_TEAM=6CY9Q44KMQ \
-                  PROVISIONING_PROFILE_SPECIFIER="Gavra 013 App Store Profile" \
                   IPHONEOS_DEPLOYMENT_TARGET=14.0 \
+                  -allowProvisioningUpdates \
                   -verbose || {
                   echo "ALL BUILD METHODS FAILED!"
                   echo "Final diagnostics:"
