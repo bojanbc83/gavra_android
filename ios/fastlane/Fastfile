@@ -1,10 +1,34 @@
 default_platform(:ios)
 
 platform :ios do
-  desc "Build and upload to TestFlight"
-  lane :build_and_upload do
-    # Setup certificates and profiles
-    setup_ci if ENV['CI']
+  desc "Build iOS app with manual signing"
+  lane :build_manual do
+    # Setup keychain
+    create_keychain(
+      name: "ios-build.keychain",
+      password: "",
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600,
+      lock_when_sleeps: false
+    )
+    
+    # Install certificate from base64
+    certificate_path = "ios_distribution.p12"
+    File.write(certificate_path, Base64.decode64(ENV['CM_CERTIFICATE']))
+    
+    import_certificate(
+      certificate_path: certificate_path,
+      certificate_password: ENV["CM_CERTIFICATE_PASSWORD"] || "",
+      keychain_name: "ios-build.keychain",
+      keychain_password: ""
+    )
+    
+    # Install provisioning profile from base64
+    profile_path = "app_store.mobileprovision"
+    File.write(profile_path, Base64.decode64(ENV['CM_PROVISIONING_PROFILE']))
+    
+    install_provisioning_profile(path: profile_path)
     
     # Build the app
     build_app(
@@ -12,19 +36,15 @@ platform :ios do
       scheme: "Runner",
       configuration: "Release",
       export_method: "app-store",
+      codesigning_identity: "iPhone Distribution",
       export_options: {
+        method: "app-store",
         teamID: "6CY9Q44KMQ",
+        signingStyle: "manual",
         provisioningProfiles: {
           "com.gavra.gavra013" => "Gavra 013 App Store Profile"
         }
       }
-    )
-    
-    # Upload to TestFlight
-    upload_to_testflight(
-      api_key_path: ENV['CM_CERTIFICATE_PATH'],
-      skip_submission: true,
-      skip_waiting_for_build_processing: true
     )
   end
 end
