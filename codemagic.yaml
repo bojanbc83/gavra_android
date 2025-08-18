@@ -1,10 +1,8 @@
 workflows:
   ios-workflow:
-    name: Gavra Bus iOS Build (Automatic Signing)
+    name: Gavra Bus iOS Build (Codemagic Auto-Signing)
     max_build_duration: 120
     instance_type: mac_mini_m1
-    integrations:
-      app_store_connect: Gavra Bus API Key 2
     environment:
       flutter: stable
       xcode: latest
@@ -13,6 +11,12 @@ workflows:
         APP_ID: com.gavra.gavra013
         BUNDLE_ID: com.gavra.gavra013
         APPLE_TEAM_ID: "6CY9Q44KMQ"
+        APP_STORE_CONNECT_ISSUER_ID: "d8b50e72-6330-401d-9aef-4ead356405ca"
+        APP_STORE_CONNECT_KEY_IDENTIFIER: "F4P3BUR78G"
+        APP_STORE_CONNECT_PRIVATE_KEY: $APP_STORE_CONNECT_PRIVATE_KEY
+        APPLE_ISSUER_ID: "d8b50e72-6330-401d-9aef-4ead356405ca"
+        APPLE_KEY_ID: "L5CZWBQU22"
+        APPLE_PRIVATE_KEY: $APPLE_PRIVATE_KEY
         APP_STORE_CONNECT_ISSUER_ID: "d8b50e72-6330-401d-9aef-4ead356405ca"
         APP_STORE_CONNECT_KEY_IDENTIFIER: "F4P3BUR78G"
         APP_STORE_CONNECT_PRIVATE_KEY: $APP_STORE_CONNECT_PRIVATE_KEY
@@ -32,33 +36,34 @@ workflows:
         - pattern: 'v*'
           include: true
     scripts:
-      - name: Setup automatic signing
+      - name: Verify Apple Developer credentials
         script: |
           #!/bin/bash
           set -e
-          echo "Setting up automatic signing with App Store Connect API..."
+          echo "Verifying Apple Developer Portal and App Store Connect credentials..."
           
-          # Verify App Store Connect credentials
+          # Check environment variables
           if [ -z "$APP_STORE_CONNECT_PRIVATE_KEY" ]; then
             echo "❌ Missing APP_STORE_CONNECT_PRIVATE_KEY!"
             exit 1
           fi
           
           if [ -z "$APPLE_PRIVATE_KEY" ]; then
-            echo "❌ Missing APPLE_PRIVATE_KEY for code signing!"
+            echo "❌ Missing APPLE_PRIVATE_KEY!"
             exit 1
           fi
           
-          # Debug info (don't show actual keys)
           echo "✅ APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER"
           echo "✅ APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID"
           echo "✅ APPLE_KEY_ID: $APPLE_KEY_ID"
-          echo "✅ APPLE_ISSUER_ID: $APPLE_ISSUER_ID"
           echo "✅ APPLE_TEAM_ID: $APPLE_TEAM_ID"
           echo "✅ BUNDLE_ID: $BUNDLE_ID"
           
-          echo "✅ App Store Connect credentials verified"
-          echo "✅ Apple Developer Portal credentials verified"
+          # Save Apple credentials as temp files for Codemagic to use
+          echo "$APP_STORE_CONNECT_PRIVATE_KEY" > /tmp/app_store_connect_key.p8
+          echo "$APPLE_PRIVATE_KEY" > /tmp/apple_developer_key.p8
+          
+          echo "✅ Apple credentials verified and saved"
           
       - name: Set build number
         script: |
@@ -110,20 +115,27 @@ workflows:
         script: |
           cd ios
           
-          # Set to AUTOMATIC code signing 
-          echo "Setting up AUTOMATIC code signing..."
-          sed -i.bak 's/CODE_SIGN_STYLE = Manual;/CODE_SIGN_STYLE = Automatic;/g' Runner.xcodeproj/project.pbxproj || true
+          echo "Configuring iOS project for AUTOMATIC signing..."
           
-          # Ensure DEVELOPMENT_TEAM is set
+          # Force AUTOMATIC code signing in all configurations
+          sed -i.bak 's/CODE_SIGN_STYLE = Manual;/CODE_SIGN_STYLE = Automatic;/g' Runner.xcodeproj/project.pbxproj || true
+          sed -i.bak 's/CODE_SIGN_STYLE = "Manual";/CODE_SIGN_STYLE = "Automatic";/g' Runner.xcodeproj/project.pbxproj || true
+          
+          # Set development team
           if ! grep -q "DEVELOPMENT_TEAM = 6CY9Q44KMQ" Runner.xcodeproj/project.pbxproj; then
             echo "Adding DEVELOPMENT_TEAM to project.pbxproj"
             sed -i.bak 's/PRODUCT_BUNDLE_IDENTIFIER = com.gavra.gavra013;/&\'$'\n\t\t\t\tDEVELOPMENT_TEAM = 6CY9Q44KMQ;/g' Runner.xcodeproj/project.pbxproj
           fi
           
-          # Remove manual signing settings
+          # Remove any manual signing remnants
           sed -i.bak '/PROVISIONING_PROFILE_SPECIFIER/d' Runner.xcodeproj/project.pbxproj || true
-          sed -i.bak '/PROVISIONING_PROFILE = /d' Runner.xcodeproj/project.pbxproj || true
-          sed -i.bak '/CODE_SIGN_IDENTITY = /d' Runner.xcodeproj/project.pbxproj || true
+          sed -i.bak '/PROVISIONING_PROFILE =/d' Runner.xcodeproj/project.pbxproj || true
+          sed -i.bak '/CODE_SIGN_IDENTITY = "iPhone Distribution"/d' Runner.xcodeproj/project.pbxproj || true
+          
+          # Verify settings
+          echo "Current signing configuration:"
+          grep -A2 -B2 "CODE_SIGN_STYLE" Runner.xcodeproj/project.pbxproj || echo "No CODE_SIGN_STYLE found"
+          grep -A2 -B2 "DEVELOPMENT_TEAM" Runner.xcodeproj/project.pbxproj || echo "No DEVELOPMENT_TEAM found"
           
           echo "✅ iOS project configured for AUTOMATIC signing"
           cd ..
@@ -132,19 +144,27 @@ workflows:
         script: |
           echo "Building iOS app with AUTOMATIC signing..."
           
-          # Build with automatic signing - Codemagic will handle certificates
+          # Try building with explicit signing identity first
           flutter build ipa \
             --build-name=1.0.$BUILD_NUMBER \
             --build-number=$BUILD_NUMBER \
-            --export-method=app-store
+            --export-method=app-store \
+            --dart-define=APPLE_TEAM_ID=6CY9Q44KMQ
             
           # Verify IPA was created
           if [ -f "build/ios/ipa/Runner.ipa" ]; then
             echo "✅ IPA build successful!"
             ls -la build/ios/ipa/Runner.ipa
+            
+            # Show signing identity used
+            codesign -dv build/ios/ipa/Runner.ipa 2>&1 | head -10 || true
           else
             echo "❌ IPA build failed!"
-            find . -name "*.ipa" -type f 2>/dev/null || echo "No IPA files found"
+            echo "Checking for any IPA files..."
+            find . -name "*.ipa" -type f 2>/dev/null || echo "No IPA files found anywhere"
+            
+            echo "Checking iOS build outputs..."
+            ls -la build/ios/ 2>/dev/null || echo "No build/ios directory"
             exit 1
           fi
             
