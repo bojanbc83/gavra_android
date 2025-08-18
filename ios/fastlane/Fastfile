@@ -47,20 +47,32 @@ platform :ios do
     install_provisioning_profile(path: profile_path)
     
     # Build the app
-    build_app(
-      workspace: "Runner.xcworkspace",
-      scheme: "Runner",
-      configuration: "Release",
-      export_method: "app-store",
-      codesigning_identity: "iPhone Distribution",
-      export_options: {
-        method: "app-store",
-        teamID: "6CY9Q44KMQ",
-        signingStyle: "manual",
-        provisioningProfiles: {
-          "com.gavra.gavra013" => "Gavra 013 App Store Profile"
+    puts "🔨 Starting iOS build process..."
+    puts "Working directory: #{Dir.pwd}"
+    puts "Workspace path: #{File.expand_path('Runner.xcworkspace')}"
+    puts "Workspace exists: #{File.exist?('Runner.xcworkspace')}"
+    
+    begin
+      build_app(
+        workspace: "Runner.xcworkspace",
+        scheme: "Runner",
+        configuration: "Release",
+        export_method: "app-store",
+        codesigning_identity: "iPhone Distribution",
+        export_options: {
+          method: "app-store",
+          teamID: "6CY9Q44KMQ",
+          signingStyle: "manual",
+          provisioningProfiles: {
+            "com.gavra.gavra013" => "Gavra 013 App Store Profile"
+          }
         }
-      }
-    )
+      )
+      puts "✅ Build completed successfully!"
+    rescue => e
+      puts "❌ Build failed: #{e.message}"
+      puts "❌ Error details: #{e.backtrace.first(5).join('\n')}"
+      raise e
+    end
   end
 end
