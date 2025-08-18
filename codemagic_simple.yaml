@@ -1,10 +1,10 @@
 workflows:
   ios-workflow:
-    name: Gavra Bus iOS Build (Automatic Signing)
+    name: Gavra Bus iOS Build (Simplified)
     max_build_duration: 120
     instance_type: mac_mini_m1
     integrations:
-      app_store_connect: Gavra Bus API Key 2
+      app_store_connect: Gavra Bus New API Key
     environment:
       flutter: stable
       xcode: latest
@@ -12,13 +12,13 @@ workflows:
       vars:
         APP_ID: com.gavra.gavra013
         BUNDLE_ID: com.gavra.gavra013
+        XCODE_WORKSPACE: "Runner.xcworkspace"
+        XCODE_SCHEME: "Runner"
         APPLE_TEAM_ID: "6CY9Q44KMQ"
         APP_STORE_CONNECT_ISSUER_ID: "d8b50e72-6330-401d-9aef-4ead356405ca"
         APP_STORE_CONNECT_KEY_IDENTIFIER: "F4P3BUR78G"
-        APP_STORE_CONNECT_PRIVATE_KEY: $APP_STORE_CONNECT_PRIVATE_KEY
-        APPLE_ISSUER_ID: "d8b50e72-6330-401d-9aef-4ead356405ca"
-        APPLE_KEY_ID: "L5CZWBQU22"
-        APPLE_PRIVATE_KEY: $APPLE_PRIVATE_KEY
+      groups:
+        - ios_credentials
     triggering:
       events:
         - push
@@ -32,34 +32,6 @@ workflows:
         - pattern: 'v*'
           include: true
     scripts:
-      - name: Setup automatic signing
-        script: |
-          #!/bin/bash
-          set -e
-          echo "Setting up automatic signing with App Store Connect API..."
-          
-          # Verify App Store Connect credentials
-          if [ -z "$APP_STORE_CONNECT_PRIVATE_KEY" ]; then
-            echo "❌ Missing APP_STORE_CONNECT_PRIVATE_KEY!"
-            exit 1
-          fi
-          
-          if [ -z "$APPLE_PRIVATE_KEY" ]; then
-            echo "❌ Missing APPLE_PRIVATE_KEY for code signing!"
-            exit 1
-          fi
-          
-          # Debug info (don't show actual keys)
-          echo "✅ APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER"
-          echo "✅ APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID"
-          echo "✅ APPLE_KEY_ID: $APPLE_KEY_ID"
-          echo "✅ APPLE_ISSUER_ID: $APPLE_ISSUER_ID"
-          echo "✅ APPLE_TEAM_ID: $APPLE_TEAM_ID"
-          echo "✅ BUNDLE_ID: $BUNDLE_ID"
-          
-          echo "✅ App Store Connect credentials verified"
-          echo "✅ Apple Developer Portal credentials verified"
-          
       - name: Set build number
         script: |
           #!/bin/bash
@@ -81,14 +53,7 @@ workflows:
           echo "Checking Firebase iOS configuration..."
           if [ -f ios/Runner/GoogleService-Info.plist ]; then
             echo "✅ GoogleService-Info.plist found"
-            # Show bundle ID from Firebase config
-            FIREBASE_BUNDLE_ID=$(plutil -p ios/Runner/GoogleService-Info.plist | grep BUNDLE_ID | cut -d'"' -f4)
-            echo "Firebase Bundle ID: $FIREBASE_BUNDLE_ID"
-            if [ "$FIREBASE_BUNDLE_ID" = "$BUNDLE_ID" ]; then
-              echo "✅ Firebase Bundle ID matches project Bundle ID"
-            else
-              echo "⚠️ Firebase Bundle ID mismatch!"
-            fi
+            plutil -p ios/Runner/GoogleService-Info.plist | head -5
           else
             echo "❌ GoogleService-Info.plist not found!"
             exit 1
@@ -106,33 +71,25 @@ workflows:
           pod install --repo-update
           cd ..
           
-      - name: Configure iOS project for automatic signing
+      - name: Configure iOS project
         script: |
           cd ios
           
-          # Set to AUTOMATIC code signing 
-          echo "Setting up AUTOMATIC code signing..."
-          sed -i.bak 's/CODE_SIGN_STYLE = Manual;/CODE_SIGN_STYLE = Automatic;/g' Runner.xcodeproj/project.pbxproj || true
-          
-          # Ensure DEVELOPMENT_TEAM is set
+          # Ensure DEVELOPMENT_TEAM is set in all configurations
           if ! grep -q "DEVELOPMENT_TEAM = 6CY9Q44KMQ" Runner.xcodeproj/project.pbxproj; then
             echo "Adding DEVELOPMENT_TEAM to project.pbxproj"
             sed -i.bak 's/PRODUCT_BUNDLE_IDENTIFIER = com.gavra.gavra013;/&\'$'\n\t\t\t\tDEVELOPMENT_TEAM = 6CY9Q44KMQ;/g' Runner.xcodeproj/project.pbxproj
           fi
           
-          # Remove manual signing settings
-          sed -i.bak '/PROVISIONING_PROFILE_SPECIFIER/d' Runner.xcodeproj/project.pbxproj || true
-          sed -i.bak '/PROVISIONING_PROFILE = /d' Runner.xcodeproj/project.pbxproj || true
-          sed -i.bak '/CODE_SIGN_IDENTITY = /d' Runner.xcodeproj/project.pbxproj || true
+          # Set to automatic code signing
+          sed -i.bak 's/CODE_SIGN_STYLE = Manual;/CODE_SIGN_STYLE = Automatic;/g' Runner.xcodeproj/project.pbxproj || true
           
-          echo "✅ iOS project configured for AUTOMATIC signing"
+          echo "✅ iOS project configured for automatic signing"
           cd ..
           
-      - name: Build iOS app with automatic signing
+      - name: Build iOS app
         script: |
-          echo "Building iOS app with AUTOMATIC signing..."
-          
-          # Build with automatic signing - Codemagic will handle certificates
+          echo "Building iOS app with automatic signing..."
           flutter build ipa \
             --build-name=1.0.$BUILD_NUMBER \
             --build-number=$BUILD_NUMBER \
@@ -153,6 +110,14 @@ workflows:
       - "**/*.ipa"
       
     publishing:
+      app_store_connect:
+        api_key: Gavra Bus New API Key
+        key_id: F4P3BUR78G
+        issuer_id: d8b50e72-6330-401d-9aef-4ead356405ca
+        submit_to_testflight: true
+        beta_groups:
+          - Internal Testing
+        submit_to_app_store: false
       email:
         recipients:
           - gavriconi19@gmail.com

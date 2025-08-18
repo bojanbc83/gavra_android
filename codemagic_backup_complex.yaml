@@ -1,0 +1,557 @@
+workflows:
+  ios-workflow:
+    name: Gavra Bus iOS Build (Firebase + OneSignal)
+    max_build_duration: 120
+    instance_type: mac_mini_m1
+    integrations:
+      app_store_connect: Gavra Bus New API Key
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+      vars:
+        APP_ID: com.gavra.gavra013
+        BUNDLE_ID: com.gavra.gavra013
+        XCODE_WORKSPACE: "Runner.xcworkspace"
+        XCODE_SCHEME: "Runner"
+        SKIP_FIREBASE: "false"
+        PRODUCT_BUNDLE_IDENTIFIER: "com.gavra.gavra013"
+        ONESIGNAL_APP_ID: "4fd57af1-568a-45e0-a737-3b3918c4e92a"
+        APPLE_TEAM_ID: "6CY9Q44KMQ"
+        APP_STORE_CONNECT_ISSUER_ID: "d8b50e72-6330-401d-9aef-4ead356405ca"
+        APP_STORE_CONNECT_KEY_IDENTIFIER: "F4P3BUR78G"
+        CM_CERTIFICATE_PATH: "/tmp/api_key.p8"
+      groups:
+        - ios_credentials  # Dodajemo grupu za iOS credentials
+    triggering:
+      events:
+        - push
+        - tag
+        - pull_request
+      branch_patterns:
+        - pattern: main
+          include: true
+          source: true
+        - pattern: develop
+          include: true
+          source: true
+      tag_patterns:
+        - pattern: 'v*'
+          include: true
+    scripts:
+      - name: Set build number
+        script: |
+          #!/bin/bash
+          set -e  # Exit on any error
+          echo "Setting build number..."
+          export BUILD_NUMBER=${BUILD_NUMBER:-$(($(date +%s) / 60))}
+          echo "Build number: $BUILD_NUMBER"
+          
+      - name: Setup App Store Connect API Key
+        script: |
+          set -e
+          echo "Setting up App Store Connect API key from environment..."
+          
+          # Use Codemagic's built-in certificate path from integration
+          if [ -n "$CM_CERTIFICATE_PATH" ]; then
+            echo "Using Codemagic integration certificate: $CM_CERTIFICATE_PATH"
+            if [ -f "$CM_CERTIFICATE_PATH" ]; then
+              echo "API key file found!"
+              ls -la "$CM_CERTIFICATE_PATH"
+            else
+              echo "WARNING: API key file not found at $CM_CERTIFICATE_PATH"
+              echo "Checking for alternative paths..."
+              find /tmp -name "*.p8" -type f 2>/dev/null || echo "No .p8 files found in /tmp"
+              
+              # Try to use environment variables directly without file
+              if [ -n "$APP_STORE_CONNECT_KEY_IDENTIFIER" ] && [ -n "$APP_STORE_CONNECT_ISSUER_ID" ]; then
+                echo "Will use App Store Connect env vars directly in build step"
+                export USE_ENV_VARS_ONLY=true
+              else
+                echo "ERROR: No API key file and no environment variables!"
+                echo "Available environment variables:"
+                env | grep -E "(APP_STORE|CM_|APPLE)" || echo "No relevant env vars found"
+                exit 1
+              fi
+            fi
+          else
+            echo "WARNING: CM_CERTIFICATE_PATH not set!"
+            echo "Checking if we can use environment variables directly..."
+            if [ -n "$APP_STORE_CONNECT_KEY_IDENTIFIER" ] && [ -n "$APP_STORE_CONNECT_ISSUER_ID" ]; then
+              echo "Will proceed with env vars only"
+              export USE_ENV_VARS_ONLY=true
+            else
+              echo "ERROR: No certificate path and no environment variables!"
+              exit 1
+            fi
+          fi
+          
+      - name: Check environment versions
+        script: |
+          set -e
+          echo "Current working directory: $(pwd)"
+          echo "Available disk space:"
+          df -h .
+          echo "Checking Flutter version..."
+          flutter --version
+          echo "Checking Xcode version..."
+          xcodebuild -version
+          echo "Checking CocoaPods version..."
+          pod --version
+          
+      - name: Verify iOS Code Signing Setup
+        script: |
+          echo "Checking iOS code signing setup..."
+          
+          # Unlock keychain for code signing
+          security unlock-keychain -p "" ~/Library/Keychains/login.keychain-db || true
+          
+          echo "Available certificates in keychain:"
+          security find-identity -v -p codesigning || true
+          echo ""
+          echo "Available provisioning profiles:"
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || true
+          echo ""
+          echo "Team ID: $APPLE_TEAM_ID"
+          
+          # Download provisioning profiles from Codemagic/Apple Developer
+          echo "Downloading App Store provisioning profile..."
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
+          
+          # Try to use Codemagic's automatic provisioning profile fetch
+          if [ -n "$APP_STORE_CONNECT_KEY_IDENTIFIER" ] && [ -n "$APP_STORE_CONNECT_ISSUER_ID" ]; then
+            echo "Fetching provisioning profiles using App Store Connect API..."
+            # This will download all profiles for the team automatically
+            xcrun altool --list-profiles \
+              --apiKey "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+              --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID" \
+              --type ios || echo "Profile fetch failed, continuing with manual import"
+          fi
+          
+          # Import any provisioning profiles from project
+          echo "Importing provisioning profiles from project..."
+          if [ -f "../Gavra_013_App_Store_Profile_NEW.mobileprovision" ]; then
+            echo "Found NEW provisioning profile"
+            cp "../Gavra_013_App_Store_Profile_NEW.mobileprovision" ~/Library/MobileDevice/Provisioning\ Profiles/
+          fi
+          if [ -f "../Gavra_013_App_Store_Profile.mobileprovision" ]; then
+            echo "Found original provisioning profile"
+            cp "../Gavra_013_App_Store_Profile.mobileprovision" ~/Library/MobileDevice/Provisioning\ Profiles/
+          fi
+          
+          # Show imported profiles
+          echo "Profiles after import:"
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "No profiles directory"
+          
+          # List details of imported profiles
+          echo "Profile details:"
+          for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
+            if [ -f "$profile" ]; then
+              echo "Profile: $profile"
+              /usr/libexec/PlistBuddy -c "Print :Name" /dev/stdin <<< $(security cms -D -i "$profile") 2>/dev/null || echo "Could not read profile name"
+            fi
+          done
+          
+      - name: Verify iOS Firebase configuration
+        script: |
+          echo "Checking Firebase iOS configuration..."
+          if [ -f ios/Runner/GoogleService-Info.plist ]; then
+            echo "GoogleService-Info.plist found"
+            plutil -p ios/Runner/GoogleService-Info.plist | head -10
+          else
+            echo "GoogleService-Info.plist not found!"
+            exit 1
+          fi
+          
+      - name: Get Flutter packages
+        script: |
+          set -e
+          echo "Getting Flutter packages..."
+          flutter precache --ios
+          flutter clean
+          flutter pub get
+          
+      - name: Clean and install CocoaPods dependencies
+        script: |
+          echo "Installing CocoaPods dependencies..."
+          cd ios
+          rm -rf Pods
+          rm -f Podfile.lock
+          pod cache clean --all || true
+          pod deintegrate || true
+          
+          # Update pod repo first
+          echo "Updating pod repo..."
+          pod repo update || true
+          
+          cd ..
+          flutter clean
+          flutter pub get
+          cd ios
+          
+          # Try different strategies for pod install
+          echo "Trying pod install..."
+          if ! pod install; then
+            echo "Normal install failed, trying with verbose..."
+            if ! pod install --verbose; then
+              echo "Verbose failed, trying with repo update..."
+              pod install --repo-update --verbose || (echo "All pod install strategies failed" && exit 1)
+            fi
+          fi
+          
+      - name: Debug Code Signing Setup
+        script: |
+          echo "=== DEBUGGING CODE SIGNING ==="
+          echo "Checking Codemagic environment..."
+          
+          # Check environment variables
+          echo "App Store Connect variables:"
+          echo "APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER"
+          echo "APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID"
+          echo "APPLE_TEAM_ID: $APPLE_TEAM_ID"
+          
+          # Check for certificate files
+          echo "Certificate files:"
+          find /tmp -name "*.p8" -o -name "*.p12" -o -name "*.cer" 2>/dev/null || echo "No certificate files found"
+          
+          # Check keychain
+          echo "Keychain status:"
+          security list-keychains
+          security find-identity -v -p codesigning
+          
+          # Check if Codemagic can access Apple services
+          echo "Testing App Store Connect connection..."
+          if [ -f "$CM_CERTIFICATE_PATH" ]; then
+            echo "Certificate file exists at: $CM_CERTIFICATE_PATH"
+            ls -la "$CM_CERTIFICATE_PATH"
+          else
+            echo "ERROR: Certificate file not found!"
+            echo "Available files in /tmp:"
+            ls -la /tmp/ | grep -E "\.(p8|p12|cer)$" || echo "No relevant files"
+          fi
+          
+      - name: Install Certificates and Provisioning Profiles
+        script: |
+          echo "Installing iOS certificates and provisioning profiles..."
+          
+          # Use Codemagic's keychain setup
+          echo "Setting up keychain for code signing..."
+          security unlock-keychain -p "" ~/Library/Keychains/login.keychain-db
+          
+          # CRITICAL: Create P12 certificate from project files!
+          echo "Creating P12 certificate from project files..."
+          if [ -f "../apple_ios_distribution.key" ] && [ -f "../ios_distribution.cer" ]; then
+            echo "Found certificate files - creating P12..."
+            openssl pkcs12 -export -out /tmp/ios_distribution.p12 \
+              -inkey ../apple_ios_distribution.key \
+              -in ../ios_distribution.cer \
+              -name "Gavra Bus Distribution" \
+              -passout pass:
+            
+            echo "Installing P12 certificate in keychain..."
+            security import /tmp/ios_distribution.p12 \
+              -k ~/Library/Keychains/login.keychain-db \
+              -P "" \
+              -T /usr/bin/codesign \
+              -T /usr/bin/security || echo "P12 import failed"
+          else
+            echo "ERROR: Certificate files not found!"
+            echo "Looking for:"
+            echo "  ../apple_ios_distribution.key"
+            echo "  ../ios_distribution.cer"
+            ls -la ../ | grep -E "\.(key|cer)$" || echo "No key/cer files found"
+          fi
+          
+          # Try to install certificate using Codemagic CLI if available
+          echo "Attempting to install certificates using Codemagic CLI..."
+          if command -v codemagic &> /dev/null; then
+            echo "Codemagic CLI found, installing Team certificates..."
+            codemagic certificates install || echo "CLI certificate install failed"
+          else
+            echo "Codemagic CLI not found"
+          fi
+          
+          # Check if certificate files exist in common Codemagic paths
+          echo "Looking for certificate files in Codemagic paths..."
+          find /tmp -name "*.p12" -o -name "*.cer" -o -name "*.pem" 2>/dev/null | head -10
+          
+          # Try to find and install any P12 certificates
+          for cert_file in /tmp/*.p12 /tmp/**/*.p12 /var/tmp/*.p12; do
+            if [ -f "$cert_file" ]; then
+              echo "Found P12 certificate: $cert_file"
+              echo "Installing certificate in keychain..."
+              security import "$cert_file" -k ~/Library/Keychains/login.keychain-db -P "" -T /usr/bin/codesign -T /usr/bin/security || echo "Certificate import failed"
+            fi
+          done
+          
+          # Check environment variables for certificate content
+          if [ -n "$CM_CERTIFICATE" ]; then
+            echo "Found CM_CERTIFICATE environment variable"
+            echo "$CM_CERTIFICATE" | base64 -d > /tmp/ios_distribution.p12
+            security import /tmp/ios_distribution.p12 -k ~/Library/Keychains/login.keychain-db -P "" -T /usr/bin/codesign -T /usr/bin/security || echo "Env cert import failed"
+          fi
+          
+          # List all available certificates in Team settings
+          echo "Checking for Team certificates..."
+          security find-identity -v -p codesigning
+          
+          # Create provisioning profiles directory
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
+          
+          # Copy provisioning profiles from project
+          echo "Installing provisioning profiles from project..."
+          if [ -f "../Gavra_013_App_Store_Profile_NEW.mobileprovision" ]; then
+            echo "Installing NEW provisioning profile"
+            cp "../Gavra_013_App_Store_Profile_NEW.mobileprovision" ~/Library/MobileDevice/Provisioning\ Profiles/
+          fi
+          if [ -f "../Gavra_013_App_Store_Profile.mobileprovision" ]; then
+            echo "Installing original provisioning profile"
+            cp "../Gavra_013_App_Store_Profile.mobileprovision" ~/Library/MobileDevice/Provisioning\ Profiles/
+          fi
+          
+          # Use App Store Connect API to fetch provisioning profiles if available
+          if [ -n "$APP_STORE_CONNECT_KEY_IDENTIFIER" ] && [ -n "$APP_STORE_CONNECT_ISSUER_ID" ]; then
+            echo "Attempting to fetch provisioning profiles via App Store Connect API..."
+            # This will download profiles automatically for the team
+            xcrun altool --list-profiles \
+              --apiKey "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+              --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID" \
+              --type ios 2>/dev/null || echo "API profile fetch failed, using manual profiles"
+          fi
+          
+          # Final verification
+          echo "Final certificate check:"
+          cert_count=$(security find-identity -v -p codesigning | grep -c "Apple Distribution\|iPhone Distribution" || echo "0")
+          echo "Found $cert_count distribution certificates"
+          
+          echo "Final profile check:"
+          profile_count=$(ls ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision 2>/dev/null | wc -l | tr -d ' ' || echo "0")
+          echo "Found $profile_count provisioning profiles"
+          
+          # List profile details for debugging
+          echo "Profile details:"
+          for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
+            if [ -f "$profile" ]; then
+              echo "Profile: $(basename "$profile")"
+              /usr/libexec/PlistBuddy -c "Print :Name" /dev/stdin <<< $(security cms -D -i "$profile") 2>/dev/null || echo "Could not read profile name"
+            fi
+          done
+          
+          # Final debug - show all environment variables related to certificates
+          echo "Certificate-related environment variables:"
+          env | grep -E "(CERT|P12|PEM|KEY)" || echo "No certificate env vars found"
+          
+          # Show final certificate status
+          if [ "$cert_count" -gt "0" ]; then
+            echo "SUCCESS: Found $cert_count distribution certificates!"
+            security find-identity -v -p codesigning | grep "Apple Distribution\|iPhone Distribution"
+          else
+            echo "WARNING: No distribution certificates found in keychain!"
+            echo "Will rely on automatic provisioning with -allowProvisioningUpdates"
+          fi
+          
+          echo "Certificate and profile setup completed!"
+          
+      - name: Flutter build iOS (Release)
+        script: |
+          echo "Building iOS app using Codemagic automatic signing..."
+          
+          # Check if Codemagic integration is working
+          if [ -n "$APP_STORE_CONNECT_KEY_IDENTIFIER" ] && [ -n "$APP_STORE_CONNECT_ISSUER_ID" ]; then
+            echo "App Store Connect credentials available"
+          else
+            echo "ERROR: App Store Connect credentials not found!"
+            exit 1
+          fi
+          
+          flutter pub get
+          
+          # Configure project with Team ID 
+          cd ios
+          
+          # Backup original project file
+          cp Runner.xcodeproj/project.pbxproj Runner.xcodeproj/project.pbxproj.backup
+          
+          # Add DEVELOPMENT_TEAM if not already present
+          if ! grep -q "DEVELOPMENT_TEAM = 6CY9Q44KMQ" Runner.xcodeproj/project.pbxproj; then
+            echo "Adding DEVELOPMENT_TEAM to project.pbxproj"
+            sed -i.bak 's/PRODUCT_BUNDLE_IDENTIFIER = com.gavra.gavra013;/&\'$'\n\t\t\t\tDEVELOPMENT_TEAM = 6CY9Q44KMQ;/g' Runner.xcodeproj/project.pbxproj
+          else
+            echo "DEVELOPMENT_TEAM already configured!"
+          fi
+          
+          # Set code signing to automatic
+          echo "Setting up automatic code signing..."
+          sed -i.bak 's/CODE_SIGN_STYLE = Manual;/CODE_SIGN_STYLE = Automatic;/g' Runner.xcodeproj/project.pbxproj || true
+          
+          # Verify Team ID was added
+          echo "DEVELOPMENT_TEAM configuration:"
+          grep -A 1 -B 1 "DEVELOPMENT_TEAM = 6CY9Q44KMQ" Runner.xcodeproj/project.pbxproj || echo "Team ID not found"
+          
+          cd ..
+          
+          # Use Flutter build ipa with automatic signing - SIMPLIFIED APPROACH
+          echo "Building Flutter iOS app with automatic signing..."
+          flutter build ipa \
+            --build-name=1.0.$BUILD_NUMBER \
+            --build-number=$BUILD_NUMBER \
+            --export-method=app-store
+            
+          # Verify IPA was created
+          if [ -f "build/ios/ipa/Runner.ipa" ]; then
+            echo "Flutter IPA build successful!"
+            ls -la build/ios/ipa/Runner.ipa
+            # Copy to ios/build for artifacts
+            mkdir -p ios/build
+            cp "build/ios/ipa/Runner.ipa" ios/build/Runner.ipa
+            echo "IPA copied to ios/build/Runner.ipa"
+          else
+            echo "ERROR: No IPA found!"
+            echo "Checking all possible locations:"
+            find . -name "*.ipa" -type f 2>/dev/null || echo "No IPA files found"
+            echo "Build directory contents:"
+            ls -la build/ || echo "No build directory"
+            exit 1
+          fi
+            
+      - name: Export IPA for TestFlight
+        script: |
+          echo "Preparing IPA for App Store Connect/TestFlight..."
+          cd ios
+          
+          # Check if we already have an IPA from Flutter build
+          if [ -f "build/Runner.ipa" ]; then
+            echo "IPA already available from Flutter build!"
+            ls -la build/Runner.ipa
+            
+            # Verify it's a valid IPA
+            if file build/Runner.ipa | grep -q "Zip"; then
+              echo "IPA file is valid - ready for TestFlight"
+            else
+              echo "WARNING: IPA file may be corrupted"
+              file build/Runner.ipa
+            fi
+          elif [ -d "build/Runner.xcarchive" ]; then
+            echo "Archive found - exporting IPA from archive..."
+            
+            # Export IPA from archive
+            if [ -f "$CM_CERTIFICATE_PATH" ] && [ "$USE_ENV_VARS_ONLY" != "true" ]; then
+              echo "Using API key file for export"
+              xcodebuild -exportArchive \
+                -archivePath build/Runner.xcarchive \
+                -exportPath build \
+                -exportOptionsPlist ExportOptionsTestFlight.plist \
+                -authenticationKeyPath "$CM_CERTIFICATE_PATH" \
+                -authenticationKeyID "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+                -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
+                -verbose
+            else
+              echo "Using automatic export without API key file"
+              xcodebuild -exportArchive \
+                -archivePath build/Runner.xcarchive \
+                -exportPath build \
+                -exportOptionsPlist ExportOptionsTestFlight.plist \
+                -verbose
+            fi
+            
+            # Verify IPA was created from export
+            if [ -f build/Runner.ipa ]; then
+              echo "IPA successfully exported from archive!"
+              ls -la build/Runner.ipa
+            else
+              echo "Export failed! Available files:"
+              ls -la build/
+              exit 1
+            fi
+          else
+            echo "ERROR: No IPA or archive found!"
+            echo "Available files in build directory:"
+            ls -la build/ || echo "No build directory"
+            exit 1
+          fi
+          
+    artifacts:
+      - ios/build/Runner.ipa
+      - build/ios/ipa/Runner.ipa
+      - ios/build/*.ipa
+      - "**/*.ipa"
+      - flutter_drive.log
+      
+    publishing:
+      app_store_connect:
+        api_key: Gavra Bus New API Key
+        key_id: F4P3BUR78G
+        issuer_id: d8b50e72-6330-401d-9aef-4ead356405ca
+        submit_to_testflight: true
+        beta_groups:
+          - Internal Testing
+        submit_to_app_store: false
+      email:
+        recipients:
+          - gavriconi19@gmail.com
+        notify:
+          success: true
+          failure: true
+
+  android-workflow:
+    name: Gavra Bus Android Build (Firebase + OneSignal)
+    max_build_duration: 60
+    instance_type: linux_x2
+    environment:
+      flutter: stable
+      vars:
+        SKIP_FIREBASE: "false"
+        ONESIGNAL_APP_ID: "4fd57af1-568a-45e0-a737-3b3918c4e92a"
+    triggering:
+      events:
+        - push
+        - tag
+        - pull_request
+      branch_patterns:
+        - pattern: main
+          include: true
+          source: true
+        - pattern: develop
+          include: true
+          source: true
+      tag_patterns:
+        - pattern: 'v*'
+          include: true
+    scripts:
+      - name: Verify Android configuration
+        script: |
+          echo "Verifying Android configuration..."
+          if grep -q "ACCESS_FINE_LOCATION" android/app/src/main/AndroidManifest.xml; then
+            echo "Location permissions configured"
+          else
+            echo "Location permissions missing!"
+          fi
+          if grep -q "onesignal_app_id" android/app/src/main/AndroidManifest.xml; then
+            echo "OneSignal configured"
+          else
+            echo "OneSignal not configured!"
+          fi
+          
+      - name: Get Flutter packages  
+        script: |
+          flutter clean
+          flutter pub get
+          
+      - name: Flutter build APK (Release)
+        script: |
+          echo "Building Android app with Firebase + OneSignal..."
+          flutter build apk --release \
+            --build-name=1.0.$BUILD_NUMBER \
+            --build-number=$BUILD_NUMBER
+            
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
+      - flutter_drive.log
+      
+    publishing:
+      email:
+        recipients:
+          - gavriconi19@gmail.com
+        notify:
+          success: true
+          failure: true
