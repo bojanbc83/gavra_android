@@ -14,8 +14,16 @@ platform :ios do
     )
     
     # Install certificate from base64
-    certificate_path = "ios_distribution.p12"
-    File.write(certificate_path, Base64.decode64(ENV['CM_CERTIFICATE']))
+    certificate_path = File.expand_path("ios_distribution.p12")
+    puts "Creating certificate at: #{certificate_path}"
+    
+    begin
+      File.write(certificate_path, Base64.decode64(ENV['CM_CERTIFICATE']))
+      puts "✅ Certificate file created: #{File.size(certificate_path)} bytes"
+    rescue => e
+      puts "❌ Error creating certificate: #{e.message}"
+      raise e
+    end
     
     import_certificate(
       certificate_path: certificate_path,
@@ -25,8 +33,16 @@ platform :ios do
     )
     
     # Install provisioning profile from base64
-    profile_path = "app_store.mobileprovision"
-    File.write(profile_path, Base64.decode64(ENV['CM_PROVISIONING_PROFILE']))
+    profile_path = File.expand_path("app_store.mobileprovision")
+    puts "Creating provisioning profile at: #{profile_path}"
+    
+    begin
+      File.write(profile_path, Base64.decode64(ENV['CM_PROVISIONING_PROFILE']))
+      puts "✅ Provisioning profile created: #{File.size(profile_path)} bytes"
+    rescue => e
+      puts "❌ Error creating provisioning profile: #{e.message}"
+      raise e
+    end
     
     install_provisioning_profile(path: profile_path)
     
