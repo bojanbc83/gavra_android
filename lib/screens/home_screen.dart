@@ -9,7 +9,6 @@ import '../services/mesecni_putnik_service.dart';
 import '../services/realtime_notification_service.dart';
 import '../services/firebase_service_ios.dart'
     as FirebaseServiceIOS; // 🍎 iOS Compatible
-import '../services/update_checker.dart';
 import '../utils/vozac_boja.dart'; // Dodato za centralizovane boje vozača
 
 import '../widgets/bottom_nav_bar_letnji.dart';
