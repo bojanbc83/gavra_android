@@ -49,11 +49,16 @@ jobs:
         echo "${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}" | base64 --decode > ~/private_keys/AuthKey_F4P38UR78G.p8
         echo "${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}" | base64 --decode > AuthKey_F4P38UR78G.p8
         
+        # Install provisioning profile
+        mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+        echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/AppStore.mobileprovision
+        
     - name: Build iOS App for TestFlight
       run: |
         flutter build ipa \
           --release \
           --export-method=app-store \
+          --export-options-plist=ios/ExportOptionsTestFlight.plist \
           --build-name=1.0.${{ github.run_number }} \
           --build-number=${{ github.run_number }}
           
