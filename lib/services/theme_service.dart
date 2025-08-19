@@ -73,7 +73,7 @@ class ThemeService {
       cardTheme: CardThemeData(
         color: const Color(0xFF1E1E1E), // 🌙 TAMNE kartice
         elevation: 4,
-        shadowColor: Colors.black.withValues(alpha: 0.3),
+        shadowColor: Colors.black.withOpacity(0.3),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
@@ -157,3 +157,4 @@ class ThemeService {
     );
   }
 }
+

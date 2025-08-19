@@ -81,7 +81,7 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
               end: Alignment.bottomRight,
               colors: [
                 Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+                Theme.of(context).colorScheme.primary.withOpacity(0.8),
               ],
             ),
             borderRadius: const BorderRadius.only(
@@ -536,14 +536,14 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Text(
         text,
         style: TextStyle(
-          color: color.withValues(alpha: 0.8),
+          color: color.withOpacity(0.8),
           fontSize: 12,
           fontWeight: FontWeight.bold,
         ),
@@ -555,13 +555,13 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
         text,
         style: TextStyle(
-          color: color.withValues(alpha: 0.8),
+          color: color.withOpacity(0.8),
           fontSize: 12,
           fontWeight: FontWeight.w500,
         ),
@@ -588,7 +588,7 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
         ),
         style: TextButton.styleFrom(
           foregroundColor: color,
-          backgroundColor: color.withValues(alpha: 0.1),
+          backgroundColor: color.withOpacity(0.1),
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
@@ -1374,3 +1374,4 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     }
   }
 }
+

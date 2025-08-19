@@ -643,7 +643,7 @@ class _DanasScreenState extends State<DanasScreen> {
               end: Alignment.bottomRight,
               colors: [
                 Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+                Theme.of(context).colorScheme.primary.withOpacity(0.8),
               ],
             ),
             borderRadius: const BorderRadius.only(
@@ -655,7 +655,7 @@ class _DanasScreenState extends State<DanasScreen> {
                 color: Theme.of(context)
                     .colorScheme
                     .primary
-                    .withValues(alpha: 0.3),
+                    .withOpacity(0.3),
                 blurRadius: 16,
                 offset: const Offset(0, 6),
               ),
@@ -663,7 +663,7 @@ class _DanasScreenState extends State<DanasScreen> {
                 color: Theme.of(context)
                     .colorScheme
                     .primary
-                    .withValues(alpha: 0.2),
+                    .withOpacity(0.2),
                 blurRadius: 24,
                 offset: const Offset(0, 12),
               ),
@@ -1382,3 +1382,4 @@ class _DanasScreenState extends State<DanasScreen> {
     );
   }
 }
+

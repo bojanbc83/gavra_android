@@ -36,7 +36,7 @@ class LoadingScreen extends StatelessWidget {
                         color: Theme.of(context)
                             .colorScheme
                             .primary
-                            .withValues(alpha: 0.1),
+                            .withOpacity(0.1),
                         blurRadius: 20,
                         offset: const Offset(0, 8),
                       ),
@@ -66,7 +66,7 @@ class LoadingScreen extends StatelessWidget {
                           color: Theme.of(context)
                               .colorScheme
                               .error
-                              .withValues(alpha: 0.2)),
+                              .withOpacity(0.2)),
                     ),
                     child: Text(
                       error!,
@@ -85,7 +85,7 @@ class LoadingScreen extends StatelessWidget {
                         Theme.of(context)
                             .colorScheme
                             .primary
-                            .withValues(alpha: 0.8)
+                            .withOpacity(0.8)
                       ],
                     ),
                     borderRadius: BorderRadius.circular(12),
@@ -94,7 +94,7 @@ class LoadingScreen extends StatelessWidget {
                         color: Theme.of(context)
                             .colorScheme
                             .primary
-                            .withValues(alpha: 0.3),
+                            .withOpacity(0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -170,3 +170,4 @@ class LoadingScreen extends StatelessWidget {
     );
   }
 }
+

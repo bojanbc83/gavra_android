@@ -101,7 +101,7 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
+              border: Border.all(color: Colors.grey.withOpacity(0.3)),
             ),
             child: Column(
               children: [
@@ -220,13 +220,13 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
                       const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: widget.grad.toLowerCase() == 'bela crkva'
-                        ? Colors.blue.withValues(alpha: 0.1)
-                        : Colors.purple.withValues(alpha: 0.1),
+                        ? Colors.blue.withOpacity(0.1)
+                        : Colors.purple.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(4),
                     border: Border.all(
                       color: widget.grad.toLowerCase() == 'bela crkva'
-                          ? Colors.blue.withValues(alpha: 0.3)
-                          : Colors.purple.withValues(alpha: 0.3),
+                          ? Colors.blue.withOpacity(0.3)
+                          : Colors.purple.withOpacity(0.3),
                     ),
                   ),
                   child: Text(
@@ -255,7 +255,7 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
               borderSide: BorderSide(
                 color: widget.controller.text.trim().isNotEmpty
                     ? Colors.green
-                    : Colors.grey.withValues(alpha: 0.5),
+                    : Colors.grey.withOpacity(0.5),
               ),
             ),
             focusedBorder: OutlineInputBorder(
@@ -271,10 +271,10 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
             ),
             filled: true,
             fillColor: widget.controller.text.trim().isNotEmpty
-                ? Colors.green.withValues(alpha: 0.1)
+                ? Colors.green.withOpacity(0.1)
                 : (widget.grad.toLowerCase() == 'bela crkva'
-                    ? Colors.blue.withValues(alpha: 0.1)
-                    : Colors.purple.withValues(alpha: 0.1)),
+                    ? Colors.blue.withOpacity(0.1)
+                    : Colors.purple.withOpacity(0.1)),
           ),
           textCapitalization: TextCapitalization.words,
           onChanged: (value) {
@@ -298,13 +298,13 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: widget.grad.toLowerCase() == 'bela crkva'
-                ? Colors.blue.withValues(alpha: 0.1)
-                : Colors.purple.withValues(alpha: 0.1),
+                ? Colors.blue.withOpacity(0.1)
+                : Colors.purple.withOpacity(0.1),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: widget.grad.toLowerCase() == 'bela crkva'
-                  ? Colors.blue.withValues(alpha: 0.3)
-                  : Colors.purple.withValues(alpha: 0.3),
+                  ? Colors.blue.withOpacity(0.3)
+                  : Colors.purple.withOpacity(0.3),
             ),
           ),
           child: Row(
@@ -340,3 +340,4 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
     );
   }
 }
+

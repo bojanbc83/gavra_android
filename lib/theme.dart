@@ -81,7 +81,7 @@ final ThemeData flutterBankTheme = ThemeData(
       borderRadius: BorderRadius.circular(20),
     ),
     elevation: 8,
-    shadowColor: Colors.black.withValues(alpha: 0.08),
+    shadowColor: Colors.black.withOpacity(0.08),
     margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
   ),
 
@@ -155,7 +155,7 @@ final ThemeData flutterBankTheme = ThemeData(
       backgroundColor: const Color(0xFF4F7EFC),
       foregroundColor: Colors.white,
       elevation: 6,
-      shadowColor: const Color(0xFF4F7EFC).withValues(alpha: 0.3),
+      shadowColor: const Color(0xFF4F7EFC).withOpacity(0.3),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
@@ -222,7 +222,7 @@ final ThemeData flutterBankTheme = ThemeData(
       borderRadius: BorderRadius.circular(24),
     ),
     elevation: 16,
-    shadowColor: Colors.black.withValues(alpha: 0.1),
+    shadowColor: Colors.black.withOpacity(0.1),
     titleTextStyle: const TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.w600,
@@ -270,7 +270,7 @@ class FlutterBankStyles {
     borderRadius: BorderRadius.circular(20),
     boxShadow: [
       BoxShadow(
-        color: Colors.black.withValues(alpha: 0.06),
+        color: Colors.black.withOpacity(0.06),
         blurRadius: 16,
         offset: const Offset(0, 4),
       ),
@@ -288,7 +288,7 @@ class FlutterBankStyles {
     borderRadius: BorderRadius.circular(16),
     boxShadow: [
       BoxShadow(
-        color: const Color(0xFF4F7EFC).withValues(alpha: 0.3),
+        color: const Color(0xFF4F7EFC).withOpacity(0.3),
         blurRadius: 12,
         offset: const Offset(0, 6),
       ),
@@ -326,7 +326,7 @@ final ThemeData svetlanaPinkTheme = ThemeData(
       borderRadius: BorderRadius.circular(20),
     ),
     elevation: 8,
-    shadowColor: const Color(0xFFE91E63).withValues(alpha: 0.12), // Pink shadow
+    shadowColor: const Color(0xFFE91E63).withOpacity(0.12), // Pink shadow
     margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
   ),
 
@@ -400,7 +400,7 @@ final ThemeData svetlanaPinkTheme = ThemeData(
       backgroundColor: const Color(0xFFE91E63), // Hot pink
       foregroundColor: Colors.white,
       elevation: 6,
-      shadowColor: const Color(0xFFE91E63).withValues(alpha: 0.3),
+      shadowColor: const Color(0xFFE91E63).withOpacity(0.3),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
@@ -465,7 +465,7 @@ final ThemeData svetlanaPinkTheme = ThemeData(
     }),
     trackColor: WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.selected)) {
-        return const Color(0xFFE91E63).withValues(alpha: 0.3);
+        return const Color(0xFFE91E63).withOpacity(0.3);
       }
       return Colors.grey.shade300;
     }),
@@ -491,7 +491,7 @@ class SvetlanaPinkStyles {
     borderRadius: BorderRadius.circular(20),
     boxShadow: [
       BoxShadow(
-        color: const Color(0xFFE91E63).withValues(alpha: 0.1),
+        color: const Color(0xFFE91E63).withOpacity(0.1),
         blurRadius: 16,
         offset: const Offset(0, 4),
       ),
@@ -507,7 +507,7 @@ class SvetlanaPinkStyles {
     borderRadius: BorderRadius.circular(16),
     boxShadow: [
       BoxShadow(
-        color: const Color(0xFFE91E63).withValues(alpha: 0.3),
+        color: const Color(0xFFE91E63).withOpacity(0.3),
         blurRadius: 12,
         offset: const Offset(0, 6),
       ),
@@ -535,3 +535,4 @@ class ThemeSelector {
     }
   }
 }
+

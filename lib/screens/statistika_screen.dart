@@ -171,7 +171,7 @@ class _StatistikaScreenState extends State<StatistikaScreen>
               end: Alignment.bottomRight,
               colors: [
                 Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+                Theme.of(context).colorScheme.primary.withOpacity(0.8),
               ],
             ),
             borderRadius: const BorderRadius.only(
@@ -183,7 +183,7 @@ class _StatistikaScreenState extends State<StatistikaScreen>
                 color: Theme.of(context)
                     .colorScheme
                     .primary
-                    .withValues(alpha: 0.3),
+                    .withOpacity(0.3),
                 blurRadius: 16,
                 offset: const Offset(0, 6),
               ),
@@ -191,7 +191,7 @@ class _StatistikaScreenState extends State<StatistikaScreen>
                 color: Theme.of(context)
                     .colorScheme
                     .primary
-                    .withValues(alpha: 0.2),
+                    .withOpacity(0.2),
                 blurRadius: 24,
                 offset: const Offset(0, 12),
               ),
@@ -243,13 +243,13 @@ class _StatistikaScreenState extends State<StatistikaScreen>
                                     margin: const EdgeInsets.only(right: 4),
                                     decoration: BoxDecoration(
                                       color: _tabController.index == 0
-                                          ? Colors.white.withValues(alpha: 0.3)
+                                          ? Colors.white.withOpacity(0.3)
                                           : Colors.white
-                                              .withValues(alpha: 0.15),
+                                              .withOpacity(0.15),
                                       borderRadius: BorderRadius.circular(12),
                                       border: Border.all(
                                         color:
-                                            Colors.white.withValues(alpha: 0.4),
+                                            Colors.white.withOpacity(0.4),
                                         width: 1,
                                       ),
                                     ),
@@ -276,13 +276,13 @@ class _StatistikaScreenState extends State<StatistikaScreen>
                                     margin: const EdgeInsets.only(left: 4),
                                     decoration: BoxDecoration(
                                       color: _tabController.index == 1
-                                          ? Colors.white.withValues(alpha: 0.3)
+                                          ? Colors.white.withOpacity(0.3)
                                           : Colors.white
-                                              .withValues(alpha: 0.15),
+                                              .withOpacity(0.15),
                                       borderRadius: BorderRadius.circular(12),
                                       border: Border.all(
                                         color:
-                                            Colors.white.withValues(alpha: 0.4),
+                                            Colors.white.withOpacity(0.4),
                                         width: 1,
                                       ),
                                     ),
@@ -310,10 +310,10 @@ class _StatistikaScreenState extends State<StatistikaScreen>
                           height: 32,
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.15),
+                            color: Colors.white.withOpacity(0.15),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.4),
+                              color: Colors.white.withOpacity(0.4),
                               width: 1,
                             ),
                           ),
@@ -632,3 +632,4 @@ class _StatistikaScreenState extends State<StatistikaScreen>
     }
   }
 }
+

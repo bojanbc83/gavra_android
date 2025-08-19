@@ -157,7 +157,7 @@ class _AdminScreenState extends State<AdminScreen> {
               end: Alignment.bottomRight,
               colors: [
                 Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+                Theme.of(context).colorScheme.primary.withOpacity(0.8),
               ],
             ),
             borderRadius: const BorderRadius.only(
@@ -169,7 +169,7 @@ class _AdminScreenState extends State<AdminScreen> {
                 color: Theme.of(context)
                     .colorScheme
                     .primary
-                    .withValues(alpha: 0.3),
+                    .withOpacity(0.3),
                 blurRadius: 16,
                 offset: const Offset(0, 6),
               ),
@@ -177,7 +177,7 @@ class _AdminScreenState extends State<AdminScreen> {
                 color: Theme.of(context)
                     .colorScheme
                     .primary
-                    .withValues(alpha: 0.2),
+                    .withOpacity(0.2),
                 blurRadius: 24,
                 offset: const Offset(0, 12),
               ),
@@ -236,11 +236,11 @@ class _AdminScreenState extends State<AdminScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 4, vertical: 2),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.2),
+                                  color: Colors.white.withOpacity(0.2),
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
                                       color:
-                                          Colors.white.withValues(alpha: 0.4)),
+                                          Colors.white.withOpacity(0.4)),
                                 ),
                                 child: const Center(
                                   child: FittedBox(
@@ -289,11 +289,11 @@ class _AdminScreenState extends State<AdminScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 4, vertical: 2),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.2),
+                                  color: Colors.white.withOpacity(0.2),
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
                                       color:
-                                          Colors.white.withValues(alpha: 0.4)),
+                                          Colors.white.withOpacity(0.4)),
                                 ),
                                 child: const Center(
                                   child: FittedBox(
@@ -342,11 +342,11 @@ class _AdminScreenState extends State<AdminScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 4, vertical: 2),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.2),
+                                  color: Colors.white.withOpacity(0.2),
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
                                       color:
-                                          Colors.white.withValues(alpha: 0.4)),
+                                          Colors.white.withOpacity(0.4)),
                                 ),
                                 child: const Center(
                                   child: FittedBox(
@@ -384,10 +384,10 @@ class _AdminScreenState extends State<AdminScreen> {
                             child: Container(
                               height: 28,
                               decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.15),
+                                color: Colors.white.withOpacity(0.15),
                                 borderRadius: BorderRadius.circular(14),
                                 border: Border.all(
-                                    color: Colors.white.withValues(alpha: 0.3)),
+                                    color: Colors.white.withOpacity(0.3)),
                               ),
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton<String>(
@@ -1054,7 +1054,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                   boxShadow: [
                                     BoxShadow(
                                       color: const Color(0xFF00D4FF)
-                                          .withValues(alpha: 0.3),
+                                          .withOpacity(0.3),
                                       blurRadius: 4,
                                       offset: const Offset(0, 2),
                                     ),
@@ -1195,3 +1195,4 @@ class _AdminScreenState extends State<AdminScreen> {
 
   // (Funkcija za dijalog sa dužnicima je uklonjena - sada se koristi DugoviScreen)
 }
+

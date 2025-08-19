@@ -159,7 +159,7 @@ class FlutterBankCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: Colors.black.withOpacity(0.06),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -271,3 +271,4 @@ class FlutterBankButton extends StatelessWidget {
     );
   }
 }
+

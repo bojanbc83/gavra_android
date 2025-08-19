@@ -336,7 +336,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
           side: BorderSide(
-            color: Colors.red.withValues(alpha: 0.5),
+            color: Colors.red.withOpacity(0.5),
             width: 2,
           ),
         ),
@@ -357,7 +357,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         content: Text(
           'Da li ste sigurni da se želite odjaviti?',
           style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.8),
+            color: Colors.white.withOpacity(0.8),
             fontSize: 16,
           ),
         ),
@@ -480,10 +480,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     margin: const EdgeInsets.only(top: 8),
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.green.withValues(alpha: 0.1),
+                      color: Colors.green.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                          color: Colors.green.withValues(alpha: 0.3)),
+                          color: Colors.green.withOpacity(0.3)),
                     ),
                     child: Row(
                       children: [
@@ -507,10 +507,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     margin: const EdgeInsets.only(top: 8),
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.green.withValues(alpha: 0.1),
+                      color: Colors.green.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                          color: Colors.green.withValues(alpha: 0.3)),
+                          color: Colors.green.withOpacity(0.3)),
                     ),
                     child: Row(
                       children: [
@@ -746,7 +746,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 end: Alignment.bottomRight,
                 colors: [
                   Theme.of(context).colorScheme.primary,
-                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+                  Theme.of(context).colorScheme.primary.withOpacity(0.8),
                 ],
               ),
               borderRadius: const BorderRadius.only(
@@ -758,7 +758,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   color: Theme.of(context)
                       .colorScheme
                       .primary
-                      .withValues(alpha: 0.3),
+                      .withOpacity(0.3),
                   blurRadius: 16,
                   offset: const Offset(0, 6),
                 ),
@@ -766,7 +766,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   color: Theme.of(context)
                       .colorScheme
                       .primary
-                      .withValues(alpha: 0.2),
+                      .withOpacity(0.2),
                   blurRadius: 24,
                   offset: const Offset(0, 12),
                 ),
@@ -811,7 +811,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.25),
+                          color: Colors.white.withOpacity(0.25),
                           borderRadius: BorderRadius.circular(18),
                         ),
                         child: const Row(
@@ -1092,7 +1092,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     Theme.of(context)
                         .colorScheme
                         .primary
-                        .withValues(alpha: 0.8),
+                        .withOpacity(0.8),
                   ],
                 ),
                 borderRadius: const BorderRadius.only(
@@ -1104,7 +1104,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     color: Theme.of(context)
                         .colorScheme
                         .primary
-                        .withValues(alpha: 0.3),
+                        .withOpacity(0.3),
                     blurRadius: 16,
                     offset: const Offset(0, 6),
                   ),
@@ -1112,7 +1112,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     color: Theme.of(context)
                         .colorScheme
                         .primary
-                        .withValues(alpha: 0.2),
+                        .withOpacity(0.2),
                     blurRadius: 24,
                     offset: const Offset(0, 12),
                   ),
@@ -1165,7 +1165,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   boxShadow: [
                                     BoxShadow(
                                       color: VozacBoja.get(_currentDriver)
-                                          .withValues(alpha: 0.3),
+                                          .withOpacity(0.3),
                                       blurRadius: 4,
                                       offset: const Offset(0, 2),
                                     ),
@@ -1205,11 +1205,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 4, vertical: 2),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.2),
+                                  color: Colors.white.withOpacity(0.2),
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
                                       color:
-                                          Colors.white.withValues(alpha: 0.4)),
+                                          Colors.white.withOpacity(0.4)),
                                 ),
                                 child: const Center(
                                   child: FittedBox(
@@ -1257,11 +1257,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 4, vertical: 2),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.2),
+                                  color: Colors.white.withOpacity(0.2),
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
                                       color:
-                                          Colors.white.withValues(alpha: 0.4)),
+                                          Colors.white.withOpacity(0.4)),
                                 ),
                                 child: Center(
                                   child: FittedBox(
@@ -1306,10 +1306,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 8, vertical: 2),
                               decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.25),
+                                color: Colors.white.withOpacity(0.25),
                                 borderRadius: BorderRadius.circular(14),
                                 border: Border.all(
-                                    color: Colors.white.withValues(alpha: 0.3)),
+                                    color: Colors.white.withOpacity(0.3)),
                               ),
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton<String>(
@@ -1323,7 +1323,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   dropdownColor: Theme.of(context)
                                       .colorScheme
                                       .primary
-                                      .withValues(alpha: 0.95),
+                                      .withOpacity(0.95),
                                   style: TextStyle(
                                     color:
                                         Theme.of(context).colorScheme.onPrimary,
@@ -1657,14 +1657,14 @@ class _HomeScreenButton extends StatelessWidget {
             end: Alignment.bottomRight,
             colors: [
               Theme.of(context).colorScheme.primary,
-              Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+              Theme.of(context).colorScheme.primary.withOpacity(0.8),
             ],
           ),
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
               color:
-                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.25),
+                  Theme.of(context).colorScheme.primary.withOpacity(0.25),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -1694,3 +1694,4 @@ class _HomeScreenButton extends StatelessWidget {
     );
   }
 }
+

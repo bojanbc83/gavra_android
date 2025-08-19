@@ -256,7 +256,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
             side: BorderSide(
-              color: driverColor.withValues(alpha: 0.5),
+              color: driverColor.withOpacity(0.5),
               width: 2,
             ),
           ),
@@ -291,12 +291,12 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                 decoration: InputDecoration(
                   hintText: 'Unesite šifru',
                   hintStyle: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.5),
+                    color: Colors.white.withOpacity(0.5),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
-                      color: driverColor.withValues(alpha: 0.5),
+                      color: driverColor.withOpacity(0.5),
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -304,7 +304,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                     borderSide: BorderSide(color: driverColor, width: 2),
                   ),
                   filled: true,
-                  fillColor: Colors.black.withValues(alpha: 0.3),
+                  fillColor: Colors.black.withOpacity(0.3),
                 ),
                 onSubmitted: (value) {
                   Navigator.of(context).pop(value);
@@ -365,7 +365,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
             side: BorderSide(
-              color: Colors.red.withValues(alpha: 0.5),
+              color: Colors.red.withOpacity(0.5),
               width: 2,
             ),
           ),
@@ -387,7 +387,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
           content: Text(
             message,
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.8),
+              color: Colors.white.withOpacity(0.8),
               fontSize: 16,
             ),
             textAlign: TextAlign.center,
@@ -442,17 +442,17 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                       vertical: 18,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.06),
+                      color: Colors.white.withOpacity(0.06),
                       borderRadius: BorderRadius.circular(32),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.22),
+                          color: Colors.black.withOpacity(0.22),
                           blurRadius: 24,
                           offset: const Offset(0, 8),
                         ),
                       ],
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.13),
+                        color: Colors.white.withOpacity(0.13),
                         width: 1.8,
                       ),
                     ),
@@ -487,7 +487,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                         Text(
                           'Aplikacija za vozače',
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.75),
+                            color: Colors.white.withOpacity(0.75),
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
                             letterSpacing: 1.2,
@@ -560,13 +560,13 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                           BoxShadow(
                             color: const Color(
                               0xFF2979FF,
-                            ).withValues(alpha: 0.22),
+                            ).withOpacity(0.22),
                             blurRadius: 18,
                             offset: const Offset(0, 6),
                           ),
                         ],
                         border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.18),
+                          color: Colors.white.withOpacity(0.18),
                           width: 1.5,
                         ),
                       ),
@@ -575,7 +575,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                         children: [
                           Icon(
                             Icons.directions_bus,
-                            color: Colors.white.withValues(alpha: 0.92),
+                            color: Colors.white.withOpacity(0.92),
                             size: 28,
                           ),
                           const SizedBox(width: 10),
@@ -590,7 +590,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                                 Shadow(
                                   color: const Color(
                                     0xFF00E5FF,
-                                  ).withValues(alpha: 0.7),
+                                  ).withOpacity(0.7),
                                   blurRadius: 8,
                                 ),
                               ],
@@ -609,7 +609,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                   child: Text(
                     '05. 07. 2025  •  Made by Bojan Gavrilovic',
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.55),
+                      color: Colors.white.withOpacity(0.55),
                       fontSize: 14,
                       letterSpacing: 1.2,
                     ),
@@ -660,8 +660,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      color.withValues(alpha: 0.85),
-                      Colors.white.withValues(alpha: 0.08),
+                      color.withOpacity(0.85),
+                      Colors.white.withOpacity(0.08),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -669,13 +669,13 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
-                      color: color.withValues(alpha: 0.35),
+                      color: color.withOpacity(0.35),
                       blurRadius: 15,
                       offset: const Offset(0, 6),
                     ),
                   ],
                   border: Border.all(
-                    color: color.withValues(alpha: 0.7),
+                    color: color.withOpacity(0.7),
                     width: 2.0,
                   ),
                 ),
@@ -689,8 +689,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Colors.white.withValues(alpha: 0.18),
-                            color.withValues(alpha: 0.25),
+                            Colors.white.withOpacity(0.18),
+                            color.withOpacity(0.25),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -698,7 +698,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: color.withValues(alpha: 0.18),
+                            color: color.withOpacity(0.18),
                             blurRadius: 6,
                             offset: const Offset(0, 2),
                           ),
@@ -738,7 +738,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                           letterSpacing: 1.5,
                           shadows: [
                             Shadow(
-                              color: Colors.white.withValues(alpha: 0.5),
+                              color: Colors.white.withOpacity(0.5),
                               blurRadius: 6,
                             ),
                           ],
@@ -854,7 +854,7 @@ class SvetlanaDiamondPainter extends CustomPainter {
 
     // Outer shadow
     final shadowPaint = Paint()
-      ..color = const Color(0xFFDC143C).withValues(alpha: 0.5)
+      ..color = const Color(0xFFDC143C).withOpacity(0.5)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12);
 
     canvas.save();
@@ -893,7 +893,7 @@ class SvetlanaDiamondPainter extends CustomPainter {
 
   void _drawStars(Canvas canvas, Size size) {
     final starPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.9)
+      ..color = Colors.white.withOpacity(0.9)
       ..style = PaintingStyle.fill;
 
     // Pozicije zvezdi kao na slici
@@ -986,7 +986,7 @@ class SvetlanaSPainter extends CustomPainter {
 
     // Shadow za S
     final sShadowPaint = Paint()
-      ..color = const Color(0xFFD8587A).withValues(alpha: 0.4)
+      ..color = const Color(0xFFD8587A).withOpacity(0.4)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
 
     canvas.save();
@@ -1006,7 +1006,7 @@ class SvetlanaSPainter extends CustomPainter {
 
     // Highlight na S (beli)
     final sHighlightPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.7)
+      ..color = Colors.white.withOpacity(0.7)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 
@@ -1021,3 +1021,4 @@ class SvetlanaSPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+

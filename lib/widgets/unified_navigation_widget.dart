@@ -54,7 +54,7 @@ class UnifiedNavigationWidget extends StatelessWidget {
             color: (isNavigating
                     ? const Color(0xFFFF9800)
                     : const Color(0xFF00D4FF))
-                .withValues(alpha: 0.3),
+                .withOpacity(0.3),
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
@@ -107,7 +107,7 @@ class UnifiedNavigationWidget extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: Colors.red.withValues(alpha: 0.8),
+                        color: Colors.red.withOpacity(0.8),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: const Icon(
@@ -226,3 +226,4 @@ class UnifiedNavigationWidget extends StatelessWidget {
     );
   }
 }
+

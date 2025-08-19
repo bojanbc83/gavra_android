@@ -223,8 +223,8 @@ class _PolazakRow extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: selected
                             ? (isDarkMode
-                                ? Colors.blueAccent.withValues(alpha: 0.3)
-                                : Colors.blueAccent.withValues(alpha: 0.15))
+                                ? Colors.blueAccent.withOpacity(0.3)
+                                : Colors.blueAccent.withOpacity(0.15))
                             : Colors.transparent,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
@@ -272,3 +272,4 @@ class _PolazakRow extends StatelessWidget {
     );
   }
 }
+

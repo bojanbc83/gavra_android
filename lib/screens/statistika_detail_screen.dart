@@ -86,7 +86,7 @@ class _StatistikaDetailScreenState extends State<StatistikaDetailScreen> {
               end: Alignment.bottomRight,
               colors: [
                 Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+                Theme.of(context).colorScheme.primary.withOpacity(0.8),
               ],
             ),
             borderRadius: const BorderRadius.only(
@@ -395,3 +395,4 @@ class _StatRow extends StatelessWidget {
     );
   }
 }
+

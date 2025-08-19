@@ -35,7 +35,7 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
               end: Alignment.bottomRight,
               colors: [
                 Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+                Theme.of(context).colorScheme.primary.withOpacity(0.8),
               ],
             ),
             borderRadius: const BorderRadius.only(
@@ -47,7 +47,7 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
                 color: Theme.of(context)
                     .colorScheme
                     .primary
-                    .withValues(alpha: 0.3),
+                    .withOpacity(0.3),
                 blurRadius: 16,
                 offset: const Offset(0, 6),
               ),
@@ -55,7 +55,7 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
                 color: Theme.of(context)
                     .colorScheme
                     .primary
-                    .withValues(alpha: 0.2),
+                    .withOpacity(0.2),
                 blurRadius: 24,
                 offset: const Offset(0, 12),
               ),
@@ -454,21 +454,21 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: isMesecni
-            ? Colors.blue.withValues(alpha: 0.1)
-            : Colors.orange.withValues(alpha: 0.1),
+            ? Colors.blue.withOpacity(0.1)
+            : Colors.orange.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: isMesecni
-              ? Colors.blue.withValues(alpha: 0.3)
-              : Colors.orange.withValues(alpha: 0.3),
+              ? Colors.blue.withOpacity(0.3)
+              : Colors.orange.withOpacity(0.3),
         ),
       ),
       child: Text(
         isMesecni ? 'MESEČNI' : 'DNEVNI',
         style: TextStyle(
           color: isMesecni
-              ? Colors.blue.withValues(alpha: 0.8)
-              : Colors.orange.withValues(alpha: 0.8),
+              ? Colors.blue.withOpacity(0.8)
+              : Colors.orange.withOpacity(0.8),
           fontSize: 12,
           fontWeight: FontWeight.bold,
         ),
@@ -499,14 +499,14 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Text(
         text,
         style: TextStyle(
-          color: color.withValues(alpha: 0.8),
+          color: color.withOpacity(0.8),
           fontSize: 11,
           fontWeight: FontWeight.bold,
         ),
@@ -922,3 +922,4 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
     }
   }
 }
+
