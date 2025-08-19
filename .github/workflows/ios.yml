@@ -55,12 +55,28 @@ jobs:
         
     - name: Build iOS App for TestFlight
       run: |
-        flutter build ipa \
-          --release \
-          --export-options-plist=ios/ExportOptionsTestFlight.plist \
+        # Set build number and name in Flutter
+        flutter build ios --release --no-codesign \
           --build-name=1.0.${{ github.run_number }} \
-          --build-number=${{ github.run_number }} \
-          --xcode-additional-args="-allowProvisioningUpdates"
+          --build-number=${{ github.run_number }}
+        
+        cd ios
+        # Build using xcodebuild directly with allowProvisioningUpdates
+        xcodebuild archive \
+          -workspace Runner.xcworkspace \
+          -scheme Runner \
+          -configuration Release \
+          -archivePath build/Runner.xcarchive \
+          -allowProvisioningUpdates \
+          DEVELOPMENT_TEAM=6CY9Q44KMQ \
+          CODE_SIGN_STYLE=Automatic
+        
+        # Export IPA
+        xcodebuild -exportArchive \
+          -archivePath build/Runner.xcarchive \
+          -exportPath build \
+          -exportOptionsPlist ExportOptionsTestFlight.plist \
+          -allowProvisioningUpdates
           
     - name: Upload to TestFlight
       run: |
@@ -72,7 +88,7 @@ jobs:
           --api_key_path "../AuthKey_F4P38UR78G.p8" \
           --api_key "F4P38UR78G" \
           --issuer_id "d8b50e72-6330-401d-9aef-4ead356405ca" \
-          --ipa "../build/ios/ipa/gavra_android.ipa" \
+          --ipa "build/Runner.ipa" \
           --skip_waiting_for_build_processing \
           --skip_submission \
           --team_id "6CY9Q44KMQ"
