@@ -3,7 +3,6 @@ default_platform(:ios)
 platform :ios do
   desc "Build iOS app with manual signing"
   lane :build_manual do
-    lane :build_manual do
     # Change to iOS directory
     Dir.chdir("../") # Go from fastlane/ to ios/
     puts "Changed working directory to: #{Dir.pwd}"
