@@ -27,7 +27,9 @@ platform :ios do
     puts "Creating certificate at: #{certificate_path}"
     
     begin
-      File.write(certificate_path, Base64.decode64(ENV['CM_CERTIFICATE']))
+      # Try CM_CERTIFICATE_NEW first, then fallback to CM_CERTIFICATE
+      certificate_base64 = ENV['CM_CERTIFICATE_NEW'] || ENV['CM_CERTIFICATE']
+      File.write(certificate_path, Base64.decode64(certificate_base64))
       puts "✅ Certificate file created: #{File.size(certificate_path)} bytes"
     rescue => e
       puts "❌ Error creating certificate: #{e.message}"
