@@ -33,39 +33,64 @@ jobs:
         sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer || sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
         xcodebuild -version
     
+    - name: Setup App Store Connect API
+      run: |
+        echo "${{ secrets.APPSTORE_PRIVATE_KEY }}" | base64 --decode > AuthKey.p8
+        
     - name: Install CocoaPods
       run: |
         cd ios
         pod install
         
-    - name: Create iOS certificate file
+    - name: Setup signing
       run: |
-        # Skip certificate creation and use automatic signing instead
-        echo "Skipping manual certificate - using automatic signing"
-    
-    - name: Create provisioning profile
-      run: |
-        mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-        echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/app_store.mobileprovision
-        ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
-    
-    - name: Create keychain and import certificate
-      run: |
-        echo "Skipping keychain setup - using automatic signing"
+        # Import certificate into keychain
+        echo "${{ secrets.IOS_CERTIFICATE_BASE64 }}" | base64 --decode > ios_cert.p12
         
-    - name: Build iOS App
+        # Create keychain
+        security create-keychain -p "build_keychain_password" build.keychain
+        security default-keychain -s build.keychain
+        security unlock-keychain -p "build_keychain_password" build.keychain
+        security set-keychain-settings -t 3600 -u build.keychain
+        
+        # Import certificate (try different passwords)
+        security import ios_cert.p12 -k build.keychain -P "${{ secrets.IOS_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign -T /usr/bin/xcodebuild || \
+        security import ios_cert.p12 -k build.keychain -P "gavra123" -T /usr/bin/codesign -T /usr/bin/xcodebuild || \
+        security import ios_cert.p12 -k build.keychain -P "" -T /usr/bin/codesign -T /usr/bin/xcodebuild
+        
+        security set-key-partition-list -S apple-tool:,apple: -s -k "build_keychain_password" build.keychain
+        
+        # Install provisioning profile
+        mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+        echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/AppStore.mobileprovision
+        
+    - name: Build iOS App for TestFlight
       run: |
-        flutter build ios \
-          --debug \
-          --no-codesign \
+        flutter build ipa \
+          --release \
+          --export-method=app-store \
           --build-name=1.0.${{ github.run_number }} \
           --build-number=${{ github.run_number }}
           
-    - name: Upload iOS App artifact
+    - name: Upload to TestFlight
+      run: |
+        # Install fastlane if not already installed
+        gem install fastlane
+        
+        cd ios
+        fastlane pilot upload \
+          --api_key_path "../AuthKey.p8" \
+          --api_key "${{ secrets.APPSTORE_KEY_ID }}" \
+          --issuer_id "${{ secrets.APPSTORE_ISSUER_ID }}" \
+          --ipa "../build/ios/ipa/gavra_android.ipa" \
+          --skip_waiting_for_build_processing \
+          --skip_submission
+    
+    - name: Upload IPA artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ios-app-${{ github.run_number }}
-        path: build/ios/iphoneos/Runner.app
+        name: ios-ipa-${{ github.run_number }}
+        path: build/ios/ipa/*.ipa
         retention-days: 30
     
     - name: Cleanup
