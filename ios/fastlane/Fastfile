@@ -4,10 +4,9 @@ platform :ios do
   desc "Build iOS app with manual signing"
   lane :build_manual do
     puts "🔍 Environment Variables Check:"
-    puts "CM_CERTIFICATE present: #{!ENV['CM_CERTIFICATE'].nil?}"
-    puts "CM_CERTIFICATE_PASSWORD present: #{!ENV['CM_CERTIFICATE_PASSWORD'].nil?}"
-    puts "CM_PROVISIONING_PROFILE present: #{!ENV['CM_PROVISIONING_PROFILE'].nil?}"
-    puts "CM_CERTIFICATE_PASSWORD value: #{ENV['CM_CERTIFICATE_PASSWORD']}"
+    puts "IOS_CERTIFICATE_BASE64 present: #{!ENV['IOS_CERTIFICATE_BASE64'].nil?}"
+    puts "IOS_CERTIFICATE_PASSWORD present: #{!ENV['IOS_CERTIFICATE_PASSWORD'].nil?}"
+    puts "IOS_PROVISIONING_PROFILE_BASE64 present: #{!ENV['IOS_PROVISIONING_PROFILE_BASE64'].nil?}"
     
     # Set Xcode path explicitly
     xcode_select("/Applications/Xcode-16.4.app")
@@ -27,20 +26,18 @@ platform :ios do
     puts "Creating certificate at: #{certificate_path}"
     
     begin
-      # Try CM_CERTIFICATE_NEW first, then fallback to CM_CERTIFICATE
-      certificate_base64 = ENV['CM_CERTIFICATE_NEW'] || ENV['CM_CERTIFICATE']
+      # Use GitHub Actions environment variable
+      certificate_base64 = ENV['IOS_CERTIFICATE_BASE64']
       File.write(certificate_path, Base64.decode64(certificate_base64))
       puts "✅ Certificate file created: #{File.size(certificate_path)} bytes"
     rescue => e
       puts "❌ Error creating certificate: #{e.message}"
       raise e
     end
-    
+
     # Get password from environment variable
-    cert_password = ENV["CM_CERTIFICATE_PASSWORD"] || "gavra123"
-    puts "🔨 Using certificate password from environment: #{cert_password.empty? ? 'EMPTY' : 'SET'}"
-    
-    import_certificate(
+    cert_password = ENV["IOS_CERTIFICATE_PASSWORD"] || "gavra123"
+    puts "🔨 Using certificate password from environment: #{cert_password.empty? ? 'EMPTY' : 'SET'}"    import_certificate(
       certificate_path: certificate_path,
       certificate_password: cert_password,
       keychain_name: "ios-build.keychain",
@@ -52,7 +49,7 @@ platform :ios do
     puts "Creating provisioning profile at: #{profile_path}"
     
     begin
-      File.write(profile_path, Base64.decode64(ENV['CM_PROVISIONING_PROFILE']))
+      File.write(profile_path, Base64.decode64(ENV['IOS_PROVISIONING_PROFILE_BASE64']))
       puts "✅ Provisioning profile created: #{File.size(profile_path)} bytes"
     rescue => e
       puts "❌ Error creating provisioning profile: #{e.message}"

@@ -315,7 +315,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         content: const Text(
           'Aplikacija se sada automatski ažurira preko:\n\n'
           '📱 Android: GitHub Actions sa email delivery\n'
-          '🍎 iOS: Codemagic sa TestFlight upload\n\n'
+          '🍎 iOS: GitHub Actions sa TestFlight upload\n\n'
           'Nema potrebe za manuelne update-ove! 😊',
         ),
         actions: [
