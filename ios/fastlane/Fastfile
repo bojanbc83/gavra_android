@@ -31,7 +31,7 @@ platform :ios do
     
     import_certificate(
       certificate_path: certificate_path,
-      certificate_password: ENV["CM_CERTIFICATE_PASSWORD"] || "123456",
+      certificate_password: "",
       keychain_name: "ios-build.keychain",
       keychain_password: ""
     )
