@@ -9,6 +9,9 @@ platform :ios do
     puts "CM_PROVISIONING_PROFILE present: #{!ENV['CM_PROVISIONING_PROFILE'].nil?}"
     puts "CM_CERTIFICATE_PASSWORD value: #{ENV['CM_CERTIFICATE_PASSWORD']}"
     
+    # Set Xcode path explicitly
+    xcode_select("/Applications/Xcode-16.4.app")
+    
     # Create keychain for code signing
     create_keychain(
       name: "ios-build.keychain",
