@@ -40,8 +40,8 @@ jobs:
         
     - name: Create iOS certificate file
       run: |
-        echo "${{ secrets.IOS_CERTIFICATE_BASE64 }}" | base64 --decode > ios/ios_distribution.p12
-        ls -la ios/ios_distribution.p12
+        # Skip certificate creation and use automatic signing instead
+        echo "Skipping manual certificate - using automatic signing"
     
     - name: Create provisioning profile
       run: |
@@ -51,29 +51,12 @@ jobs:
     
     - name: Create keychain and import certificate
       run: |
-        # Debug certificate password secret
-        echo "Testing certificate password secret access..."
-        
-        # Create temporary keychain
-        security create-keychain -p github-actions build.keychain
-        security default-keychain -s build.keychain
-        security unlock-keychain -p github-actions build.keychain
-        security set-keychain-settings -t 3600 -u build.keychain
-        
-        # Import certificate with empty password (no password)
-        echo "Attempting to import certificate with empty password..."
-        security import ios/ios_distribution.p12 -k build.keychain -P "" -T /usr/bin/codesign -T /usr/bin/xcodebuild || \
-        security import ios/ios_distribution.p12 -k build.keychain -P "${{ secrets.IOS_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign -T /usr/bin/xcodebuild
-        security set-key-partition-list -S apple-tool:,apple: -s -k github-actions build.keychain
-        
-        # Verify certificate
-        security find-identity -v -p codesigning build.keychain
+        echo "Skipping keychain setup - using automatic signing"
         
     - name: Build iOS App
       run: |
         flutter build ipa \
           --release \
-          --export-method=app-store \
           --build-name=1.0.${{ github.run_number }} \
           --build-number=${{ github.run_number }}
           
