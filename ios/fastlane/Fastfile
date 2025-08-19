@@ -58,7 +58,7 @@ platform :ios do
     
     begin
       build_app(
-        workspace: "Runner.xcworkspace",
+        workspace: File.expand_path("Runner.xcworkspace"),
         scheme: "Runner",
         configuration: "Release",
         export_method: "app-store",
