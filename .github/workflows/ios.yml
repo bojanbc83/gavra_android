@@ -57,7 +57,6 @@ jobs:
       run: |
         flutter build ipa \
           --release \
-          --export-method=app-store \
           --export-options-plist=ios/ExportOptionsTestFlight.plist \
           --build-name=1.0.${{ github.run_number }} \
           --build-number=${{ github.run_number }}
