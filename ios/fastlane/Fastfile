@@ -3,10 +3,6 @@ default_platform(:ios)
 platform :ios do
   desc "Build iOS app with manual signing"
   lane :build_manual do
-    # Change to iOS directory
-    Dir.chdir("../") # Go from fastlane/ to ios/
-    puts "Changed working directory to: #{Dir.pwd}"
-    
     # Create keychain for code signing
     create_keychain(
       name: "ios-build.keychain",
@@ -18,7 +14,7 @@ platform :ios do
     )
     
     # Install certificate from base64
-    certificate_path = File.expand_path("ios_distribution.p12")
+    certificate_path = File.expand_path("../ios_distribution.p12")
     puts "Creating certificate at: #{certificate_path}"
     
     begin
@@ -31,13 +27,13 @@ platform :ios do
     
     import_certificate(
       certificate_path: certificate_path,
-      certificate_password: "",
+      certificate_password: "gavra123",
       keychain_name: "ios-build.keychain",
       keychain_password: ""
     )
     
     # Install provisioning profile from base64
-    profile_path = File.expand_path("app_store.mobileprovision")
+    profile_path = File.expand_path("../app_store.mobileprovision")
     puts "Creating provisioning profile at: #{profile_path}"
     
     begin
@@ -52,17 +48,17 @@ platform :ios do
     
     # Build the app
     puts "🔨 Starting iOS build process..."
-    puts "Working directory: #{Dir.pwd}"
-    puts "Workspace path: #{File.expand_path('Runner.xcworkspace')}"
-    puts "Workspace exists: #{File.exist?('Runner.xcworkspace')}"
+    workspace_path = File.expand_path("../Runner.xcworkspace")
+    puts "Workspace path: #{workspace_path}"
+    puts "Workspace exists: #{File.exist?(workspace_path)}"
     
     begin
       build_app(
-        workspace: File.expand_path("Runner.xcworkspace"),
+        workspace: workspace_path,
         scheme: "Runner",
         configuration: "Release",
         export_method: "app-store",
-        codesigning_identity: "iPhone Distribution",
+        codesigning_identity: "Apple Distribution",
         export_options: {
           method: "app-store",
           teamID: "6CY9Q44KMQ",
