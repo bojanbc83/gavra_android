@@ -59,7 +59,9 @@ jobs:
           --release \
           --export-options-plist=ios/ExportOptionsTestFlight.plist \
           --build-name=1.0.${{ github.run_number }} \
-          --build-number=${{ github.run_number }}
+          --build-number=${{ github.run_number }} \
+          --dart-define=FLUTTER_WEB_AUTO_DETECT=true \
+          -- --allowProvisioningUpdates
           
     - name: Upload to TestFlight
       run: |
