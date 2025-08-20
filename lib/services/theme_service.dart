@@ -70,14 +70,7 @@ class ThemeService {
           fontWeight: FontWeight.bold,
         ),
       ),
-      cardTheme: const CardThemeData(
-        color: Color(0xFF1E1E1E), // 🌙 TAMNE kartice
-        elevation: 4,
-        shadowColor: Colors.black,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-        ),
-      ),
+      // cardTheme: skipped for Flutter 3.24.3 compatibility
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF6B93FD), // Plava dugmad

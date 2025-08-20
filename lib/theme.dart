@@ -73,17 +73,7 @@ final ThemeData flutterBankTheme = ThemeData(
     iconTheme: IconThemeData(color: Colors.white, size: 24),
   ),
 
-  // 🃏 Card Theme - Clean white cards with subtle shadows
-  cardTheme: const CardThemeData(
-    color: Colors.white,
-    surfaceTintColor: Colors.transparent,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(20)),
-    ),
-    elevation: 8,
-    shadowColor: Colors.black,
-    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-  ),
+  // 🃏 Card Theme - skipped for Flutter 3.24.3 compatibility
 
   // 📝 Text Theme - Modern typography
   textTheme: const TextTheme(
@@ -318,17 +308,7 @@ final ThemeData svetlanaPinkTheme = ThemeData(
     iconTheme: IconThemeData(color: Colors.white, size: 24),
   ),
 
-  // 💖 Pink Card Theme
-  cardTheme: const CardThemeData(
-    color: Colors.white,
-    surfaceTintColor: Colors.transparent,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(20)),
-    ),
-    elevation: 8,
-    shadowColor: Color(0xFFE91E63), // Pink shadow
-    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-  ),
+  // 💖 Pink Card Theme - skipped for Flutter 3.24.3 compatibility
 
   // 💖 Pink Text Theme (isti kao originalni)
   textTheme: const TextTheme(
@@ -535,4 +515,3 @@ class ThemeSelector {
     }
   }
 }
-
