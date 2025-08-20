@@ -12,6 +12,11 @@ jobs:
     name: Build iOS with Manual Signing
     runs-on: macos-13  # Use macOS 13 with iOS 17 support
     
+    env:
+      IOS_CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
+      IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+      IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+    
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
