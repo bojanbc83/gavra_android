@@ -11,12 +11,12 @@ platform :ios do
     # Detect and set available Xcode version
     puts "🔍 Detecting Xcode installations..."
     xcode_paths = [
-      "/Applications/Xcode.app",
-      "/Applications/Xcode_15.4.app", 
-      "/Applications/Xcode_15.3.app",
+      "/Applications/Xcode_15.4.app",
+      "/Applications/Xcode_15.3.app", 
       "/Applications/Xcode_15.2.app",
       "/Applications/Xcode_15.1.app",
-      "/Applications/Xcode_15.0.app"
+      "/Applications/Xcode_15.0.app",
+      "/Applications/Xcode.app"
     ]
     
     selected_xcode = nil

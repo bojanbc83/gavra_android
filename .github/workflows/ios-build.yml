@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-ios:
-    runs-on: macos-latest
+    runs-on: macos-13
     
     env:
       FLUTTER_VERSION: '3.32.5'
@@ -34,6 +34,12 @@ jobs:
         if [ -d "/Applications/Xcode_15.4.app" ]; then
           sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
           echo "✅ Using Xcode 15.4"
+        elif [ -d "/Applications/Xcode_15.3.app" ]; then
+          sudo xcode-select -s /Applications/Xcode_15.3.app/Contents/Developer
+          echo "✅ Using Xcode 15.3"
+        elif [ -d "/Applications/Xcode_15.2.app" ]; then
+          sudo xcode-select -s /Applications/Xcode_15.2.app/Contents/Developer
+          echo "✅ Using Xcode 15.2"
         elif [ -d "/Applications/Xcode.app" ]; then
           sudo xcode-select -s /Applications/Xcode.app/Contents/Developer  
           echo "✅ Using default Xcode"
