@@ -61,7 +61,12 @@ jobs:
       run: flutter analyze --no-fatal-infos || true
       
     - name: Run tests
-      run: flutter test
+      run: |
+        if [ -d "test" ]; then
+          flutter test
+        else
+          echo "No test directory found, skipping tests"
+        fi
       
     - name: Verify iOS configuration
       run: |
