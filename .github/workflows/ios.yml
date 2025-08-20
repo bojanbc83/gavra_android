@@ -58,7 +58,7 @@ jobs:
         
         # Import certificate
         echo "${{ secrets.IOS_CERTIFICATE_BASE64 }}" | base64 --decode > ios_distribution.p12
-        security import ios_distribution.p12 -k build.keychain -P "${{ secrets.IOS_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign
+        security import ios_distribution.p12 -k build.keychain -P "" -T /usr/bin/codesign
         security set-key-partition-list -S apple-tool:,apple: -s -k actions build.keychain
         
         # Install provisioning profile
