@@ -3,16 +3,8 @@ name: iOS Build and Upload to TestFlight
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'lib/**'
-      - 'ios/**'
-      - 'pubspec.yaml'
   pull_request:
     branches: [ main ]
-    paths:
-      - 'lib/**'
-      - 'ios/**'
-      - 'pubspec.yaml'
   workflow_dispatch:
 
 jobs:
