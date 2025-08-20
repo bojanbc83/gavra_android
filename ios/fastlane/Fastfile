@@ -8,8 +8,35 @@ platform :ios do
     puts "IOS_CERTIFICATE_PASSWORD present: #{!ENV['IOS_CERTIFICATE_PASSWORD'].nil?}"
     puts "IOS_PROVISIONING_PROFILE_BASE64 present: #{!ENV['IOS_PROVISIONING_PROFILE_BASE64'].nil?}"
     
-    # Set Xcode path explicitly - use default Xcode
-    xcode_select("/Applications/Xcode.app")
+    # Detect and set available Xcode version
+    puts "🔍 Detecting Xcode installations..."
+    xcode_paths = [
+      "/Applications/Xcode.app",
+      "/Applications/Xcode_15.4.app", 
+      "/Applications/Xcode_15.3.app",
+      "/Applications/Xcode_15.2.app",
+      "/Applications/Xcode_15.1.app",
+      "/Applications/Xcode_15.0.app"
+    ]
+    
+    selected_xcode = nil
+    xcode_paths.each do |path|
+      if File.exist?("#{path}/Contents/Developer")
+        selected_xcode = path
+        puts "✅ Found Xcode at: #{path}"
+        break
+      else
+        puts "❌ No Xcode at: #{path}"
+      end
+    end
+    
+    if selected_xcode.nil?
+      raise "❌ No valid Xcode installation found!"
+    end
+    
+    # Set Xcode path
+    xcode_select(selected_xcode)
+    puts "🔨 Using Xcode: #{selected_xcode}"
     
     # Create keychain for code signing
     create_keychain(
