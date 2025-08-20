@@ -482,8 +482,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     decoration: BoxDecoration(
                       color: Colors.green.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                          color: Colors.green.withOpacity(0.3)),
+                      border: Border.all(color: Colors.green.withOpacity(0.3)),
                     ),
                     child: Row(
                       children: [
@@ -509,8 +508,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     decoration: BoxDecoration(
                       color: Colors.green.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                          color: Colors.green.withOpacity(0.3)),
+                      border: Border.all(color: Colors.green.withOpacity(0.3)),
                     ),
                     child: Row(
                       children: [
@@ -755,18 +753,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primary
-                      .withOpacity(0.3),
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
                   blurRadius: 16,
                   offset: const Offset(0, 6),
                 ),
                 BoxShadow(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primary
-                      .withOpacity(0.2),
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
                   blurRadius: 24,
                   offset: const Offset(0, 12),
                 ),
@@ -1089,10 +1081,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   end: Alignment.bottomRight,
                   colors: [
                     Theme.of(context).colorScheme.primary,
-                    Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withOpacity(0.8),
+                    Theme.of(context).colorScheme.primary.withOpacity(0.8),
                   ],
                 ),
                 borderRadius: const BorderRadius.only(
@@ -1101,18 +1090,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withOpacity(0.3),
+                    color:
+                        Theme.of(context).colorScheme.primary.withOpacity(0.3),
                     blurRadius: 16,
                     offset: const Offset(0, 6),
                   ),
                   BoxShadow(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withOpacity(0.2),
+                    color:
+                        Theme.of(context).colorScheme.primary.withOpacity(0.2),
                     blurRadius: 24,
                     offset: const Offset(0, 12),
                   ),
@@ -1208,8 +1193,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   color: Colors.white.withOpacity(0.2),
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
-                                      color:
-                                          Colors.white.withOpacity(0.4)),
+                                      color: Colors.white.withOpacity(0.4)),
                                 ),
                                 child: const Center(
                                   child: FittedBox(
@@ -1260,8 +1244,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   color: Colors.white.withOpacity(0.2),
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
-                                      color:
-                                          Colors.white.withOpacity(0.4)),
+                                      color: Colors.white.withOpacity(0.4)),
                                 ),
                                 child: Center(
                                   child: FittedBox(
@@ -1608,8 +1591,8 @@ class _AnimatedActionButtonState extends State<AnimatedActionButton>
                 boxShadow: _isPressed
                     ? widget.boxShadow.map((shadow) {
                         return BoxShadow(
-                          color: shadow.color.withValues(
-                              alpha: (shadow.color.a * 1.5).clamp(0.0, 1.0)),
+                          color: shadow.color.withOpacity(
+                              (shadow.color.opacity * 1.5).clamp(0.0, 1.0)),
                           blurRadius: shadow.blurRadius * 1.2,
                           offset: shadow.offset,
                         );
@@ -1663,8 +1646,7 @@ class _HomeScreenButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color:
-                  Theme.of(context).colorScheme.primary.withOpacity(0.25),
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.25),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -1694,4 +1676,3 @@ class _HomeScreenButton extends StatelessWidget {
     );
   }
 }
-

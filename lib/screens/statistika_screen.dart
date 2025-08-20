@@ -514,14 +514,12 @@ class _StatistikaScreenState extends State<StatistikaScreen>
                       return Card(
                         margin: const EdgeInsets.only(bottom: 12),
                         elevation: 4, // 🎨 Dodao shadow
-                        color: vozacColor.withValues(
-                            alpha: 0.25), // 🎨 POJAČAO sa 0.1 na 0.25
+                        color: vozacColor.withOpacity(0.25), // 🎨 POJAČAO sa 0.1 na 0.25
                         shape: RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.circular(12), // 🎨 Zaobljeni uglovi
                           side: BorderSide(
-                            color: vozacColor.withValues(
-                                alpha: 0.6), // 🎨 Jasniji border
+                            color: vozacColor.withOpacity(0.6), // 🎨 Jasniji border
                             width: 2,
                           ),
                         ),
@@ -632,4 +630,5 @@ class _StatistikaScreenState extends State<StatistikaScreen>
     }
   }
 }
+
 

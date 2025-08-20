@@ -1209,10 +1209,8 @@ class _PutnikCardState extends State<PutnikCard> {
                         .withOpacity(0.6) // 🏖️ Žuto za odsustvo
                     : isSelected
                         ? (isMesecna || isPlaceno
-                            ? const Color(0xFF388E3C).withValues(
-                                alpha: 0.4) // Zelena za mesečne/plaćene
-                            : const Color(0xFF7FB3D3).withValues(
-                                alpha: 0.4)) // Plava za pokupljene neplaćene
+                            ? const Color(0xFF388E3C).withOpacity(0.4) // Zelena za mesečne/plaćene
+                            : const Color(0xFF7FB3D3).withOpacity(0.4)) // Plava za pokupljene neplaćene
                         : Colors.grey.withOpacity(0.10),
             width: 1.2,
           ),
@@ -1225,10 +1223,8 @@ class _PutnikCardState extends State<PutnikCard> {
                           .withOpacity(0.2) // 🏖️ Žuto za odsustvo
                       : isSelected
                           ? (isMesecna || isPlaceno
-                              ? const Color(0xFF388E3C).withValues(
-                                  alpha: 0.15) // Zelena za mesečne/plaćene
-                              : const Color(0xFF7FB3D3).withValues(
-                                  alpha: 0.15)) // Plava za pokupljene neplaćene
+                              ? const Color(0xFF388E3C).withOpacity(0.15) // Zelena za mesečne/plaćene
+                              : const Color(0xFF7FB3D3).withOpacity(0.15)) // Plava za pokupljene neplaćene
                           : Colors.black.withOpacity(0.07),
               blurRadius: 10,
               offset: const Offset(0, 2),
@@ -1439,16 +1435,13 @@ class _PutnikCardState extends State<PutnikCard> {
                                                               12),
                                                       decoration: BoxDecoration(
                                                         color: Colors.blue
-                                                            .withValues(
-                                                                alpha: 0.1),
+                                                            .withOpacity(0.1),
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(8),
                                                         border: Border.all(
                                                             color: Colors.blue
-                                                                .withValues(
-                                                                    alpha:
-                                                                        0.3)),
+                                                                .withOpacity(0.3)),
                                                       ),
                                                       child: Text(
                                                         _putnik.adresa!,
@@ -2104,4 +2097,5 @@ class _PutnikCardState extends State<PutnikCard> {
     return options;
   }
 } // kraj klase
+
 
