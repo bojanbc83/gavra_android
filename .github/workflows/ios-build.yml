@@ -191,6 +191,30 @@ jobs:
         
         echo "✅ Simple signing setup completed"
         
+        # Create IPA from APP file for TestFlight upload
+        echo "📦 Creating IPA from Flutter build..."
+        
+        # Check if Runner.app exists
+        if [[ -d "build/ios/iphoneos/Runner.app" ]]; then
+          echo "✅ Runner.app found"
+          
+          # Create Payload directory and IPA
+          mkdir -p Payload
+          cp -r build/ios/iphoneos/Runner.app Payload/
+          zip -r Runner.ipa Payload/
+          
+          # Move to ios directory for Fastlane
+          mv Runner.ipa ios/
+          echo "✅ IPA created: ios/Runner.ipa"
+          
+          # Show IPA info
+          ls -la ios/Runner.ipa
+        else
+          echo "❌ Runner.app not found in build/ios/iphoneos/"
+          ls -la build/ios/
+          exit 1
+        fi
+        
     - name: Upload to TestFlight
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       env:
