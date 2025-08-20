@@ -1,0 +1,133 @@
+name: iOS Build (Fastlane Only)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-ios-fastlane:
+    runs-on: macos-13
+    timeout-minutes: 30
+    
+    env:
+      FLUTTER_VERSION: '3.24.5'
+      
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: ${{ env.FLUTTER_VERSION }}
+        cache: true
+        
+    - name: Setup Xcode
+      run: |
+        echo "📱 Setting up Xcode..."
+        if [ -d "/Applications/Xcode.app" ]; then
+          sudo xcode-select -s /Applications/Xcode.app/Contents/Developer  
+          echo "✅ Using default Xcode"
+        else
+          echo "❌ No Xcode found!"
+          exit 1
+        fi
+        xcode-select -p
+        xcodebuild -version
+        
+    - name: Install dependencies
+      run: flutter pub get
+      
+    - name: Clean previous builds
+      run: |
+        flutter clean
+        cd ios
+        rm -rf Pods Podfile.lock build/
+      
+    - name: Install Ruby and Bundler
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.0'
+        bundler-cache: true
+        working-directory: ios
+        
+    - name: Install CocoaPods
+      run: |
+        cd ios
+        pod install --verbose
+        
+    - name: Setup App Store Connect API Key
+      env:
+        APPLE_API_KEY_BASE64: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
+      run: |
+        echo "🔑 Setting up App Store Connect API key..."
+        if [[ -n "$APPLE_API_KEY_BASE64" ]]; then
+          echo "$APPLE_API_KEY_BASE64" | base64 --decode > AuthKey_F4P3BUR78G.p8
+          echo "✅ App Store Connect API key created"
+          ls -la AuthKey_F4P3BUR78G.p8
+        else
+          echo "⚠️ No App Store Connect API key found"
+        fi
+        
+    - name: Build iOS with Fastlane
+      env:
+        IOS_CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
+        IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+        IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+      run: |
+        cd ios
+        echo "🚀 Starting Fastlane build..."
+        
+        # Validate secrets first
+        echo "🔍 Checking environment variables..."
+        echo "Certificate present: $([[ -n "$IOS_CERTIFICATE_BASE64" ]] && echo "✅ YES" || echo "❌ NO")"
+        echo "Password present: $([[ -n "$IOS_CERTIFICATE_PASSWORD" ]] && echo "✅ YES" || echo "❌ NO")"
+        echo "Profile present: $([[ -n "$IOS_PROVISIONING_PROFILE_BASE64" ]] && echo "✅ YES" || echo "❌ NO")"
+        
+        # Run Fastlane with timeout
+        timeout 20m bundle exec fastlane ios build_cloud || {
+          echo "❌ Fastlane build failed or timed out"
+          echo "📁 Checking what was created..."
+          ls -la . || true
+          ls -la ../ || true
+          exit 1
+        }
+        
+        echo "✅ Fastlane build completed!"
+        
+        # Check for IPA files
+        echo "📦 Looking for IPA files..."
+        find . -name "*.ipa" -exec ls -la {} \;
+        
+    - name: Upload to TestFlight (conditional)
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      env:
+        APPLE_API_KEY_BASE64: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
+      run: |
+        cd ios
+        echo "🚀 Uploading to TestFlight..."
+        
+        # Check if we have an IPA file first
+        if ls *.ipa 1> /dev/null 2>&1; then
+          echo "✅ IPA file found, proceeding with upload..."
+          timeout 10m bundle exec fastlane ios upload_testflight || {
+            echo "❌ TestFlight upload failed or timed out"
+            exit 1
+          }
+        else
+          echo "❌ No IPA file found, skipping TestFlight upload"
+          ls -la .
+          exit 1
+        fi
+        
+    - name: Upload build artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: ios-fastlane-build-artifacts
+        path: |
+          ios/*.ipa
+          ios/fastlane/report.xml
+          ios/fastlane/logs/
+        retention-days: 30
