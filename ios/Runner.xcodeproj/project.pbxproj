@@ -59,10 +59,10 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A1B2C3D51234567890ABCDEF /* gavra.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Sounds/gavra.mp3"; sourceTree = "<group>"; };
-		B2C3D4E61234567890ABCDEF /* bilevski.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Sounds/bilevski.mp3"; sourceTree = "<group>"; };
-		C3D4E5F71234567890ABCDEF /* bruda.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Sounds/bruda.mp3"; sourceTree = "<group>"; };
-		D4E5F6081234567890ABCDEF /* svetlana.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Sounds/svetlana.mp3"; sourceTree = "<group>"; };
+		A1B2C3D51234567890ABCDEF /* gavra.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Runner/Sounds/gavra.mp3"; sourceTree = "<group>"; };
+		B2C3D4E61234567890ABCDEF /* bilevski.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Runner/Sounds/bilevski.mp3"; sourceTree = "<group>"; };
+		C3D4E5F71234567890ABCDEF /* bruda.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Runner/Sounds/bruda.mp3"; sourceTree = "<group>"; };
+		D4E5F6081234567890ABCDEF /* svetlana.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Runner/Sounds/svetlana.mp3"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
