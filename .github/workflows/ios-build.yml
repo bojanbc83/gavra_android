@@ -131,9 +131,36 @@ jobs:
         # Now handle signing separately
         echo "🔐 Starting signing process..."
         
-        # Create temporary files
-        echo "$IOS_CERTIFICATE_BASE64" | base64 --decode > cert.p12
-        echo "$IOS_PROVISIONING_PROFILE_BASE64" | base64 --decode > profile.mobileprovision
+        # Create temporary files with validation
+        echo "🔐 Creating certificate files..."
+        
+        # Validate environment variables first
+        if [[ -z "$IOS_CERTIFICATE_BASE64" ]]; then
+          echo "❌ IOS_CERTIFICATE_BASE64 is empty!"
+          exit 1
+        fi
+        
+        echo "Certificate base64 length: ${#IOS_CERTIFICATE_BASE64}"
+        
+        # Decode certificate with fallback
+        echo "$IOS_CERTIFICATE_BASE64" | base64 --decode > cert.p12 2>/dev/null || \
+        echo "$IOS_CERTIFICATE_BASE64" | base64 -d > cert.p12 2>/dev/null || \
+        python3 -c "import base64, sys; sys.stdout.buffer.write(base64.b64decode('$IOS_CERTIFICATE_BASE64'))" > cert.p12
+        
+        # Validate P12 file
+        if [[ -f cert.p12 ]] && [[ -s cert.p12 ]]; then
+          echo "✅ Certificate file created: $(wc -c < cert.p12) bytes"
+          file cert.p12 || echo "File type check failed"
+        else
+          echo "❌ Certificate file creation failed!"
+          exit 1
+        fi
+        
+        # Decode provisioning profile
+        echo "$IOS_PROVISIONING_PROFILE_BASE64" | base64 --decode > profile.mobileprovision 2>/dev/null || \
+        echo "$IOS_PROVISIONING_PROFILE_BASE64" | base64 -d > profile.mobileprovision
+        
+        echo "✅ Profile file created: $(wc -c < profile.mobileprovision) bytes"
         
         # Create and setup keychain
         security create-keychain -p "build123" build.keychain || true
