@@ -91,9 +91,9 @@ jobs:
         echo "Password present: $([[ -n "$IOS_CERTIFICATE_PASSWORD" ]] && echo "✅ YES" || echo "❌ NO")"
         echo "Profile present: $([[ -n "$IOS_PROVISIONING_PROFILE_BASE64" ]] && echo "✅ YES" || echo "❌ NO")"
         
-        # Run Fastlane with timeout
-        timeout 20m bundle exec fastlane ios build_cloud || {
-          echo "❌ Fastlane build failed or timed out"
+        # Run Fastlane build
+        bundle exec fastlane ios build_cloud || {
+          echo "❌ Fastlane build failed"
           echo "📁 Checking what was created..."
           ls -la . || true
           ls -la ../ || true
@@ -117,8 +117,8 @@ jobs:
         # Check if we have an IPA file first
         if ls *.ipa 1> /dev/null 2>&1; then
           echo "✅ IPA file found, proceeding with upload..."
-          timeout 10m bundle exec fastlane ios upload_testflight || {
-            echo "❌ TestFlight upload failed or timed out"
+          bundle exec fastlane ios upload_testflight || {
+            echo "❌ TestFlight upload failed"
             exit 1
           }
         else
