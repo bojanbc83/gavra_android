@@ -59,12 +59,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBqRskM83ktbh7cGauSkrzIO4xZsP3schk',
-    appId: '1:560128463615:ios:3d4f41059763e4b2a3b2ca',
+    appId: '1:560128463615:ios:c81d71bb40e34b3da3b2ca',
     messagingSenderId: '560128463615',
     projectId: 'gavra-android-notifications',
     storageBucket: 'gavra-android-notifications.firebasestorage.app',
     iosClientId:
-        '560128463615-3d4f41059763e4b2a3b2ca.apps.googleusercontent.com',
-    iosBundleId: 'com.gavra.gavra013',
+        '560128463615-c81d71bb40e34b3da3b2ca.apps.googleusercontent.com',
+    iosBundleId: 'com.gavra013.gavraAndroid',
   );
 }

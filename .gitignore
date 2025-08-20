@@ -9,6 +9,24 @@
 .pub/
 /build/
 
+# 🚫 iOS Cloud Build - NE COMMIT-uj lokalne fajlove!
+# ===================================================
+# Distribution sertifikati (samo u cloud environment)
+*.p12
+*.cer
+
+# Provisioning profiles (samo u cloud environment)  
+*.mobileprovision
+
+# Base64 encoded fajlovi (bezbednosni rizik)
+*base64*.txt
+
+# iOS Build artifacts
+ios/build/
+ios/DerivedData/
+ios/Runner.xcarchive/
+ios/*.ipa
+
 # Web related
 lib/generated_plugin_registrant.dart
 

@@ -1,8 +1,8 @@
 default_platform(:ios)
 
 platform :ios do
-  desc "Build iOS app with manual signing"
-  lane :build_manual do
+  desc "Build iOS app for cloud CI/CD (GitHub Actions/Codemagic)"
+  lane :build_cloud do
     puts "🔍 Environment Variables Check:"
     puts "IOS_CERTIFICATE_BASE64 present: #{!ENV['IOS_CERTIFICATE_BASE64'].nil?}"
     puts "IOS_CERTIFICATE_PASSWORD present: #{!ENV['IOS_CERTIFICATE_PASSWORD'].nil?}"
@@ -21,13 +21,16 @@ platform :ios do
       lock_when_sleeps: false
     )
     
-    # Install certificate from base64
+    # Install certificate from environment variables (cloud only)
     certificate_path = File.expand_path("../ios_distribution.p12")
     puts "Creating certificate at: #{certificate_path}"
     
     begin
-      # Use GitHub Actions environment variable
+      # Mandatory environment variable for cloud build
       certificate_base64 = ENV['IOS_CERTIFICATE_BASE64']
+      if certificate_base64.nil? || certificate_base64.empty?
+        raise "❌ IOS_CERTIFICATE_BASE64 environment variable is required for cloud build"
+      end
       File.write(certificate_path, Base64.decode64(certificate_base64))
       puts "✅ Certificate file created: #{File.size(certificate_path)} bytes"
     rescue => e
@@ -35,9 +38,12 @@ platform :ios do
       raise e
     end
 
-    # Get password from environment variable
-    cert_password = ENV["IOS_CERTIFICATE_PASSWORD"] || "gavra123"
-    puts "🔨 Using certificate password: '#{cert_password}'"
+    # Get password from environment variable (mandatory)
+    cert_password = ENV["IOS_CERTIFICATE_PASSWORD"]
+    if cert_password.nil? || cert_password.empty?
+      raise "❌ IOS_CERTIFICATE_PASSWORD environment variable is required"
+    end
+    puts "🔨 Using certificate password from environment"
     
     begin
       import_certificate(
@@ -48,36 +54,28 @@ platform :ios do
       )
       puts "✅ Certificate imported successfully"
     rescue => e
-      puts "❌ Certificate import failed: #{e.message}"
-      # Try with empty password
-      puts "🔄 Trying with empty password..."
-      begin
-        import_certificate(
-          certificate_path: certificate_path,
-          certificate_password: "",
-          keychain_name: "ios-build.keychain",
-          keychain_password: ""
-        )
-        puts "✅ Certificate imported with empty password"
-      rescue => e2
-        puts "❌ Certificate import failed with empty password: #{e2.message}"
-        raise "Certificate import failed with both passwords: #{e.message} | #{e2.message}"
-      end
+      puts "❌ Error importing certificate: #{e.message}"
+      raise e
     end
-    
-    # Install provisioning profile from base64
-    profile_path = File.expand_path("../app_store.mobileprovision")
+
+    # Install provisioning profile from environment variables (cloud only)
+    profile_path = File.expand_path("../ios_profile.mobileprovision")
     puts "Creating provisioning profile at: #{profile_path}"
-    
+
     begin
-      File.write(profile_path, Base64.decode64(ENV['IOS_PROVISIONING_PROFILE_BASE64']))
+      # Mandatory environment variable for cloud build
+      profile_base64 = ENV['IOS_PROVISIONING_PROFILE_BASE64']
+      if profile_base64.nil? || profile_base64.empty?
+        raise "❌ IOS_PROVISIONING_PROFILE_BASE64 environment variable is required for cloud build"
+      end
+      
+      File.write(profile_path, Base64.decode64(profile_base64))
       puts "✅ Provisioning profile created: #{File.size(profile_path)} bytes"
+      install_provisioning_profile(path: profile_path)
     rescue => e
       puts "❌ Error creating provisioning profile: #{e.message}"
       raise e
     end
-    
-    install_provisioning_profile(path: profile_path)
     
     # Build the app
     puts "🔨 Starting iOS build process..."
@@ -118,68 +116,68 @@ platform :ios do
         # Look for IPA files in common locations
         possible_ipa_paths = [
           "./Runner.ipa",
-          "./build/Runner.ipa", 
-          Dir.glob("**/*.ipa").first
-        ].compact
+          "./build/ios/iphoneos/Runner.ipa",
+          "../build/ios/ipa/Runner.ipa"
+        ]
         
-        ipa_path = possible_ipa_paths.find { |path| File.exist?(path) }
-        if ipa_path
-          puts "✅ Found IPA at: #{ipa_path}"
-        else
-          puts "❌ No IPA file found!"
-          puts "Available files in current directory:"
-          Dir.glob("*").each { |f| puts "  #{f}" }
-          raise "IPA file not found after build"
+        possible_ipa_paths.each do |path|
+          if File.exist?(path)
+            puts "✅ Found IPA at: #{path}"
+            ipa_path = path
+            break
+          end
         end
       end
       
-      # Upload to TestFlight (temporarily disabled for debugging)
-      puts "🚀 TestFlight upload temporarily disabled for debugging..."
-      puts "Build completed successfully! IPA should be available for upload."
-      
-      # Find the API key file in multiple possible locations
-      api_key_path = nil
-      possible_paths = [
-        "../AuthKey_F4P38UR78G.p8",
-        "./AuthKey_F4P38UR78G.p8", 
-        "~/private_keys/AuthKey_F4P38UR78G.p8",
-        File.expand_path("../AuthKey_F4P38UR78G.p8"),
-        File.expand_path("../../AuthKey_F4P38UR78G.p8")
-      ]
-      
-      possible_paths.each do |path|
-        expanded_path = File.expand_path(path)
-        if File.exist?(expanded_path)
-          api_key_path = expanded_path
-          puts "✅ Found API key at: #{api_key_path}"
-          break
-        end
-      end
-      
-      unless api_key_path
-        puts "❌ API key file not found in any of these locations:"
-        possible_paths.each { |path| puts "  - #{File.expand_path(path)}" }
-        puts "⚠️  TestFlight upload would fail due to missing API key"
+      if ipa_path && File.exist?(ipa_path)
+        puts "📱 Final IPA path: #{ipa_path}"
+        puts "📏 IPA size: #{File.size(ipa_path)} bytes"
       else
-        puts "✅ API key ready for TestFlight upload"
+        puts "❌ No IPA file found!"
       end
-      
-      # Comment out the actual upload for now
-      # pilot(
-      #   api_key_path: api_key_path,
-      #   api_key: "F4P38UR78G", 
-      #   issuer_id: "d8b50e72-6330-401d-9aef-4ead356405ca",
-      #   ipa: Actions.lane_context[SharedValues::IPA_OUTPUT_PATH] || "./Runner.ipa",
-      #   skip_waiting_for_build_processing: true,
-      #   skip_submission: true,
-      #   team_id: "6CY9Q44KMQ"
-      # )
-      puts "✅ TestFlight upload completed!"
       
     rescue => e
       puts "❌ Build failed: #{e.message}"
-      puts "❌ Error details: #{e.backtrace.first(5).join('\n')}"
       raise e
     end
+  end
+
+  desc "Upload to TestFlight using App Store Connect API"
+  lane :upload_testflight do
+    puts "🚀 Uploading to TestFlight..."
+    
+    # Find the IPA file
+    ipa_path = Actions.lane_context[SharedValues::IPA_OUTPUT_PATH] || 
+               Dir.glob("**/*.ipa").first
+    
+    if ipa_path.nil? || !File.exist?(ipa_path)
+      raise "❌ No IPA file found for upload"
+    end
+    
+    puts "📱 Uploading IPA: #{ipa_path}"
+    
+    begin
+      upload_to_testflight(
+        api_key_path: "../AuthKey_F4P38UR78G.p8",
+        api_key: {
+          key_id: "F4P38UR78G",
+          issuer_id: "d8b50e72-6330-401d-9aef-4ead356405ca",
+          key_filepath: "../AuthKey_F4P38UR78G.p8"
+        },
+        skip_waiting_for_build_processing: true,
+        skip_submission: true,
+        ipa: ipa_path
+      )
+      puts "✅ Successfully uploaded to TestFlight!"
+    rescue => e
+      puts "❌ TestFlight upload failed: #{e.message}"
+      raise e
+    end
+  end
+
+  desc "Complete build and upload process"
+  lane :build_and_upload do
+    build_cloud
+    upload_testflight
   end
 end

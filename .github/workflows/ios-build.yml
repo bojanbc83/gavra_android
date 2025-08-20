@@ -1,0 +1,98 @@
+name: iOS Build and Upload to TestFlight
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'lib/**'
+      - 'ios/**'
+      - 'pubspec.yaml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'lib/**'
+      - 'ios/**'
+      - 'pubspec.yaml'
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    
+    env:
+      FLUTTER_VERSION: '3.32.5'
+      
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: ${{ env.FLUTTER_VERSION }}
+        cache: true
+        
+    - name: Print Flutter version
+      run: flutter --version
+      
+    - name: Install dependencies
+      run: flutter pub get
+      
+    - name: Analyze project
+      run: flutter analyze
+      
+    - name: Run tests
+      run: flutter test
+      
+    - name: Verify iOS configuration
+      run: |
+        echo "📱 Checking iOS configuration..."
+        ls -la ios/
+        cat ios/Runner/Info.plist | grep -A1 "CFBundleIdentifier"
+        echo "GoogleService-Info.plist bundle ID:"
+        cat ios/Runner/GoogleService-Info.plist | grep -A1 "BUNDLE_ID"
+        echo "Firebase options bundle ID:"
+        grep -n "iosBundleId" lib/firebase_options.dart
+        
+    - name: Install Ruby and Bundler
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.0'
+        bundler-cache: true
+        working-directory: ios
+        
+    - name: Install CocoaPods
+      run: |
+        cd ios
+        pod install --verbose
+        
+    - name: Setup Fastlane
+      run: |
+        cd ios
+        bundle install
+        
+    - name: Build iOS app
+      env:
+        IOS_CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
+        IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+        IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+      run: |
+        cd ios
+        bundle exec fastlane build_cloud
+        
+    - name: Upload to TestFlight
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: |
+        cd ios
+        bundle exec fastlane upload_testflight
+        
+    - name: Upload build artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: ios-build-artifacts
+        path: |
+          ios/*.ipa
+          ios/build/ios/iphoneos/Runner.ipa
+          ios/fastlane/report.xml
+        retention-days: 30

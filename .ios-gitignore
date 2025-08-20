@@ -1,0 +1,42 @@
+# 🚫 iOS Lokalni Fajlovi - NE COMMIT-uj!
+# ======================================
+
+# Distribution sertifikati (samo u cloud environment)
+*.p12
+*.cer
+
+# Provisioning profiles (samo u cloud environment)  
+*.mobileprovision
+
+# Base64 encoded fajlovi (bezbednosni rizik)
+*base64*.txt
+
+# Keychain fajlovi
+*.keychain
+*.keychain-db
+
+# iOS Build artifacts
+ios/build/
+ios/DerivedData/
+ios/Runner.xcarchive/
+ios/*.ipa
+
+# Xcode user settings
+ios/*.xcodeproj/xcuserdata/
+ios/*.xcworkspace/xcuserdata/
+
+# iOS Pods (trebaju rebuild na cloud)
+ios/Pods/
+ios/Podfile.lock
+
+# 📱 Cloud Environment Variables ONLY:
+# ====================================
+# IOS_CERTIFICATE_BASE64        (u GitHub/Codemagic secrets)
+# IOS_CERTIFICATE_PASSWORD      (u GitHub/Codemagic secrets)  
+# IOS_PROVISIONING_PROFILE_BASE64 (u GitHub/Codemagic secrets)
+
+# ✅ Ostavljamo SAMO:
+# AuthKey_F4P38UR78G.p8         (App Store Connect API)
+# ios/fastlane/Fastfile          (cloud build config)
+# ios/Runner.xcodeproj/          (Xcode projekt)
+# ios/Runner/GoogleService-Info.plist (Firebase config)
