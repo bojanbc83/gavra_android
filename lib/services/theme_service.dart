@@ -123,30 +123,7 @@ class ThemeService {
         hintStyle: const TextStyle(color: Color(0xFF9E9E9E)),
         labelStyle: const TextStyle(color: Color(0xFF9E9E9E)),
       ),
-      dialogTheme: DialogThemeData(
-        backgroundColor: const Color(0xFF1E1E1E), // 🌙 TAMNI dijalozi
-        surfaceTintColor: Colors.transparent,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
-        titleTextStyle: const TextStyle(
-          color: Colors.white,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
-        contentTextStyle: const TextStyle(
-          color: Color(0xFFE0E0E0),
-          fontSize: 16,
-        ),
-      ),
-      dividerTheme: const DividerThemeData(
-        color: Color(0xFF424242),
-        thickness: 1,
-      ),
-      iconTheme: const IconThemeData(
-        color: Color(0xFFE0E0E0),
-        size: 24,
-      ),
+      // dialogTheme, dividerTheme, iconTheme: skipped for Flutter 3.24.3 compatibility
     );
   }
 }
