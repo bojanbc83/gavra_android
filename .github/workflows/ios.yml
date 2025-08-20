@@ -71,7 +71,8 @@ jobs:
               configuration: "Release", 
               export_method: "app-store",
               output_directory: "./build",
-              output_name: "Runner.ipa"
+              output_name: "Runner.ipa",
+              xcargs: "-allowProvisioningUpdates DEVELOPMENT_TEAM=6CY9Q44KMQ"
             )
             
             pilot(
