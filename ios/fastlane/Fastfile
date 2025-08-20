@@ -1,7 +1,7 @@
 default_platform(:ios)
 
 platform :ios do
-  desc "Build iOS app for cloud CI/CD (GitHub Actions/Codemagic)"
+  desc "Build iOS app for cloud CI/CD (GitHub Actions only)"
   lane :build_cloud do
     puts "🔍 Environment Variables Check:"
     puts "IOS_CERTIFICATE_BASE64 present: #{!ENV['IOS_CERTIFICATE_BASE64'].nil?}"
@@ -89,13 +89,13 @@ platform :ios do
         scheme: "Runner",
         configuration: "Release",
         export_method: "app-store",
-        xcargs: "DEVELOPMENT_TEAM=6CY9Q44KMQ CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY='iPhone Distribution: Bojan Gavrilovic (6CY9Q44KMQ)' PROVISIONING_PROFILE_SPECIFIER='Gavra 013 App Store Profile'",
+        xcargs: "DEVELOPMENT_TEAM=6CY9Q44KMQ CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY='iPhone Distribution: Bojan Gavrilovic (6CY9Q44KMQ)' PROVISIONING_PROFILE_SPECIFIER='Gavra Bus Distribution'",
         export_options: {
           method: "app-store",
           teamID: "6CY9Q44KMQ",
           signingStyle: "manual",
           provisioningProfiles: {
-            "com.gavra013.gavraAndroid" => "Gavra 013 App Store Profile"
+            "com.gavra.gavra013" => "Gavra Bus Distribution"
           }
         }
       )
@@ -158,11 +158,11 @@ platform :ios do
     
     begin
       upload_to_testflight(
-        api_key_path: "../AuthKey_F4P38UR78G.p8",
+        api_key_path: "../AuthKey_F4P3BUR78G.p8",
         api_key: {
-          key_id: "F4P38UR78G",
+          key_id: "F4P3BUR78G",
           issuer_id: "d8b50e72-6330-401d-9aef-4ead356405ca",
-          key_filepath: "../AuthKey_F4P38UR78G.p8"
+          key_filepath: "../AuthKey_F4P3BUR78G.p8"
         },
         skip_waiting_for_build_processing: true,
         skip_submission: true,

@@ -34,13 +34,8 @@ Za iOS build preko GitHub Actions, trebaju se postaviti sljedeći **Secrets** u 
 
 ### Manualni Build  
 ```bash
-# Pokretanje iOS build-a lokalno (ako imaš Mac)
-cd ios
-flutter clean
-flutter pub get
-cd ios
-pod install
-bundle exec fastlane build_cloud
+# Pokretanje iOS build-a preko GitHub Actions
+# Push code na main branch ili koristi workflow_dispatch u GitHub UI
 ```
 
 ## 📱 Što je riješeno
@@ -63,7 +58,7 @@ bundle exec fastlane build_cloud
 
 ### ✅ Kompletna Automatizacija
 - GitHub Actions workflow za iOS build
-- Fastlane sa cloud build logikom
+- Fastlane sa cloud build logikom  
 - TestFlight upload sa App Store Connect API
 
 ## 🔍 Sljedeći Koraci
