@@ -37,7 +37,9 @@ platform :ios do
 
     # Get password from environment variable
     cert_password = ENV["IOS_CERTIFICATE_PASSWORD"] || "gavra123"
-    puts "🔨 Using certificate password from environment: #{cert_password.empty? ? 'EMPTY' : 'SET'}"    import_certificate(
+    puts "🔨 Using certificate password from environment: #{cert_password.empty? ? 'EMPTY' : 'SET'}"
+    
+    import_certificate(
       certificate_path: certificate_path,
       certificate_password: cert_password,
       keychain_name: "ios-build.keychain",
