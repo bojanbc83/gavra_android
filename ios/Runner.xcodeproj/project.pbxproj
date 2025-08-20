@@ -15,6 +15,9 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		A1B2C3D41234567890ABCDEF /* gavra.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D51234567890ABCDEF /* gavra.mp3 */; };
+		B2C3D4E51234567890ABCDEF /* bilevski.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B2C3D4E61234567890ABCDEF /* bilevski.mp3 */; };
+		C3D4E5F61234567890ABCDEF /* bruda.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C3D4E5F71234567890ABCDEF /* bruda.mp3 */; };
+		D4E5F6071234567890ABCDEF /* svetlana.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = D4E5F6081234567890ABCDEF /* svetlana.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +60,9 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1B2C3D51234567890ABCDEF /* gavra.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Sounds/gavra.mp3"; sourceTree = "<group>"; };
+		B2C3D4E61234567890ABCDEF /* bilevski.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Sounds/bilevski.mp3"; sourceTree = "<group>"; };
+		C3D4E5F71234567890ABCDEF /* bruda.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Sounds/bruda.mp3"; sourceTree = "<group>"; };
+		D4E5F6081234567890ABCDEF /* svetlana.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Sounds/svetlana.mp3"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -219,6 +225,9 @@
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 				A1B2C3D41234567890ABCDEF /* gavra.mp3 in Resources */,
+				B2C3D4E51234567890ABCDEF /* bilevski.mp3 in Resources */,
+				C3D4E5F61234567890ABCDEF /* bruda.mp3 in Resources */,
+				D4E5F6071234567890ABCDEF /* svetlana.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
