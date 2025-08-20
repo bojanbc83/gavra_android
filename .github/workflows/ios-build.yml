@@ -135,15 +135,47 @@ jobs:
         export CODE_SIGN_STYLE=Manual
         export DEVELOPMENT_TEAM=6CY9Q44KMQ
         
-        # Install certificates
+        # Debug certificate setup
+        echo "🔐 Setting up certificates..."
+        echo "Certificate base64 length: ${#IOS_CERTIFICATE_BASE64}"
+        echo "Password length: ${#IOS_CERTIFICATE_PASSWORD}"
+        
+        # Decode and save certificate
+        if [[ -z "$IOS_CERTIFICATE_BASE64" ]]; then
+          echo "❌ IOS_CERTIFICATE_BASE64 is empty!"
+          exit 1
+        fi
+        
         echo "$IOS_CERTIFICATE_BASE64" | base64 --decode > ios_dist.p12
+        echo "Certificate file size: $(wc -c < ios_dist.p12) bytes"
+        
+        # Check if it's a valid P12 file
+        file ios_dist.p12
+        
         echo "$IOS_PROVISIONING_PROFILE_BASE64" | base64 --decode > profile.mobileprovision
         
-        # Import certificate
+        # Import certificate with proper error handling
+        echo "🔐 Importing certificate..."
         security create-keychain -p actions build.keychain
         security default-keychain -s build.keychain
         security unlock-keychain -p actions build.keychain
-        security import ios_dist.p12 -k build.keychain -P "$IOS_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+        
+        # Test if password is correct
+        if [[ -z "$IOS_CERTIFICATE_PASSWORD" ]]; then
+          echo "❌ IOS_CERTIFICATE_PASSWORD is empty!"
+          exit 1
+        fi
+        
+        echo "Password length: ${#IOS_CERTIFICATE_PASSWORD}"
+        
+        # Try import with error handling
+        if ! security import ios_dist.p12 -k build.keychain -P "$IOS_CERTIFICATE_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security; then
+          echo "❌ Certificate import failed - checking password..."
+          echo "Trying without password..."
+          security import ios_dist.p12 -k build.keychain -P "" -T /usr/bin/codesign -T /usr/bin/security || \
+          security import ios_dist.p12 -k build.keychain -T /usr/bin/codesign -T /usr/bin/security
+        fi
+        
         security set-key-partition-list -S apple-tool:,apple: -s -k actions build.keychain
         
         # Install provisioning profile
