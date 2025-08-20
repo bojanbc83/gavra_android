@@ -74,15 +74,15 @@ final ThemeData flutterBankTheme = ThemeData(
   ),
 
   // 🃏 Card Theme - Clean white cards with subtle shadows
-  cardTheme: CardThemeData(
+  cardTheme: const CardThemeData(
     color: Colors.white,
     surfaceTintColor: Colors.transparent,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.all(Radius.circular(20)),
     ),
     elevation: 8,
-    shadowColor: Colors.black.withOpacity(0.08),
-    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    shadowColor: Colors.black,
+    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
   ),
 
   // 📝 Text Theme - Modern typography
@@ -319,15 +319,15 @@ final ThemeData svetlanaPinkTheme = ThemeData(
   ),
 
   // 💖 Pink Card Theme
-  cardTheme: CardThemeData(
+  cardTheme: const CardThemeData(
     color: Colors.white,
     surfaceTintColor: Colors.transparent,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.all(Radius.circular(20)),
     ),
     elevation: 8,
-    shadowColor: const Color(0xFFE91E63).withOpacity(0.12), // Pink shadow
-    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    shadowColor: Color(0xFFE91E63), // Pink shadow
+    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
   ),
 
   // 💖 Pink Text Theme (isti kao originalni)
