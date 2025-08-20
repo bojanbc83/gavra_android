@@ -119,7 +119,7 @@ platform :ios do
         destination: "generic/platform=iOS",
         sdk: "iphoneos",
         skip_package_dependencies_resolution: true,
-        xcargs: "DEVELOPMENT_TEAM=6CY9Q44KMQ CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY='iPhone Distribution: Bojan Gavrilovic (6CY9Q44KMQ)' PROVISIONING_PROFILE_SPECIFIER='Gavra Bus Distribution' IPHONEOS_DEPLOYMENT_TARGET=14.0 -sdk iphoneos",
+        xcargs: "DEVELOPMENT_TEAM=6CY9Q44KMQ CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY='iPhone Distribution: Bojan Gavrilovic (6CY9Q44KMQ)' PROVISIONING_PROFILE_SPECIFIER='Gavra Bus Distribution' IPHONEOS_DEPLOYMENT_TARGET=14.0",
         export_options: {
           method: "app-store",
           teamID: "6CY9Q44KMQ",
