@@ -39,9 +39,15 @@ jobs:
     - name: Install dependencies
       run: flutter pub get
       
-    - name: Clean previous builds
+    - name: Generate iOS configuration
       run: |
-        flutter clean
+        echo "🔧 Generating iOS configuration files..."
+        flutter build ios --config-only
+        echo "✅ iOS configuration generated"
+        ls -la ios/Flutter/
+      
+    - name: Clean previous builds (keep Flutter config)
+      run: |
         cd ios
         rm -rf Pods Podfile.lock build/
       
