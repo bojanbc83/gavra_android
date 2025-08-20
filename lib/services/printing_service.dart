@@ -322,8 +322,8 @@ class PrintingService {
       width: double.infinity,
       padding: const pw.EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       decoration: pw.BoxDecoration(
-        color: PdfColor.fromInt(color.toARGB32()),
-        border: pw.Border.all(color: PdfColor.fromInt(color.toARGB32())),
+        color: PdfColor.fromInt(color.value),
+        border: pw.Border.all(color: PdfColor.fromInt(color.value)),
         borderRadius: pw.BorderRadius.circular(5),
       ),
       child: pw.Text(
