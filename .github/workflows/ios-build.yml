@@ -116,17 +116,44 @@ jobs:
         cd ios
         bundle install
         
-    - name: Build iOS app
+    - name: Build iOS app (Direct Flutter)
       env:
         IOS_CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
         IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
         IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
       run: |
-        cd ios
-        echo "🔍 Checking available Fastlane lanes..."
-        bundle exec fastlane lanes
-        echo "🚀 Running build_cloud lane..."
-        bundle exec fastlane ios build_cloud
+        echo "🔨 Direct Flutter iOS build..."
+        
+        # Set explicit Xcode path
+        sudo xcode-select -s "/Applications/Xcode_15.4.app/Contents/Developer" 2>/dev/null || \
+        sudo xcode-select -s "/Applications/Xcode_15.3.app/Contents/Developer" 2>/dev/null || \
+        sudo xcode-select -s "/Applications/Xcode_15.2.app/Contents/Developer" 2>/dev/null || \
+        sudo xcode-select -s "/Applications/Xcode.app/Contents/Developer"
+        
+        # Export variables
+        export IPHONEOS_DEPLOYMENT_TARGET=14.0
+        export CODE_SIGN_STYLE=Manual
+        export DEVELOPMENT_TEAM=6CY9Q44KMQ
+        
+        # Install certificates
+        echo "$IOS_CERTIFICATE_BASE64" | base64 --decode > ios_dist.p12
+        echo "$IOS_PROVISIONING_PROFILE_BASE64" | base64 --decode > profile.mobileprovision
+        
+        # Import certificate
+        security create-keychain -p actions build.keychain
+        security default-keychain -s build.keychain
+        security unlock-keychain -p actions build.keychain
+        security import ios_dist.p12 -k build.keychain -P "$IOS_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+        security set-key-partition-list -S apple-tool:,apple: -s -k actions build.keychain
+        
+        # Install provisioning profile
+        mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+        cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+        
+        # Build with Flutter
+        flutter build ios --release --dart-define=FLUTTER_WEB_AUTO_DETECT=true
+        
+        echo "✅ Flutter iOS build completed"
         
     - name: Upload to TestFlight
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
