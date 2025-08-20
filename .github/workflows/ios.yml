@@ -49,22 +49,6 @@ jobs:
         echo "${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}" | base64 --decode > ~/private_keys/AuthKey_F4P38UR78G.p8
         echo "${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}" | base64 --decode > AuthKey_F4P38UR78G.p8
         
-        # Import certificate and provisioning profile for manual signing
-        # Create keychain
-        security create-keychain -p actions build.keychain
-        security default-keychain -s build.keychain
-        security unlock-keychain -p actions build.keychain
-        security set-keychain-settings -t 3600 -u build.keychain
-        
-        # Import certificate
-        echo "${{ secrets.IOS_CERTIFICATE_BASE64 }}" | base64 --decode > ios_distribution.p12
-        security import ios_distribution.p12 -k build.keychain -P "" -T /usr/bin/codesign
-        security set-key-partition-list -S apple-tool:,apple: -s -k actions build.keychain
-        
-        # Install provisioning profile
-        mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-        echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/AppStore.mobileprovision
-        
     - name: Build iOS App for TestFlight
       run: |
         # Set build number and name in Flutter
@@ -72,48 +56,51 @@ jobs:
           --build-name=1.0.${{ github.run_number }} \
           --build-number=${{ github.run_number }}
         
+        # Use fastlane for both build and upload
         cd ios
-        # Build using xcodebuild with manual signing
-        xcodebuild archive \
-          -workspace Runner.xcworkspace \
-          -scheme Runner \
-          -configuration Release \
-          -archivePath build/Runner.xcarchive \
-          DEVELOPMENT_TEAM=6CY9Q44KMQ \
-          CODE_SIGN_STYLE=Manual \
-          PROVISIONING_PROFILE_SPECIFIER="Gavra 013 App Store Profile" \
-          CODE_SIGN_IDENTITY="iPhone Distribution"
         
-        # Export IPA
-        xcodebuild -exportArchive \
-          -archivePath build/Runner.xcarchive \
-          -exportPath build \
-          -exportOptionsPlist ExportOptionsTestFlight.plist
-          
-    - name: Upload to TestFlight
-      run: |
+        # Create simple Fastfile for build
+        cat > fastlane/Fastfile << 'EOF'
+        default_platform(:ios)
+        platform :ios do
+          desc "Build and upload to TestFlight"
+          lane :build_and_upload do
+            build_app(
+              workspace: "Runner.xcworkspace",
+              scheme: "Runner",
+              configuration: "Release", 
+              export_method: "app-store",
+              output_directory: "./build",
+              output_name: "Runner.ipa"
+            )
+            
+            pilot(
+              api_key_path: "../AuthKey_F4P38UR78G.p8",
+              api_key: "F4P38UR78G", 
+              issuer_id: "d8b50e72-6330-401d-9aef-4ead356405ca",
+              ipa: "./build/Runner.ipa",
+              skip_waiting_for_build_processing: true,
+              skip_submission: true,
+              team_id: "6CY9Q44KMQ"
+            )
+          end
+        end
+        EOF
+        
         # Install fastlane
         gem install fastlane
         
-        cd ios
-        fastlane pilot upload \
-          --api_key_path "../AuthKey_F4P38UR78G.p8" \
-          --api_key "F4P38UR78G" \
-          --issuer_id "d8b50e72-6330-401d-9aef-4ead356405ca" \
-          --ipa "build/Runner.ipa" \
-          --skip_waiting_for_build_processing \
-          --skip_submission \
-          --team_id "6CY9Q44KMQ"
-    
+        # Run fastlane
+        fastlane build_and_upload
+          
     - name: Upload IPA artifact
       uses: actions/upload-artifact@v4
       with:
         name: ios-ipa-${{ github.run_number }}
-        path: build/ios/ipa/*.ipa
+        path: ios/build/*.ipa
         retention-days: 30
     
     - name: Cleanup
       if: always()
       run: |
-        security delete-keychain build.keychain || true
-        rm -f ios/ios_distribution.p12 || true
+        rm -f ios/build/*.ipa || true
