@@ -105,14 +105,17 @@ jobs:
         IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
       run: |
         cd ios
-        bundle install --path vendor/bundle
-        bundle exec fastlane build_cloud
+        echo "🔍 Checking available Fastlane lanes..."
+        bundle exec fastlane lanes
+        echo "🚀 Running build_cloud lane..."
+        bundle exec fastlane ios build_cloud
         
     - name: Upload to TestFlight
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: |
         cd ios
-        bundle exec fastlane upload_testflight
+        echo "🚀 Uploading to TestFlight..."
+        bundle exec fastlane ios upload_testflight
         
     - name: Upload build artifacts
       if: always()
