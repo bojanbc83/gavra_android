@@ -37,14 +37,33 @@ platform :ios do
 
     # Get password from environment variable
     cert_password = ENV["IOS_CERTIFICATE_PASSWORD"] || "gavra123"
-    puts "🔨 Using certificate password from environment: #{cert_password.empty? ? 'EMPTY' : 'SET'}"
+    puts "🔨 Using certificate password: '#{cert_password}'"
     
-    import_certificate(
-      certificate_path: certificate_path,
-      certificate_password: cert_password,
-      keychain_name: "ios-build.keychain",
-      keychain_password: ""
-    )
+    begin
+      import_certificate(
+        certificate_path: certificate_path,
+        certificate_password: cert_password,
+        keychain_name: "ios-build.keychain",
+        keychain_password: ""
+      )
+      puts "✅ Certificate imported successfully"
+    rescue => e
+      puts "❌ Certificate import failed: #{e.message}"
+      # Try with empty password
+      puts "🔄 Trying with empty password..."
+      begin
+        import_certificate(
+          certificate_path: certificate_path,
+          certificate_password: "",
+          keychain_name: "ios-build.keychain",
+          keychain_password: ""
+        )
+        puts "✅ Certificate imported with empty password"
+      rescue => e2
+        puts "❌ Certificate import failed with empty password: #{e2.message}"
+        raise "Certificate import failed with both passwords: #{e.message} | #{e2.message}"
+      end
+    end
     
     # Install provisioning profile from base64
     profile_path = File.expand_path("../app_store.mobileprovision")
@@ -72,7 +91,7 @@ platform :ios do
         scheme: "Runner",
         configuration: "Release",
         export_method: "app-store",
-        xcargs: "DEVELOPMENT_TEAM=6CY9Q44KMQ CODE_SIGN_STYLE=Manual PROVISIONING_PROFILE_SPECIFIER='Gavra 013 App Store Profile'",
+        xcargs: "DEVELOPMENT_TEAM=6CY9Q44KMQ CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY='iPhone Distribution: Bojan Gavrilovic (6CY9Q44KMQ)' PROVISIONING_PROFILE_SPECIFIER='Gavra 013 App Store Profile'",
         export_options: {
           method: "app-store",
           teamID: "6CY9Q44KMQ",
@@ -86,11 +105,37 @@ platform :ios do
       
       # Upload to TestFlight
       puts "🚀 Uploading to TestFlight..."
+      
+      # Find the API key file in multiple possible locations
+      api_key_path = nil
+      possible_paths = [
+        "../AuthKey_F4P38UR78G.p8",
+        "./AuthKey_F4P38UR78G.p8", 
+        "~/private_keys/AuthKey_F4P38UR78G.p8",
+        File.expand_path("../AuthKey_F4P38UR78G.p8"),
+        File.expand_path("../../AuthKey_F4P38UR78G.p8")
+      ]
+      
+      possible_paths.each do |path|
+        expanded_path = File.expand_path(path)
+        if File.exist?(expanded_path)
+          api_key_path = expanded_path
+          puts "✅ Found API key at: #{api_key_path}"
+          break
+        end
+      end
+      
+      unless api_key_path
+        puts "❌ API key file not found in any of these locations:"
+        possible_paths.each { |path| puts "  - #{File.expand_path(path)}" }
+        raise "App Store Connect API key file not found"
+      end
+      
       pilot(
-        api_key_path: "../AuthKey_F4P38UR78G.p8",
+        api_key_path: api_key_path,
         api_key: "F4P38UR78G", 
         issuer_id: "d8b50e72-6330-401d-9aef-4ead356405ca",
-        ipa: "./build/Runner.ipa",
+        ipa: Actions.lane_context[SharedValues::IPA_OUTPUT_PATH] || "./Runner.ipa",
         skip_waiting_for_build_processing: true,
         skip_submission: true,
         team_id: "6CY9Q44KMQ"

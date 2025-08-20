@@ -40,19 +40,19 @@ jobs:
     
     - name: Setup App Store Connect API
       run: |
-        echo "${{ secrets.APPSTORE_PRIVATE_KEY }}" | base64 --decode > AuthKey.p8
+        echo "${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}" | base64 --decode > AuthKey_F4P38UR78G.p8
         
     - name: Install CocoaPods
       run: |
         cd ios
         pod install
         
-    - name: Setup App Store Connect API
+    - name: Setup Additional API Keys and Profiles
       run: |
-        # Create App Store Connect API key file
+        # Create App Store Connect API key file in multiple locations for reliability
         mkdir -p ~/private_keys
         echo "${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}" | base64 --decode > ~/private_keys/AuthKey_F4P38UR78G.p8
-        echo "${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}" | base64 --decode > AuthKey_F4P38UR78G.p8
+        echo "${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}" | base64 --decode > ios/AuthKey_F4P38UR78G.p8
         
         # Install provisioning profile only (no certificate import)
         mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
