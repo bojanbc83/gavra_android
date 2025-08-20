@@ -98,6 +98,19 @@ jobs:
         cd ios
         pod install --verbose
         
+    - name: Configure iOS SDK and Platform
+      run: |
+        echo "📱 Configuring iOS SDK..."
+        # List available iOS SDKs
+        xcodebuild -showsdks | grep iphoneos || true
+        
+        # Set deployment target and SDK
+        echo "IPHONEOS_DEPLOYMENT_TARGET=14.0" >> $GITHUB_ENV
+        echo "iOS_SDK=iphoneos" >> $GITHUB_ENV
+        
+        # Show iOS simulators and versions
+        xcrun simctl list devices available | grep iOS || true
+        
     - name: Setup Fastlane
       run: |
         cd ios
