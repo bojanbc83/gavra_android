@@ -43,6 +43,8 @@ jobs:
         fi
         xcode-select -p
         xcodebuild -version
+        echo "📱 Available iOS simulators:"
+        xcrun simctl list devices | grep -E "(iOS|iPhone)" | head -10
         
     - name: Print Flutter version
       run: flutter --version
