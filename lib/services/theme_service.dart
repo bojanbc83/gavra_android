@@ -70,12 +70,12 @@ class ThemeService {
           fontWeight: FontWeight.bold,
         ),
       ),
-      cardTheme: CardThemeData(
-        color: const Color(0xFF1E1E1E), // 🌙 TAMNE kartice
+      cardTheme: const CardThemeData(
+        color: Color(0xFF1E1E1E), // 🌙 TAMNE kartice
         elevation: 4,
-        shadowColor: Colors.black.withOpacity(0.3),
+        shadowColor: Colors.black,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -157,4 +157,3 @@ class ThemeService {
     );
   }
 }
-
