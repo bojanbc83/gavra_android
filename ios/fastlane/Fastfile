@@ -70,13 +70,13 @@ platform :ios do
         scheme: "Runner",
         configuration: "Release",
         export_method: "app-store",
-        codesigning_identity: "Apple Distribution",
+        codesigning_identity: "iPhone Distribution",
         export_options: {
           method: "app-store",
           teamID: "6CY9Q44KMQ",
           signingStyle: "manual",
           provisioningProfiles: {
-            "com.gavra.gavra013" => "Gavra 013 App Store Profile"
+            "com.gavra013.gavraAndroid" => "Gavra 013 App Store Profile"
           }
         }
       )
