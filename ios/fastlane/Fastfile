@@ -119,14 +119,11 @@ platform :ios do
         destination: "generic/platform=iOS",
         sdk: "iphoneos",
         skip_package_dependencies_resolution: true,
-        xcargs: "DEVELOPMENT_TEAM=6CY9Q44KMQ CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY='iPhone Distribution' PROVISIONING_PROFILE_SPECIFIER='Gavra 013 App Store Profile' IPHONEOS_DEPLOYMENT_TARGET=14.0",
+        xcargs: "DEVELOPMENT_TEAM=6CY9Q44KMQ CODE_SIGN_STYLE=Automatic IPHONEOS_DEPLOYMENT_TARGET=14.0",
         export_options: {
           method: "app-store",
           teamID: "6CY9Q44KMQ",
-          signingStyle: "manual",
-          provisioningProfiles: {
-            "com.gavra013.gavraAndroid" => "Gavra 013 App Store Profile"
-          }
+          signingStyle: "automatic"
         }
       )
       puts "✅ Build completed successfully!"
