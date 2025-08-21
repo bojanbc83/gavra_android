@@ -48,61 +48,8 @@ platform :ios do
       lock_when_sleeps: false
     )
     
-    # Install certificate from environment variables (cloud only)
-    certificate_path = File.expand_path("../ios_distribution.p12")
-    puts "Creating certificate at: #{certificate_path}"
-    
-    begin
-      # Mandatory environment variable for cloud build
-      certificate_base64 = ENV['IOS_CERTIFICATE_BASE64']
-      if certificate_base64.nil? || certificate_base64.empty?
-        raise "❌ IOS_CERTIFICATE_BASE64 environment variable is required for cloud build"
-      end
-      File.write(certificate_path, Base64.decode64(certificate_base64))
-      puts "✅ Certificate file created: #{File.size(certificate_path)} bytes"
-    rescue => e
-      puts "❌ Error creating certificate: #{e.message}"
-      raise e
-    end
-
-    # Get password from environment variable (mandatory)
-    cert_password = ENV["IOS_CERTIFICATE_PASSWORD"]
-    if cert_password.nil? || cert_password.empty?
-      raise "❌ IOS_CERTIFICATE_PASSWORD environment variable is required"
-    end
-    puts "🔨 Using certificate password from environment"
-    
-    begin
-      import_certificate(
-        certificate_path: certificate_path,
-        certificate_password: cert_password,
-        keychain_name: "ios-build.keychain",
-        keychain_password: ""
-      )
-      puts "✅ Certificate imported successfully"
-    rescue => e
-      puts "❌ Error importing certificate: #{e.message}"
-      raise e
-    end
-
-    # Install provisioning profile from environment variables (cloud only)
-    profile_path = File.expand_path("../ios_profile.mobileprovision")
-    puts "Creating provisioning profile at: #{profile_path}"
-
-    begin
-      # Mandatory environment variable for cloud build
-      profile_base64 = ENV['IOS_PROVISIONING_PROFILE_BASE64']
-      if profile_base64.nil? || profile_base64.empty?
-        raise "❌ IOS_PROVISIONING_PROFILE_BASE64 environment variable is required for cloud build"
-      end
-      
-      File.write(profile_path, Base64.decode64(profile_base64))
-      puts "✅ Provisioning profile created: #{File.size(profile_path)} bytes"
-      install_provisioning_profile(path: profile_path)
-    rescue => e
-      puts "❌ Error creating provisioning profile: #{e.message}"
-      raise e
-    end
+    # For automatic signing, skip manual certificate and provisioning profile setup
+    puts "� Using automatic code signing - skipping manual certificate/profile setup"
     
     # Build the app
     puts "🔨 Starting iOS build process..."
