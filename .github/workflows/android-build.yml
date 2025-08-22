@@ -4,10 +4,12 @@
 
 name: 🚀 Android Build & Delivery
 
+# TEMPORARILY DISABLED - TESTING
 # Trigger na svaki push na main branch
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
+  # push:
+  #   branches: [ main ]
   pull_request:
     branches: [ main ]
   

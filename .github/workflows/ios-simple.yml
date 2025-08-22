@@ -1,9 +1,10 @@
 name: iOS Simple Build
 
+# TEMPORARILY DISABLED - TESTING
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
+  # push:
+  #   branches: [main]
 
 jobs:
   ios-build:
