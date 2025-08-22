@@ -30,22 +30,25 @@ jobs:
         cd ios
         pod install --repo-update
         
-    - name: 🔨 Build iOS App
-      run: flutter build ios --release --no-codesign
+    - name: 🔨 Build iOS App (Flutter compile only)
+      run: |
+        flutter clean
+        flutter pub get
+        cd ios && pod install --repo-update
         
-    - name: 📱 Archive iOS App
+    - name: 📱 Archive with Legacy Build System
       run: |
         cd ios
-        xcodebuild -workspace Runner.xcworkspace \
+        xcodebuild archive \
+          -workspace Runner.xcworkspace \
           -scheme Runner \
           -configuration Release \
-          -sdk iphoneos \
           -archivePath build/Runner.xcarchive \
-          archive \
           DEVELOPMENT_TEAM=6CY9Q44KMQ \
           CODE_SIGN_STYLE=Automatic \
-          IPHONEOS_DEPLOYMENT_TARGET=14.0 \
-          -allowProvisioningUpdates
+          IPHONEOS_DEPLOYMENT_TARGET=12.0 \
+          -allowProvisioningUpdates \
+          -UseModernBuildSystem=NO
 
     - name: 🔑 Setup App Store Connect API
       run: |
