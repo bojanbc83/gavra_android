@@ -64,16 +64,42 @@ platform :ios do
         openssl_result = sh("openssl pkcs12 -in #{certificate_path} -nokeys -noout -passin pass:'#{ENV["IOS_CERTIFICATE_PASSWORD"]}' 2>&1", error_callback: ->(result) { result })
         puts "OpenSSL validation: #{openssl_result}"
         
+        # Get certificate details
+        puts "🔍 Getting certificate subject and type..."
+        cert_info = sh("openssl pkcs12 -in #{certificate_path} -nokeys -clcerts -passin pass:'#{ENV["IOS_CERTIFICATE_PASSWORD"]}' | openssl x509 -subject -noout 2>/dev/null || echo 'Could not get certificate info'")
+        puts "Certificate subject: #{cert_info}"
+        
+        # Get certificate purpose
+        cert_purpose = sh("openssl pkcs12 -in #{certificate_path} -nokeys -clcerts -passin pass:'#{ENV["IOS_CERTIFICATE_PASSWORD"]}' | openssl x509 -purpose -noout 2>/dev/null || echo 'Could not get certificate purpose'")
+        puts "Certificate purpose: #{cert_purpose}"
+        
         if openssl_result.include?("MAC verification failed") || openssl_result.include?("invalid")
           raise "Certificate validation failed - wrong password or corrupted certificate"
         end
         
-        import_certificate(
-          certificate_path: certificate_path,
-          certificate_password: ENV["IOS_CERTIFICATE_PASSWORD"],
-          keychain_name: "ios-build"
-        )
-        puts "✅ Certificate successfully imported to keychain"
+        # Try alternative import methods
+        puts "🔧 Trying alternative certificate import..."
+        
+        # Method 1: Direct security command
+        puts "Method 1: Direct security import..."
+        security_result = sh("security import #{certificate_path} -k ~/Library/Keychains/ios-build.keychain -P '#{ENV["IOS_CERTIFICATE_PASSWORD"]}' -T /usr/bin/codesign -T /usr/bin/security 2>&1 || echo 'Direct import failed'")
+        puts "Security import result: #{security_result}"
+        
+        # Method 2: Try Fastlane import with different options
+        puts "Method 2: Fastlane import with allow_codesign_application..."
+        begin
+          import_certificate(
+            certificate_path: certificate_path,
+            certificate_password: ENV["IOS_CERTIFICATE_PASSWORD"],
+            keychain_name: "ios-build",
+            keychain_password: "",
+            log_output: true
+          )
+        rescue => fastlane_error
+          puts "Fastlane import failed: #{fastlane_error.message}"
+        end
+        
+        puts "✅ Certificate import attempts completed"
       rescue => e
         puts "❌ Certificate import failed: #{e.message}"
         
