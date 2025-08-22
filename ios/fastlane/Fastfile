@@ -73,28 +73,9 @@ platform :ios do
         cert_purpose = sh("openssl pkcs12 -in #{certificate_path} -nokeys -clcerts -passin pass:'#{ENV["IOS_CERTIFICATE_PASSWORD"]}' | openssl x509 -purpose -noout 2>/dev/null || echo 'Could not get certificate purpose'")
         puts "Certificate purpose: #{cert_purpose}"
         
-        # Try with empty password first
-        puts "🔍 Testing certificate with empty password..."
-        empty_password_result = sh("openssl pkcs12 -in #{certificate_path} -nokeys -noout -passin pass: 2>&1 || echo 'Empty password failed'")
-        puts "Empty password test: #{empty_password_result}"
-        
-        # Try without password
-        puts "🔍 Testing certificate without password..."
-        no_password_result = sh("openssl pkcs12 -in #{certificate_path} -nokeys -noout 2>&1 || echo 'No password failed'")
-        puts "No password test: #{no_password_result}"
-        
-        # Determine correct password
-        certificate_password = ""
-        if !empty_password_result.include?("MAC verification failed")
-          puts "✅ Certificate uses EMPTY password"
-          certificate_password = ""
-        elsif !no_password_result.include?("MAC verification failed")
-          puts "✅ Certificate uses NO password"
-          certificate_password = nil
-        else
-          puts "⚠️ Certificate requires the provided password"
-          certificate_password = ENV["IOS_CERTIFICATE_PASSWORD"]
-        end
+        # Since first validation with provided password worked, use it
+        puts "✅ Certificate validates with provided password - using it"
+        certificate_password = ENV["IOS_CERTIFICATE_PASSWORD"]
         
         # Try alternative import methods with correct password
         puts "🔧 Trying certificate import with detected password..."
