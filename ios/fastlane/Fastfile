@@ -39,6 +39,16 @@ platform :ios do
     puts "🔨 Using Xcode: #{selected_xcode}"
     # Using automatic signing for CI/CD - simpler and more reliable
     puts "🔐 Using automatic signing with development team: 6CY9Q44KMQ"
+    
+    # Setup App Store Connect API for automatic signing
+    puts "🔑 Setting up App Store Connect API for signing..."
+    app_store_connect_api_key(
+      key_id: "F4P3BUR78G",
+      issuer_id: "d8b50e72-6330-401d-9aef-4ead356405ca",
+      key_filepath: "../AuthKey_F4P3BUR78G.p8",
+      duration: 1200,
+      in_house: false
+    )
 
     # Build the app
     puts "🔨 Starting iOS build process..."
