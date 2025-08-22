@@ -1,7 +1,52 @@
 default_platform(:ios)
 
 platform :ios do
-  desc "Build iOS app for cloud CI/CD (GitHub Actions only)"
+  des    
+    # Check for manual signing secrets
+    if ENV["IOS_CERTIFICATE_BASE64"] && ENV["IOS_PROVISIONING_PROFILE_BASE64"]
+      puts "🔐 Setting up manual certificate and provisioning profile for CI/CD"
+      
+      # Import certificate to keychain
+      certificate_path = "ios_certificate.p12"
+      File.write(certificate_path, Base64.decode64(ENV["IOS_CERTIFICATE_BASE64"]))
+      
+      import_certificate(
+        certificate_path: certificate_path,
+        certificate_password: ENV["IOS_CERTIFICATE_PASSWORD"],
+        keychain_name: "ios-build"
+      )
+      
+      # Import provisioning profile  
+      profile_path = "profile.mobileprovision"
+      File.write(profile_path, Base64.decode64(ENV["IOS_PROVISIONING_PROFILE_BASE64"]))
+      
+      install_provisioning_profile(path: profile_path)
+      
+      # Clean up
+      File.delete(certificate_path) if File.exist?(certificate_path)
+      File.delete(profile_path) if File.exist?(profile_path)
+      
+      puts "✅ Manual certificate and profile setup completed"
+    else
+      puts "⚠️ Manual signing secrets not found - using automatic signing (local development)"
+    end
+
+    # Build the app
+    puts "🔨 Starting iOS build process..."
+    workspace_path = File.expand_path("../Runner.xcworkspace")
+    puts "Workspace path: #{workspace_path}"
+    puts "Workspace exists: #{File.exist?(workspace_path)}"
+
+    begin
+      build_app(
+        workspace: workspace_path,
+        scheme: "Runner",
+        configuration: "Release",
+        export_method: "app-store",
+        destination: "generic/platform=iOS",
+        sdk: "iphoneos",
+        skip_package_dependencies_resolution: true,
+        xcargs: "DEVELOPMENT_TEAM=6CY9Q44KMQ CODE_SIGN_STYLE=Manual IPHONEOS_DEPLOYMENT_TARGET=14.0", cloud CI/CD (GitHub Actions only)"
   lane :build_cloud do
     puts "🔍 Environment Variables Check:"
     puts "IOS_CERTIFICATE_BASE64 present: #{!ENV['IOS_CERTIFICATE_BASE64'].nil?}"
@@ -66,11 +111,14 @@ platform :ios do
         destination: "generic/platform=iOS",
         sdk: "iphoneos",
         skip_package_dependencies_resolution: true,
-        xcargs: "DEVELOPMENT_TEAM=6CY9Q44KMQ CODE_SIGN_STYLE=Automatic IPHONEOS_DEPLOYMENT_TARGET=14.0 -allowProvisioningUpdates",
+        xcargs: "DEVELOPMENT_TEAM=6CY9Q44KMQ CODE_SIGN_STYLE=Manual IPHONEOS_DEPLOYMENT_TARGET=14.0",
         export_options: {
           method: "app-store",
           teamID: "6CY9Q44KMQ",
-          signingStyle: "automatic"
+          signingStyle: "manual",
+          provisioningProfiles: {
+            "com.gavra013.gavraAndroid" => "Gavra 013 App Store Profile"
+          }
         }
       )
       puts "✅ Build completed successfully!"
