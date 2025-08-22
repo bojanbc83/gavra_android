@@ -73,28 +73,60 @@ platform :ios do
         cert_purpose = sh("openssl pkcs12 -in #{certificate_path} -nokeys -clcerts -passin pass:'#{ENV["IOS_CERTIFICATE_PASSWORD"]}' | openssl x509 -purpose -noout 2>/dev/null || echo 'Could not get certificate purpose'")
         puts "Certificate purpose: #{cert_purpose}"
         
-        if openssl_result.include?("MAC verification failed") || openssl_result.include?("invalid")
-          raise "Certificate validation failed - wrong password or corrupted certificate"
+        # Try with empty password first
+        puts "🔍 Testing certificate with empty password..."
+        empty_password_result = sh("openssl pkcs12 -in #{certificate_path} -nokeys -noout -passin pass: 2>&1 || echo 'Empty password failed'")
+        puts "Empty password test: #{empty_password_result}"
+        
+        # Try without password
+        puts "🔍 Testing certificate without password..."
+        no_password_result = sh("openssl pkcs12 -in #{certificate_path} -nokeys -noout 2>&1 || echo 'No password failed'")
+        puts "No password test: #{no_password_result}"
+        
+        # Determine correct password
+        certificate_password = ""
+        if !empty_password_result.include?("MAC verification failed")
+          puts "✅ Certificate uses EMPTY password"
+          certificate_password = ""
+        elsif !no_password_result.include?("MAC verification failed")
+          puts "✅ Certificate uses NO password"
+          certificate_password = nil
+        else
+          puts "⚠️ Certificate requires the provided password"
+          certificate_password = ENV["IOS_CERTIFICATE_PASSWORD"]
         end
         
-        # Try alternative import methods
-        puts "🔧 Trying alternative certificate import..."
+        # Try alternative import methods with correct password
+        puts "🔧 Trying certificate import with detected password..."
         
-        # Method 1: Direct security command
-        puts "Method 1: Direct security import..."
-        security_result = sh("security import #{certificate_path} -k ~/Library/Keychains/ios-build.keychain -P '#{ENV["IOS_CERTIFICATE_PASSWORD"]}' -T /usr/bin/codesign -T /usr/bin/security 2>&1 || echo 'Direct import failed'")
+        # Method 1: Direct security command with correct password
+        puts "Method 1: Direct security import with detected password..."
+        if certificate_password.nil?
+          security_cmd = "security import #{certificate_path} -k ~/Library/Keychains/ios-build.keychain -T /usr/bin/codesign -T /usr/bin/security 2>&1 || echo 'Direct import failed'"
+        else
+          security_cmd = "security import #{certificate_path} -k ~/Library/Keychains/ios-build.keychain -P '#{certificate_password}' -T /usr/bin/codesign -T /usr/bin/security 2>&1 || echo 'Direct import failed'"
+        end
+        
+        security_result = sh(security_cmd)
         puts "Security import result: #{security_result}"
         
-        # Method 2: Try Fastlane import with different options
-        puts "Method 2: Fastlane import with allow_codesign_application..."
+        # Method 2: Try Fastlane import with correct password
+        puts "Method 2: Fastlane import with correct password..."
         begin
-          import_certificate(
-            certificate_path: certificate_path,
-            certificate_password: ENV["IOS_CERTIFICATE_PASSWORD"],
-            keychain_name: "ios-build",
-            keychain_password: "",
-            log_output: true
-          )
+          if certificate_password.nil?
+            import_certificate(
+              certificate_path: certificate_path,
+              keychain_name: "ios-build",
+              log_output: true
+            )
+          else
+            import_certificate(
+              certificate_path: certificate_path,
+              certificate_password: certificate_password,
+              keychain_name: "ios-build",
+              log_output: true
+            )
+          end
         rescue => fastlane_error
           puts "Fastlane import failed: #{fastlane_error.message}"
         end
