@@ -30,24 +30,34 @@ jobs:
         cd ios
         pod install --repo-update
         
-    - name:  Build iOS with Direct Xcodebuild (Skip Flutter Test)
+    - name: 🔑 Setup App Store Connect API (Before Archive)
+      run: |
+        mkdir -p ~/private_keys
+        echo "${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}" | base64 --decode > ~/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}.p8
+        
+    - name: 🔨 Build iOS with Direct Xcodebuild (Skip Flutter Test)
       run: |
         cd ios
         export IPHONEOS_DEPLOYMENT_TARGET=12.0
+        # Pre-build Flutter modules  
         cd ..
         flutter packages get
         flutter precache --ios
         cd ios
-        xcodebuild archive \
-          -workspace Runner.xcworkspace \
-          -scheme Runner \
-          -configuration Release \
-          -destination "generic/platform=iOS" \
-          -archivePath build/Runner.xcarchive \
-          DEVELOPMENT_TEAM=6CY9Q44KMQ \
-          CODE_SIGN_STYLE=Automatic \
-          IPHONEOS_DEPLOYMENT_TARGET=12.0 \
-          -allowProvisioningUpdates \
+        # Direct xcodebuild archive without running tests
+        xcodebuild archive 
+          -workspace Runner.xcworkspace 
+          -scheme Runner 
+          -configuration Release 
+          -destination "generic/platform=iOS" 
+          -archivePath build/Runner.xcarchive 
+          DEVELOPMENT_TEAM=6CY9Q44KMQ 
+          CODE_SIGN_STYLE=Automatic 
+          IPHONEOS_DEPLOYMENT_TARGET=12.0 
+          -allowProvisioningUpdates 
+          -authenticationKeyPath ~/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}.p8 
+          -authenticationKeyID ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }} 
+          -authenticationKeyIssuerID ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }} 
           -quiet
 
     - name:  Setup App Store Connect API
