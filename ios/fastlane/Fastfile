@@ -59,6 +59,15 @@ platform :ios do
       puts "✅ Certificate file created, size: #{File.size(certificate_path)} bytes"
       
       begin
+        # First validate certificate with openssl before importing
+        puts "🔍 Validating certificate with openssl..."
+        openssl_result = sh("openssl pkcs12 -in #{certificate_path} -nokeys -noout -passin pass:'#{ENV["IOS_CERTIFICATE_PASSWORD"]}' 2>&1", error_callback: ->(result) { result })
+        puts "OpenSSL validation: #{openssl_result}"
+        
+        if openssl_result.include?("MAC verification failed") || openssl_result.include?("invalid")
+          raise "Certificate validation failed - wrong password or corrupted certificate"
+        end
+        
         import_certificate(
           certificate_path: certificate_path,
           certificate_password: ENV["IOS_CERTIFICATE_PASSWORD"],
@@ -67,11 +76,17 @@ platform :ios do
         puts "✅ Certificate successfully imported to keychain"
       rescue => e
         puts "❌ Certificate import failed: #{e.message}"
-        puts "🔍 Checking certificate details..."
         
-        # Try to get certificate info
-        result = sh("openssl pkcs12 -in #{certificate_path} -nokeys -noout -passin pass:'#{ENV["IOS_CERTIFICATE_PASSWORD"]}' 2>&1 || echo 'Certificate check failed'")
-        puts "Certificate validation result: #{result}"
+        # Try to get more certificate info
+        puts "🔍 Checking certificate details with different approaches..."
+        
+        # Try without password
+        result1 = sh("openssl pkcs12 -in #{certificate_path} -nokeys -noout 2>&1 || echo 'No-password check failed'")
+        puts "No-password check: #{result1}"
+        
+        # Try with empty password
+        result2 = sh("openssl pkcs12 -in #{certificate_path} -nokeys -noout -passin pass: 2>&1 || echo 'Empty-password check failed'")
+        puts "Empty-password check: #{result2}"
         
         raise "Certificate import failed - check password and certificate format"
       end
