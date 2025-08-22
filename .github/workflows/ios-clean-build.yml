@@ -1,14 +1,11 @@
-name: iOS Simple Build
+name: 🍎 iOS Clean Build
 
-# TEMPORARILY DISABLED - TESTING
 on:
   workflow_dispatch:
-  # push:
-  #   branches: [main]
 
 jobs:
   ios-build:
-    name: iOS Build (Simple)
+    name: Clean iOS Build
     runs-on: macos-latest
     timeout-minutes: 60
 
@@ -37,7 +34,7 @@ jobs:
       run: |
         flutter build ios --release
         
-    - name: Archive iOS App with Automatic Signing
+    - name: Archive iOS App
       run: |
         cd ios
         xcodebuild -workspace Runner.xcworkspace \
@@ -55,7 +52,7 @@ jobs:
         mkdir -p ~/private_keys
         echo "${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}" | base64 --decode > ~/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}.p8
         
-    - name: Export IPA with Automatic Signing
+    - name: Export IPA
       run: |
         cd ios
         xcodebuild -exportArchive \
@@ -72,7 +69,7 @@ jobs:
           --apiKey ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }} \
           --apiIssuer ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           
-    - name: Upload IPA (Backup)
+    - name: Upload IPA Artifact
       uses: actions/upload-artifact@v4
       with:
         name: ios-app
