@@ -1,0 +1,157 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Build iOS app with automatic code signing for GitHub Actions"
+  lane :build_github do
+    puts "🔍 Environment Variables Check:"
+    puts "APP_STORE_CONNECT_API_KEY_ID present: #{!ENV['APP_STORE_CONNECT_API_KEY_ID'].nil?}"
+    puts "APP_STORE_CONNECT_ISSUER_ID present: #{!ENV['APP_STORE_CONNECT_ISSUER_ID'].nil?}"
+    
+    # Detect and set available Xcode version
+    puts "🔍 Detecting Xcode installations..."
+    xcode_paths = [
+      "/Applications/Xcode_15.4.app",
+      "/Applications/Xcode_15.3.app", 
+      "/Applications/Xcode_15.2.app",
+      "/Applications/Xcode_15.1.app",
+      "/Applications/Xcode_15.0.app",
+      "/Applications/Xcode.app"
+    ]
+    
+    selected_xcode = nil
+    xcode_paths.each do |path|
+      if File.exist?("#{path}/Contents/Developer")
+        selected_xcode = path
+        puts "✅ Found Xcode at: #{path}"
+        break
+      else
+        puts "❌ No Xcode at: #{path}"
+      end
+    end
+    
+    if selected_xcode.nil?
+      raise "❌ No valid Xcode installation found!"
+    end
+    
+    # Set Xcode path
+    xcode_select(selected_xcode)
+    puts "🔨 Using Xcode: #{selected_xcode}"
+    # Using automatic signing for GitHub Actions - simpler and more reliable
+    puts "🔐 Using automatic signing with development team: 6CY9Q44KMQ"
+    )
+
+    # Build the app
+    puts "🔨 Starting iOS build process..."
+    workspace_path = File.expand_path("../Runner.xcworkspace")
+    puts "Workspace path: #{workspace_path}"
+    puts "Workspace exists: #{File.exist?(workspace_path)}"
+
+    begin
+      puts "🔍 Debug: Pre build_app komande"
+      puts "Workspace path: #{workspace_path}"
+      puts "Workspace exists: #{File.exist?(workspace_path)}"
+      
+      # Check iOS deployment target
+      puts "🔍 Checking iOS deployment target..."
+      sh("cd .. && grep -r 'IPHONEOS_DEPLOYMENT_TARGET' . || echo 'No deployment target found'")
+      
+      build_app(
+        workspace: workspace_path,
+        scheme: "Runner",
+        configuration: "Release",
+        export_method: "app-store",
+        destination: "generic/platform=iOS",
+        sdk: "iphoneos",
+        skip_package_dependencies_resolution: true,
+        xcargs: "DEVELOPMENT_TEAM=6CY9Q44KMQ CODE_SIGN_STYLE=Automatic IPHONEOS_DEPLOYMENT_TARGET=14.0 -allowProvisioningUpdates",
+        export_options: {
+          method: "app-store",
+          teamID: "6CY9Q44KMQ",
+          signingStyle: "automatic"
+        },
+        buildlog_path: "./fastlane/logs",
+        output_directory: "./",
+        clean: true
+      )
+      puts "✅ Build completed successfully!"
+      
+      # Check what files were created
+      puts "📁 Checking build output files..."
+      Dir.glob("**/*.ipa").each do |ipa_file|
+        puts "Found IPA: #{ipa_file} (#{File.size(ipa_file)} bytes)"
+      end
+      
+      # Try to find the IPA file
+      ipa_path = Actions.lane_context[SharedValues::IPA_OUTPUT_PATH]
+      if ipa_path && File.exist?(ipa_path)
+        puts "✅ Found IPA at lane context path: #{ipa_path}"
+      else
+        puts "⚠️  IPA not found at lane context path: #{ipa_path}"
+        # Look for IPA files in common locations
+        possible_ipa_paths = [
+          "./Runner.ipa",
+          "./build/ios/iphoneos/Runner.ipa",
+          "../build/ios/ipa/Runner.ipa"
+        ]
+        
+        possible_ipa_paths.each do |path|
+          if File.exist?(path)
+            puts "✅ Found IPA at: #{path}"
+            ipa_path = path
+            break
+          end
+        end
+      end
+      
+      if ipa_path && File.exist?(ipa_path)
+        puts "📱 Final IPA path: #{ipa_path}"
+        puts "📏 IPA size: #{File.size(ipa_path)} bytes"
+      else
+        puts "❌ No IPA file found!"
+      end
+      
+    rescue => e
+      puts "❌ Build failed: #{e.message}"
+      raise e
+    end
+  end
+
+  desc "Upload to TestFlight using App Store Connect API"
+  lane :upload_testflight do
+    puts "🚀 Uploading to TestFlight..."
+    
+    # Find the IPA file
+    ipa_path = Actions.lane_context[SharedValues::IPA_OUTPUT_PATH] || 
+               Dir.glob("**/*.ipa").first
+    
+    if ipa_path.nil? || !File.exist?(ipa_path)
+      raise "❌ No IPA file found for upload"
+    end
+    
+    puts "📱 Uploading IPA: #{ipa_path}"
+    
+    begin
+      upload_to_testflight(
+        api_key_path: "../AuthKey_F4P3BUR78G.p8",
+        api_key: {
+          key_id: "F4P3BUR78G",
+          issuer_id: "d8b50e72-6330-401d-9aef-4ead356405ca",
+          key_filepath: "../AuthKey_F4P3BUR78G.p8"
+        },
+        skip_waiting_for_build_processing: true,
+        skip_submission: true,
+        ipa: ipa_path
+      )
+      puts "✅ Successfully uploaded to TestFlight!"
+    rescue => e
+      puts "❌ TestFlight upload failed: #{e.message}"
+      raise e
+    end
+  end
+
+  desc "Complete build and upload process"
+  lane :build_and_upload do
+    build_cloud
+    upload_testflight
+  end
+end
