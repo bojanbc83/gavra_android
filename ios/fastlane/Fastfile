@@ -57,6 +57,14 @@ platform :ios do
     puts "Workspace exists: #{File.exist?(workspace_path)}"
 
     begin
+      puts "🔍 Debug: Pre build_app komande"
+      puts "Workspace path: #{workspace_path}"
+      puts "Workspace exists: #{File.exist?(workspace_path)}"
+      
+      # Check iOS deployment target
+      puts "🔍 Checking iOS deployment target..."
+      sh("cd .. && grep -r 'IPHONEOS_DEPLOYMENT_TARGET' . || echo 'No deployment target found'")
+      
       build_app(
         workspace: workspace_path,
         scheme: "Runner",
@@ -70,7 +78,10 @@ platform :ios do
           method: "app-store",
           teamID: "6CY9Q44KMQ",
           signingStyle: "automatic"
-        }
+        },
+        buildlog_path: "./fastlane/logs",
+        output_directory: "./",
+        clean: true
       )
       puts "✅ Build completed successfully!"
       
