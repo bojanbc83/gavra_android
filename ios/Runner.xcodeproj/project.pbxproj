@@ -593,6 +593,7 @@
 				VERSIONING_SYSTEM = "apple-generic";
 				DEVELOPMENT_TEAM = 6CY9Q44KMQ;
 				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				PROVISIONING_PROFILE_SPECIFIER = "Gavra 013 App Store Profile";
 			};
 			name = Release;
