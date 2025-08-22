@@ -37,119 +37,8 @@ platform :ios do
     # Set Xcode path
     xcode_select(selected_xcode)
     puts "🔨 Using Xcode: #{selected_xcode}"
-    
-    # Create keychain for code signing
-    create_keychain(
-      name: "ios-build.keychain",
-      password: "",
-      default_keychain: true,
-      unlock: true,
-      timeout: 3600,
-      lock_when_sleeps: false
-    )
-    
-    # Check for manual signing secrets
-    if ENV["IOS_CERTIFICATE_BASE64"] && ENV["IOS_PROVISIONING_PROFILE_BASE64"]
-      puts "🔐 Setting up manual certificate and provisioning profile for CI/CD"
-      
-      # Import certificate to keychain
-      certificate_path = File.expand_path("./ios_certificate.p12")
-      puts "📄 Writing certificate to: #{certificate_path}"
-      File.write(certificate_path, Base64.decode64(ENV["IOS_CERTIFICATE_BASE64"]))
-      puts "✅ Certificate file created, size: #{File.size(certificate_path)} bytes"
-      
-      begin
-        # First validate certificate with openssl before importing
-        puts "🔍 Validating certificate with openssl..."
-        openssl_result = sh("openssl pkcs12 -in #{certificate_path} -nokeys -noout -passin pass:'#{ENV["IOS_CERTIFICATE_PASSWORD"]}' 2>&1", error_callback: ->(result) { result })
-        puts "OpenSSL validation: #{openssl_result}"
-        
-        # Get certificate details
-        puts "🔍 Getting certificate subject and type..."
-        cert_info = sh("openssl pkcs12 -in #{certificate_path} -nokeys -clcerts -passin pass:'#{ENV["IOS_CERTIFICATE_PASSWORD"]}' | openssl x509 -subject -noout 2>/dev/null || echo 'Could not get certificate info'")
-        puts "Certificate subject: #{cert_info}"
-        
-        # Get certificate purpose
-        cert_purpose = sh("openssl pkcs12 -in #{certificate_path} -nokeys -clcerts -passin pass:'#{ENV["IOS_CERTIFICATE_PASSWORD"]}' | openssl x509 -purpose -noout 2>/dev/null || echo 'Could not get certificate purpose'")
-        puts "Certificate purpose: #{cert_purpose}"
-        
-        # Since first validation with provided password worked, use it
-        puts "✅ Certificate validates with provided password - using it"
-        certificate_password = ENV["IOS_CERTIFICATE_PASSWORD"]
-        
-        # Try alternative import methods with correct password
-        puts "🔧 Trying certificate import with detected password..."
-        
-        # Method 1: Direct security command with correct password
-        puts "Method 1: Direct security import with detected password..."
-        if certificate_password.nil?
-          security_cmd = "security import #{certificate_path} -k ~/Library/Keychains/ios-build.keychain -T /usr/bin/codesign -T /usr/bin/security 2>&1 || echo 'Direct import failed'"
-        else
-          security_cmd = "security import #{certificate_path} -k ~/Library/Keychains/ios-build.keychain -P '#{certificate_password}' -T /usr/bin/codesign -T /usr/bin/security 2>&1 || echo 'Direct import failed'"
-        end
-        
-        security_result = sh(security_cmd)
-        puts "Security import result: #{security_result}"
-        
-        # Method 2: Try Fastlane import with correct password
-        puts "Method 2: Fastlane import with correct password..."
-        begin
-          if certificate_password.nil?
-            import_certificate(
-              certificate_path: certificate_path,
-              keychain_name: "ios-build",
-              log_output: true
-            )
-          else
-            import_certificate(
-              certificate_path: certificate_path,
-              certificate_password: certificate_password,
-              keychain_name: "ios-build",
-              log_output: true
-            )
-          end
-        rescue => fastlane_error
-          puts "Fastlane import failed: #{fastlane_error.message}"
-        end
-        
-        puts "✅ Certificate import attempts completed"
-      rescue => e
-        puts "❌ Certificate import failed: #{e.message}"
-        
-        # Try to get more certificate info
-        puts "🔍 Checking certificate details with different approaches..."
-        
-        # Try without password
-        result1 = sh("openssl pkcs12 -in #{certificate_path} -nokeys -noout 2>&1 || echo 'No-password check failed'")
-        puts "No-password check: #{result1}"
-        
-        # Try with empty password
-        result2 = sh("openssl pkcs12 -in #{certificate_path} -nokeys -noout -passin pass: 2>&1 || echo 'Empty-password check failed'")
-        puts "Empty-password check: #{result2}"
-        
-        raise "Certificate import failed - check password and certificate format"
-      end
-      
-      # Import provisioning profile  
-      profile_path = File.expand_path("./profile.mobileprovision")
-      puts "📄 Writing provisioning profile to: #{profile_path}"
-      File.write(profile_path, Base64.decode64(ENV["IOS_PROVISIONING_PROFILE_BASE64"]))
-      puts "✅ Profile file created, size: #{File.size(profile_path)} bytes"
-      
-      install_provisioning_profile(path: profile_path)
-      
-      # Verify certificate was imported
-      puts "🔍 Checking imported certificates in keychain..."
-      sh("security find-identity -v -p codesigning ios-build.keychain || true")
-      
-      # Clean up
-      File.delete(certificate_path) if File.exist?(certificate_path)
-      File.delete(profile_path) if File.exist?(profile_path)
-      
-      puts "✅ Manual certificate and profile setup completed"
-    else
-      puts "⚠️ Manual signing secrets not found - using automatic signing (local development)"
-    end
+    # Using automatic signing for CI/CD - simpler and more reliable
+    puts "🔐 Using automatic signing with development team: 6CY9Q44KMQ"
 
     # Build the app
     puts "🔨 Starting iOS build process..."
@@ -166,14 +55,11 @@ platform :ios do
         destination: "generic/platform=iOS",
         sdk: "iphoneos",
         skip_package_dependencies_resolution: true,
-        xcargs: "DEVELOPMENT_TEAM=6CY9Q44KMQ CODE_SIGN_STYLE=Manual IPHONEOS_DEPLOYMENT_TARGET=14.0",
+        xcargs: "DEVELOPMENT_TEAM=6CY9Q44KMQ CODE_SIGN_STYLE=Automatic IPHONEOS_DEPLOYMENT_TARGET=14.0",
         export_options: {
           method: "app-store",
           teamID: "6CY9Q44KMQ",
-          signingStyle: "manual",
-          provisioningProfiles: {
-            "com.gavra013.gavraAndroid" => "Gavra 013 App Store Profile"
-          }
+          signingStyle: "automatic"
         }
       )
       puts "✅ Build completed successfully!"
