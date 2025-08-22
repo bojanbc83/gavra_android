@@ -53,8 +53,10 @@ platform :ios do
       puts "🔐 Setting up manual certificate and provisioning profile for CI/CD"
       
       # Import certificate to keychain
-      certificate_path = "ios_certificate.p12"
+      certificate_path = File.expand_path("./ios_certificate.p12")
+      puts "📄 Writing certificate to: #{certificate_path}"
       File.write(certificate_path, Base64.decode64(ENV["IOS_CERTIFICATE_BASE64"]))
+      puts "✅ Certificate file created, size: #{File.size(certificate_path)} bytes"
       
       import_certificate(
         certificate_path: certificate_path,
@@ -63,8 +65,10 @@ platform :ios do
       )
       
       # Import provisioning profile  
-      profile_path = "profile.mobileprovision"
+      profile_path = File.expand_path("./profile.mobileprovision")
+      puts "📄 Writing provisioning profile to: #{profile_path}"
       File.write(profile_path, Base64.decode64(ENV["IOS_PROVISIONING_PROFILE_BASE64"]))
+      puts "✅ Profile file created, size: #{File.size(profile_path)} bytes"
       
       install_provisioning_profile(path: profile_path)
       
