@@ -1,0 +1,66 @@
+name: iOS Build and TestFlight Upload
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  ios-build:
+    name: Build iOS App
+    runs-on: macos-latest
+    timeout-minutes: 45
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.5'
+        cache: true
+        
+    - name: Get Flutter dependencies
+      run: flutter pub get
+      
+    - name: Install iOS dependencies
+      run: |
+        cd ios
+        pod install --repo-update
+        
+    - name: Setup App Store Connect API Key
+      run: |
+        mkdir -p ~/private_keys
+        echo "${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}" | base64 --decode > ~/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}.p8
+        
+    - name: Build iOS Archive
+      run: |
+        cd ios
+        xcodebuild archive \
+          -workspace Runner.xcworkspace \
+          -scheme Runner \
+          -configuration Release \
+          -archivePath build/Runner.xcarchive \
+          DEVELOPMENT_TEAM=6CY9Q44KMQ \
+          CODE_SIGN_STYLE=Automatic
+          
+    - name: Export IPA
+      run: |
+        cd ios
+        xcodebuild -exportArchive \
+          -archivePath build/Runner.xcarchive \
+          -exportPath build/ \
+          -exportOptionsPlist ExportOptionsTestFlight.plist
+          
+    - name: Upload to TestFlight
+      run: |
+        cd ios
+        xcrun altool --upload-app \
+          --type ios \
+          --file "build/Runner.ipa" \
+          --apiKey ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }} \
+          --apiIssuer ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          
+    - name: Build Complete
+      run: echo "iOS build and TestFlight upload completed successfully!"
