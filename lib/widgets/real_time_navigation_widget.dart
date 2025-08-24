@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import '../models/turn_by_turn_instruction.dart';
 import '../models/putnik.dart';
+import '../services/smart_navigation_service.dart';
 
 /// 🧭 REAL-TIME GPS NAVIGATION WIDGET
 /// Prikazuje turn-by-turn instrukcije sa real-time GPS praćenjem
@@ -489,27 +490,114 @@ class _RealTimeNavigationWidgetState extends State<RealTimeNavigationWidget> {
     );
   }
 
+  /// 🎯 SMART NAVIGATION - Optimizuj rutu sa algoritmima
+  Future<void> _optimizeRouteWithSmartNavigation() async {
+    if (_remainingPassengers.isEmpty) {
+      setState(() {
+        _statusMessage = 'Nema putnika za optimizaciju';
+      });
+      return;
+    }
+
+    try {
+      setState(() {
+        _statusMessage = '🎯 Optimizujem rutu sa Smart Navigation...';
+      });
+
+      // Pokreni Smart Navigation optimizaciju
+      final result = await SmartNavigationService.startOptimizedNavigation(
+        putnici: _remainingPassengers,
+        startCity: 'Bela Crkva', // ili dinamički na osnovu trenutne pozicije
+        optimizeForTime: true,
+        useTrafficData: true,
+      );
+
+      if (result.success) {
+        // Ažuriraj rutu sa optimizovanim redosledom
+        setState(() {
+          _remainingPassengers =
+              result.optimizedPutnici ?? _remainingPassengers;
+          _statusMessage = '✅ ${result.message}';
+        });
+
+        // Obavesti parent widget o novoj ruti
+        if (widget.onRouteUpdate != null) {
+          widget.onRouteUpdate!(_remainingPassengers);
+        }
+
+        // Prikaži dodatne informacije o optimizaciji
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('🎯 Ruta optimizovana! ${result.message}'),
+              backgroundColor: Colors.green,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      } else {
+        setState(() {
+          _statusMessage = '❌ ${result.message}';
+        });
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('❌ ${result.message}'),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      setState(() {
+        _statusMessage = '❌ Greška pri optimizaciji: $e';
+      });
+    }
+  }
+
   Widget _buildControlButtons() {
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: Row(
+      child: Column(
         children: [
-          Expanded(
+          // 🎯 SMART NAVIGATION DUGME
+          SizedBox(
+            width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: _isNavigating ? _stopNavigation : _startGPSTracking,
-              icon: Icon(_isNavigating ? Icons.stop : Icons.play_arrow),
-              label: Text(_isNavigating ? 'Zaustavi' : 'Pokreni'),
+              onPressed: _optimizeRouteWithSmartNavigation,
+              icon: const Icon(Icons.route),
+              label: const Text('🎯 Smart Navigation - Optimizuj rutu'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: _isNavigating ? Colors.red : Colors.green,
+                backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 12),
               ),
             ),
           ),
-          const SizedBox(width: 12),
-          ElevatedButton.icon(
-            onPressed: _initializeNavigation,
-            icon: const Icon(Icons.refresh),
-            label: const Text('Osvežи'),
+          const SizedBox(height: 12),
+          // POSTOJEĆI DUGMOVI
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed:
+                      _isNavigating ? _stopNavigation : _startGPSTracking,
+                  icon: Icon(_isNavigating ? Icons.stop : Icons.play_arrow),
+                  label: Text(_isNavigating ? 'Zaustavi' : 'Pokreni'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _isNavigating ? Colors.red : Colors.green,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              ElevatedButton.icon(
+                onPressed: _initializeNavigation,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Osvežи'),
+              ),
+            ],
           ),
         ],
       ),
@@ -539,4 +627,3 @@ class _RealTimeNavigationWidgetState extends State<RealTimeNavigationWidget> {
     }
   }
 }
-

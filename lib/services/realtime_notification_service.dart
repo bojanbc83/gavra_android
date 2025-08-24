@@ -3,6 +3,7 @@ import 'dart:convert';
 // Firebase messaging imports - enabled for multi-channel notifications
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'local_notification_service.dart';
+import 'notification_navigation_service.dart';
 import 'package:logger/logger.dart';
 
 class RealtimeNotificationService {
@@ -36,6 +37,7 @@ class RealtimeNotificationService {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       _logger.i('📱 Firebase message opened: ${message.notification?.title}');
       // Handle navigation based on message data
+      _handleFirebaseNotificationTap(message);
     });
   }
 
@@ -147,6 +149,33 @@ class RealtimeNotificationService {
     } catch (e) {
       _logger.e('❌ Error requesting Firebase permissions: $e');
       return false;
+    }
+  }
+
+  /// Handle Firebase notification tap - navigate to specific passenger
+  static Future<void> _handleFirebaseNotificationTap(
+      RemoteMessage message) async {
+    try {
+      _logger.i('🔔 Handling Firebase notification tap...');
+
+      // Extract notification type and passenger data from Firebase message
+      final notificationType = message.data['type'] ?? 'unknown';
+      final putnikDataString = message.data['putnik'];
+
+      if (putnikDataString != null) {
+        // Parse passenger data from JSON string
+        final Map<String, dynamic> putnikData = jsonDecode(putnikDataString);
+
+        // Use NotificationNavigationService to show popup and navigate
+        await NotificationNavigationService.navigateToPassenger(
+          type: notificationType,
+          putnikData: putnikData,
+        );
+      } else {
+        _logger.w('🔔 No passenger data in Firebase notification');
+      }
+    } catch (e) {
+      _logger.e('❌ Error handling Firebase notification tap: $e');
     }
   }
 }

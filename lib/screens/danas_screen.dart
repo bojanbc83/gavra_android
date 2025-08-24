@@ -207,7 +207,7 @@ class _DanasScreenState extends State<DanasScreen> {
   // Lista varijable - zadržavam zbog UI
   int _currentPassengerIndex = 0;
   bool _isListReordered = false;
-  final bool _useAdvancedNavigation = false;
+  final bool _useAdvancedNavigation = true;
 
   String _selectedGrad = 'Bela Crkva';
   String _selectedVreme = '5:00';
@@ -652,18 +652,12 @@ class _DanasScreenState extends State<DanasScreen> {
             ),
             boxShadow: [
               BoxShadow(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primary
-                    .withOpacity(0.3),
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
                 blurRadius: 16,
                 offset: const Offset(0, 6),
               ),
               BoxShadow(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primary
-                    .withOpacity(0.2),
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
                 blurRadius: 24,
                 offset: const Offset(0, 12),
               ),
@@ -1382,4 +1376,3 @@ class _DanasScreenState extends State<DanasScreen> {
     );
   }
 }
-
