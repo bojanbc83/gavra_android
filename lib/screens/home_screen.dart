@@ -28,6 +28,7 @@ import '../services/haptic_service.dart';
 import '../utils/grad_adresa_validator.dart'; // 🏘️ NOVO za validaciju
 import '../utils/animation_utils.dart';
 import '../utils/text_utils.dart';
+import '../services/update_service.dart'; // 🔄 Automatski update
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -174,6 +175,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     // Inicijalizuj lokalne notifikacije za heads-up i zvuk
     LocalNotificationService.initialize(context);
     RealtimeNotificationService.listenForForegroundNotifications(context);
+
+    // 🔄 Automatska provera update-a nakon 5 sekundi
+    Timer(Duration(seconds: 5), () {
+      if (mounted) {
+        UpdateChecker.checkAndShowUpdate(context);
+      }
+    });
+
     // Inicijalizuj realtime notifikacije za aktivnog vozača
     FirebaseService.getCurrentDriver().then((driver) {
       if (driver != null && driver.isNotEmpty) {
