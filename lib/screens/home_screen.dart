@@ -7,8 +7,7 @@ import '../models/putnik.dart';
 import '../services/putnik_service.dart';
 import '../services/mesecni_putnik_service.dart';
 import '../services/realtime_notification_service.dart';
-import '../services/firebase_service_ios.dart'
-    as FirebaseServiceIOS; // 🍎 iOS Compatible
+import '../services/firebase_service.dart';
 import '../utils/vozac_boja.dart'; // Dodato za centralizovane boje vozača
 
 import '../widgets/bottom_nav_bar_letnji.dart';
@@ -176,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     LocalNotificationService.initialize(context);
     RealtimeNotificationService.listenForForegroundNotifications(context);
     // Inicijalizuj realtime notifikacije za aktivnog vozača
-    FirebaseServiceIOS.FirebaseService.getCurrentDriver().then((driver) {
+    FirebaseService.getCurrentDriver().then((driver) {
       if (driver != null && driver.isNotEmpty) {
         // First request notification permissions
         RealtimeNotificationService.requestNotificationPermissions()
@@ -194,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Future<void> _initializeCurrentDriver() async {
-    final driver = await FirebaseServiceIOS.FirebaseService.getCurrentDriver();
+    final driver = await FirebaseService.getCurrentDriver();
     setState(() {
       // Osiguraj da _currentDriver uvek ima validnu vrednost
       _currentDriver = driver; // Ne postavljaj fallback 'Nepoznat'
@@ -304,7 +303,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  // GitHub Actions + Apple TestFlight automation has replaced manual updates
+  // GitHub Actions automation has replaced manual updates
   Future<void> _showAutomationInfo() async {
     if (!mounted) return;
     showDialog(
@@ -313,8 +312,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         title: const Text('🚀 Automatska Ažuriranja'),
         content: const Text(
           'Aplikacija se sada automatski ažurira preko:\n\n'
-          '📱 Android: GitHub Actions sa email delivery\n'
-          '🍎 iOS: GitHub Actions sa TestFlight upload\n\n'
+          '📱 Android: GitHub Actions sa email delivery\n\n'
           'Nema potrebe za manuelne update-ove! 😊',
         ),
         actions: [

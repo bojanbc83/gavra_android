@@ -1,6 +1,5 @@
 import '../widgets/dug_button.dart';
-import '../services/firebase_service_ios.dart'
-    as FirebaseServiceIOS; // 🍎 iOS Compatible
+import '../services/firebase_service.dart';
 import '../services/realtime_notification_service.dart';
 import '../services/local_notification_service.dart';
 import '../services/statistika_service.dart'; // DODANO za jedinstvenu logiku pazara
@@ -55,7 +54,7 @@ class _AdminScreenState extends State<AdminScreen> {
     // 💸 DEPOZIT SYNC - SA REAL-TIME
     DepozitService.startRealtimeSync();
 
-    FirebaseServiceIOS.FirebaseService.getCurrentDriver().then((driver) {
+    FirebaseService.getCurrentDriver().then((driver) {
       if (driver != null && driver.isNotEmpty) {
         RealtimeNotificationService.initialize();
         _initializeDepoziti(); // Učitaj depozite iz baze
@@ -87,8 +86,7 @@ class _AdminScreenState extends State<AdminScreen> {
 
   void _loadCurrentDriver() async {
     try {
-      final driver =
-          await FirebaseServiceIOS.FirebaseService.getCurrentDriver().timeout(
+      final driver = await FirebaseService.getCurrentDriver().timeout(
         const Duration(seconds: 5),
         onTimeout: () {
           return null;
@@ -157,7 +155,7 @@ class _AdminScreenState extends State<AdminScreen> {
               end: Alignment.bottomRight,
               colors: [
                 Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
               ],
             ),
             borderRadius: const BorderRadius.only(
@@ -169,7 +167,7 @@ class _AdminScreenState extends State<AdminScreen> {
                 color: Theme.of(context)
                     .colorScheme
                     .primary
-                    .withOpacity(0.3),
+                    .withValues(alpha: 0.3),
                 blurRadius: 16,
                 offset: const Offset(0, 6),
               ),
@@ -177,7 +175,7 @@ class _AdminScreenState extends State<AdminScreen> {
                 color: Theme.of(context)
                     .colorScheme
                     .primary
-                    .withOpacity(0.2),
+                    .withValues(alpha: 0.2),
                 blurRadius: 24,
                 offset: const Offset(0, 12),
               ),
@@ -239,8 +237,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                   color: Colors.white.withOpacity(0.2),
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
-                                      color:
-                                          Colors.white.withOpacity(0.4)),
+                                      color: Colors.white.withOpacity(0.4)),
                                 ),
                                 child: const Center(
                                   child: FittedBox(
@@ -292,8 +289,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                   color: Colors.white.withOpacity(0.2),
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
-                                      color:
-                                          Colors.white.withOpacity(0.4)),
+                                      color: Colors.white.withOpacity(0.4)),
                                 ),
                                 child: const Center(
                                   child: FittedBox(
@@ -345,8 +341,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                   color: Colors.white.withOpacity(0.2),
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
-                                      color:
-                                          Colors.white.withOpacity(0.4)),
+                                      color: Colors.white.withOpacity(0.4)),
                                 ),
                                 child: const Center(
                                   child: FittedBox(
@@ -1195,4 +1190,3 @@ class _AdminScreenState extends State<AdminScreen> {
 
   // (Funkcija za dijalog sa dužnicima je uklonjena - sada se koristi DugoviScreen)
 }
-

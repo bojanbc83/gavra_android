@@ -26,7 +26,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'iOS platform is not supported in this Android-only build.',
+        );
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -55,16 +57,5 @@ class DefaultFirebaseOptions {
     messagingSenderId: '560128463615',
     projectId: 'gavra-android-notifications',
     storageBucket: 'gavra-android-notifications.firebasestorage.app',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBqRskM83ktbh7cGauSkrzIO4xZsP3schk',
-    appId: '1:560128463615:ios:3d4f41059763e4b2a3b2ca',
-    messagingSenderId: '560128463615',
-    projectId: 'gavra-android-notifications',
-    storageBucket: 'gavra-android-notifications.firebasestorage.app',
-    iosClientId:
-        '560128463615-3d4f41059763e4b2a3b2ca.apps.googleusercontent.com',
-    iosBundleId: 'com.gavra.gavra013',
   );
 }

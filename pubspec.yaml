@@ -1,10 +1,8 @@
 name: gavra_android
 description: Gavra 013 - Aplikacija za organizaciju polazaka
 
-# ✅ iOS READY verzija
 version: 1.0.8+8
 
-# 📱 iOS Configuration
 environment:
   sdk: ">=3.0.0 <4.0.0"
 

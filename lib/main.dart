@@ -9,13 +9,9 @@ import 'firebase_options.dart';
 import 'supabase_client.dart';
 import 'screens/welcome_screen.dart';
 
-// 🚀 TestFlight Ready - Build trigger for iOS deployment with complete automation
-// ✅ Firebase + OneSignal + Huawei compatibility + Real-time Supabase sync
-// ✅ Automatic TestFlight upload with Apple Developer API integration
-// 🤖 + GitHub Actions Android workflow for unlimited free APK delivery
+// 🤖 GitHub Actions Android workflow for unlimited free APK delivery
 import 'screens/loading_screen.dart';
 import 'services/realtime_notification_service.dart';
-// import 'services/firebase_service.dart'; // Unused
 import 'services/local_notification_service.dart';
 import 'services/theme_service.dart';
 import 'services/gps_service.dart';

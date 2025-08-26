@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 
 // import '../services/putnik_service.dart';
 // import '../services/mesecne_karte_service.dart';
-import '../services/firebase_service_ios.dart'
-    as FirebaseServiceIOS; // 🍎 iOS Compatible
+import '../services/firebase_service.dart';
 import '../services/realtime_notification_service.dart';
 import '../services/statistika_service.dart';
 import '../services/local_notification_service.dart';
@@ -44,7 +43,7 @@ class _StatistikaScreenState extends State<StatistikaScreen>
     _checkDriver();
     // Inicijalizuj heads-up i zvuk notifikacije
     LocalNotificationService.initialize(context);
-    FirebaseServiceIOS.FirebaseService.getCurrentDriver().then((driver) {
+    FirebaseService.getCurrentDriver().then((driver) {
       if (driver != null && driver.isNotEmpty && mounted) {
         RealtimeNotificationService.initialize();
         RealtimeNotificationService.listenForForegroundNotifications(context);
@@ -59,7 +58,7 @@ class _StatistikaScreenState extends State<StatistikaScreen>
   }
 
   Future<void> _checkDriver() async {
-    final driver = await FirebaseServiceIOS.FirebaseService.getCurrentDriver();
+    final driver = await FirebaseService.getCurrentDriver();
     setState(() {
       _currentDriver = driver;
       _checkedDriver = true;
@@ -180,18 +179,12 @@ class _StatistikaScreenState extends State<StatistikaScreen>
             ),
             boxShadow: [
               BoxShadow(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primary
-                    .withOpacity(0.3),
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
                 blurRadius: 16,
                 offset: const Offset(0, 6),
               ),
               BoxShadow(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primary
-                    .withOpacity(0.2),
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
                 blurRadius: 24,
                 offset: const Offset(0, 12),
               ),
@@ -244,12 +237,10 @@ class _StatistikaScreenState extends State<StatistikaScreen>
                                     decoration: BoxDecoration(
                                       color: _tabController.index == 0
                                           ? Colors.white.withOpacity(0.3)
-                                          : Colors.white
-                                              .withOpacity(0.15),
+                                          : Colors.white.withOpacity(0.15),
                                       borderRadius: BorderRadius.circular(12),
                                       border: Border.all(
-                                        color:
-                                            Colors.white.withOpacity(0.4),
+                                        color: Colors.white.withOpacity(0.4),
                                         width: 1,
                                       ),
                                     ),
@@ -277,12 +268,10 @@ class _StatistikaScreenState extends State<StatistikaScreen>
                                     decoration: BoxDecoration(
                                       color: _tabController.index == 1
                                           ? Colors.white.withOpacity(0.3)
-                                          : Colors.white
-                                              .withOpacity(0.15),
+                                          : Colors.white.withOpacity(0.15),
                                       borderRadius: BorderRadius.circular(12),
                                       border: Border.all(
-                                        color:
-                                            Colors.white.withOpacity(0.4),
+                                        color: Colors.white.withOpacity(0.4),
                                         width: 1,
                                       ),
                                     ),
@@ -514,12 +503,14 @@ class _StatistikaScreenState extends State<StatistikaScreen>
                       return Card(
                         margin: const EdgeInsets.only(bottom: 12),
                         elevation: 4, // 🎨 Dodao shadow
-                        color: vozacColor.withOpacity(0.25), // 🎨 POJAČAO sa 0.1 na 0.25
+                        color: vozacColor
+                            .withOpacity(0.25), // 🎨 POJAČAO sa 0.1 na 0.25
                         shape: RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.circular(12), // 🎨 Zaobljeni uglovi
                           side: BorderSide(
-                            color: vozacColor.withOpacity(0.6), // 🎨 Jasniji border
+                            color: vozacColor
+                                .withOpacity(0.6), // 🎨 Jasniji border
                             width: 2,
                           ),
                         ),
@@ -630,5 +621,3 @@ class _StatistikaScreenState extends State<StatistikaScreen>
     }
   }
 }
-
-
