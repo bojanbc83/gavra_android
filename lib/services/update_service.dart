@@ -18,6 +18,8 @@ class UpdateService {
       String currentVersion = packageInfo.version;
 
       print('🔍 Trenutna verzija: $currentVersion');
+      print(
+          '📱 Build mode: ${packageInfo.buildSignature.isEmpty ? "RELEASE" : "DEBUG"}');
 
       // GitHub API poziv
       final response = await http.get(
@@ -34,6 +36,8 @@ class UpdateService {
         // Poredi verzije
         bool hasUpdate = _isNewerVersion(currentVersion, latestVersion);
         print('📊 Ima update: $hasUpdate');
+        print(
+            '🔍 DETALJNO: $currentVersion vs $latestVersion = ${hasUpdate ? "TREBA UPDATE" : "NEMA UPDATE"}');
 
         return hasUpdate;
       } else {
