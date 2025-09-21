@@ -14,10 +14,10 @@ class MesecniPutnikService {
   // 📱 REALTIME STREAM svih mesečnih putnika - OTPORAN NA GREŠKE
   static Stream<List<MesecniPutnik>> streamMesecniPutnici() {
     try {
-      return _supabase
-          .from('dozvoljeni_mesecni_putnici')
-          .stream(primaryKey: ['id'])
-          .order('putnik_ime')
+    return _supabase
+      .from('dozvoljeni_mesecni_putnici')
+      .stream(primaryKey: ['id'])
+      .order('putnik_ime')
           .map((data) {
             if (kDebugMode) {
               debugPrint(
@@ -63,10 +63,10 @@ class MesecniPutnikService {
   // 📱 REALTIME STREAM aktivnih mesečnih putnika - OTPORAN NA GREŠKE
   static Stream<List<MesecniPutnik>> streamAktivniMesecniPutnici() {
     try {
-      return _supabase
-          .from('dozvoljeni_mesecni_putnici')
-          .stream(primaryKey: ['id'])
-          .order('putnik_ime')
+    return _supabase
+      .from('dozvoljeni_mesecni_putnici')
+      .stream(primaryKey: ['id'])
+      .order('putnik_ime')
           .map((data) => data
               .map((json) => MesecniPutnik.fromMap(json))
               .where((putnik) => putnik.aktivan && !putnik.obrisan)
@@ -216,11 +216,11 @@ class MesecniPutnikService {
   // 🔍 DOBIJ mesečnog putnika po ID
   static Future<MesecniPutnik?> getMesecniPutnikById(String id) async {
     try {
-      final response = await _supabase
-          .from('dozvoljeni_mesecni_putnici')
-          .select()
-          .eq('id', id)
-          .single();
+    final response = await _supabase
+      .from('dozvoljeni_mesecni_putnici')
+      .select(_mesecniFields)
+      .eq('id', id)
+      .single();
 
       return MesecniPutnik.fromMap(response);
     } catch (e) {
@@ -235,11 +235,11 @@ class MesecniPutnikService {
   // 🔍 DOBIJ mesečnog putnika po TAČNOM IMENU
   static Future<MesecniPutnik?> getMesecniPutnikByIme(String ime) async {
     try {
-      final response = await _supabase
-          .from('dozvoljeni_mesecni_putnici')
-          .select()
-          .eq('putnik_ime', ime)
-          .single();
+    final response = await _supabase
+      .from('dozvoljeni_mesecni_putnici')
+      .select(_mesecniFields)
+      .eq('putnik_ime', ime)
+      .single();
 
       return MesecniPutnik.fromMap(response);
     } catch (e) {
