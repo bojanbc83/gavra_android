@@ -1,0 +1,9 @@
+﻿# Remote-safe ignore
+build/
+.gradle/
+apk_extracted/
+*.zip
+*.apk
+tmp/
+*.keystore
+*.keystore.*
