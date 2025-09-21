@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../models/mesecni_putnik.dart';
+import '../models/dozvoljeni_mesecni_putnik.dart';
 
 class MesecniPutnikService {
   static final _supabase = Supabase.instance.client;
   // Fields to request from mesecni_putnici when selecting explicitly
   static const String _mesecniFields = '*,'
-      'polasci_po_danu,'
+      // 'polasci_po_danu' removed - column may not exist in canonical table
       'polazak_bc_pon,polazak_bc_uto,polazak_bc_sre,polazak_bc_cet,polazak_bc_pet,'
       'polazak_vs_pon,polazak_vs_uto,polazak_vs_sre,polazak_vs_cet,polazak_vs_pet';
 
@@ -312,7 +312,7 @@ class MesecniPutnikService {
       final dataToSend = putnik.toMap();
       if (kDebugMode) {
         debugPrint('🔧 [DEBUG] Podaci koji se šalju u bazu:');
-        debugPrint('  - polasci_po_danu: ${dataToSend['polasci_po_danu']}');
+        // polasci_po_danu removed; per-day fields should be provided separately
         debugPrint('  - svi podaci: $dataToSend');
       }
 
@@ -623,7 +623,7 @@ class MesecniPutnikService {
     try {
       final brojIzIstorije = await izracunajBrojPutovanjaIzIstorije(id);
 
-      await _supabase.from('mesecni_putnici').update({
+      await _supabase.from('dozvoljeni_mesecni_putnici').update({
         'broj_putovanja': brojIzIstorije,
         'updated_at': DateTime.now().toIso8601String()
       }).eq('id', id);
@@ -684,7 +684,7 @@ class MesecniPutnikService {
     try {
       final brojIzIstorije = await izracunajBrojOtkazivanjaIzIstorije(id);
 
-      await _supabase.from('mesecni_putnici').update({
+      await _supabase.from('dozvoljeni_mesecni_putnici').update({
         'broj_otkazivanja': brojIzIstorije,
         'updated_at': DateTime.now().toIso8601String()
       }).eq('id', id);
@@ -801,7 +801,7 @@ class MesecniPutnikService {
             '🔍 [DEBUG] Pronađeno ${mesecniPutnici.length} aktivnih mesečnih putnika');
         for (final putnik in mesecniPutnici) {
           debugPrint(
-              '🔍 [DEBUG] Putnik: ${putnik['putnik_ime']}, polasci_po_danu: ${putnik['polasci_po_danu']}, radni_dani: ${putnik['radni_dani']}');
+              '🔍 [DEBUG] Putnik: ${putnik['putnik_ime']}, radni_dani: ${putnik['radni_dani']}');
         }
       }
 

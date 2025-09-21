@@ -296,12 +296,12 @@ class _DanasScreenState extends State<DanasScreen> {
       stream: Stream.fromFuture(() async {
         // Fetch ALL active monthly passengers (not just 'zakupljeno')
         const mesecniFields = '*,'
-            'polasci_po_danu,'
+            // 'polasci_po_danu' omitted (use per-day columns)
             'polazak_bc_pon,polazak_bc_uto,polazak_bc_sre,polazak_bc_cet,polazak_bc_pet,'
             'polazak_vs_pon,polazak_vs_uto,polazak_vs_sre,polazak_vs_cet,polazak_vs_pet';
 
         final mesecniResponse = await supabase
-            .from('mesecni_putnici')
+            .from('dozvoljeni_mesecni_putnici')
             .select(mesecniFields)
             .eq('aktivan', true)
             .eq('obrisan', false);

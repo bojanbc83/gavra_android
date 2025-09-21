@@ -1,5 +1,4 @@
-import 'dart:convert';
-import 'mesecni_putnik.dart';
+import 'dozvoljeni_mesecni_putnik.dart';
 import '../utils/mesecni_helpers.dart';
 
 // Enum za statuse putnika
@@ -143,7 +142,7 @@ class Putnik {
       return Putnik.fromPutovanjaIstorija(map);
     }
 
-    // Ako ima putnik_ime, iz mesecni_putnici tabele
+    // Ako ima putnik_ime, iz dozvoljeni_mesecni_putnici tabele
     if (map.containsKey('putnik_ime')) {
       return Putnik.fromMesecniPutnici(map);
     }
@@ -153,7 +152,7 @@ class Putnik {
         'Nepoznata struktura podataka - nisu iz mesecni_putnici ni putovanja_istorija');
   }
 
-  // NOVI: Factory za mesecni_putnici tabelu
+  // NOVI: Factory za dozvoljeni_mesecni_putnici tabelu
   factory Putnik.fromMesecniPutnici(Map<String, dynamic> map) {
     final weekday = DateTime.now().weekday;
     const daniKratice = ['pon', 'uto', 'sre', 'cet', 'pet', 'sub', 'ned'];
@@ -503,49 +502,59 @@ class Putnik {
     final startOfMonth = DateTime(now.year, now.month, 1);
     final endOfMonth = DateTime(now.year, now.month + 1, 0);
 
-    return {
+    final perDay = <String, dynamic>{};
+    final Map<String, dynamic> map = {
       // 'id': id, // Uklonjen - Supabase će auto-generirati UUID
       'putnik_ime': ime,
       'tip': 'radnik', // ili 'ucenik' - treba logiku za određivanje
       'tip_skole': null, // ✅ NOVA KOLONA - možda treba logika
       'broj_telefona': brojTelefona,
-      // Store per-day polasci as canonical JSON
-      'polasci_po_danu': jsonEncode({
-        // map display day (Pon/Uto/...) to kratica used by mesecni_putnici
-        (() {
-          final map = {
-            'Pon': 'pon',
-            'Uto': 'uto',
-            'Sre': 'sre',
-            'Čet': 'cet',
-            'Cet': 'cet',
-            'Pet': 'pet',
-            'Sub': 'sub',
-            'Ned': 'ned'
-          };
-          return map[dan] ?? dan.toLowerCase().substring(0, 3);
-        })(): grad == 'Bela Crkva' ? {'bc': polazak} : {'vs': polazak}
-      }),
-      'adresa_bela_crkva': grad == 'Bela Crkva' ? adresa : null,
-      'adresa_vrsac': grad == 'Vršac' ? adresa : null,
-      'tip_prikazivanja': null, // ✅ NOVA KOLONA - možda treba logika
-      'radni_dani': dan,
-      'aktivan': !obrisan,
-      'status': status ?? 'radi', // ✅ JEDNOSTAVNO - jedna kolona
-      'datum_pocetka_meseca':
-          startOfMonth.toIso8601String().split('T')[0], // OBAVEZNO
-      'datum_kraja_meseca':
-          endOfMonth.toIso8601String().split('T')[0], // OBAVEZNO
-      'ukupna_cena_meseca':
-          iznosPlacanja ?? 0.0, // možda treba cena umesto ovoga
-      'broj_putovanja': 0, // ✅ NOVA KOLONA - default 0
-      'broj_otkazivanja': 0, // ✅ NOVA KOLONA - default 0
-      'poslednje_putovanje':
-          vremePokupljenja?.toIso8601String(), // ✅ TIMESTAMP format
-      // Ne uključujemo 'obrisan' kolonu za putovanja_istorija tabelu
-      'created_at': vremeDodavanja?.toIso8601String(),
-      'updated_at': DateTime.now().toIso8601String(),
     };
+
+    // Build per-day column entry for this Putnik
+    final dayMap = {
+      'Pon': 'pon',
+      'Uto': 'uto',
+      'Sre': 'sre',
+      'Čet': 'cet',
+      'Cet': 'cet',
+      'Pet': 'pet',
+      'Sub': 'sub',
+      'Ned': 'ned'
+    };
+    final short = dayMap[dan] ?? dan.toLowerCase().substring(0, 3);
+    if (grad == 'Bela Crkva') {
+      perDay['polazak_bc_' + short] = polazak;
+    } else {
+      perDay['polazak_vs_' + short] = polazak;
+    }
+
+    // Merge maps
+    map.addAll(perDay);
+
+    // Additional canonical fields
+    map['adresa_bela_crkva'] = grad == 'Bela Crkva' ? adresa : null;
+    map['adresa_vrsac'] = grad == 'Vršac' ? adresa : null;
+    map['tip_prikazivanja'] = null; // may be filled elsewhere
+    map['radni_dani'] = dan;
+    map['aktivan'] = !obrisan;
+    map['status'] = status ?? 'radi';
+    map['datum_pocetka_meseca'] = startOfMonth.toIso8601String().split('T')[0];
+    map['datum_kraja_meseca'] = endOfMonth.toIso8601String().split('T')[0];
+    map['ukupna_cena_meseca'] = iznosPlacanja ?? 0.0;
+    map['broj_putovanja'] = 0;
+    map['broj_otkazivanja'] = 0;
+    map['poslednje_putovanje'] = vremePokupljenja?.toIso8601String();
+    map['created_at'] =
+        vremeDodavanja?.toIso8601String() ?? DateTime.now().toIso8601String();
+    map['updated_at'] = DateTime.now().toIso8601String();
+
+    return map;
+  }
+
+  // Delegacija radi kompatibilnosti sa promenom imena tabele
+  Map<String, dynamic> toDozvoljeniMesecniPutniciMap() {
+    return toMesecniPutniciMap();
   }
 
   // Helper metoda - konvertuje dan u datum sledeće nedelje za taj dan
@@ -644,8 +653,10 @@ class Putnik {
     final weekday = DateTime.now().weekday;
     const daniKratice = ['pon', 'uto', 'sre', 'cet', 'pet', 'sub', 'ned'];
     final danKratica = daniKratice[weekday - 1];
-    // Pronađi prvi polazak za taj dan iz polasciPoDanu
-    String polazak = mesecniPutnik.polasciPoDanu[danKratica]?.first ?? '6:00';
+    // Pronađi prvi polazak za taj dan iz per-day getters
+    final bc = mesecniPutnik.getPolazakBelaCrkvaZaDan(danKratica);
+    final vs = mesecniPutnik.getPolazakVrsacZaDan(danKratica);
+    String polazak = bc ?? vs ?? '6:00';
     return Putnik(
       id: mesecniPutnik.id,
       ime: mesecniPutnik.putnikIme,

@@ -5,7 +5,7 @@
 BEGIN;
 
 ALTER TABLE IF EXISTS public.dozvoljeni_mesecni_putnici
-  ADD COLUMN IF NOT EXISTS polasci_po_danu jsonb NULL,
+  -- legacy JSON `polasci_po_danu` intentionally NOT added; use per-day columns instead
   ADD COLUMN IF NOT EXISTS datum_pocetka_meseca date NULL,
   ADD COLUMN IF NOT EXISTS datum_kraja_meseca date NULL,
   ADD COLUMN IF NOT EXISTS cena numeric(10,2) NULL,

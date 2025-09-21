@@ -1,4 +1,4 @@
-import '../models/mesecni_putnik.dart';
+import '../models/dozvoljeni_mesecni_putnik.dart';
 
 // Funkcija za compute: filtrira i sortira putnike van glavnog threada
 // Sada koristi List<Map<String, dynamic>> za kompatibilnost sa compute
@@ -59,7 +59,7 @@ Map<String, dynamic> _mesecniPutnikToMap(MesecniPutnik p) {
     'tip': p.tip,
     'tip_skole': p.tipSkole,
     'broj_telefona': p.brojTelefona,
-    'polasci_po_danu': p.polasciPoDanu,
+    // 'polasci_po_danu' removed; consumers should use per-day getters
     'adresa_bela_crkva': p.adresaBelaCrkva,
     'adresa_vrsac': p.adresaVrsac,
     // legacy single-time fields removed

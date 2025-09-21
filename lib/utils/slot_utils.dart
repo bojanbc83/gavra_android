@@ -134,7 +134,7 @@ class SlotUtils {
     };
   }
 
-  // Helper: convert ISO date string to day abbreviation used in mesecni_putnici
+  // Helper: convert ISO date string to day abbreviation used in dozvoljeni_mesecni_putnici
   static String isoDateToDayAbbr(String isoDate) {
     try {
       final dt = DateTime.parse(isoDate);
