@@ -1,11 +1,9 @@
-// 'dart:typed_data' not required; elements available via Flutter packages
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:intl/intl.dart';
-import 'package:flutter/foundation.dart';
-import '../utils/logging.dart';
 import '../models/putnik.dart';
 import '../services/putnik_service.dart';
 import '../utils/text_utils.dart';
@@ -13,32 +11,15 @@ import '../utils/text_utils.dart';
 class PrintingService {
   static final PutnikService _putnikService = PutnikService();
 
-  // Use centralized logger
-
   /// Štampa spisak putnika za selektovani dan i vreme
   static Future<void> printPutniksList(String selectedDay, String selectedVreme,
       String selectedGrad, BuildContext context) async {
     try {
-      dlog('📄 Priprema spiska putnika za štampanje...');
+      debugPrint('📄 Priprema spiska putnika za štampanje...');
 
       // ✅ KORISTI ISTI STREAM kao home_screen za tačne podatke
-      // Try to compute isoDate from selectedDay (if present) - otherwise leave null
-      String? isoDate;
-      try {
-        // selectedDay is a full name like "Ponedeljak" - map to next matching date (best-effort)
-        // Fallback: use today
-        isoDate = DateTime.now().toIso8601String().split('T')[0];
-      } catch (_) {
-        isoDate = DateTime.now().toIso8601String().split('T')[0];
-      }
-
-      List<Putnik> sviPutnici = await _putnikService
-          .streamKombinovaniPutniciFiltered(
-            isoDate: isoDate,
-            grad: selectedGrad,
-            vreme: selectedVreme,
-          )
-          .first;
+      List<Putnik> sviPutnici =
+          await _putnikService.streamKombinovaniPutnici().first;
 
       // Konvertuj pun naziv dana u kraticu za poređenje sa bazom
       String getDayAbbreviation(String fullDayName) {
@@ -156,9 +137,9 @@ class PrintingService {
             'Spisak_putnika_${selectedDay}_${selectedVreme}_${selectedGrad}_${DateFormat('dd_MM_yyyy').format(DateTime.now())}.pdf',
       );
 
-      dlog('✅ PDF kreiran uspešno!');
+      debugPrint('✅ PDF kreiran uspešno!');
     } catch (e) {
-      dlog('❌ Greška pri štampanju: $e');
+      debugPrint('❌ Greška pri štampanju: $e');
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

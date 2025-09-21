@@ -1,11 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:async';
-import 'dart:convert';
 import 'putnik_service.dart';
 import 'statistika_service.dart';
-import '../utils/logging.dart';
-import 'realtime_service.dart';
 
 class DailyCheckInService {
   static const String _checkInPrefix = 'daily_checkin_';
@@ -16,75 +14,14 @@ class DailyCheckInService {
 
   /// Stream za real-time ažuriranje sitnog novca u UI
   static Stream<double> streamTodayAmount(String vozac) {
-    // Odmah pošalji trenutnu vrednost (remote-first)
-    getTodayAmountRemote(vozac).then((amount) {
+    // Odmah pošalji trenutnu vrednost
+    getTodayAmount(vozac).then((amount) {
       if (!_sitanNovacController.isClosed) {
         _sitanNovacController.add(amount ?? 0.0);
       }
     });
 
     return _sitanNovacController.stream;
-  }
-
-  /// Inicijalizuj realtime stream za vozača tako da kocka prati bazu
-  static StreamSubscription initializeRealtimeForDriver(String vozac) {
-    // Start centralized realtime subscriptions for this driver
-    try {
-      RealtimeService.instance.startForDriver(vozac);
-    } catch (e) {
-      dlog('⚠️ RealtimeService.startForDriver failed: $e');
-    }
-
-    // Return a subscription to the centralized dailyCheckinsStream so caller
-    // can cancel their local listener when needed.
-    return RealtimeService.instance.dailyCheckinsStream.listen((rows) {
-      try {
-        for (final row in rows) {
-          if (row['vozac'] == vozac) {
-            final kusur = (row['kusur_iznos'] ?? 0).toDouble();
-            if (!_sitanNovacController.isClosed) {
-              _sitanNovacController.add(kusur);
-            }
-          }
-        }
-      } catch (e) {
-        dlog('⚠️ Realtime daily_checkins parsing error (central): $e');
-      }
-    });
-  }
-
-  /// Zaustavi centralizovane realtime pretplate za vozača
-  static Future<void> stopRealtimeForDriver() async {
-    try {
-      await RealtimeService.instance.stopForDriver();
-    } catch (e) {
-      dlog('⚠️ stopRealtimeForDriver failed: $e');
-    }
-  }
-
-  /// Pokušaj prvo pročitati vrednost iz Supabase; fallback na SharedPreferences
-  static Future<double?> getTodayAmountRemote(String vozac) async {
-    try {
-      final supabase = Supabase.instance.client;
-      final today = DateTime.now().toIso8601String().split('T')[0];
-      final res = await supabase
-          .from('daily_checkins')
-          .select('kusur_iznos')
-          .eq('vozac', vozac)
-          .eq('datum', today)
-          .maybeSingle();
-
-      if (res is Map<String, dynamic> && res['kusur_iznos'] != null) {
-        final val = res['kusur_iznos'];
-        if (val is num) return val.toDouble();
-        if (val is String) return double.tryParse(val) ?? 0.0;
-      }
-    } catch (e) {
-      dlog('⚠️ getTodayAmountRemote failed: $e');
-    }
-
-    // fallback na lokalno
-    return getTodayAmount(vozac);
   }
 
   /// Proveri da li je vozač već uradio check-in danas
@@ -106,27 +43,14 @@ class DailyCheckInService {
 
     try {
       // Sačuvaj u Supabase (ako postoji tabela)
-      final savedRow = await _saveToSupabase(vozac, sitanNovac, today,
+      await _saveToSupabase(vozac, sitanNovac, today,
           dnevniPazari: dnevniPazari);
-
-      // Ako smo dobili potvrdu sa servera, emituj vrednost iz servera
-      if (savedRow != null) {
-        final serverVal = savedRow['kusur_iznos'];
-        double emitVal = 0.0;
-        if (serverVal is num) emitVal = serverVal.toDouble();
-        if (serverVal is String) emitVal = double.tryParse(serverVal) ?? 0.0;
-
-        if (!_sitanNovacController.isClosed) {
-          _sitanNovacController.add(emitVal);
-        }
-
-        dlog(
-            '✅ Supabase save successful for $vozac: Kusur=$emitVal RSD, Pazari=$dnevniPazari RSD');
-      }
+      debugPrint(
+          '✅ Supabase save successful for $vozac: Kusur=$sitanNovac RSD, Pazari=$dnevniPazari RSD');
     } catch (e) {
       // Ako je RLS blokirao ili tabela ne postoji, nastavi sa lokalnim čuvanjem
-      dlog('⚠️ Supabase save failed (RLS ili tabela ne postoji): $e');
-      dlog('📱 Koristiće se samo lokalno čuvanje u SharedPreferences');
+      debugPrint('⚠️ Supabase save failed (RLS ili tabela ne postoji): $e');
+      debugPrint('📱 Koristiće se samo lokalno čuvanje u SharedPreferences');
       // Ne prosleđuj grešku dalje - lokalno čuvanje je dovoljno
     }
 
@@ -138,16 +62,16 @@ class DailyCheckInService {
       await prefs.setDouble('${todayKey}_pazari', dnevniPazari);
       await prefs.setString('${todayKey}_timestamp', today.toIso8601String());
 
-      // 🔄 Ako remote nije potvrdio ranije, emitujemo lokalnu vrednost
+      // 🔄 EMIT NOVI IZNOS NA STREAM ZA REAL-TIME UPDATE
       if (!_sitanNovacController.isClosed) {
         _sitanNovacController.add(sitanNovac);
       }
 
-      dlog(
+      debugPrint(
           '✅ Local save successful for $vozac: Kusur=$sitanNovac RSD, Pazari=$dnevniPazari RSD');
     } catch (e) {
       // Ovo je ozbiljna greška - lokalno čuvanje mora da radi
-      dlog('❌ CRITICAL: Local save failed: $e');
+      debugPrint('❌ CRITICAL: Local save failed: $e');
       rethrow; // Proslijedi grešku jer je kritična
     }
   }
@@ -184,64 +108,50 @@ class DailyCheckInService {
   }
 
   /// Sačuvaj u Supabase tabelu daily_checkins
-  static Future<Map<String, dynamic>?> _saveToSupabase(
+  static Future<void> _saveToSupabase(
       String vozac, double sitanNovac, DateTime datum,
       {double dnevniPazari = 0.0}) async {
     final supabase = Supabase.instance.client;
 
     try {
       // Prvo pokušaj da sačuvaš u tabelu
-      final response = await supabase
-          .from('daily_checkins')
-          .upsert({
-            'vozac': vozac,
-            'datum': datum.toIso8601String().split('T')[0], // YYYY-MM-DD format
-            'kusur_iznos': sitanNovac,
-            'dnevni_pazari': dnevniPazari,
-            'created_at': datum.toIso8601String(),
-          })
-          .select()
-          .maybeSingle();
+      await supabase.from('daily_checkins').upsert({
+        'vozac': vozac,
+        'datum': datum.toIso8601String().split('T')[0], // YYYY-MM-DD format
+        'kusur_iznos': sitanNovac,
+        'dnevni_pazari': dnevniPazari,
+        'created_at': datum.toIso8601String(),
+      });
 
-      dlog(
+      debugPrint(
           '✅ Supabase daily_checkins: Uspešno sačuvano za $vozac (Kusur: $sitanNovac RSD, Pazari: $dnevniPazari RSD)');
-
-      // Vrati eventualno sačuvani red kako bi pozivalac mogao da koristi potvrđene vrednosti
-      if (response is Map<String, dynamic>) return response;
-      return null;
     } on PostgrestException catch (e) {
-      dlog('❌ PostgrestException: ${e.code} - ${e.message}');
+      debugPrint('❌ PostgrestException: ${e.code} - ${e.message}');
 
       // Ako je tabela missing, pokušaj da je kreiraš
       if (e.code == 'PGRST106' ||
           e.message.contains('does not exist') ||
           e.code == '404') {
-        dlog('🏗️ Tabela daily_checkins ne postoji - pokušavam kreiranje...');
+        debugPrint(
+            '🏗️ Tabela daily_checkins ne postoji - pokušavam kreiranje...');
         await _createDailyCheckinsTable();
 
         // Ponovi pokušaj čuvanja nakon kreiranja tabele
-        final response = await supabase
-            .from('daily_checkins')
-            .upsert({
-              'vozac': vozac,
-              'datum': datum.toIso8601String().split('T')[0],
-              'kusur_iznos': sitanNovac,
-              'dnevni_pazari': dnevniPazari,
-              'created_at': datum.toIso8601String(),
-            })
-            .select()
-            .maybeSingle();
+        await supabase.from('daily_checkins').upsert({
+          'vozac': vozac,
+          'datum': datum.toIso8601String().split('T')[0],
+          'kusur_iznos': sitanNovac,
+          'dnevni_pazari': dnevniPazari,
+          'created_at': datum.toIso8601String(),
+        });
 
-        dlog(
+        debugPrint(
             '✅ Supabase daily_checkins: Kreirao tabelu i sačuvao za $vozac (Kusur: $sitanNovac RSD, Pazari: $dnevniPazari RSD)');
-
-        if (response is Map<String, dynamic>) return response;
-        return null;
       } else {
         rethrow; // Proslijedi dalju grešku
       }
     } catch (e) {
-      dlog('❌ Neočekivana greška u _saveToSupabase: $e');
+      debugPrint('❌ Neočekivana greška u _saveToSupabase: $e');
       rethrow;
     }
   }
@@ -253,10 +163,10 @@ class DailyCheckInService {
 
       // Pokušaj kreiranje preko RPC ako postoji
       await supabase.rpc('create_daily_checkins_table_if_not_exists');
-      dlog('✅ Tabela daily_checkins kreirana preko RPC');
+      debugPrint('✅ Tabela daily_checkins kreirana preko RPC');
     } catch (e) {
-      dlog('⚠️ Ne mogu da kreiram tabelu preko RPC: $e');
-      dlog('💡 Molim te kreiraj tabelu ručno u Supabase SQL editoru');
+      debugPrint('⚠️ Ne mogu da kreiram tabelu preko RPC: $e');
+      debugPrint('💡 Molim te kreiraj tabelu ručno u Supabase SQL editoru');
       // Ne bacaj grešku jer tabela možda postoji ali RPC ne radi
     }
   }
@@ -314,18 +224,19 @@ class DailyCheckInService {
       // Sačuvaj u Supabase (ako postoji tabela)
       await _savePopisToSupabase(vozac, popisPodaci, datum);
     } catch (e) {
-      dlog('Supabase save failed for popis: $e');
+      debugPrint('Supabase save failed for popis: $e');
     }
 
     // Sačuvaj lokalno u SharedPreferences
     final prefs = await SharedPreferences.getInstance();
-    // Sačuvaj `popis` kao JSON string da bismo ga kasnije pouzdano parsirali
-    final popisJsonString = jsonEncode(popisPodaci);
-    await prefs.setString('${dateKey}_popis', popisJsonString);
+    final popisJson = Map<String, String>.from(
+        popisPodaci.map((key, value) => MapEntry(key, value.toString())));
+
+    await prefs.setString('${dateKey}_popis', popisJson.toString());
     await prefs.setString(
         '${dateKey}_popis_timestamp', datum.toIso8601String());
 
-    dlog(
+    debugPrint(
         '✅ Dnevni popis sačuvan za $vozac na dan ${datum.day}.${datum.month}.${datum.year}');
   }
 
@@ -342,21 +253,12 @@ class DailyCheckInService {
 
       final popisString = prefs.getString('${dateKey}_popis');
       if (popisString != null) {
-        // Parsiraj JSON nazad u Map<String, dynamic>
-        try {
-          final decoded = jsonDecode(popisString) as Map<String, dynamic>;
-          return {
-            'datum': checkDate,
-            'popis': decoded,
-          };
-        } catch (e) {
-          // Ako parsing padne, vrati raw string kao fallback
-          dlog('⚠️ JSON parse failed for daily popis: $e');
-          return {
-            'datum': checkDate,
-            'popis': popisString,
-          };
-        }
+        // Parsiraj string nazad u Map
+        // TODO: Dodati JSON parsing ako bude potrebno
+        return {
+          'datum': checkDate,
+          'popis': popisString,
+        };
       }
     }
 
@@ -387,7 +289,7 @@ class DailyCheckInService {
     try {
       // 🚫 PRESKAČI VIKENDE - ne radi se subotom i nedeljom
       if (targetDate.weekday == 6 || targetDate.weekday == 7) {
-        dlog(
+        debugPrint(
             '🚫 Preskačem automatski popis za vikend (${targetDate.weekday == 6 ? "Subota" : "Nedelja"}) ${targetDate.day}.${targetDate.month}.${targetDate.year}');
         return null;
       }
@@ -401,12 +303,8 @@ class DailyCheckInService {
       final dayEnd = DateTime(
           targetDate.year, targetDate.month, targetDate.day, 23, 59, 59);
 
-      // 2. KOMBINOVANI PUTNICI ZA DATUM (iz realtime) - koristimo server-filter
-      final isoDate =
-          '${targetDate.year.toString().padLeft(4, '0')}-${targetDate.month.toString().padLeft(2, '0')}-${targetDate.day.toString().padLeft(2, '0')}';
-      final putnici = await putnikService
-          .streamKombinovaniPutniciFiltered(isoDate: isoDate)
-          .first;
+      // 2. KOMBINOVANI PUTNICI ZA DATUM (iz realtime)
+      final putnici = await putnikService.streamKombinovaniPutnici().first;
 
       // Filtriraj putnice za ciljani datum i vozača
       final putnicZaDatum = putnici.where((putnik) {
@@ -466,10 +364,10 @@ class DailyCheckInService {
       try {
         kilometraza =
             await StatistikaService.getKilometrazu(vozac, dayStart, dayEnd);
-        dlog(
+        debugPrint(
             '🚗 GPS kilometraža za $vozac za ${targetDate.day}.${targetDate.month}: ${kilometraza.toStringAsFixed(1)} km');
       } catch (e) {
-        dlog('⚠️ Greška pri GPS računanju kilometraže: $e');
+        debugPrint('⚠️ Greška pri GPS računanju kilometraže: $e');
         kilometraza = 0.0; // Fallback na 0 umesto dummy vrednost
       }
 
@@ -495,7 +393,7 @@ class DailyCheckInService {
 
       return automatskiPopis;
     } catch (e) {
-      dlog('Greška pri automatskom generisanju popisa: $e');
+      debugPrint('Greška pri automatskom generisanju popisa: $e');
       return null;
     }
   }
@@ -524,9 +422,9 @@ class DailyCheckInService {
         'created_at': datum.toIso8601String(),
       });
 
-      dlog('✅ Automatski popis sačuvan u Supabase daily_reports tabelu');
+      debugPrint('✅ Automatski popis sačuvan u Supabase daily_reports tabelu');
     } catch (e) {
-      dlog('❌ Greška pri čuvanju popisa u Supabase: $e');
+      debugPrint('❌ Greška pri čuvanju popisa u Supabase: $e');
       // Tabela daily_reports možda ne postoji - potrebno je kreirati ručno
       rethrow;
     }

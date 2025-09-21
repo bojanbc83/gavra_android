@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:flutter/foundation.dart';
-import '../utils/logging.dart';
+import 'package:flutter/foundation.dart'; // DODANO za kDebugMode
 import 'package:geolocator/geolocator.dart'; // 🗺️ DODANO za OpenStreetMap
 import 'package:supabase_flutter/supabase_flutter.dart'; // DODANO za direktne pozive
 import 'package:url_launcher/url_launcher.dart'; // 🗺️ DODANO za OpenStreetMap
@@ -20,20 +18,14 @@ import '../utils/date_utils.dart'
 import '../services/statistika_service.dart'; // DODANO za jedinstvenu logiku pazara
 import '../services/realtime_route_tracking_service.dart'; // 🚗 NOVO
 import '../services/putnik_service.dart'; // 🆕 DODANO za nove metode
-import '../services/realtime_service.dart';
 import '../utils/vozac_boja.dart'; // 🎯 DODANO za konzistentne boje vozača
 import '../widgets/putnik_list.dart';
 import '../widgets/real_time_navigation_widget.dart'; // 🧭 NOVO navigation widget
 
 import '../widgets/bottom_nav_bar_letnji.dart'; // 🚀 DODANO za letnji nav bar
-import '../widgets/bottom_nav_bar_zimski.dart';
-import '../utils/schedule_utils.dart';
-import '../utils/slot_utils.dart';
 import 'dugovi_screen.dart';
 import '../services/local_notification_service.dart';
 import '../utils/grad_adresa_validator.dart'; // 🏘️ NOVO za validaciju gradova
-
-// Using centralized logger
 
 class DanasScreen extends StatefulWidget {
   final String? highlightPutnikIme;
@@ -54,42 +46,10 @@ class DanasScreen extends StatefulWidget {
 class _DanasScreenState extends State<DanasScreen> {
   final supabase = Supabase.instance.client; // DODANO za direktne pozive
   final _putnikService = PutnikService(); // 🆕 DODANO PutnikService instanca
-  final Set<String> _resettingSlots = {};
-  Timer? _resetDebounceTimer;
 
   // ✅ KORISTI UTILS FUNKCIJU UMESTO DUPLIRANE LOGIKE
   DateTime _getTargetDateForWeekend(DateTime today) {
     return app_date_utils.DateUtils.getWeekendTargetDate(today);
-  }
-
-  Widget _buildPopisButton() {
-    return SizedBox(
-      height: 26,
-      child: ElevatedButton.icon(
-        onPressed: () => _showPopisDana(),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.deepOrange.shade600,
-          foregroundColor: Colors.white,
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-        ),
-        icon: const Icon(
-          Icons.assessment,
-          size: 12,
-        ),
-        label: const Text(
-          'POPIS',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 11,
-            letterSpacing: 0.5,
-          ),
-        ),
-      ),
-    );
   }
 
   // ✅ KORISTI UTILS FUNKCIJU UMESTO DUPLIRANE LOGIKE
@@ -161,7 +121,7 @@ class _DanasScreenState extends State<DanasScreen> {
         'ostalo': ostalo, // 10 - ostalo da se vrati
       };
     } catch (e) {
-      dlog('❌ Greška pri računanju đačkih statistika: $e');
+      debugPrint('❌ Greška pri računanju đačkih statistika: $e');
       return {
         'ukupno': 0,
         'povratak': 0,
@@ -192,6 +152,7 @@ class _DanasScreenState extends State<DanasScreen> {
         final monthStr = now.month.toString().padLeft(2, '0');
         final yearStr = now.year.toString();
 
+        // VREME - sati, minuti, sekunde
         final hourStr = now.hour.toString().padLeft(2, '0');
         final minuteStr = now.minute.toString().padLeft(2, '0');
         final secondStr = now.second.toString().padLeft(2, '0');
@@ -199,6 +160,7 @@ class _DanasScreenState extends State<DanasScreen> {
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // ROW SA TRI DELA: DATUM - DAN - VREME
             SizedBox(
               height: 24,
               child: Row(
@@ -206,7 +168,7 @@ class _DanasScreenState extends State<DanasScreen> {
                 children: [
                   // LEVO - DATUM
                   Text(
-                    '$dayStr.$monthStr.$yearStr',
+                    '$dayStr.$monthStr.${yearStr.substring(2)}',
                     style: const TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w800,
@@ -286,26 +248,36 @@ class _DanasScreenState extends State<DanasScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 8, vertical: 2), // povećao sa 4 na 8
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.school, size: 12),
-                const SizedBox(width: 4),
+                const Icon(Icons.school, size: 12), // povećao sa 9 na 12
+                const SizedBox(width: 2), // povećao sa 1 na 2
+                // UKUPNO UJUTRO (belo) - PRVI
                 Text(
                   '$ukupnoUjutro',
                   style: const TextStyle(
-                    fontSize: 14,
+                    fontSize: 14, // povećao sa 13 na 14
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
-                const SizedBox(width: 6),
+                const Text(
+                  '/',
+                  style: TextStyle(
+                    fontSize: 14, // povećao sa 13 na 14
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                // OSTALO (crveno) - DRUGI
                 Text(
                   '$ostalo',
                   style: const TextStyle(
-                    fontSize: 14,
+                    fontSize: 14, // povećao sa 13 na 14
                     fontWeight: FontWeight.bold,
                     color: Colors.redAccent,
                   ),
@@ -479,8 +451,9 @@ class _DanasScreenState extends State<DanasScreen> {
   // 🗺️ DUGME ZA GOOGLE MAPS NAVIGACIJU
   Widget _buildMapsButton() {
     final hasOptimizedRoute = _isRouteOptimized && _optimizedRoute.isNotEmpty;
+
     return SizedBox(
-      height: 26,
+      height: 26, // povećao sa 24 na 26 za konzistentnost
       child: ElevatedButton.icon(
         onPressed: hasOptimizedRoute ? () => _openOSMNavigation() : null,
         style: ElevatedButton.styleFrom(
@@ -497,11 +470,43 @@ class _DanasScreenState extends State<DanasScreen> {
           Icons.navigation,
           size: 12,
         ),
-        label: Text(
-          hasOptimizedRoute ? 'Otvori navigaciju' : 'Navigacija',
-          style: const TextStyle(
+        label: const Text(
+          'Mapa',
+          style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 13,
+            fontSize: 13, // povećao sa 12 na 13
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 📊 DUGME ZA POPIS DANA
+  Widget _buildPopisButton() {
+    return SizedBox(
+      height: 26, // povećao sa 24 na 26 za konzistentnost
+      child: ElevatedButton.icon(
+        onPressed: () => _showPopisDana(),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.deepOrange.shade600,
+          foregroundColor: Colors.white,
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          padding: const EdgeInsets.symmetric(
+              horizontal: 8, vertical: 2), // smanjio sa 10 na 8
+        ),
+        icon: const Icon(
+          Icons.assessment,
+          size: 12,
+        ),
+        label: const Text(
+          'POPIS',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 11, // povećao sa 10 na 11
+            letterSpacing: 0.5,
           ),
         ),
       ),
@@ -635,45 +640,40 @@ class _DanasScreenState extends State<DanasScreen> {
 
   // 📊 POPIS DANA - REALTIME PODACI SA ISTIM NAZIVIMA KAO U STATISTIKA SCREEN
   Future<void> _showPopisDana() async {
-    dlog('🔥 [POPIS] 1. Početak _showPopisDana funkcije');
+    debugPrint('🔥 [POPIS] 1. Početak _showPopisDana funkcije');
     final vozac = _currentDriver ?? 'Nepoznat';
-    dlog('🔥 [POPIS] 2. Vozač: $vozac');
+    debugPrint('🔥 [POPIS] 2. Vozač: $vozac');
 
     try {
       // 1. OSNOVNI PODACI
       final today = DateTime.now();
       final dayStart = DateTime(today.year, today.month, today.day);
       final dayEnd = DateTime(today.year, today.month, today.day, 23, 59, 59);
-      dlog('🔥 [POPIS] 3. Datum postavljen: ${dayStart.toString()}');
+      debugPrint('🔥 [POPIS] 3. Datum postavljen: ${dayStart.toString()}');
 
       // 2. REALTIME STREAM ZA KOMBINOVANE PUTNIKE
-      dlog('🔥 [POPIS] 4. Učitavam putnike...');
+      debugPrint('🔥 [POPIS] 4. Učitavam putnike...');
       late List<Putnik> putnici;
       try {
-        final isoDate = DateTime.now().toIso8601String().split('T')[0];
-        final stream = PutnikService().streamKombinovaniPutniciFiltered(
-          isoDate: isoDate,
-          grad: widget.filterGrad ?? _selectedGrad,
-          vreme: widget.filterVreme ?? _selectedVreme,
-        );
+        final stream = PutnikService().streamKombinovaniPutnici();
         putnici = await stream.first.timeout(const Duration(seconds: 10));
-        dlog('🔥 [POPIS] 5. Putnici učitani: ${putnici.length}');
+        debugPrint('🔥 [POPIS] 5. Putnici učitani: ${putnici.length}');
       } catch (e) {
-        dlog('🔥 [POPIS] 5.ERROR: Greška pri učitavanju putnika: $e');
+        debugPrint('🔥 [POPIS] 5.ERROR: Greška pri učitavanju putnika: $e');
         putnici = []; // Prazan list kao fallback
-        dlog('🔥 [POPIS] 5.FALLBACK: Koristim prazan list putnika');
+        debugPrint('🔥 [POPIS] 5.FALLBACK: Koristim prazan list putnika');
       }
 
       // 3. REALTIME DETALJNE STATISTIKE - IDENTIČNE SA STATISTIKA SCREEN
-      dlog('🔥 [POPIS] 6. Računam detaljne statistike...');
+      debugPrint('🔥 [POPIS] 6. Računam detaljne statistike...');
       final detaljneStats =
           await StatistikaService.detaljneStatistikePoVozacima(
               putnici, dayStart, dayEnd);
       final vozacStats = detaljneStats[vozac] ?? {};
-      dlog('🔥 [POPIS] 7. Statistike računate: $vozacStats');
+      debugPrint('🔥 [POPIS] 7. Statistike računate: $vozacStats');
 
       // 4. REALTIME PAZAR STREAM
-      dlog('🔥 [POPIS] 8. Računam pazar stream...');
+      debugPrint('🔥 [POPIS] 8. Računam pazar stream...');
       late double ukupanPazar;
       try {
         ukupanPazar = await StatistikaService.streamPazarSvihVozaca(
@@ -681,45 +681,46 @@ class _DanasScreenState extends State<DanasScreen> {
             .map((pazarMap) => pazarMap[vozac] ?? 0.0)
             .first
             .timeout(const Duration(seconds: 10));
-        dlog('🔥 [POPIS] 9. Ukupan pazar: $ukupanPazar');
+        debugPrint('🔥 [POPIS] 9. Ukupan pazar: $ukupanPazar');
       } catch (e) {
-        dlog('🔥 [POPIS] 9.ERROR: Greška pri učitavanju pazara: $e');
+        debugPrint('🔥 [POPIS] 9.ERROR: Greška pri učitavanju pazara: $e');
         ukupanPazar = 0.0; // Fallback vrednost
-        dlog('🔥 [POPIS] 9.FALLBACK: Koristim pazar = 0.0');
+        debugPrint('🔥 [POPIS] 9.FALLBACK: Koristim pazar = 0.0');
       }
 
       // 5. SITAN NOVAC
-      dlog('🔥 [POPIS] 10. Učitavam sitan novac...');
+      debugPrint('🔥 [POPIS] 10. Učitavam sitan novac...');
       final sitanNovac = await DailyCheckInService.getTodayAmount(vozac);
-      dlog('🔥 [POPIS] 11. Sitan novac: $sitanNovac');
+      debugPrint('🔥 [POPIS] 11. Sitan novac: $sitanNovac');
 
       // 6. MAPIRANJE PODATAKA - IDENTIČNO SA STATISTIKA SCREEN
-      dlog('🔥 [POPIS] 12. Mapiram podatke...');
+      debugPrint('🔥 [POPIS] 12. Mapiram podatke...');
       final dodatiPutnici = (vozacStats['dodati'] ?? 0) as int;
       final otkazaniPutnici = (vozacStats['otkazani'] ?? 0) as int;
       final naplaceniPutnici = (vozacStats['naplaceni'] ?? 0) as int;
       final pokupljeniPutnici = (vozacStats['pokupljeni'] ?? 0) as int;
       final dugoviPutnici = (vozacStats['dugovi'] ?? 0) as int;
       final mesecneKarte = (vozacStats['mesecneKarte'] ?? 0) as int;
-      dlog(
+      debugPrint(
           '🔥 [POPIS] 13. Podaci mapirani - dodati: $dodatiPutnici, pazar: $ukupanPazar');
 
       // 🚗 REALTIME GPS KILOMETRAŽA (umesto statične vrednosti)
-      dlog('🔥 [POPIS] 14. Računam GPS kilometražu...');
+      debugPrint('🔥 [POPIS] 14. Računam GPS kilometražu...');
       late double kilometraza;
       try {
         kilometraza =
             await StatistikaService.getKilometrazu(vozac, dayStart, dayEnd);
-        dlog(
+        debugPrint(
             '🚗 GPS kilometraža za $vozac danas: ${kilometraza.toStringAsFixed(1)} km');
       } catch (e) {
-        dlog('⚠️ Greška pri GPS računanju kilometraže: $e');
+        debugPrint('⚠️ Greška pri GPS računanju kilometraže: $e');
         kilometraza = 0.0; // Fallback vrednost
       }
-      dlog('🔥 [POPIS] 15. Kilometraža: ${kilometraza.toStringAsFixed(1)} km');
+      debugPrint(
+          '🔥 [POPIS] 15. Kilometraža: ${kilometraza.toStringAsFixed(1)} km');
 
       // 7. PRIKAŽI POPIS DIALOG SA REALTIME PODACIMA
-      dlog('🔥 [POPIS] 16. Pozivam _showPopisDialog...');
+      debugPrint('🔥 [POPIS] 16. Pozivam _showPopisDialog...');
       final bool sacuvaj = await _showPopisDialog(
         vozac: vozac,
         datum: today,
@@ -733,11 +734,11 @@ class _DanasScreenState extends State<DanasScreen> {
         mesecneKarte: mesecneKarte,
         kilometraza: kilometraza,
       );
-      dlog('🔥 [POPIS] 17. Dialog zatovoren, sačuvaj: $sacuvaj');
+      debugPrint('🔥 [POPIS] 17. Dialog zatovoren, sačuvaj: $sacuvaj');
 
       // 8. SAČUVAJ POPIS AKO JE POTVRĐEN
       if (sacuvaj) {
-        dlog('🔥 [POPIS] 18. Čuvam popis...');
+        debugPrint('🔥 [POPIS] 18. Čuvam popis...');
         await _sacuvajPopis(vozac, today, {
           'ukupanPazar': ukupanPazar,
           'sitanNovac': sitanNovac,
@@ -749,11 +750,11 @@ class _DanasScreenState extends State<DanasScreen> {
           'mesecneKarte': mesecneKarte,
           'kilometraza': kilometraza,
         });
-        dlog('🔥 [POPIS] 19. Popis je sačuvan!');
+        debugPrint('🔥 [POPIS] 19. Popis je sačuvan!');
       }
-      dlog('🔥 [POPIS] 20. _showPopisDana završen USPEŠNO!');
+      debugPrint('🔥 [POPIS] 20. _showPopisDana završen USPEŠNO!');
     } catch (e) {
-      dlog('🔥 [POPIS] ❌ GREŠKA u _showPopisDana: $e');
+      debugPrint('🔥 [POPIS] ❌ GREŠKA u _showPopisDana: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -1019,7 +1020,6 @@ class _DanasScreenState extends State<DanasScreen> {
   String _selectedGrad = 'Bela Crkva';
   String _selectedVreme = '5:00';
   String? _currentDriver; // Dodato za dohvat vozača
-  StreamSubscription? _dailyCheckinSub;
 
   // Lista polazaka za chipove - LETNJI RASPORED
   final List<String> _sviPolasci = [
@@ -1059,11 +1059,11 @@ class _DanasScreenState extends State<DanasScreen> {
 
     // ✅ PAMETNA LOGIKA - vikendom prebaci na Ponedeljak jer ne vozite
     if (todayName == 'sub' || todayName == 'ned') {
-      dlog('🔄 [DANAS SCREEN] Vikend je - prebacujem na Ponedeljak');
+      debugPrint('🔄 [DANAS SCREEN] Vikend je - prebacujem na Ponedeljak');
       return 'pon';
     }
 
-    dlog('🗓️ [DANAS SCREEN] Današnji dan: $todayName');
+    debugPrint('🗓️ [DANAS SCREEN] Današnji dan: $todayName');
     return todayName;
   }
 
@@ -1122,7 +1122,7 @@ class _DanasScreenState extends State<DanasScreen> {
       }
     });
 
-    dlog(
+    debugPrint(
         '🕐 [DANAS SCREEN] Inicijalizovano vreme: $_selectedVreme, grad: $_selectedGrad');
   }
 
@@ -1133,11 +1133,12 @@ class _DanasScreenState extends State<DanasScreen> {
     // ✅ SETUP FILTERS FROM NOTIFICATION DATA
     if (widget.filterGrad != null) {
       _selectedGrad = widget.filterGrad!;
-      dlog('🔔 [NOTIFICATION] Setting filter grad: ${widget.filterGrad}');
+      debugPrint('🔔 [NOTIFICATION] Setting filter grad: ${widget.filterGrad}');
     }
     if (widget.filterVreme != null) {
       _selectedVreme = widget.filterVreme!;
-      dlog('🔔 [NOTIFICATION] Setting filter vreme: ${widget.filterVreme}');
+      debugPrint(
+          '🔔 [NOTIFICATION] Setting filter vreme: ${widget.filterVreme}');
     }
 
     // Ako nema filter podataka iz notifikacije, koristi default logiku
@@ -1146,18 +1147,6 @@ class _DanasScreenState extends State<DanasScreen> {
     }
 
     _initializeCurrentDriver();
-    // Nakon inicijalizacije vozača, poveži realtime stream za daily_checkins
-    _initializeCurrentDriver().then((_) {
-      if (_currentDriver != null && _currentDriver!.isNotEmpty) {
-        try {
-          _dailyCheckinSub =
-              DailyCheckInService.initializeRealtimeForDriver(_currentDriver!);
-          dlog('🛰️ Subscribed to daily_checkins realtime for $_currentDriver');
-        } catch (e) {
-          dlog('⚠️ Failed to subscribe daily_checkins realtime: $e');
-        }
-      }
-    });
     _loadPutnici();
     // Inicijalizuj heads-up i zvuk notifikacije
     LocalNotificationService.initialize(context);
@@ -1176,7 +1165,7 @@ class _DanasScreenState extends State<DanasScreen> {
 
     // 🛰️ START GPS TRACKING
     RealtimeGpsService.startTracking().catchError((e) {
-      dlog('🚨 GPS tracking failed: $e');
+      debugPrint('🚨 GPS tracking failed: $e');
     });
 
     // 🔔 SHOW NOTIFICATION MESSAGE IF PASSENGER NAME PROVIDED
@@ -1282,12 +1271,6 @@ class _DanasScreenState extends State<DanasScreen> {
   void dispose() {
     // 🛑 Zaustavi realtime tracking kad se ekran zatvori
     RealtimeRouteTrackingService.stopRouteTracking();
-    // Otkaži pretplatu za daily_checkins ako postoji
-    try {
-      _dailyCheckinSub?.cancel();
-    } catch (e) {
-      dlog('⚠️ Error cancelling daily_checkins subscription: $e');
-    }
 
     super.dispose();
   }
@@ -1307,13 +1290,13 @@ class _DanasScreenState extends State<DanasScreen> {
     });
 
     // 🔍 DEBUG - ispišemo trenutne filter vrednosti
-    dlog(
+    debugPrint(
         '🎯 [OPTIMIZUJ] TRENUTNI FILTERI: grad="$_selectedGrad", vreme="$_selectedVreme"');
-    dlog('🎯 [OPTIMIZUJ] Ukupno putnika za analizu: ${putnici.length}');
+    debugPrint('🎯 [OPTIMIZUJ] Ukupno putnika za analizu: ${putnici.length}');
 
     // 🔍 DEBUG - ispišemo sva dostupna vremena polaska
     final dostupnaVremena = putnici.map((p) => p.polazak).toSet().toList();
-    dlog('🎯 [OPTIMIZUJ] Dostupna vremena polaska: $dostupnaVremena');
+    debugPrint('🎯 [OPTIMIZUJ] Dostupna vremena polaska: $dostupnaVremena');
 
     // 🎯 SAMO REORDER PUTNIKA - bez otvaranja mape
     final filtriraniPutnici = putnici.where((p) {
@@ -1335,13 +1318,13 @@ class _DanasScreenState extends State<DanasScreen> {
       final hasAddress = p.adresa != null && p.adresa!.isNotEmpty;
 
       // 🔍 DEBUG LOG za optimizaciju
-      dlog(
+      debugPrint(
           '🎯 [OPTIMIZUJ] Putnik: ${p.ime}, grad: "${p.grad}" vs "$_selectedGrad", vreme: "${p.polazak}" vs "$_selectedVreme", status: "$normalizedStatus", adresa: "${p.adresa}", gradMatch: $gradMatch, vremeMatch: $vremeMatch, danMatch: $danMatch, statusOk: $statusOk, hasAddress: $hasAddress');
 
       return vremeMatch && gradMatch && danMatch && statusOk && hasAddress;
     }).toList();
 
-    dlog(
+    debugPrint(
         '🎯 [OPTIMIZUJ] Ukupno putnika za optimizaciju: ${filtriraniPutnici.length}');
 
     if (filtriraniPutnici.isEmpty) {
@@ -1412,7 +1395,7 @@ class _DanasScreenState extends State<DanasScreen> {
         );
       }
     } catch (e) {
-      dlog('❌ Greška pri optimizaciji rute: $e');
+      debugPrint('❌ Greška pri optimizaciji rute: $e');
 
       try {
         // Fallback na osnovnu optimizaciju
@@ -1445,7 +1428,7 @@ class _DanasScreenState extends State<DanasScreen> {
           );
         }
       } catch (fallbackError) {
-        dlog('❌ Greška i sa fallback optimizacijom: $fallbackError');
+        debugPrint('❌ Greška i sa fallback optimizacijom: $fallbackError');
 
         // Kompletno neuspešna optimizacija - resetuj sve
         setState(() {
@@ -1541,11 +1524,8 @@ class _DanasScreenState extends State<DanasScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : StreamBuilder<List<Putnik>>(
-              stream: _putnikService.streamKombinovaniPutniciFiltered(
-                isoDate: DateTime.now().toIso8601String().split('T')[0],
-                grad: widget.filterGrad ?? _selectedGrad,
-                vreme: widget.filterVreme ?? _selectedVreme,
-              ), // 🔄 KOMBINOVANI STREAM (mesečni + dnevni)
+              stream: _putnikService
+                  .streamKombinovaniPutnici(), // 🔄 KOMBINOVANI STREAM (mesečni + dnevni)
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -1560,7 +1540,7 @@ class _DanasScreenState extends State<DanasScreen> {
                 final sviPutnici = snapshot.data ?? [];
                 final danasnjiDan = _getTodayForDatabase();
 
-                dlog(
+                debugPrint(
                     '🕐 [DANAS SCREEN] Filter: $danasnjiDan, $_selectedVreme, $_selectedGrad'); // ✅ DEBUG
 
                 // 🔄 REAL-TIME FILTRIRANJE - kombinuj sa vremenskim filterom poslednje nedelje
@@ -1686,9 +1666,9 @@ class _DanasScreenState extends State<DanasScreen> {
                 final dayEnd = DateTime(targetDate.year, targetDate.month,
                     targetDate.day, 23, 59, 59);
 
-                dlog(
+                debugPrint(
                     '🎯 [PAZAR LOGIKA] Danas: ${today.weekday} (${_getDayName(today.weekday)})');
-                dlog('🎯 [PAZAR LOGIKA] Target datum: $targetDate');
+                debugPrint('🎯 [PAZAR LOGIKA] Target datum: $targetDate');
 
                 if (kDebugMode) {}
 
@@ -2152,11 +2132,8 @@ class _DanasScreenState extends State<DanasScreen> {
               },
             ),
       bottomNavigationBar: StreamBuilder<List<Putnik>>(
-        stream: RealtimeService.instance.streamKombinovaniPutnici(
-          isoDate: DateTime.now().toIso8601String().split('T')[0],
-          grad: widget.filterGrad ?? _selectedGrad,
-          vreme: widget.filterVreme ?? _selectedVreme,
-        ),
+        stream: _putnikService
+            .streamKombinovaniPutnici(), // 🔄 KOMBINOVANI STREAM (mesečni + dnevni)
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting ||
               snapshot.hasError ||
@@ -2169,9 +2146,9 @@ class _DanasScreenState extends State<DanasScreen> {
           final danasnjiDan = _getTodayForDatabase();
           final oneWeekAgo = DateTime.now().subtract(const Duration(days: 7));
 
-          dlog(
+          debugPrint(
               '🔍 [DANAS SCREEN] Ukupno putnika iz stream-a: ${allPutnici.length}');
-          dlog('🔍 [DANAS SCREEN] Današnji dan: $danasnjiDan');
+          debugPrint('🔍 [DANAS SCREEN] Današnji dan: $danasnjiDan');
 
           // 🔄 REAL-TIME FILTRIRANJE za bottom nav
           final todayPutnici = allPutnici.where((p) {
@@ -2182,113 +2159,82 @@ class _DanasScreenState extends State<DanasScreen> {
               timeMatch = p.vremeDodavanja!.isAfter(oneWeekAgo);
             }
 
-            dlog(
+            debugPrint(
                 '📍 [DANAS SCREEN] Putnik: ${p.ime}, dan: ${p.dan}, dayMatch: $dayMatch, timeMatch: $timeMatch');
 
             return dayMatch && timeMatch;
           }).toList();
 
-          dlog(
+          debugPrint(
               '🔍 [DANAS SCREEN] Filtrirani putnici za danas: ${todayPutnici.length}');
 
-          // Compute slot counts for today using shared helper to ensure parity with Home screen
-          final todayIso = DateTime.now().toIso8601String().split('T')[0];
-          final slotCountsToday =
-              SlotUtils.computeSlotCountsForDate(allPutnici, todayIso);
-          final Map<String, int> brojPutnikaBC =
-              Map<String, int>.from(slotCountsToday['BC'] ?? {});
-          final Map<String, int> brojPutnikaVS =
-              Map<String, int>.from(slotCountsToday['VS'] ?? {});
-
+          // Funkcija za brojanje putnika po gradu, vremenu i danu (samo aktivni)
           int getPutnikCount(String grad, String vreme) {
-            if (grad == 'Bela Crkva') return brojPutnikaBC[vreme] ?? 0;
-            if (grad == 'Vršac') return brojPutnikaVS[vreme] ?? 0;
-            return 0;
+            final matchingPutnici = todayPutnici.where((putnik) {
+              final normalizedStatus =
+                  (putnik.status ?? '').toLowerCase().trim();
+
+              // 🏘️ KORISTI NOVU OGRANIČENU LOGIKU - razlikuj mesečne i obične putnike
+              final gradMatch = _isGradMatch(putnik.grad, putnik.adresa, grad,
+                  isMesecniPutnik: putnik.mesecnaKarta == true);
+
+              final vremeMatch =
+                  GradAdresaValidator.normalizeTime(putnik.polazak) ==
+                      GradAdresaValidator.normalizeTime(vreme);
+              final danMatch =
+                  putnik.dan.toLowerCase().contains(danasnjiDan.toLowerCase());
+
+              // BROJČANIK - ne računa mesečne putnike na godišnjem/bolovanju
+              bool statusOk;
+              if (putnik.mesecnaKarta == true) {
+                // Za mesečne putnike u BROJČANIKU, isključi obrisane, godišnji i bolovanje
+                statusOk = (normalizedStatus != 'obrisan' &&
+                    normalizedStatus != 'godisnji' &&
+                    normalizedStatus != 'godišnji' &&
+                    normalizedStatus != 'bolovanje');
+              } else {
+                // DNEVNI PUTNICI - standardno filtriranje
+                statusOk = (normalizedStatus != 'otkazano' &&
+                    normalizedStatus != 'otkazan' &&
+                    normalizedStatus != 'bolovanje' &&
+                    normalizedStatus != 'godisnji' &&
+                    normalizedStatus != 'godišnji' &&
+                    normalizedStatus != 'obrisan');
+              }
+
+              debugPrint(
+                  '🎯 [COUNT] Putnik: ${putnik.ime}, grad: "${putnik.grad}" vs "$grad", vreme: "${putnik.polazak}" vs "$vreme", status: "${putnik.status}", gradMatch: $gradMatch, vremeMatch: $vremeMatch, statusOk: $statusOk');
+
+              return gradMatch && vremeMatch && danMatch && statusOk;
+            }).toList();
+
+            debugPrint(
+                '📊 [COUNT] Za $grad $vreme: ${matchingPutnici.length} putnika');
+            return matchingPutnici.length;
           }
 
-          // (totalFilteredCount removed)
+          return BottomNavBarLetnji(
+            sviPolasci: _sviPolasci,
+            selectedGrad: _selectedGrad,
+            selectedVreme: _selectedVreme,
+            getPutnikCount: getPutnikCount,
+            onPolazakChanged: (grad, vreme) async {
+              // Prvo resetuj pokupljanje za novo vreme polaska
+              await _putnikService.resetPokupljenjaNaPolazak(
+                  vreme, grad, _currentDriver ?? 'Unknown');
 
-          return isZimski(DateTime.now())
-              ? BottomNavBarZimski(
-                  sviPolasci: _sviPolasci,
-                  selectedGrad: _selectedGrad,
-                  selectedVreme: _selectedVreme,
-                  getPutnikCount: getPutnikCount,
-                  isSlotLoading: (grad, vreme) =>
-                      _resettingSlots.contains('$grad|$vreme'),
-                  onPolazakChanged: (grad, vreme) {
-                    setState(() {
-                      _selectedGrad = grad;
-                      _selectedVreme = vreme;
-                    });
+              setState(() {
+                _selectedGrad = grad;
+                _selectedVreme = vreme;
+                // Force rebuild da prikaže nove putnike
+              });
 
-                    _resetDebounceTimer?.cancel();
-                    _resetDebounceTimer =
-                        Timer(const Duration(milliseconds: 150), () async {
-                      final key = '$grad|$vreme';
-                      setState(() => _resettingSlots.add(key));
-                      final isoDate =
-                          DateTime.now().toIso8601String().split('T')[0];
-                      final paramStream = RealtimeService.instance
-                          .streamKombinovaniPutniciParametric(
-                              isoDate: isoDate, grad: grad, vreme: vreme)
-                          .skip(1)
-                          .first;
-                      try {
-                        await _putnikService.resetPokupljenjaNaPolazak(
-                            vreme, grad, _currentDriver ?? 'Unknown');
-                        await RealtimeService.instance.refreshNow();
-                        await paramStream.timeout(const Duration(seconds: 5));
-                      } catch (e) {
-                        dlog('reset error or timeout: $e');
-                      } finally {
-                        if (mounted) {
-                          setState(() => _resettingSlots.remove(key));
-                        }
-                      }
-                    });
-                  },
-                )
-              : BottomNavBarLetnji(
-                  sviPolasci: _sviPolasci,
-                  selectedGrad: _selectedGrad,
-                  selectedVreme: _selectedVreme,
-                  getPutnikCount: getPutnikCount,
-                  isSlotLoading: (grad, vreme) =>
-                      _resettingSlots.contains('$grad|$vreme'),
-                  onPolazakChanged: (grad, vreme) async {
-                    setState(() {
-                      _selectedGrad = grad;
-                      _selectedVreme = vreme;
-                    });
-
-                    _resetDebounceTimer?.cancel();
-                    _resetDebounceTimer =
-                        Timer(const Duration(milliseconds: 150), () async {
-                      final key = '$grad|$vreme';
-                      setState(() => _resettingSlots.add(key));
-                      final isoDate =
-                          DateTime.now().toIso8601String().split('T')[0];
-                      final paramStream = RealtimeService.instance
-                          .streamKombinovaniPutniciParametric(
-                              isoDate: isoDate, grad: grad, vreme: vreme)
-                          .skip(1)
-                          .first;
-                      try {
-                        await _putnikService.resetPokupljenjaNaPolazak(
-                            vreme, grad, _currentDriver ?? 'Unknown');
-                        await RealtimeService.instance.refreshNow();
-                        await paramStream.timeout(const Duration(seconds: 5));
-                      } catch (e) {
-                        dlog('reset error or timeout: $e');
-                      } finally {
-                        if (mounted) {
-                          setState(() => _resettingSlots.remove(key));
-                        }
-                      }
-                    });
-                  },
-                );
+              // 🔄 REFRESH putnika kada se promeni vreme polaska
+              // setState() će automatski reload-ovati widget sa novom logikom
+              debugPrint(
+                  '🔄 VREME POLASKA PROMENJENO: $grad $vreme - widget će se ažurirati nakon resetovanja pokupljanja');
+            },
+          );
         },
       ),
     );
@@ -2347,7 +2293,7 @@ class _DanasScreenState extends State<DanasScreen> {
         throw 'Could not launch Google Maps';
       }
     } catch (e) {
-      dlog('❌ Greška pri pokretanju Google Maps: $e');
+      debugPrint('❌ Greška pri pokretanju Google Maps: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

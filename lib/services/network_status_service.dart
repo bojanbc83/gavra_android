@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import '../utils/logging.dart';
+import 'package:flutter/foundation.dart';
 
 /// 📡 NETWORK STATUS SERVICE
 /// Jednostavan network monitoring bez dodatnih paketa
@@ -19,7 +19,7 @@ class NetworkStatusService {
 
   /// 🚀 START MONITORING
   static void startMonitoring() {
-    dlog('📡 [NETWORK STATUS] Pokretam monitoring...');
+    debugPrint('📡 [NETWORK STATUS] Pokretam monitoring...');
 
     // Proveri odmah
     _checkNetworkStatus();
@@ -51,7 +51,7 @@ class NetworkStatusService {
       _statusController.add(isConnected);
 
       final status = isConnected ? 'ONLINE' : 'OFFLINE';
-      dlog('📡 [NETWORK STATUS] $status');
+      debugPrint('📡 [NETWORK STATUS] $status');
     }
   }
 

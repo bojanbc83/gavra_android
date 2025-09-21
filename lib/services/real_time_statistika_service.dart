@@ -1,5 +1,5 @@
 import 'dart:async';
-import '../utils/logging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -8,9 +8,6 @@ import '../models/mesecni_putnik.dart';
 import 'putnik_service.dart';
 import 'mesecni_putnik_service.dart';
 import 'statistika_service.dart';
-import 'realtime_service.dart';
-
-// Use centralized logger via dlog directly
 
 /// 🔄 CENTRALIZOVANI REAL-TIME STATISTIKA SERVIS
 /// Rešava probleme sa duplikovanim stream-ovima i cache-om
@@ -30,10 +27,11 @@ class RealTimeStatistikaService {
   /// 🔄 GLAVNI KOMBINOVANI STREAM - koristi se svugde
   Stream<List<dynamic>> get kombinovaniPutniciStream {
     if (_kombinovaniStream == null) {
-      dlog('🆕 KREIRANJE NOVOG KOMBINOVANOG STREAM-A');
+      debugPrint('🆕 KREIRANJE NOVOG KOMBINOVANOG STREAM-A');
 
       _kombinovaniStream = CombineLatestStream.combine2(
-        PutnikService().streamKombinovaniPutniciFiltered(),
+        PutnikService()
+            .streamKombinovaniPutnici(), // ✅ ISPRAVKA: Koristi filtriranu verziju
         MesecniPutnikService.streamAktivniMesecniPutnici(),
         (List<Putnik> putnici, List<MesecniPutnik> mesecni) {
           return [putnici, mesecni];
@@ -57,7 +55,7 @@ class RealTimeStatistikaService {
         'pazar_${fromDate.millisecondsSinceEpoch}_${toDate.millisecondsSinceEpoch}';
 
     if (!_streamCache.containsKey(cacheKey)) {
-      dlog('🆕 KREIRANJE PAZAR STREAM-A: $cacheKey');
+      debugPrint('🆕 KREIRANJE PAZAR STREAM-A: $cacheKey');
 
       _streamCache[cacheKey] = kombinovaniPutniciStream
           .map((data) {
@@ -91,7 +89,7 @@ class RealTimeStatistikaService {
         'detaljne_${fromDate.millisecondsSinceEpoch}_${toDate.millisecondsSinceEpoch}';
 
     if (!_streamCache.containsKey(cacheKey)) {
-      dlog('🆕 KREIRANJE DETALJNE STATISTIKE STREAM-A: $cacheKey');
+      debugPrint('🆕 KREIRANJE DETALJNE STATISTIKE STREAM-A: $cacheKey');
 
       _streamCache[cacheKey] = kombinovaniPutniciStream
           .map((data) {
@@ -117,25 +115,15 @@ class RealTimeStatistikaService {
     final cacheKey = 'putnik_$putnikId';
 
     if (!_streamCache.containsKey(cacheKey)) {
-      dlog('🆕 KREIRANJE PUTNIK STATISTIKE STREAM-A: $putnikId');
+      debugPrint('🆕 KREIRANJE PUTNIK STATISTIKE STREAM-A: $putnikId');
 
-      // Kombinuj centralizovani putovanja_istorija stream i filtriraj lokalno po putnikId
-      _streamCache[cacheKey] = RealtimeService.instance
-          .tableStream('putovanja_istorija')
-          .map((data) {
-            final List<dynamic> items =
-                data is List ? List<dynamic>.from(data) : <dynamic>[];
-            final filtered = items.where((row) {
-              try {
-                return row['putnik_id']?.toString() == putnikId.toString();
-              } catch (_) {
-                return false;
-              }
-            }).toList();
-            return filtered;
-          })
+      // Kombinuj putovanja_istorija stream sa osnovnim podatcima
+      _streamCache[cacheKey] = Supabase.instance.client
+          .from('putovanja_istorija')
+          .stream(primaryKey: ['id'])
+          .eq('putnik_id', putnikId)
           .asyncMap((_) async {
-            // Recompute statistics when relevant changes arrive
+            // Ovde možete dodati specifične statistike za putnika
             return await _calculatePutnikStatistike(putnikId);
           })
           .distinct()
@@ -147,7 +135,7 @@ class RealTimeStatistikaService {
 
   /// 🧹 OČISTI CACHE
   void clearCache() {
-    dlog('🧹 BRISANJE REAL-TIME STATISTIKA CACHE-A');
+    debugPrint('🧹 BRISANJE REAL-TIME STATISTIKA CACHE-A');
     _streamCache.clear();
     _kombinovaniStream = null;
   }
@@ -192,7 +180,7 @@ class RealTimeStatistikaService {
             putovanja.isNotEmpty ? putovanja.first['created_at'] : null,
       };
     } catch (e) {
-      dlog('❌ Greška pri računanju statistika za putnika $putnikId: $e');
+      debugPrint('❌ Greška pri računanju statistika za putnika $putnikId: $e');
       return {
         'ukupnoPutovanja': 0,
         'otkazi': 0,

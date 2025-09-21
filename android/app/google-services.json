@@ -1,13 +1,32 @@
 {
   "project_info": {
-    "project_number": "560128463615",
-    "project_id": "gavra-android-notifications",
-    "storage_bucket": "gavra-android-notifications.firebasestorage.app"
+    "project_number": "208019335309",
+    "project_id": "gavra-notif-20250920162521",
+    "storage_bucket": "gavra-notif-20250920162521.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:560128463615:android:73649e7e949e5109a3b2ca",
+        "mobilesdk_app_id": "1:208019335309:android:1246febb9eec37e8109ac4",
+        "android_client_info": {
+          "package_name": "com.gavra013"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJBzCgsh9VkiUS_4xAPaiQlpkffX03FeA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:208019335309:android:7cc39b9efd6e3869109ac4",
         "android_client_info": {
           "package_name": "com.gavra013.gavra_android"
         }
@@ -15,7 +34,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCLPuj01U_KGE--s246gT7WMmEbE_-w8bo"
+          "current_key": "AIzaSyCJBzCgsh9VkiUS_4xAPaiQlpkffX03FeA"
         }
       ],
       "services": {

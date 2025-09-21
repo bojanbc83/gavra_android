@@ -1,10 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../utils/logging.dart';
+import 'package:flutter/foundation.dart';
 import '../models/putovanja_istorija.dart';
 import '../models/mesecni_putnik.dart';
-import 'realtime_service.dart';
-
-// Use centralized logger
 
 class PutovanjaIstorijaService {
   static final _supabase = Supabase.instance.client;
@@ -12,24 +9,17 @@ class PutovanjaIstorijaService {
   // 📱 REALTIME STREAM svih putovanja
   static Stream<List<PutovanjaIstorija>> streamPutovanjaIstorija() {
     try {
-      return RealtimeService.instance.putovanjaStream.map((data) {
-        try {
-          final list =
-              data.map((json) => PutovanjaIstorija.fromMap(json)).toList();
-          list.sort((a, b) {
-            final cmp = b.datum.compareTo(a.datum);
-            if (cmp != 0) return cmp;
-            return b.vremePolaska.compareTo(a.vremePolaska);
-          });
-          return list;
-        } catch (e) {
-          dlog(
-              '❌ [PUTOVANJA ISTORIJA SERVICE] Error mapping realtime data: $e');
-          return <PutovanjaIstorija>[];
-        }
-      });
+      return _supabase
+          .from('putovanja_istorija')
+          .stream(primaryKey: ['id'])
+          .order('datum', ascending: false)
+          .order('vreme_polaska', ascending: false)
+          .map((data) =>
+              data.map((json) => PutovanjaIstorija.fromMap(json)).toList());
     } catch (e) {
-      dlog('❌ [PUTOVANJA ISTORIJA SERVICE] Greška u stream: $e');
+      if (kDebugMode) {
+        debugPrint('❌ [PUTOVANJA ISTORIJA SERVICE] Greška u stream: $e');
+      }
       return Stream.value([]);
     }
   }
@@ -38,25 +28,20 @@ class PutovanjaIstorijaService {
   static Stream<List<PutovanjaIstorija>> streamPutovanjaZaDatum(
       DateTime datum) {
     try {
-      final targetDate = datum.toIso8601String().split('T')[0];
+      final datumStr = datum.toIso8601String().split('T')[0];
 
-      return RealtimeService.instance.putovanjaStream.map((data) {
-        try {
-          final list = data
-              .map((json) => PutovanjaIstorija.fromMap(json))
-              .where(
-                  (p) => p.datum.toIso8601String().split('T')[0] == targetDate)
-              .toList();
-          list.sort((a, b) => a.vremePolaska.compareTo(b.vremePolaska));
-          return list;
-        } catch (e) {
-          dlog(
-              '❌ [PUTOVANJA ISTORIJA SERVICE] Error mapping realtime data for date: $e');
-          return <PutovanjaIstorija>[];
-        }
-      });
+      return _supabase
+          .from('putovanja_istorija')
+          .stream(primaryKey: ['id'])
+          .eq('datum', datumStr)
+          .order('vreme_polaska')
+          .map((data) =>
+              data.map((json) => PutovanjaIstorija.fromMap(json)).toList());
     } catch (e) {
-      dlog('❌ [PUTOVANJA ISTORIJA SERVICE] Greška u stream za datum: $e');
+      if (kDebugMode) {
+        debugPrint(
+            '❌ [PUTOVANJA ISTORIJA SERVICE] Greška u stream za datum: $e');
+      }
       return Stream.value([]);
     }
   }
@@ -65,23 +50,18 @@ class PutovanjaIstorijaService {
   static Stream<List<PutovanjaIstorija>> streamPutovanjaMesecnogPutnika(
       String mesecniPutnikId) {
     try {
-      return RealtimeService.instance.putovanjaStream.map((data) {
-        try {
-          final list = data
-              .map((json) => PutovanjaIstorija.fromMap(json))
-              .where((p) => p.mesecniPutnikId == mesecniPutnikId)
-              .toList();
-          list.sort((a, b) => b.datum.compareTo(a.datum));
-          return list;
-        } catch (e) {
-          dlog(
-              '❌ [PUTOVANJA ISTORIJA SERVICE] Error mapping realtime data for mesecni: $e');
-          return <PutovanjaIstorija>[];
-        }
-      });
+      return _supabase
+          .from('putovanja_istorija')
+          .stream(primaryKey: ['id'])
+          .eq('mesecni_putnik_id', mesecniPutnikId)
+          .order('datum', ascending: false)
+          .map((data) =>
+              data.map((json) => PutovanjaIstorija.fromMap(json)).toList());
     } catch (e) {
-      dlog(
-          '❌ [PUTOVANJA ISTORIJA SERVICE] Greška u stream za mesečnog putnika: $e');
+      if (kDebugMode) {
+        debugPrint(
+            '❌ [PUTOVANJA ISTORIJA SERVICE] Greška u stream za mesečnog putnika: $e');
+      }
       return Stream.value([]);
     }
   }
@@ -99,7 +79,10 @@ class PutovanjaIstorijaService {
           .map<PutovanjaIstorija>((json) => PutovanjaIstorija.fromMap(json))
           .toList();
     } catch (e) {
-      dlog('❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dohvatanju svih: $e');
+      if (kDebugMode) {
+        debugPrint(
+            '❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dohvatanju svih: $e');
+      }
       return [];
     }
   }
@@ -120,7 +103,10 @@ class PutovanjaIstorijaService {
           .map<PutovanjaIstorija>((json) => PutovanjaIstorija.fromMap(json))
           .toList();
     } catch (e) {
-      dlog('❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dohvatanju za datum: $e');
+      if (kDebugMode) {
+        debugPrint(
+            '❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dohvatanju za datum: $e');
+      }
       return [];
     }
   }
@@ -144,7 +130,10 @@ class PutovanjaIstorijaService {
           .map<PutovanjaIstorija>((json) => PutovanjaIstorija.fromMap(json))
           .toList();
     } catch (e) {
-      dlog('❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dohvatanju za opseg: $e');
+      if (kDebugMode) {
+        debugPrint(
+            '❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dohvatanju za opseg: $e');
+      }
       return [];
     }
   }
@@ -160,7 +149,10 @@ class PutovanjaIstorijaService {
 
       return PutovanjaIstorija.fromMap(response);
     } catch (e) {
-      dlog('❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dohvatanju po ID: $e');
+      if (kDebugMode) {
+        debugPrint(
+            '❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dohvatanju po ID: $e');
+      }
       return null;
     }
   }
@@ -179,8 +171,10 @@ class PutovanjaIstorijaService {
           .map<PutovanjaIstorija>((json) => PutovanjaIstorija.fromMap(json))
           .toList();
     } catch (e) {
-      dlog(
-          '❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dohvatanju za mesečnog putnika: $e');
+      if (kDebugMode) {
+        debugPrint(
+            '❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dohvatanju za mesečnog putnika: $e');
+      }
       return [];
     }
   }
@@ -195,12 +189,16 @@ class PutovanjaIstorijaService {
           .select()
           .single();
 
-      dlog(
-          '✅ [PUTOVANJA ISTORIJA SERVICE] Dodato putovanje: ${putovanje.putnikIme}');
+      if (kDebugMode) {
+        debugPrint(
+            '✅ [PUTOVANJA ISTORIJA SERVICE] Dodato putovanje: ${putovanje.putnikIme}');
+      }
 
       return PutovanjaIstorija.fromMap(response);
     } catch (e) {
-      dlog('❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dodavanju: $e');
+      if (kDebugMode) {
+        debugPrint('❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dodavanju: $e');
+      }
       return null;
     }
   }
@@ -235,8 +233,10 @@ class PutovanjaIstorijaService {
 
       return await dodajPutovanje(putovanje);
     } catch (e) {
-      dlog(
-          '❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dodavanju mesečnog putovanja: $e');
+      if (kDebugMode) {
+        debugPrint(
+            '❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dodavanju mesečnog putovanja: $e');
+      }
       return null;
     }
   }
@@ -272,8 +272,10 @@ class PutovanjaIstorijaService {
 
       return await dodajPutovanje(putovanje);
     } catch (e) {
-      dlog(
-          '❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dodavanju dnevnog putovanja: $e');
+      if (kDebugMode) {
+        debugPrint(
+            '❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dodavanju dnevnog putovanja: $e');
+      }
       return null;
     }
   }
@@ -289,12 +291,16 @@ class PutovanjaIstorijaService {
           .select()
           .single();
 
-      dlog(
-          '✅ [PUTOVANJA ISTORIJA SERVICE] Ažurirano putovanje: ${putovanje.putnikIme}');
+      if (kDebugMode) {
+        print(
+            '✅ [PUTOVANJA ISTORIJA SERVICE] Ažurirano putovanje: ${putovanje.putnikIme}');
+      }
 
       return PutovanjaIstorija.fromMap(response);
     } catch (e) {
-      dlog('❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri ažuriranju: $e');
+      if (kDebugMode) {
+        print('❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri ažuriranju: $e');
+      }
       return null;
     }
   }
@@ -327,12 +333,17 @@ class PutovanjaIstorijaService {
           .update(updateData)
           .eq('id', putovanjeId);
 
-      dlog(
-          '✅ [PUTOVANJA ISTORIJA SERVICE] Ažuriran status putovanja: $putovanjeId');
+      if (kDebugMode) {
+        print(
+            '✅ [PUTOVANJA ISTORIJA SERVICE] Ažuriran status putovanja: $putovanjeId');
+      }
 
       return true;
     } catch (e) {
-      dlog('❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri ažuriranju statusa: $e');
+      if (kDebugMode) {
+        print(
+            '❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri ažuriranju statusa: $e');
+      }
       return false;
     }
   }
@@ -342,11 +353,15 @@ class PutovanjaIstorijaService {
     try {
       await _supabase.from('putovanja_istorija').delete().eq('id', id);
 
-      dlog('✅ [PUTOVANJA ISTORIJA SERVICE] Obrisano putovanje: $id');
+      if (kDebugMode) {
+        print('✅ [PUTOVANJA ISTORIJA SERVICE] Obrisano putovanje: $id');
+      }
 
       return true;
     } catch (e) {
-      dlog('❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri brisanju: $e');
+      if (kDebugMode) {
+        print('❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri brisanju: $e');
+      }
       return false;
     }
   }
@@ -377,8 +392,10 @@ class PutovanjaIstorijaService {
       final response = await query;
       return response.length;
     } catch (e) {
-      dlog(
-          '❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dobijanju broja putovanja: $e');
+      if (kDebugMode) {
+        print(
+            '❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dobijanju broja putovanja: $e');
+      }
       return 0;
     }
   }
@@ -414,8 +431,10 @@ class PutovanjaIstorijaService {
 
       return ukupno;
     } catch (e) {
-      dlog(
-          '❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dobijanju ukupne zarade: $e');
+      if (kDebugMode) {
+        print(
+            '❌ [PUTOVANJA ISTORIJA SERVICE] Greška pri dobijanju ukupne zarade: $e');
+      }
       return 0.0;
     }
   }

@@ -102,7 +102,7 @@ class StatistikaService {
     final toDate = to ?? DateTime(now.year, now.month, now.day, 23, 59, 59);
 
     // � SAMO KOMBINOVANI STREAM - ne duplikuj mesečne putnike!
-    return PutnikService().streamKombinovaniPutniciFiltered().map((putnici) {
+    return PutnikService().streamKombinovaniPutnici().map((putnici) {
       final pazar = _calculateSimplePazarSync(putnici, vozac, fromDate, toDate);
       _debugLog('🔄 PAZAR za $vozac: ${pazar.toStringAsFixed(0)} RSD');
       return pazar;
@@ -215,7 +215,8 @@ class StatistikaService {
 
     // Kombinuj oba stream-a koristeći async*
     return instance._combineStreams(
-        PutnikService().streamKombinovaniPutniciFiltered(),
+        PutnikService()
+            .streamKombinovaniPutnici(), // ✅ ISPRAVKA: Koristi filtriranu verziju
         MesecniPutnikService.streamAktivniMesecniPutnici(),
         fromDate,
         toDate);
@@ -367,7 +368,7 @@ class StatistikaService {
         '🔍 STREAM PAZAR POZIV: od ${DateFormat('dd.MM.yyyy HH:mm').format(fromDate)} do ${DateFormat('dd.MM.yyyy HH:mm').format(toDate)}');
 
     // 🔧 SAMO KOMBINOVANI STREAM - ne duplikuj mesečne putnike!
-    return PutnikService().streamKombinovaniPutniciFiltered().map((putnici) {
+    return PutnikService().streamKombinovaniPutnici().map((putnici) {
       final rezultat = <String, double>{};
 
       // Inicijalizuj sve vozače na 0
@@ -703,7 +704,8 @@ class StatistikaService {
       streamDetaljneStatistikePoVozacima(DateTime from, DateTime to) {
     // Koristi kombinovani stream (putnici + mesečni putnici)
     return StreamZip([
-      PutnikService().streamKombinovaniPutniciFiltered(),
+      PutnikService()
+          .streamKombinovaniPutnici(), // ✅ ISPRAVKA: Koristi filtriranu verziju
       MesecniPutnikService.streamAktivniMesecniPutnici(),
     ]).map((data) {
       final putnici = data[0] as List<Putnik>;
@@ -831,7 +833,7 @@ class StatistikaService {
     final mesecniTo = normalizedTo;
 
     for (final putnik in mesecniPutnici) {
-      _debugLog(
+      debugPrint(
           '💰 [DETALJNE DEBUG] 🎫 Putnik: ${putnik.putnikIme}, jePlacen: ${putnik.jePlacen}, vremePlacanja: ${putnik.vremePlacanja}, iznosPlacanja: ${putnik.iznosPlacanja}');
       if (putnik.jePlacen) {
         // ✅ MESEČNE KARTE: koristi MESEČNI opseg umesto sedmičnog/dnevnog
@@ -843,15 +845,15 @@ class StatistikaService {
           final kljuc = putnik.putnikIme.trim();
           if (!grupisaniMesecniPutnici.containsKey(kljuc)) {
             grupisaniMesecniPutnici[kljuc] = putnik;
-            _debugLog(
+            debugPrint(
                 '💰 [DETALJNE STATISTIKE] 🎫 [MESEČNI] Grupisanje: $kljuc -> prvi valjan polazak u mesecu');
           }
         } else {
-          _debugLog(
+          debugPrint(
               '💰 [DETALJNE DEBUG] ❌ ${putnik.putnikIme} NIJE u MESEČNOM opsegu: vremePlacanja=${putnik.vremePlacanja}, mesecniFrom=$mesecniFrom, mesecniTo=$mesecniTo');
         }
       } else {
-        _debugLog(
+        debugPrint(
             '💰 [DETALJNE DEBUG] ❌ ${putnik.putnikIme} NIJE plaćen: jePlacen=${putnik.jePlacen}');
       }
     }
@@ -872,7 +874,7 @@ class StatistikaService {
       }
     }
 
-    _debugLog(
+    debugPrint(
         '💰 [DETALJNE STATISTIKE] 📊 [GRUPIRANJE MESEČNIH] Originalno: ${mesecniPutnici.length}, Posle grupiranja: ${grupisaniMesecniPutnici.length}');
 
     // 🚗 DODAJ KILOMETRAŽU ZA SVE VOZAČE (SINHRONO - uprošćeno)

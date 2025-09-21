@@ -2,18 +2,14 @@ import 'dart:convert';
 import 'dart:math' as math;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:logger/logger.dart';
+import 'package:flutter/foundation.dart';
 import 'advanced_caching_service.dart';
-import '../utils/logging.dart';
-
-// Use centralized logger (no local alias)
 
 /// 📊 PERFORMANCE ANALYTICS DASHBOARD - Enterprise Monitoring
 /// Real-time metrics, A/B testing, user behavior tracking
 /// 100% BESPLATNO - bolje od Google Analytics!
 class PerformanceAnalyticsService {
   static final Logger _logger = Logger();
-
-  // Use centralized debug logger
 
   // 📊 METRICS COLLECTORS
   static final Map<String, PerformanceMetric> _metrics = {};
@@ -90,7 +86,9 @@ class PerformanceAnalyticsService {
       // Check for performance alerts
       _checkPerformanceAlert(metricName, value);
 
-      dlog('📈 Recorded metric $metricName: $value');
+      if (kDebugMode) {
+        _logger.d('📈 Recorded metric $metricName: $value');
+      }
     } catch (e) {
       _logger.e('❌ Failed to record metric $metricName: $e');
     }
@@ -122,7 +120,9 @@ class PerformanceAnalyticsService {
         _userBehavior.remove(oldestKey);
       }
 
-      dlog('👤 Tracked behavior: $eventName - $action');
+      if (kDebugMode) {
+        _logger.d('👤 Tracked behavior: $eventName - $action');
+      }
     } catch (e) {
       _logger.e('❌ Failed to track behavior $eventName: $e');
     }
@@ -151,7 +151,10 @@ class PerformanceAnalyticsService {
         metadata: metadata ?? {},
       );
 
-      dlog('🧪 A/B Test result: $testName ($variant) -> $outcome: $value');
+      if (kDebugMode) {
+        _logger
+            .d('🧪 A/B Test result: $testName ($variant) -> $outcome: $value');
+      }
     } catch (e) {
       _logger.e('❌ Failed to record A/B test result: $e');
     }
@@ -535,7 +538,9 @@ class PerformanceAnalyticsService {
             '🚨 Performance Alert: $metricName = $value (threshold: $threshold)');
 
         // In production, send to monitoring service
-        dlog('🚨 PERFORMANCE ALERT: $metricName exceeded threshold!');
+        if (kDebugMode) {
+          print('🚨 PERFORMANCE ALERT: $metricName exceeded threshold!');
+        }
       }
     }
   }

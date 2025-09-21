@@ -34,10 +34,10 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCLPuj01U_KGE--s246gT7WMmEbE_-w8bo',
-    appId: '1:560128463615:android:73649e7e949e5109a3b2ca',
-    messagingSenderId: '560128463615',
-    projectId: 'gavra-android-notifications',
-    storageBucket: 'gavra-android-notifications.firebasestorage.app',
+    apiKey: 'AIzaSyCJBzCgsh9VkiUS_4xAPaiQlpkffX03FeA',
+    appId: '1:208019335309:android:7cc39b9efd6e3869109ac4',
+    messagingSenderId: '208019335309',
+    projectId: 'gavra-notif-20250920162521',
+    storageBucket: 'gavra-notif-20250920162521.firebasestorage.app',
   );
 }

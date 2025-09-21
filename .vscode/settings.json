@@ -1,9 +1,4 @@
 {
-  "files.associations": {
-    "**/migrations/*.sql": "postgres"
-  }
-}
-{
   "deno.enablePaths": [
     "supabase/functions"
   ],

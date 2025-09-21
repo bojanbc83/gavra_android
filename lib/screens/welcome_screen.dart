@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import '../utils/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:just_audio/just_audio.dart';
 import 'dart:math';
@@ -12,8 +11,6 @@ import 'home_screen.dart';
 import 'change_password_screen.dart';
 import 'daily_checkin_screen.dart';
 import '../main.dart' show globalThemeRefresher; // DODATO za tema refresh
-
-// Uses centralized debug logger `dlog` from `lib/utils/logging.dart`.
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -49,33 +46,36 @@ class _WelcomeScreenState extends State<WelcomeScreen>
         case 'svetlana':
           // 💖 SVETLANINA SPECIJALNA PESMA - "Hiljson Mandela & Miach - Anđeo"
           assetPath = 'assets/svetlana.mp3';
-          dlog(
+          debugPrint(
               '💖 🎵 SVETLANA LOGIN: Puštam "Hiljson Mandela & Miach - Anđeo" kao dobrodošlicu - CELA PESMA! 🎵 💖');
           break;
 
         case 'bruda':
           // 🎵 BRUDINA SPECIJALNA PESMA
           assetPath = 'assets/bruda.mp3';
-          dlog('🎵 BRUDA LOGIN: Puštam Brudinu specijalnu pesmu - CELA PESMA!');
+          debugPrint(
+              '🎵 BRUDA LOGIN: Puštam Brudinu specijalnu pesmu - CELA PESMA!');
           break;
 
         case 'bilevski':
           // 🎵 BILEVSKIJEVA SPECIJALNA PESMA
           assetPath = 'assets/bilevski.mp3';
-          dlog(
+          debugPrint(
               '🎵 BILEVSKI LOGIN: Puštam Bilevskijevu specijalnu pesmu - CELA PESMA!');
           break;
 
         case 'bojan':
           // 🎵 BOJANOVA SPECIJALNA PESMA
           assetPath = 'assets/gavra.mp3';
-          dlog('🎵 BOJAN LOGIN: Puštam Gavrinu specijalnu pesmu - CELA PESMA!');
+          debugPrint(
+              '🎵 BOJAN LOGIN: Puštam Gavrinu specijalnu pesmu - CELA PESMA!');
           break;
 
         default:
           // 🎵 Default pesma za ostale vozače
           assetPath = 'assets/gavra.mp3';
-          dlog('🎵 Puštam default welcome song za $driverName - CELA PESMA!');
+          debugPrint(
+              '🎵 Puštam default welcome song za $driverName - CELA PESMA!');
           break;
       }
 
@@ -85,19 +85,19 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       await _globalAudioPlayer!.setLoopMode(LoopMode.off); // Bez ponavljanja
       await _globalAudioPlayer!.play();
 
-      dlog(
+      debugPrint(
           '🎵 ✅ Pesma pokrenuta u pozadini za $driverName - neće se prekinuti!');
 
       // Postaviti listener da se audio player očisti kad pesma završi
       _globalAudioPlayer!.playerStateStream.listen((state) {
         if (state.processingState == ProcessingState.completed) {
-          dlog('🎵 ✅ Pesma završena, čistim audio player...');
+          debugPrint('🎵 ✅ Pesma završena, čistim audio player...');
           _globalAudioPlayer?.dispose();
           _globalAudioPlayer = null;
         }
       });
     } catch (e) {
-      dlog('❌ Greška pri puštanju pesme: $e');
+      debugPrint('❌ Greška pri puštanju pesme: $e');
     }
   }
 
@@ -141,7 +141,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
     if (savedDriver != null && savedDriver.isNotEmpty) {
       // Vozač je već logovan - PROVERI DAILY CHECK-IN
-      dlog(
+      debugPrint(
           '🔄 AUTO-LOGIN: $savedDriver je već logovan - proveravam daily check-in');
 
       // 🎨 OSVEZI TEMU ZA VOZAČA
@@ -154,7 +154,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
       // 🚫 PRESKAČI VIKENDE - ne radi se subotom i nedeljom
       if (today.weekday == 6 || today.weekday == 7) {
-        dlog(
+        debugPrint(
             '🚫 Preskačem daily check-in za vikend (${today.weekday == 6 ? "Subota" : "Nedelja"}) - idem direktno na HomeScreen');
         if (!mounted) return;
         Navigator.pushReplacement(
@@ -171,7 +171,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
       if (!hasCheckedIn) {
         // POŠALJI NA DAILY CHECK-IN SCREEN
-        dlog('🌅 DAILY CHECK-IN: $savedDriver mora da uradi check-in');
+        debugPrint('🌅 DAILY CHECK-IN: $savedDriver mora da uradi check-in');
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -189,7 +189,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
         );
       } else {
         // DIREKTNO NA HOME SCREEN
-        dlog('✅ DAILY CHECK-IN: $savedDriver već uradio check-in danas');
+        debugPrint('✅ DAILY CHECK-IN: $savedDriver već uradio check-in danas');
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -277,7 +277,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
       // 🚫 PRESKAČI VIKENDE - ne radi se subotom i nedeljom
       if (today.weekday == 6 || today.weekday == 7) {
-        dlog(
+        debugPrint(
             '🚫 Preskačem daily check-in za vikend (${today.weekday == 6 ? "Subota" : "Nedelja"}) - idem direktno na HomeScreen');
         if (!mounted) return;
         Navigator.pushReplacement(
@@ -294,7 +294,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
       if (!hasCheckedIn) {
         // POŠALJI NA DAILY CHECK-IN SCREEN
-        dlog('🌅 MANUAL LOGIN: $driverName mora da uradi check-in');
+        debugPrint('🌅 MANUAL LOGIN: $driverName mora da uradi check-in');
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -312,7 +312,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
         );
       } else {
         // DIREKTNO NA HOME SCREEN
-        dlog('✅ MANUAL LOGIN: $driverName već uradio check-in danas');
+        debugPrint('✅ MANUAL LOGIN: $driverName već uradio check-in danas');
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -897,7 +897,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
       // 🚫 PRESKAČI VIKENDE - ne radi se subotom i nedeljom
       if (today.weekday == 6 || today.weekday == 7) {
-        dlog(
+        debugPrint(
             '🚫 Preskačem daily check-in za vikend (${today.weekday == 6 ? "Subota" : "Nedelja"}) - idem direktno na HomeScreen');
         if (!mounted) return;
         Navigator.pushReplacement(
@@ -914,7 +914,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
       if (!hasCheckedIn) {
         // POŠALJI NA DAILY CHECK-IN SCREEN
-        dlog('🌅 SVETLANA LOGIN: mora da uradi check-in');
+        debugPrint('🌅 SVETLANA LOGIN: mora da uradi check-in');
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -932,7 +932,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
         );
       } else {
         // DIREKTNO NA HOME SCREEN
-        dlog('✅ SVETLANA LOGIN: već uradila check-in danas');
+        debugPrint('✅ SVETLANA LOGIN: već uradila check-in danas');
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),

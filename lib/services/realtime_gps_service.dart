@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
-import '../utils/logging.dart';
+import 'package:flutter/foundation.dart';
 
 /// 🛰️ REAL-TIME GPS POSITION SERVICE
 class RealtimeGpsService {
@@ -48,9 +48,9 @@ class RealtimeGpsService {
         _speedController.add(speedKmh);
       });
 
-      dlog('🛰️ GPS tracking started');
+      debugPrint('🛰️ GPS tracking started');
     } catch (e) {
-      dlog('🚨 GPS tracking error: $e');
+      debugPrint('🚨 GPS tracking error: $e');
       rethrow;
     }
   }
@@ -59,7 +59,7 @@ class RealtimeGpsService {
   static Future<void> stopTracking() async {
     await _positionSubscription?.cancel();
     _positionSubscription = null;
-    dlog('🛑 GPS tracking stopped');
+    debugPrint('🛑 GPS tracking stopped');
   }
 
   /// 📍 GET CURRENT POSITION (one-time)
@@ -69,7 +69,7 @@ class RealtimeGpsService {
         desiredAccuracy: LocationAccuracy.high,
       );
     } catch (e) {
-      dlog('🚨 Error getting current position: $e');
+      debugPrint('🚨 Error getting current position: $e');
       rethrow;
     }
   }
