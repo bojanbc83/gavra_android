@@ -33,6 +33,9 @@ class MesecniPutnik {
   final String? vozac;
   final bool pokupljen;
   final DateTime? vremePokupljenja;
+  final String? email;
+  final String? canonicalHash;
+  final List<String>? sourceMesecniPutniciId;
 
   MesecniPutnik({
     required this.id,
@@ -63,6 +66,9 @@ class MesecniPutnik {
     this.vozac,
     this.pokupljen = false,
     this.vremePokupljenja,
+    this.email,
+    this.canonicalHash,
+    this.sourceMesecniPutniciId,
   });
 
   factory MesecniPutnik.fromMap(Map<String, dynamic> map) {
@@ -83,12 +89,26 @@ class MesecniPutnik {
       return DateTime.parse(v.toString());
     }
 
+    bool parseBool(dynamic v) {
+      if (v == null) return false;
+      if (v is bool) return v;
+      final s = v.toString().toLowerCase().trim();
+      return (s == 'true' || s == 't' || s == '1' || s == 'yes' || s == 'y');
+    }
+
+    String? resolveString(Map<String, dynamic> m, List<String> keys) {
+      for (final k in keys) {
+        if (m.containsKey(k) && m[k] != null) return m[k].toString();
+      }
+      return null;
+    }
+
     return MesecniPutnik(
       id: map['id']?.toString() ?? '',
-      putnikIme: map['putnik_ime']?.toString() ?? '',
+      putnikIme: resolveString(map, ['putnik_ime', 'ime']) ?? '',
       tip: map['tip']?.toString() ?? '',
       tipSkole: map['tip_skole']?.toString(),
-      brojTelefona: map['broj_telefona']?.toString(),
+      brojTelefona: resolveString(map, ['broj_telefona', 'telefon']),
       polasciPoDanu: parsedPolasci,
       adresaBelaCrkva: map['adresa_bela_crkva']?.toString(),
       adresaVrsac: map['adresa_vrsac']?.toString(),
@@ -109,7 +129,8 @@ class MesecniPutnik {
           : null,
       createdAt: parseDate(map['created_at'] ?? map['createdAt']),
       updatedAt: parseDate(map['updated_at'] ?? map['updatedAt']),
-      obrisan: !(MesecniHelpers.isActiveFromMap(map)),
+      obrisan:
+          parseBool(map['obrisan']) || !(MesecniHelpers.isActiveFromMap(map)),
       vremePlacanja: map['vreme_placanja'] != null
           ? parseDate(map['vreme_placanja'])
           : null,
@@ -118,6 +139,12 @@ class MesecniPutnik {
       vozac: map['naplata_vozac']?.toString(),
       pokupljen: false,
       vremePokupljenja: null,
+      email: map['email']?.toString(),
+      canonicalHash: map['canonical_hash']?.toString(),
+      sourceMesecniPutniciId:
+          (map['source_mesecni_putnici_id'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList(),
     );
   }
 
@@ -148,6 +175,9 @@ class MesecniPutnik {
       'obrisan': obrisan,
       'vreme_placanja': vremePlacanja?.toIso8601String(),
       'naplata_vozac': vozac,
+      'email': email,
+      'canonical_hash': canonicalHash,
+      'source_mesecni_putnici_id': sourceMesecniPutniciId,
     };
 
     return map;
@@ -182,6 +212,9 @@ class MesecniPutnik {
     String? vozac,
     bool? pokupljen,
     DateTime? vremePokupljenja,
+    String? email,
+    String? canonicalHash,
+    List<String>? sourceMesecniPutniciId,
   }) {
     return MesecniPutnik(
       id: id ?? this.id,
@@ -212,6 +245,10 @@ class MesecniPutnik {
       vozac: vozac ?? this.vozac,
       pokupljen: pokupljen ?? this.pokupljen,
       vremePokupljenja: vremePokupljenja ?? this.vremePokupljenja,
+      email: email ?? this.email,
+      canonicalHash: canonicalHash ?? this.canonicalHash,
+      sourceMesecniPutniciId:
+          sourceMesecniPutniciId ?? this.sourceMesecniPutniciId,
     );
   }
 

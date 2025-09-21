@@ -23,6 +23,15 @@ class PutovanjaIstorija {
   final String? vozac;
   final DateTime? vremePlacanja;
   final DateTime? vremePokupljenja;
+  final String? dozvoljeniPutnikId;
+  final String? pokupljanjeVozac;
+  final String? naplataVozac;
+  final String? otkazaoVozac;
+  final String? dodaoVozac;
+  final String? sitanNovac;
+  final Map<String, dynamic>? rawData;
+  final DateTime? vremePokupljenjaTs;
+  final DateTime? vremePlacanjaTs;
 
   PutovanjaIstorija({
     required this.id,
@@ -48,42 +57,85 @@ class PutovanjaIstorija {
     this.vozac,
     this.vremePlacanja,
     this.vremePokupljenja,
+    this.dozvoljeniPutnikId,
+    this.pokupljanjeVozac,
+    this.naplataVozac,
+    this.otkazaoVozac,
+    this.dodaoVozac,
+    this.sitanNovac,
+    this.rawData,
+    this.vremePokupljenjaTs,
+    this.vremePlacanjaTs,
   });
 
   // Factory constructor za kreiranje iz Map-a (Supabase response)
   factory PutovanjaIstorija.fromMap(Map<String, dynamic> map) {
+    DateTime parseDate(dynamic v) {
+      if (v == null) return DateTime.now();
+      if (v is DateTime) return v;
+      return DateTime.parse(v.toString());
+    }
+
+    bool parseBool(dynamic v) {
+      if (v == null) return false;
+      if (v is bool) return v;
+      final s = v.toString().toLowerCase().trim();
+      return (s == 'true' || s == 't' || s == '1' || s == 'yes' || s == 'y');
+    }
+
+    String? resolveString(Map<String, dynamic> m, List<String> keys) {
+      for (final k in keys) {
+        if (m.containsKey(k) && m[k] != null) return m[k].toString();
+      }
+      return null;
+    }
+
     return PutovanjaIstorija(
-      id: map['id'] as String,
-      mesecniPutnikId: map['mesecni_putnik_id'] as String?,
-      tipPutnika: map['tip_putnika'] as String,
-      datum: DateTime.parse(map['datum'] as String),
-      vremePolaska: map['vreme_polaska'] as String,
+      id: map['id']?.toString() ?? '',
+      mesecniPutnikId: map['mesecni_putnik_id']?.toString(),
+      tipPutnika: map['tip_putnika']?.toString() ?? '',
+      datum: parseDate(map['datum']),
+      vremePolaska: map['vreme_polaska']?.toString() ?? '',
       vremeAkcije: map['vreme_pokupljenja'] != null
-          ? DateTime.parse(map['vreme_pokupljenja'] as String)
-          : null, // MAPIRAN na vreme_pokupljenja umesto vreme_akcije
-      adresaPolaska: map['adresa_polaska'] as String,
-      status: map['status'] as String? ??
-          'nije_se_pojavio', // KORISTI status kolonu
-      statusBelaCrkvaVrsac: map['status'] as String? ??
-          'nije_se_pojavio', // DEPRECATED - za kompatibilnost
-      statusVrsacBelaCrkva: map['status'] as String? ??
-          'nije_se_pojavio', // DEPRECATED - za kompatibilnost
-      putnikIme: map['putnik_ime'] as String,
-      brojTelefona: map['broj_telefona'] as String?,
-      cena: (map['cena'] as num?)?.toDouble() ?? 0.0,
-      createdAt: DateTime.parse(map['created_at'] as String),
-      updatedAt: DateTime.parse(map['updated_at'] as String),
+          ? parseDate(map['vreme_pokupljenja'])
+          : null,
+      adresaPolaska: map['adresa_polaska']?.toString() ?? '',
+      status: map['status']?.toString() ?? 'nije_se_pojavio',
+      statusBelaCrkvaVrsac: map['status']?.toString() ?? 'nije_se_pojavio',
+      statusVrsacBelaCrkva: map['status']?.toString() ?? 'nije_se_pojavio',
+      putnikIme: resolveString(map, ['putnik_ime', 'ime']) ?? '',
+      brojTelefona: resolveString(map, ['broj_telefona', 'telefon']),
+      cena: (map['cena'] as num?)?.toDouble() ??
+          (map['cena_numeric'] as num?)?.toDouble() ??
+          0.0,
+      createdAt: parseDate(map['created_at'] ?? map['createdAt']),
+      updatedAt: parseDate(map['updated_at'] ?? map['updatedAt']),
       // NOVA POLJA
       dan: map['dan'] as String?,
       grad: map['grad'] as String?,
-      obrisan: map['obrisan'] as bool? ?? false,
-      pokupljen: map['pokupljen'] as bool? ?? false,
-      vozac: map['vozac'] as String?,
+      obrisan: parseBool(map['obrisan']),
+      pokupljen: parseBool(map['pokupljen']),
+      vozac: map['vozac']?.toString(),
       vremePlacanja: map['vreme_placanja'] != null
-          ? DateTime.parse(map['vreme_placanja'] as String)
+          ? parseDate(map['vreme_placanja'])
           : null,
       vremePokupljenja: map['vreme_pokupljenja'] != null
-          ? DateTime.parse(map['vreme_pokupljenja'] as String)
+          ? parseDate(map['vreme_pokupljenja'])
+          : null,
+      dozvoljeniPutnikId: map['dozvoljeni_putnik_id']?.toString(),
+      pokupljanjeVozac: map['pokupljanje_vozac']?.toString(),
+      naplataVozac: map['naplata_vozac']?.toString(),
+      otkazaoVozac: map['otkazao_vozac']?.toString(),
+      dodaoVozac: map['dodao_vozac']?.toString(),
+      sitanNovac: map['sitan_novac']?.toString(),
+      rawData: (map['raw_data'] is Map)
+          ? Map<String, dynamic>.from(map['raw_data'])
+          : null,
+      vremePokupljenjaTs: map['vreme_pokupljenja_ts'] != null
+          ? parseDate(map['vreme_pokupljenja_ts'])
+          : null,
+      vremePlacanjaTs: map['vreme_placanja_ts'] != null
+          ? parseDate(map['vreme_placanja_ts'])
           : null,
     );
   }
@@ -112,6 +164,15 @@ class PutovanjaIstorija {
       'vozac': vozac,
       'vreme_placanja': vremePlacanja?.toIso8601String(),
       'vreme_pokupljenja': vremePokupljenja?.toIso8601String(),
+      'dozvoljeni_putnik_id': dozvoljeniPutnikId,
+      'pokupljanje_vozac': pokupljanjeVozac,
+      'naplata_vozac': naplataVozac,
+      'otkazao_vozac': otkazaoVozac,
+      'dodao_vozac': dodaoVozac,
+      'sitan_novac': sitanNovac,
+      'raw_data': rawData,
+      'vreme_pokupljenja_ts': vremePokupljenjaTs?.toIso8601String(),
+      'vreme_placanja_ts': vremePlacanjaTs?.toIso8601String(),
     };
   }
 
@@ -140,6 +201,15 @@ class PutovanjaIstorija {
     String? vozac,
     DateTime? vremePlacanja,
     DateTime? vremePokupljenja,
+    String? dozvoljeniPutnikId,
+    String? pokupljanjeVozac,
+    String? naplataVozac,
+    String? otkazaoVozac,
+    String? dodaoVozac,
+    String? sitanNovac,
+    Map<String, dynamic>? rawData,
+    DateTime? vremePokupljenjaTs,
+    DateTime? vremePlacanjaTs,
   }) {
     return PutovanjaIstorija(
       id: id ?? this.id,
@@ -165,6 +235,15 @@ class PutovanjaIstorija {
       vozac: vozac ?? this.vozac,
       vremePlacanja: vremePlacanja ?? this.vremePlacanja,
       vremePokupljenja: vremePokupljenja ?? this.vremePokupljenja,
+      dozvoljeniPutnikId: dozvoljeniPutnikId ?? this.dozvoljeniPutnikId,
+      pokupljanjeVozac: pokupljanjeVozac ?? this.pokupljanjeVozac,
+      naplataVozac: naplataVozac ?? this.naplataVozac,
+      otkazaoVozac: otkazaoVozac ?? this.otkazaoVozac,
+      dodaoVozac: dodaoVozac ?? this.dodaoVozac,
+      sitanNovac: sitanNovac ?? this.sitanNovac,
+      rawData: rawData ?? this.rawData,
+      vremePokupljenjaTs: vremePokupljenjaTs ?? this.vremePokupljenjaTs,
+      vremePlacanjaTs: vremePlacanjaTs ?? this.vremePlacanjaTs,
     );
   }
 
