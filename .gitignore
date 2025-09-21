@@ -63,3 +63,6 @@ macos/flutter/ephemeral/
 android/.gradle/
 android/app/build/
 android/build/
+
+# Generated SQL from import tools
+tmp/*.sql

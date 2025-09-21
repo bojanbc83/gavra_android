@@ -61,6 +61,7 @@ class Putnik {
   final bool? placeno;
   final double? iznosPlacanja;
   final String? naplatioVozac;
+  final String? datum; // ISO date string (yyyy-MM-dd) for daily entries
   final String? pokupioVozac; // NOVO - vozač koji je pokupljanje izvršio
   final String? dodaoVozac;
   final String? vozac;
@@ -77,6 +78,7 @@ class Putnik {
     this.id,
     required this.ime,
     required this.polazak,
+    this.datum,
     this.pokupljen,
     this.vremeDodavanja,
     this.mesecnaKarta,
@@ -405,7 +407,9 @@ class Putnik {
     return Putnik(
       id: map['id'], // ✅ UUID iz putovanja_istorija
       ime: map['putnik_ime'] as String? ?? '',
-      polazak: _formatVremePolaska(map['vreme_polaska']?.toString() ?? '6:00'),
+      polazak: MesecniHelpers.normalizeTime(
+              map['vreme_polaska']?.toString() ?? '6:00') ??
+          (map['vreme_polaska']?.toString() ?? '6:00'),
       pokupljen: map['pokupljen'] == true ||
           map['status'] == 'pokupljen', // ✅ KORISTI pokupljen kolonu ili status
       vremeDodavanja:
@@ -413,6 +417,7 @@ class Putnik {
       mesecnaKarta: map['tip_putnika'] == 'mesecni',
       dan: map['dan'] as String? ??
           _determineDanFromDatum(map['datum']), // ✅ KORISTI dan kolonu direktno
+      datum: map['datum'] as String?,
       status: map['status'] as String?, // ✅ DIREKTNO IZ NOVE KOLONE
       statusVreme: map['updated_at']
           as String?, // ✅ KORISTI updated_at umesto vreme_akcije
@@ -456,25 +461,7 @@ class Putnik {
     return 0.0;
   }
 
-  // HELPER FUNKCIJA - Formatiranje vremena iz 06:00:00 u 6:00
-  static String _formatVremePolaska(String vremeString) {
-    if (vremeString.contains(':')) {
-      // Parse 06:00:00 format
-      final parts = vremeString.split(':');
-      if (parts.isNotEmpty) {
-        final hour = int.tryParse(parts[0]) ?? 6;
-        final minute =
-            parts.length > 1 ? (parts[1] == '00' ? '00' : parts[1]) : '00';
-        // Ako su minuti 00, ne prikazuj ih; inače prikazuj
-        if (minute == '00') {
-          return '$hour:00';
-        } else {
-          return '$hour:$minute';
-        }
-      }
-    }
-    return vremeString;
-  }
+  // NOTE: time normalization is handled via MesecniHelpers.normalizeTime
 
   // HELPER METODE za mapiranje
   static String _determineGradFromMesecni(Map<String, dynamic> map) {

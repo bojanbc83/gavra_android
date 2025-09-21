@@ -1,0 +1,34 @@
+{
+  "deno.enablePaths": [
+    "supabase/functions"
+  ],
+  "deno.lint": true,
+  "deno.unstable": [
+    "bare-node-builtins",
+    "byonm",
+    "sloppy-imports",
+    "unsafe-proto",
+    "webgpu",
+    "broadcast-channel",
+    "worker-options",
+    "cron",
+    "kv",
+    "ffi",
+    "fs",
+    "http",
+    "net"
+  ],
+  "sqltools.connections": [
+    {
+      "name": "Supabase - gjtabtwudbrmfeyjiicu",
+      "driver": "PostgreSQL",
+      "server": "db.gjtabtwudbrmfeyjiicu.supabase.co",
+      "port": 5432,
+      "database": "postgres",
+      "username": "postgres",
+      "askForPassword": true,
+      "ssl": true,
+      "previewLimit": 50
+    }
+  ]
+}

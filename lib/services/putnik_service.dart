@@ -85,7 +85,7 @@ class PutnikService {
           .single();
       return 'putovanja_istorija';
     } catch (e) {
-      return 'mesecni_putnici';
+      return 'dozvoljeni_mesecni_putnici';
     }
   }
 
@@ -94,8 +94,8 @@ class PutnikService {
     try {
       // Prvo pokušaj iz mesecni_putnici
       final mesecniResponse = await supabase
-          .from('mesecni_putnici')
-          .select(mesecniFields)
+          .from('dozvoljeni_mesecni_putnici')
+          .select()
           .eq('putnik_ime', imePutnika)
           .maybeSingle();
 
@@ -143,8 +143,8 @@ class PutnikService {
 
       // Ako nije u putovanja_istorija, pokušaj iz mesecni_putnici
       final mesecniResponse = await supabase
-          .from('mesecni_putnici')
-          .select(mesecniFields)
+          .from('dozvoljeni_mesecni_putnici')
+          .select()
           .eq('id', id)
           .limit(1);
 
@@ -276,15 +276,15 @@ class PutnikService {
   Future<bool> savePutnikToCorrectTable(Putnik putnik) async {
     try {
       // SVI PUTNICI - koristi mesecni_putnici tabelu kao workaround za RLS
-      final data = putnik.toMesecniPutniciMap();
+      final data = putnik.toDozvoljeniMesecniPutniciMap();
 
       if (putnik.id != null) {
-        await supabase
-            .from('mesecni_putnici')
+      await supabase
+        .from('dozvoljeni_mesecni_putnici')
             .update(data)
             .eq('id', putnik.id!);
       } else {
-        await supabase.from('mesecni_putnici').insert(data);
+      await supabase.from('dozvoljeni_mesecni_putnici').insert(data);
       }
 
       return true;
@@ -634,8 +634,8 @@ class PutnikService {
         .stream(primaryKey: ['id'])
         .order('created_at', ascending: false)
         .map((data) {
-          final Map<String, Putnik> uniquePutnici =
-              {}; // Mapa po imenima da izbegnemo duplikate
+          final mesecniResponse = await supabase
+              .from('dozvoljeni_mesecni_putnici')
 
           for (final item in data) {
             // Preskačemo obrisane putnike

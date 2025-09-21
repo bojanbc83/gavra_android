@@ -1,7 +1,5 @@
 {
-  "deno.enablePaths": [
-    "supabase/functions"
-  ],
+  "deno.enablePaths": ["supabase/functions"],
   "deno.lint": true,
   "deno.unstable": [
     "bare-node-builtins",
@@ -18,7 +16,23 @@
     "http",
     "net"
   ],
-  "[typescript]": {
-    "editor.defaultFormatter": "denoland.vscode-deno"
-  }
+  "sqltools.connections": [
+    {
+      "name": "Supabase Pooler - gjtabtwudbrmfeyjiicu",
+      "driver": "PostgreSQL",
+      "server": "aws-0-eu-central-1.pooler.supabase.com",
+      "port": 6543,
+      "database": "postgres",
+      "username": "postgres.gjtabtwudbrmfeyjiicu",
+      "password": "1DIA0obrDgQHGMAc",
+      "askForPassword": false,
+      "ssl": true,
+      "driverOptions": {
+        "ssl": {
+          "rejectUnauthorized": false
+        }
+      },
+      "previewLimit": 50
+    }
+  ]
 }

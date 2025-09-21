@@ -1,0 +1,15 @@
+{
+  "sqltools.connections": [
+    {
+      "name": "Supabase - myproject",
+      "driver": "PostgreSQL",
+      "server": "db.example.supabase.co",
+      "port": 5432,
+      "database": "postgres",
+      "username": "postgres",
+      "askForPassword": true,
+      "ssl": true,
+      "previewLimit": 50
+    }
+  ]
+}

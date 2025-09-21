@@ -1,0 +1,1 @@
+| sed -E 's/^CREATE TABLE "/CREATE TABLE IF NOT EXISTS "/' \

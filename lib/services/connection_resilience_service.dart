@@ -114,7 +114,7 @@ class ConnectionResilienceService {
     try {
       // Jednostavan test query
       await _supabase
-          .from('mesecni_putnici')
+          .from('dozvoljeni_mesecni_putnici')
           .select('id')
           .limit(1)
           .timeout(const Duration(seconds: 10));

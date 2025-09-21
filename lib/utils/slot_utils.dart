@@ -1,6 +1,7 @@
 import '../models/putnik.dart';
 import 'package:flutter/foundation.dart';
 import '../utils/grad_adresa_validator.dart';
+import '../utils/mesecni_helpers.dart';
 import '../utils/text_utils.dart';
 
 class SlotUtils {
@@ -55,7 +56,8 @@ class SlotUtils {
             GradAdresaValidator.normalizeString(targetDayAbbr);
         if (!normalizedPutnikDan.contains(normalizedTarget)) continue;
 
-        final vreme = GradAdresaValidator.normalizeTime(p.polazak);
+        final vreme = MesecniHelpers.normalizeTime(p.polazak) ??
+            GradAdresaValidator.normalizeTime(p.polazak);
         final grad = p.grad;
 
         if (bcVremena.contains(vreme) &&
@@ -109,7 +111,8 @@ class SlotUtils {
           if (!normalizedPutnikDan.contains(normalizedTarget)) continue;
         }
 
-        final vreme = GradAdresaValidator.normalizeTime(p.polazak);
+        final vreme = MesecniHelpers.normalizeTime(p.polazak) ??
+            GradAdresaValidator.normalizeTime(p.polazak);
         final grad = p.grad;
 
         if (bcVremena.contains(vreme) &&

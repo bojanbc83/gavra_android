@@ -154,21 +154,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             .eq('obrisan', false);
 
         final String selectedDayAbbr = _getDayAbbreviation(_selectedDay);
-        final String selectedGrad = _selectedGrad;
-        final String selectedVreme = _selectedVreme;
 
         // Expand each monthly passenger into all valid slots for the selected day
+        // NOTE: do NOT filter here by selectedVreme — we want the stream to
+        // contain all putnici for the selected day so counts (per slot)
+        // can be computed in the UI for any time selection (realtime occupancy).
         final List<Putnik> mesecniPutniciAsPutnik = [];
         for (final item in mesecniResponse) {
           final putniciZaDan =
               Putnik.fromMesecniPutniciMultipleForDay(item, selectedDayAbbr);
-          for (final p in putniciZaDan) {
-            // Match grad and vreme
-            final normPolazak = _normalizeTime(p.polazak);
-            if (p.grad == selectedGrad && normPolazak == selectedVreme) {
-              mesecniPutniciAsPutnik.add(p);
-            }
-          }
+          // Add all expanded putnici for the target day (BC and VS)
+          mesecniPutniciAsPutnik.addAll(putniciZaDan);
         }
 
         // Fetch daily passengers for the selected date
@@ -1069,7 +1065,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         Map<String, int> brojPutnikaBC = {for (var v in bcVremena) v: 0};
         Map<String, int> brojPutnikaVS = {for (var v in vsVremena) v: 0};
         for (final p in putniciBezOdsustva) {
-          final vreme = p.polazak;
+          final vreme = _normalizeTime(p.polazak);
           final grad = p.grad;
           if (bcVremena.contains(vreme) &&
               GradAdresaValidator.isGradMatch(grad, p.adresa, 'Bela Crkva')) {
