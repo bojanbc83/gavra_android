@@ -1,6 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/foundation.dart';
-import '../models/putovanja_istorija.dart';
+import '../models/daily_passengers.dart';
 import '../models/mesecni_putnik.dart';
 
 class PutovanjaIstorijaService {
@@ -10,7 +10,7 @@ class PutovanjaIstorijaService {
   static Stream<List<PutovanjaIstorija>> streamPutovanjaIstorija() {
     try {
       return _supabase
-          .from('putovanja_istorija')
+          .from('daily_passengers')
           .stream(primaryKey: ['id'])
           .order('datum', ascending: false)
           .order('vreme_polaska', ascending: false)
@@ -31,7 +31,7 @@ class PutovanjaIstorijaService {
       final datumStr = datum.toIso8601String().split('T')[0];
 
       return _supabase
-          .from('putovanja_istorija')
+          .from('daily_passengers')
           .stream(primaryKey: ['id'])
           .eq('datum', datumStr)
           .order('vreme_polaska')
@@ -51,7 +51,7 @@ class PutovanjaIstorijaService {
       String mesecniPutnikId) {
     try {
       return _supabase
-          .from('putovanja_istorija')
+          .from('daily_passengers')
           .stream(primaryKey: ['id'])
           .eq('mesecni_putnik_id', mesecniPutnikId)
           .order('datum', ascending: false)
@@ -70,7 +70,7 @@ class PutovanjaIstorijaService {
   static Future<List<PutovanjaIstorija>> getAllPutovanjaIstorija() async {
     try {
       final response = await _supabase
-          .from('putovanja_istorija')
+          .from('daily_passengers')
           .select()
           .order('datum', ascending: false)
           .order('vreme_polaska', ascending: false);
@@ -94,7 +94,7 @@ class PutovanjaIstorijaService {
       final datumStr = datum.toIso8601String().split('T')[0];
 
       final response = await _supabase
-          .from('putovanja_istorija')
+          .from('daily_passengers')
           .select()
           .eq('datum', datumStr)
           .order('vreme_polaska');
@@ -119,7 +119,7 @@ class PutovanjaIstorijaService {
       final doStr = doDatuma.toIso8601String().split('T')[0];
 
       final response = await _supabase
-          .from('putovanja_istorija')
+          .from('daily_passengers')
           .select()
           .gte('datum', odStr)
           .lte('datum', doStr)
@@ -142,7 +142,7 @@ class PutovanjaIstorijaService {
   static Future<PutovanjaIstorija?> getPutovanjeById(String id) async {
     try {
       final response = await _supabase
-          .from('putovanja_istorija')
+          .from('daily_passengers')
           .select()
           .eq('id', id)
           .single();
@@ -162,7 +162,7 @@ class PutovanjaIstorijaService {
       String mesecniPutnikId) async {
     try {
       final response = await _supabase
-          .from('putovanja_istorija')
+          .from('daily_passengers')
           .select()
           .eq('mesecni_putnik_id', mesecniPutnikId)
           .order('datum', ascending: false);
@@ -183,9 +183,20 @@ class PutovanjaIstorijaService {
   static Future<PutovanjaIstorija?> dodajPutovanje(
       PutovanjaIstorija putovanje) async {
     try {
+      final data = putovanje.toMap();
+      data.putIfAbsent(
+          'raw_data',
+          () =>
+              putovanje.rawData ??
+              {
+                'putnik_ime': putovanje.putnikIme,
+                'vreme_polaska': putovanje.vremePolaska,
+                'adresa_polaska': putovanje.adresaPolaska,
+              });
+
       final response = await _supabase
-          .from('putovanja_istorija')
-          .insert(putovanje.toMap())
+          .from('daily_passengers')
+          .insert(data)
           .select()
           .single();
 
@@ -285,7 +296,7 @@ class PutovanjaIstorijaService {
       PutovanjaIstorija putovanje) async {
     try {
       final response = await _supabase
-          .from('putovanja_istorija')
+          .from('daily_passengers')
           .update(putovanje.toMap())
           .eq('id', putovanje.id)
           .select()
@@ -329,7 +340,7 @@ class PutovanjaIstorijaService {
       }
 
       await _supabase
-          .from('putovanja_istorija')
+          .from('daily_passengers')
           .update(updateData)
           .eq('id', putovanjeId);
 
@@ -351,7 +362,7 @@ class PutovanjaIstorijaService {
   // 🗑️ OBRIŠI putovanje
   static Future<bool> obrisiPutovanje(String id) async {
     try {
-      await _supabase.from('putovanja_istorija').delete().eq('id', id);
+      await _supabase.from('daily_passengers').delete().eq('id', id);
 
       if (kDebugMode) {
         print('✅ [PUTOVANJA ISTORIJA SERVICE] Obrisano putovanje: $id');
@@ -374,7 +385,7 @@ class PutovanjaIstorijaService {
     String? mesecniPutnikId,
   }) async {
     try {
-      var query = _supabase.from('putovanja_istorija').select();
+      var query = _supabase.from('daily_passengers').select();
 
       if (odDatuma != null) {
         query = query.gte('datum', odDatuma.toIso8601String().split('T')[0]);
@@ -408,7 +419,7 @@ class PutovanjaIstorijaService {
     String? mesecniPutnikId,
   }) async {
     try {
-      var query = _supabase.from('putovanja_istorija').select('cena');
+      var query = _supabase.from('daily_passengers').select('cena');
 
       if (odDatuma != null) {
         query = query.gte('datum', odDatuma.toIso8601String().split('T')[0]);
@@ -439,3 +450,5 @@ class PutovanjaIstorijaService {
     }
   }
 }
+
+

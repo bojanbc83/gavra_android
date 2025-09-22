@@ -713,3 +713,5 @@ class AddressSuggestion {
         metadata: json['metadata'] ?? {},
       );
 }
+
+

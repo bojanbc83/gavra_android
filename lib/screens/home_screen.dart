@@ -148,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             'polazak_vs_pon,polazak_vs_uto,polazak_vs_sre,polazak_vs_cet,polazak_vs_pet';
 
         final mesecniResponse = await supabase
-            .from('dozvoljeni_mesecni_putnici')
+            .from('monthly_passengers')
             .select(mesecniFields)
             .eq('aktivan', true)
             .eq('obrisan', false);
@@ -171,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         final targetDateString =
             _getTargetDate().toIso8601String().split('T')[0];
         final dnevniResponse = await supabase
-            .from('putovanja_istorija')
+            .from('daily_passengers')
             .select('*')
             .eq('datum', targetDateString)
             .eq('tip_putnika', 'dnevni');
@@ -289,19 +289,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   void _setupRealtimeListener() {
-    // Slušaj promene u putovanja_istorija tabeli za real-time ažuriranja
+    // Slušaj promene u daily_passengers tabeli za real-time ažuriranja
     _realtimeSubscription = supabase
-        .from('putovanja_istorija')
+        .from('daily_passengers')
         .stream(primaryKey: ['id']).listen((data) {
-      debugPrint('🔄 Real-time update detected in putovanja_istorija');
+      debugPrint('🔄 Real-time update detected in daily_passengers');
       // Stream će automatski ažurirati StreamBuilder u build() metodi
     });
 
-    // Slušaj promene u dozvoljeni_mesecni_putnici tabeli
+    // Slušaj promene u monthly_passengers tabeli
     _mesecniSubscription = supabase
-        .from('dozvoljeni_mesecni_putnici')
+        .from('monthly_passengers')
         .stream(primaryKey: ['id']).listen((data) {
-      debugPrint('🔄 Real-time update detected in dozvoljeni_mesecni_putnici');
+      debugPrint('🔄 Real-time update detected in monthly_passengers');
       // Stream će automatski ažurirati StreamBuilder u build() metodi
     });
   }
@@ -1837,3 +1837,5 @@ class _HomeScreenButton extends StatelessWidget {
     );
   }
 }
+
+

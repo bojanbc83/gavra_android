@@ -296,3 +296,5 @@ class MesecniPutnik {
   int get hashCode => id.hashCode;
 }
 // 🔄 KOMPATIBILNOST SA PUTNIK MODELOM
+
+

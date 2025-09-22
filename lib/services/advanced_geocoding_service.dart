@@ -581,3 +581,5 @@ class GeocodeResult {
   String toString() =>
       '$formattedAddress (${confidence.toStringAsFixed(1)}% via $provider)';
 }
+
+

@@ -46,7 +46,7 @@ extension PutnikStatusExtension on PutnikStatus {
 
 class Putnik {
   final dynamic
-      id; // ✅ Može biti int (putovanja_istorija) ili String (mesecni_putnici)
+      id; // ✅ Može biti int (daily_passengers) ili String (mesecni_putnici)
   final String ime;
   final String polazak;
   final bool? pokupljen;
@@ -136,23 +136,23 @@ class Putnik {
   factory Putnik.fromMap(Map<String, dynamic> map) {
     // AUTOMATSKA DETEKCIJA TIPA TABELE - SAMO NOVE TABELE
 
-    // Ako ima mesecni_putnik_id ili tip_putnika, iz putovanja_istorija tabele
+    // Ako ima mesecni_putnik_id ili tip_putnika, iz daily_passengers tabele
     if (map.containsKey('mesecni_putnik_id') ||
         map.containsKey('tip_putnika')) {
       return Putnik.fromPutovanjaIstorija(map);
     }
 
-    // Ako ima putnik_ime, iz dozvoljeni_mesecni_putnici tabele
+    // Ako ima putnik_ime, iz monthly_passengers tabele
     if (map.containsKey('putnik_ime')) {
       return Putnik.fromMesecniPutnici(map);
     }
 
     // GREŠKA - Nepoznata struktura tabele
     throw Exception(
-        'Nepoznata struktura podataka - nisu iz mesecni_putnici ni putovanja_istorija');
+        'Nepoznata struktura podataka - nisu iz mesecni_putnici ni daily_passengers');
   }
 
-  // NOVI: Factory za dozvoljeni_mesecni_putnici tabelu
+  // NOVI: Factory za monthly_passengers tabelu
   factory Putnik.fromMesecniPutnici(Map<String, dynamic> map) {
     final weekday = DateTime.now().weekday;
     const daniKratice = ['pon', 'uto', 'sre', 'cet', 'pet', 'sub', 'ned'];
@@ -401,10 +401,10 @@ class Putnik {
     return putnici;
   }
 
-  // NOVI: Factory za putovanja_istorija tabelu
+  // NOVI: Factory za daily_passengers tabelu
   factory Putnik.fromPutovanjaIstorija(Map<String, dynamic> map) {
     return Putnik(
-      id: map['id'], // ✅ UUID iz putovanja_istorija
+      id: map['id'], // ✅ UUID iz daily_passengers
       ime: map['putnik_ime'] as String? ?? '',
       polazak: MesecniHelpers.normalizeTime(
               map['vreme_polaska']?.toString() ?? '6:00') ??
@@ -599,7 +599,7 @@ class Putnik {
     final result = targetDate.toIso8601String().split('T')[0];
     // print('🔍 Final result: $result (${dayNames[targetDate.weekday - 1]})'); // Debug - remove in production
     return result;
-  } // NOVI: Mapiranje za putovanja_istorija tabelu
+  } // NOVI: Mapiranje za daily_passengers tabelu
 
   Map<String, dynamic> toPutovanjaIstorijaMap() {
     return {
@@ -670,3 +670,5 @@ class Putnik {
     );
   }
 }
+
+

@@ -174,3 +174,5 @@ extension TimerManagerExtension on Widget {
     TimerManager.cancelTimer('${runtimeType}_$name');
   }
 }
+
+

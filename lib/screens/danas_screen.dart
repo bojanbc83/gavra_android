@@ -23,6 +23,8 @@ import '../widgets/putnik_list.dart';
 import '../widgets/real_time_navigation_widget.dart'; // 🧭 NOVO navigation widget
 
 import '../widgets/bottom_nav_bar_letnji.dart'; // 🚀 DODANO za letnji nav bar
+import '../widgets/bottom_nav_bar_zimski.dart';
+import '../utils/schedule_utils.dart' as schedule_utils;
 import 'dugovi_screen.dart';
 import '../services/local_notification_service.dart';
 import '../utils/grad_adresa_validator.dart'; // 🏘️ NOVO za validaciju gradova
@@ -46,11 +48,14 @@ class DanasScreen extends StatefulWidget {
 class _DanasScreenState extends State<DanasScreen> {
   final supabase = Supabase.instance.client; // DODANO za direktne pozive
   final _putnikService = PutnikService(); // 🆕 DODANO PutnikService instanca
+  bool _isZimski = false;
 
   // ✅ KORISTI UTILS FUNKCIJU UMESTO DUPLIRANE LOGIKE
   DateTime _getTargetDateForWeekend(DateTime today) {
     return app_date_utils.DateUtils.getWeekendTargetDate(today);
   }
+
+  // ... initState merged later in the file
 
   // ✅ KORISTI UTILS FUNKCIJU UMESTO DUPLIRANE LOGIKE
   String _getDayName(int weekday) {
@@ -301,7 +306,7 @@ class _DanasScreenState extends State<DanasScreen> {
             'polazak_vs_pon,polazak_vs_uto,polazak_vs_sre,polazak_vs_cet,polazak_vs_pet';
 
         final mesecniResponse = await supabase
-            .from('dozvoljeni_mesecni_putnici')
+            .from('monthly_passengers')
             .select(mesecniFields)
             .eq('aktivan', true)
             .eq('obrisan', false);
@@ -333,7 +338,7 @@ class _DanasScreenState extends State<DanasScreen> {
         // Fetch daily passengers for today
         final danas = DateTime.now().toIso8601String().split('T')[0];
         final dnevniResponse = await supabase
-            .from('putovanja_istorija')
+            .from('daily_passengers')
             .select('*')
             .eq('datum', danas)
             .eq('tip_putnika', 'dnevni');
@@ -1145,6 +1150,9 @@ class _DanasScreenState extends State<DanasScreen> {
     if (widget.filterGrad == null || widget.filterVreme == null) {
       _initializeCurrentTime(); // ✅ SINHRONIZACIJA - postavi trenutno vreme i grad kao home_screen
     }
+
+    // Stabilize bottom nav selection by computing current season once
+    _isZimski = schedule_utils.isZimski(DateTime.now());
 
     _initializeCurrentDriver();
     _loadPutnici();
@@ -2131,108 +2139,84 @@ class _DanasScreenState extends State<DanasScreen> {
                 );
               },
             ),
-      bottomNavigationBar: StreamBuilder<List<Putnik>>(
-        stream: _putnikService
-            .streamKombinovaniPutnici(), // 🔄 KOMBINOVANI STREAM (mesečni + dnevni)
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting ||
-              snapshot.hasError ||
-              !snapshot.hasData) {
-            return Container(
-                height: 0); // Ne prikazuj nav bar ako nema podataka
-          }
+      bottomNavigationBar: Builder(
+        builder: (context) {
+          // Derivirani stream koji emituje mapu brojača ("grad|vreme" -> count)
+          final Stream<Map<String, int>> countsStream =
+              _putnikService.streamKombinovaniPutnici().map((allPutnici) {
+            final danasnjiDan = _getTodayForDatabase();
+            final oneWeekAgo = DateTime.now().subtract(const Duration(days: 7));
 
-          final allPutnici = snapshot.data!;
-          final danasnjiDan = _getTodayForDatabase();
-          final oneWeekAgo = DateTime.now().subtract(const Duration(days: 7));
+            final Map<String, int> counts = {};
 
-          debugPrint(
-              '🔍 [DANAS SCREEN] Ukupno putnika iz stream-a: ${allPutnici.length}');
-          debugPrint('🔍 [DANAS SCREEN] Današnji dan: $danasnjiDan');
+            for (final p in allPutnici) {
+              final dayMatch =
+                  p.dan.toLowerCase().contains(danasnjiDan.toLowerCase());
+              bool timeMatch = true;
+              if (p.mesecnaKarta != true && p.vremeDodavanja != null) {
+                timeMatch = p.vremeDodavanja!.isAfter(oneWeekAgo);
+              }
+              if (!dayMatch || !timeMatch) continue;
 
-          // 🔄 REAL-TIME FILTRIRANJE za bottom nav
-          final todayPutnici = allPutnici.where((p) {
-            final dayMatch =
-                p.dan.toLowerCase().contains(danasnjiDan.toLowerCase());
-            bool timeMatch = true;
-            if (p.mesecnaKarta != true && p.vremeDodavanja != null) {
-              timeMatch = p.vremeDodavanja!.isAfter(oneWeekAgo);
+              final gradKey = p.grad;
+              final vremeNorm = GradAdresaValidator.normalizeTime(p.polazak);
+              final key = '$gradKey|$vremeNorm';
+              counts[key] = (counts[key] ?? 0) + 1;
             }
 
-            debugPrint(
-                '📍 [DANAS SCREEN] Putnik: ${p.ime}, dan: ${p.dan}, dayMatch: $dayMatch, timeMatch: $timeMatch');
+            return counts;
+          }).distinct((prev, next) => mapEquals(prev, next));
 
-            return dayMatch && timeMatch;
-          }).toList();
+          return StreamBuilder<Map<String, int>>(
+            stream: countsStream,
+            builder: (context, snap) {
+              if (!snap.hasData) return Container(height: 0);
+              final counts = snap.data!;
 
-          debugPrint(
-              '🔍 [DANAS SCREEN] Filtrirani putnici za danas: ${todayPutnici.length}');
-
-          // Funkcija za brojanje putnika po gradu, vremenu i danu (samo aktivni)
-          int getPutnikCount(String grad, String vreme) {
-            final matchingPutnici = todayPutnici.where((putnik) {
-              final normalizedStatus =
-                  (putnik.status ?? '').toLowerCase().trim();
-
-              // 🏘️ KORISTI NOVU OGRANIČENU LOGIKU - razlikuj mesečne i obične putnike
-              final gradMatch = _isGradMatch(putnik.grad, putnik.adresa, grad,
-                  isMesecniPutnik: putnik.mesecnaKarta == true);
-
-              final vremeMatch =
-                  GradAdresaValidator.normalizeTime(putnik.polazak) ==
-                      GradAdresaValidator.normalizeTime(vreme);
-              final danMatch =
-                  putnik.dan.toLowerCase().contains(danasnjiDan.toLowerCase());
-
-              // BROJČANIK - ne računa mesečne putnike na godišnjem/bolovanju
-              bool statusOk;
-              if (putnik.mesecnaKarta == true) {
-                // Za mesečne putnike u BROJČANIKU, isključi obrisane, godišnji i bolovanje
-                statusOk = (normalizedStatus != 'obrisan' &&
-                    normalizedStatus != 'godisnji' &&
-                    normalizedStatus != 'godišnji' &&
-                    normalizedStatus != 'bolovanje');
-              } else {
-                // DNEVNI PUTNICI - standardno filtriranje
-                statusOk = (normalizedStatus != 'otkazano' &&
-                    normalizedStatus != 'otkazan' &&
-                    normalizedStatus != 'bolovanje' &&
-                    normalizedStatus != 'godisnji' &&
-                    normalizedStatus != 'godišnji' &&
-                    normalizedStatus != 'obrisan');
+              int getPutnikCount(String grad, String vreme) {
+                final key = '$grad|${GradAdresaValidator.normalizeTime(vreme)}';
+                return counts[key] ?? 0;
               }
 
-              debugPrint(
-                  '🎯 [COUNT] Putnik: ${putnik.ime}, grad: "${putnik.grad}" vs "$grad", vreme: "${putnik.polazak}" vs "$vreme", status: "${putnik.status}", gradMatch: $gradMatch, vremeMatch: $vremeMatch, statusOk: $statusOk');
+              if (_isZimski) {
+                return BottomNavBarZimski(
+                  sviPolasci: _sviPolasci,
+                  selectedGrad: _selectedGrad,
+                  selectedVreme: _selectedVreme,
+                  getPutnikCount: getPutnikCount,
+                  onPolazakChanged: (grad, vreme) async {
+                    await _putnikService.resetPokupljenjaNaPolazak(
+                        vreme, grad, _currentDriver ?? 'Unknown');
 
-              return gradMatch && vremeMatch && danMatch && statusOk;
-            }).toList();
+                    setState(() {
+                      _selectedGrad = grad;
+                      _selectedVreme = vreme;
+                    });
 
-            debugPrint(
-                '📊 [COUNT] Za $grad $vreme: ${matchingPutnici.length} putnika');
-            return matchingPutnici.length;
-          }
+                    debugPrint(
+                        '🔄 VREME POLASKA PROMENJENO: $grad $vreme - widget će se ažurirati nakon resetovanja pokupljanja');
+                  },
+                );
+              } else {
+                return BottomNavBarLetnji(
+                  sviPolasci: _sviPolasci,
+                  selectedGrad: _selectedGrad,
+                  selectedVreme: _selectedVreme,
+                  getPutnikCount: getPutnikCount,
+                  onPolazakChanged: (grad, vreme) async {
+                    await _putnikService.resetPokupljenjaNaPolazak(
+                        vreme, grad, _currentDriver ?? 'Unknown');
 
-          return BottomNavBarLetnji(
-            sviPolasci: _sviPolasci,
-            selectedGrad: _selectedGrad,
-            selectedVreme: _selectedVreme,
-            getPutnikCount: getPutnikCount,
-            onPolazakChanged: (grad, vreme) async {
-              // Prvo resetuj pokupljanje za novo vreme polaska
-              await _putnikService.resetPokupljenjaNaPolazak(
-                  vreme, grad, _currentDriver ?? 'Unknown');
+                    setState(() {
+                      _selectedGrad = grad;
+                      _selectedVreme = vreme;
+                    });
 
-              setState(() {
-                _selectedGrad = grad;
-                _selectedVreme = vreme;
-                // Force rebuild da prikaže nove putnike
-              });
-
-              // 🔄 REFRESH putnika kada se promeni vreme polaska
-              // setState() će automatski reload-ovati widget sa novom logikom
-              debugPrint(
-                  '🔄 VREME POLASKA PROMENJENO: $grad $vreme - widget će se ažurirati nakon resetovanja pokupljanja');
+                    debugPrint(
+                        '🔄 VREME POLASKA PROMENJENO: $grad $vreme - widget će se ažurirati nakon resetovanja pokupljanja');
+                  },
+                );
+              }
             },
           );
         },
@@ -2305,3 +2289,5 @@ class _DanasScreenState extends State<DanasScreen> {
     }
   }
 }
+
+

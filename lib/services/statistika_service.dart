@@ -1073,7 +1073,7 @@ class StatistikaService {
       // 2. RESETUJ MESEČNE KARTE - postavi cena na 0 i obriši vreme_placanja
       try {
         final mesecniResult = await supabase
-            .from('dozvoljeni_mesecni_putnici')
+            .from('monthly_passengers')
             .update({
               'cena': 0.0,
               'vreme_placanja': null,
@@ -1174,3 +1174,5 @@ class StatistikaService {
     return R * 2 * asin(sqrt(a));
   }
 }
+
+

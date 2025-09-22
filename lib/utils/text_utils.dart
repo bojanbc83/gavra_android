@@ -45,3 +45,5 @@ class TextUtils {
         !neaktivni.any((s) => normalizeText(s) == normalized);
   }
 }
+
+

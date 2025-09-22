@@ -628,3 +628,5 @@ class _RealTimeNavigationWidgetState extends State<RealTimeNavigationWidget> {
     }
   }
 }
+
+

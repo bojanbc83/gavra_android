@@ -55,11 +55,15 @@ void main() async {
   // 🚀 CACHE UKLONJEN - koristi direktne Supabase pozive
   _logger.i('🔄 Cache removed - using direct Supabase calls');
 
-  // OneSignal initialization
-  OneSignal.initialize('4fd57af1-568a-45e0-a737-3b3918c4e92a');
-  OneSignal.User.pushSubscription.addObserver((state) {
-    _logger.i('🔔 OneSignal player ID: ${state.current.id}');
-  });
+  // OneSignal initialization (modern API)
+  try {
+    OneSignal.initialize('4fd57af1-568a-45e0-a737-3b3918c4e92a');
+    OneSignal.User.pushSubscription.addObserver((state) {
+      _logger.i('🔔 OneSignal player ID: ${state.current.id}');
+    });
+  } catch (e) {
+    _logger.w('⚠️ OneSignal initialization failed: $e');
+  }
 
   // Firebase initialization - ENABLED for multi-channel notifications
   try {
@@ -67,6 +71,14 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     ).timeout(const Duration(seconds: 15)); // Povećan timeout
+
+    // DEBUG: attempt to fetch FCM token to surface INVALID_SENDER quickly
+    try {
+      final fcmToken = await FirebaseMessaging.instance.getToken();
+      _logger.i('🔑 FCM token: $fcmToken');
+    } catch (e) {
+      _logger.e('❌ Error retrieving FCM token: $e');
+    }
 
     // Registruj background message handler
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -353,3 +365,5 @@ class _MyAppState extends State<MyApp> {
     // return GpsDemoScreen();
   }
 }
+
+

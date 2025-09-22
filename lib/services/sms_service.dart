@@ -87,7 +87,7 @@ class SMSService {
       String tomorrowStr = DateFormat('yyyy-MM-dd').format(tomorrow);
 
       final response = await supabase
-          .from('dozvoljeni_mesecni_putnici')
+          .from('monthly_passengers')
           .select()
           .eq('datum_kraja_meseca', tomorrowStr);
 
@@ -156,7 +156,7 @@ class SMSService {
       String yesterdayStr = DateFormat('yyyy-MM-dd').format(yesterday);
 
       final response = await supabase
-          .from('dozvoljeni_mesecni_putnici')
+          .from('monthly_passengers')
           .select()
           .eq('datum_kraja_meseca', yesterdayStr);
 
@@ -212,7 +212,7 @@ class SMSService {
     try {
       // 1. Poslednja uplata
       final lastPaymentResponse = await supabase
-          .from('putovanja_istorija')
+          .from('daily_passengers')
           .select('datum_i_vreme, iznos_uplate')
           .eq('putnik_id', putnikId)
           .gt('iznos_uplate', 0)
@@ -233,7 +233,7 @@ class SMSService {
 
       // 2. Putovanja od poslednje uplate
       final tripsResponse = await supabase
-          .from('putovanja_istorija')
+          .from('daily_passengers')
           .select('tip_promene')
           .eq('putnik_id', putnikId)
           .gte('datum_i_vreme', lastPaymentDate);
@@ -393,3 +393,5 @@ class SMSService {
     }
   }
 }
+
+

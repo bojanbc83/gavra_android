@@ -13,8 +13,8 @@ import '../services/putnik_service.dart';
 import '../utils/vozac_boja.dart';
 
 /// 🚨 PAŽNJA: Ovaj widget sada koristi nove tabele!
-/// - dozvoljeni_mesecni_putnici za mesečne putnike (mesecnaKarta == true)
-/// - putovanja_istorija za dnevne putnike (mesecnaKarta == false)
+/// - monthly_passengers za mesečne putnike (mesecnaKarta == true)
+/// - daily_passengers za dnevne putnike (mesecnaKarta == false)
 /// PutnikService koristi nove tabele
 
 class PutnikCard extends StatefulWidget {
@@ -2407,3 +2407,5 @@ class _PutnikCardState extends State<PutnikCard> {
     }
   }
 } // kraj klase
+
+

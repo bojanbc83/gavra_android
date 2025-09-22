@@ -829,3 +829,5 @@ class OptimizedRoute {
     return 'OptimizedRoute(${optimizedSequence.length} stops, ${totalDistance.toStringAsFixed(2)}km, ${estimatedTime.inMinutes}min)';
   }
 }
+
+

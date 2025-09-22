@@ -149,3 +149,5 @@ class CacheKeys {
   // Mesečne karte cache
   static String mesecneKarte(String mesec) => 'mesecne_karte_$mesec';
 }
+
+

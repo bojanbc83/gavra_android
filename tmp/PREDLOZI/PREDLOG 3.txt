@@ -1,0 +1,222 @@
+
+
+-- Passengers
+CREATE TABLE passengers (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  first_name text,
+  last_name text,
+  phone text,
+  email text,
+  passenger_type passenger_type DEFAULT 'other',
+  employer text,
+  school text,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+-- Drivers
+CREATE TABLE drivers (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  first_name text,
+  last_name text,
+  phone text,
+  vehicle_number text,
+  notes text,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+CREATE TABLE trips (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  origin text NOT NULL,
+  destination text NOT NULL,
+  departure_at timestamptz NOT NULL,
+  arrival_estimate timestamptz,
+  driver_id uuid REFERENCES drivers(id) ON DELETE SET NULL,
+  capacity integer,
+  status trip_status DEFAULT 'scheduled',
+  cancelled_at timestamptz,
+  cancel_reason text,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+CREATE TABLE bookings (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  passenger_id uuid REFERENCES passengers(id) ON DELETE CASCADE,
+  trip_id uuid REFERENCES trips(id) ON DELETE CASCADE,
+  seat_count integer DEFAULT 1,
+  booked_at timestamptz DEFAULT now(),
+  status trip_status DEFAULT 'scheduled', -- scheduled/completed/cancelled
+  cancelled_at timestamptz,
+  cancel_reason text,
+  note text,
+  is_monthly boolean DEFAULT false
+
+);
+CREATE TABLE payments (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  booking_id uuid REFERENCES bookings(id) ON DELETE SET NULL,
+  passenger_id uuid REFERENCES passengers(id) ON DELETE SET NULL,
+  amount numeric(10,2) NOT NULL,
+  method payment_method DEFAULT 'cash',
+  paid_at timestamptz DEFAULT now(),
+  received_by text, -- driver or system recipient
+  note text
+);
+
+CREATE TABLE monthly_subscriptions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  passenger_id uuid REFERENCES passengers(id) ON DELETE CASCADE,
+  route_origin text NOT NULL,
+  route_destination text NOT NULL,
+  start_date date NOT NULL,
+  end_date date NOT NULL,
+  price numeric(10,2) NOT NULL,
+  purchased_at timestamptz DEFAULT now(),
+  purchased_by text -- driver/system
+);
+
+CREATE TABLE driver_logs (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  driver_id uuid REFERENCES drivers(id) ON DELETE CASCADE,
+  log_date date NOT NULL,
+  pickups integer DEFAULT 0,
+  cancellations integer DEFAULT 0,
+  small_change numeric(10,2) DEFAULT 0, -- cash for change
+  takings numeric(12,2) DEFAULT 0, -- total cash takings
+  kilometers numeric(10,2) DEFAULT 0,
+  monthly_tickets_sold integer DEFAULT 0,
+  notes text,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now(),
+  UNIQUE(driver_id, log_date)
+);
+
+CREATE TABLE schedules (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  passenger_id uuid REFERENCES passengers(id) ON DELETE CASCADE,
+  origin text NOT NULL,
+  destination text NOT NULL,
+  weekday integer NOT NULL CHECK (weekday BETWEEN 0 AND 6), -- 0=Monday, 6=Sunday
+  start_time time NOT NULL,
+  end_time time NOT NULL,
+  valid_from date DEFAULT now(),
+  valid_to date,
+  note text
+);
+
+CREATE TABLE schedule_exceptions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  passenger_id uuid REFERENCES passengers(id) ON DELETE CASCADE,
+  date date NOT NULL,
+  origin text,
+  destination text,
+  start_time time,
+  end_time time,
+  is_cancelled boolean DEFAULT false,
+  note text
+);
+
+
+
+
+
+
+
+
+
+
+
+1) Šema (kratko)
+
+Tabele:
+passengers (putnici): id, ime, prezime, phone, email, passenger_type (worker/student/other), employer, school, timestamps.
+drivers (vozači): id, ime, phone, vehicle_number, notes.
+trips (pojedinačni polasci): id, origin, destination, departure_at, driver_id, capacity, status, cancelled_at, cancel_reason.
+bookings (rezervacije/karte): id, passenger_id, trip_id, seat_count, booked_at, status, cancelled_at, is_monthly.
+payments: id, booking_id, passenger_id, amount, method, paid_at, received_by.
+monthly_subscriptions: id, passenger_id, route_origin, route_destination, start_date, end_date, price, purchased_at, purchased_by.
+driver_logs: dnevni log po vozaču (date, pickups, cancellations, small_change, takings, kilometers, monthly_tickets_sold).
+schedules: ponavljajući rasporedi (passenger_id, origin, destination, weekday(0-6), start_time, end_time, valid_from, valid_to).
+schedule_exceptions: ručne izmene / otkazivanja po datumu (za fleksibilne nedeljne promene).
+Tipovi/enumi: passenger_type, trip_status, payment_method.
+
+
+2) Kako skladištiti informacije koje želiš (tačno po stavkama)
+
+Koliko su putovanja imali po mesecu: spoji bookings->trips i group by date_trunc('month', trips.departure_at).
+Koliko otkazivanja po mesecu: bookings.status = 'cancelled' i/ili trips.status='cancelled'.
+Vreme i datum otkazivanja: bookings.cancelled_at.
+Koliko puta su platili po mesecu i ukupan iznos: payments gde je passenger_id i date_trunc('month', paid_at).
+Kome su platili: payments.received_by (tekst; može biti vozač ili sistem).
+Kada su platili: payments.paid_at.
+Koji su radni dani i radno vreme: iz schedules (nedeljni pattern) + schedule_exceptions za datumske izmene.
+Adrese polaska: trips.origin i trips.destination (možeš normalizovati u routes tabelu).
+Broj telefona: passengers.phone.
+Tip putnika: passengers.passenger_type.
+Gde su zaposleni / koja škola: passengers.employer / passengers.school.
+Primer kompleksne nedeljne rotacije: koristi schedule_exceptions za konkretne datume (admin unosi posebno za datu nedelju).
+
+
+
+
+3) Dnevni putnici — šta pratiti (predlog)
+
+Broj putnika po polasku (bookings po trip_id).
+Broj no‑show / nepreuzimanja (dodati flag u bookings ako želiš razlikovati).
+Brza naplata po polasku (sum(payments) po trip_id).
+Peak hours (analitika: agregacija po satu).
+Prijave novih putnika (first booking).
+Adresa polaska i destinacije (držimo u trips ili routes).
+Za svaki od ovih predloga mogu da napišem gotove SQL upite.
+
+4) Vozači — šta pratiti (tvoj spisak, kako implementirati)
+
+Koliko dodatih putnika: broj bookings koje vozač ima za svoje trips (count bookings where trips.driver_id = driver).
+Koliko pokupljenih: u driver_logs.pickups ili iz završenih bookings.
+Koliko otkazanih: driver_logs.cancellations ili brojevi iz bookings/trips.
+Koliko sitnog novca za kusur: driver_logs.small_change (vozač unosi na kraju smene).
+Koliko imaju pazara (dnevni/nedeljni/mesečni/godišnji): sum(takings) u driver_logs.
+Kilometraža: driver_logs.kilometers.
+Koliko naplacenih mesecnih karata: driver_logs.monthly_tickets_sold ili broj u monthly_subscriptions kupljenih kod vozača.
+Mogu dodati helper funkcije (npr. fn_driver_summary(start,end)) da vraća agregate — već sam dodao primer u fajlu.
+
+
+
+
+
+5) Indeksi / performanse / materialized views
+
+Indeksi: trips(departure_at), bookings(passenger_id), bookings(trip_id), payments(paid_at), driver_logs(log_date). Dodati po potrebi indekse na status, driver_id.
+Materialized views: za mesečne i dnevne agregate (osim ako želiš real-time).
+Refresh: noću ili po rasporedu (Supabase scheduled functions).
+6) Rasporedi i ručne izmene (tvoj primer: neke sedmične, neke menjaju svake nedelje)
+
+Osnovna logika:
+Unesi schedules za standardne radne dane (npr. Mon-Fri 06:00-14:00).
+Ako nedelja ima drugačije sate — unesi u schedule_exceptions za svaki datum te nedelje (npr. ponedeljak 2025-09-22: 05:00-13:00).
+UI: prikaži korisniku kombinaciju schedules + schedule_exceptions za date range (compute final effective schedule).
+Ako postane kompleksno (rotacije koje se ciklički ponavljaju svake N nedelja), uvesti schedule_patterns sa cycle_id i primenom patterna na datumski raspon.
+
+
+
+
+7) Minimalna implementacija u Supabase
+
+Napravi nove SQL migracije (dodao sam supabase/sql/001__initial_schema.sql i 002__reports_and_views.sql).
+Napravi RLS politike: vozači vide svoje trips i driver_logs, admin vidi sve.
+Scheduled functions za refresh materialized views (npr. svake noći).
+Dodaj API (Supabase auto-generiše REST/GraphQL), napravi frontend forme za:
+unos putnika (phone, tip, employer/school),
+unos rasporeda / ručnih izmena,
+vozačke dnevne logove (na kraju smene),
+unos naplate (payments) i prodaje mesečnih karata.
+8) Sledeći koraci (što mogu da uradim odmah)
+
+Dodati trigger koji automatski postavlja updated_at = now() na UPDATE za tablice.
+Dodati indekse koje nedostaju (bookings(trip_id), bookings(status), trips(driver_id)).
+Normalizovati rute u routes tabelu ako želiš standardizovane adrese.
+Dodati primere API poziva i supabase policy (RLS) fajl.
+Napraviti malenu admin stranicu (React) za upravljanje rasporedima i ručnim izmenama.
+

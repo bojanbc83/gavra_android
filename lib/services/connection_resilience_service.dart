@@ -114,7 +114,7 @@ class ConnectionResilienceService {
     try {
       // Jednostavan test query
       await _supabase
-          .from('dozvoljeni_mesecni_putnici')
+          .from('monthly_passengers')
           .select('id')
           .limit(1)
           .timeout(const Duration(seconds: 10));
@@ -223,3 +223,5 @@ class ConnectionResilienceService {
     _connectionStatusController.close();
   }
 }
+
+

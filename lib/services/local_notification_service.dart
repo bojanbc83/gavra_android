@@ -282,9 +282,9 @@ class LocalNotificationService {
     try {
       final supabase = Supabase.instance.client;
 
-      // Traži u putovanja_istorija tabeli (dnevni putnici)
+      // Traži u daily_passengers tabeli (dnevni putnici)
       final dnevniResult = await supabase
-          .from('putovanja_istorija')
+          .from('daily_passengers')
           .select('putnik_ime, grad, vreme_polaska, dan, polazak')
           .eq('putnik_ime', putnikIme)
           .eq('obrisan', false)
@@ -301,9 +301,9 @@ class LocalNotificationService {
         };
       }
 
-      // Traži u dozvoljeni_mesecni_putnici tabeli (canonical monthly list)
+      // Traži u monthly_passengers tabeli (canonical monthly list)
       final mesecniResult = await supabase
-          .from('dozvoljeni_mesecni_putnici')
+          .from('monthly_passengers')
           .select()
           .eq('putnik_ime', putnikIme)
           .eq('aktivan', true)
@@ -373,3 +373,5 @@ class LocalNotificationService {
     }
   }
 }
+
+

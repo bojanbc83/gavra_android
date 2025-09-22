@@ -1,0 +1,176 @@
+CLAUDE
+
+
+Supabase struktura tabela za prevoz Bela Crkva - Vršac
+1. TABELA: mesecni_putnici
+sqlCREATE TABLE mesecni_putnici (
+    id SERIAL PRIMARY KEY,
+    ime_prezime VARCHAR(100) NOT NULL,
+    broj_telefona VARCHAR(20),
+    tip_putnika VARCHAR(10) CHECK (tip_putnika IN ('radnik', 'ucenik')),
+    poslodavac VARCHAR(100), -- za radnike
+    skola VARCHAR(100), -- za učenike
+    adresa_polaska_bc TEXT, -- adresa u Beloj Crkvi
+    adresa_polaska_vrsac TEXT, -- adresa u Vršcu
+    created_at TIMESTAMP DEFAULT NOW(),
+    active BOOLEAN DEFAULT TRUE
+);
+2. TABELA: radno_vreme_putnika
+sqlCREATE TABLE radno_vreme_putnika (
+    id SERIAL PRIMARY KEY,
+    putnik_id INTEGER REFERENCES mesecni_putnici(id),
+    dan_nedelje INTEGER CHECK (dan_nedelje BETWEEN 1 AND 7), -- 1=ponedeljak, 7=nedelja
+    pocetak_rada TIME,
+    kraj_rada TIME,
+    vazi_od DATE,
+    vazi_do DATE,
+    napomene TEXT
+);
+3. TABELA: putovanja_mesecni
+sqlCREATE TABLE putovanja_mesecni (
+    id SERIAL PRIMARY KEY,
+    putnik_id INTEGER REFERENCES mesecni_putnici(id),
+    datum DATE NOT NULL,
+    vreme_polaska TIME,
+    smer VARCHAR(20) CHECK (smer IN ('bc_vrsac', 'vrsac_bc')),
+    status VARCHAR(20) CHECK (status IN ('realizovano', 'otkazano', 'zakazano')) DEFAULT 'zakazano',
+    razlog_otkazivanja TEXT,
+    vreme_otkazivanja TIMESTAMP,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+4. TABELA: placanja_mesecni
+sqlCREATE TABLE placanja_mesecni (
+    id SERIAL PRIMARY KEY,
+    putnik_id INTEGER REFERENCES mesecni_putnici(id),
+    mesec INTEGER CHECK (mesec BETWEEN 1 AND 12),
+    godina INTEGER,
+    iznos DECIMAL(10,2),
+    datum_placanja DATE,
+    nacin_placanja VARCHAR(20) CHECK (nacin_placanja IN ('kes', 'kartica', 'uplatnica')),
+    primio_vozac VARCHAR(100), -- ime vozača koji je primio
+    napomene TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+5. TABELA: dnevni_putnici
+sqlCREATE TABLE dnevni_putnici (
+    id SERIAL PRIMARY KEY,
+    datum DATE NOT NULL,
+    vreme_polaska TIME,
+    ime_prezime VARCHAR(100),
+    broj_telefona VARCHAR(20),
+    adresa_polaska TEXT,
+    adresa_odredista TEXT,
+    smer VARCHAR(20) CHECK (smer IN ('bc_vrsac', 'vrsac_bc')),
+    cena DECIMAL(8,2),
+    placeno BOOLEAN DEFAULT FALSE,
+    napomene TEXT,
+    vozac_id INTEGER REFERENCES vozaci(id),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+6. TABELA: vozaci
+sqlCREATE TABLE vozaci (
+    id SERIAL PRIMARY KEY,
+    ime_prezime VARCHAR(100) NOT NULL,
+    broj_telefona VARCHAR(20),
+    broj_licne VARCHAR(20),
+    vozacka_dozvola VARCHAR(50),
+    datum_zaposljavanja DATE,
+    active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+7. TABELA: vozaci_dnevno
+sqlCREATE TABLE vozaci_dnevno (
+    id SERIAL PRIMARY KEY,
+    vozac_id INTEGER REFERENCES vozaci(id),
+    datum DATE NOT NULL,
+    pocetna_kilometraza DECIMAL(10,2),
+    zavrsna_kilometraza DECIMAL(10,2),
+    ukupno_km DECIMAL(10,2) GENERATED ALWAYS AS (zavrsna_kilometraza - pocetna_kilometraza) STORED,
+    dodatni_putnici INTEGER DEFAULT 0,
+    pokupljeni_putnici INTEGER DEFAULT 0,
+    otkazani_putnici INTEGER DEFAULT 0,
+    sitni_novac DECIMAL(8,2) DEFAULT 0,
+    naplacene_mesecne_karte INTEGER DEFAULT 0,
+    napomene TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+8. TABELA: vozaci_pazar
+sqlCREATE TABLE vozaci_pazar (
+    id SERIAL PRIMARY KEY,
+    vozac_id INTEGER REFERENCES vozaci(id),
+    datum DATE NOT NULL,
+    tip_perioda VARCHAR(10) CHECK (tip_perioda IN ('dnevno', 'nedeljno', 'mesecno', 'godisnje')),
+    iznos_pazara DECIMAL(10,2),
+    napomene TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+KORISNI VIEW-ovi za statistike
+Mesečna statistika putnika
+sqlCREATE VIEW mesecna_statistika_putnika AS
+SELECT 
+    mp.id,
+    mp.ime_prezime,
+    mp.tip_putnika,
+    EXTRACT(MONTH FROM pm.datum) as mesec,
+    EXTRACT(YEAR FROM pm.datum) as godina,
+    COUNT(CASE WHEN pm.status = 'realizovano' THEN 1 END) as realizovana_putovanja,
+    COUNT(CASE WHEN pm.status = 'otkazano' THEN 1 END) as otkazana_putovanja,
+    COALESCE(SUM(pl.iznos), 0) as ukupan_iznos_mesec
+FROM mesecni_putnici mp
+LEFT JOIN putovanja_mesecni pm ON mp.id = pm.putnik_id
+LEFT JOIN placanja_mesecni pl ON mp.id = pl.putnik_id 
+    AND EXTRACT(MONTH FROM pm.datum) = pl.mesec 
+    AND EXTRACT(YEAR FROM pm.datum) = pl.godina
+GROUP BY mp.id, mp.ime_prezime, mp.tip_putnika, mesec, godina;
+Dnevna statistika vozača
+sqlCREATE VIEW dnevna_statistika_vozaca AS
+SELECT 
+    v.ime_prezime,
+    vd.datum,
+    vd.ukupno_km,
+    vd.dodatni_putnici,
+    vd.pokupljeni_putnici,
+    vd.otkazani_putnici,
+    vd.sitni_novac,
+    vd.naplacene_mesecne_karte,
+    COALESCE(vp.iznos_pazara, 0) as dnevni_pazar
+FROM vozaci v
+JOIN vozaci_dnevno vd ON v.id = vd.vozac_id
+LEFT JOIN vozaci_pazar vp ON v.id = vp.vozac_id 
+    AND vd.datum = vp.datum 
+    AND vp.tip_perioda = 'dnevno';
+
+Predlog za DNEVNE PUTNIKE - dodatne kolone/tabele:
+Šta bi moglo biti korisno za dnevne putnike:
+
+Povratni putnici (da li putuju i nazad istog dana)
+Razlog putovanja (posao, lečenje, kupovina, ličo...)
+Da li su stalni korisnici (putuju često ali bez mesečne)
+Grupa putovanja (familija, prijatelji)
+Potreba za čekanje/povratak u određeno vreme
+Posebne potrebe (invalidska kolica, veliki prtljag)
+Način kako su saznali za prevoz (preporuka, oglas, internet)
+
+Dodatne tabele koje mogu biti korisne:
+9. TABELA: rute_i_cene
+sqlCREATE TABLE rute_i_cene (
+    id SERIAL PRIMARY KEY,
+    polaziste VARCHAR(100),
+    odrediste VARCHAR(100),
+    cena_mesecna DECIMAL(8,2),
+    cena_dnevna DECIMAL(8,2),
+    vazi_od DATE,
+    vazi_do DATE,
+    active BOOLEAN DEFAULT TRUE
+);
+10. TABELA: raspored_voznji
+sqlCREATE TABLE raspored_voznji (
+    id SERIAL PRIMARY KEY,
+    dan_nedelje INTEGER CHECK (dan_nedelje BETWEEN 1 AND 7),
+    vreme_polaska_bc TIME,
+    vreme_polaska_vrsac TIME,
+    vozac_id INTEGER REFERENCES vozaci(id),
+    active BOOLEAN DEFAULT TRUE,
+    napomene TEXT
+);

@@ -197,3 +197,5 @@ enum HapticType {
   success,
   error,
 }
+
+

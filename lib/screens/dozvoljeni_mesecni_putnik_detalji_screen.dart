@@ -805,3 +805,5 @@ class _MesecniPutnikDetaljiScreenState
     return '${DateFormat('dd.MM').format(pocetak)} - ${DateFormat('dd.MM.yyyy').format(kraj)}';
   }
 }
+
+

@@ -99,3 +99,5 @@ class PutniciStatistikaWidget extends StatelessWidget {
   //   return '${date.day}.${date.month}.${date.year}.';
   // }
 }
+
+

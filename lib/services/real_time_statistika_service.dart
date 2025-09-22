@@ -117,9 +117,9 @@ class RealTimeStatistikaService {
     if (!_streamCache.containsKey(cacheKey)) {
       debugPrint('🆕 KREIRANJE PUTNIK STATISTIKE STREAM-A: $putnikId');
 
-      // Kombinuj putovanja_istorija stream sa osnovnim podatcima
+      // Kombinuj daily_passengers stream sa osnovnim podatcima
       _streamCache[cacheKey] = Supabase.instance.client
-          .from('putovanja_istorija')
+          .from('daily_passengers')
           .stream(primaryKey: ['id'])
           .eq('putnik_id', putnikId)
           .asyncMap((_) async {
@@ -148,7 +148,7 @@ class RealTimeStatistikaService {
 
       // Dohvati sva putovanja za putnika
       final putovanja = await supabase
-          .from('putovanja_istorija')
+          .from('daily_passengers')
           .select()
           .eq('putnik_id', putnikId)
           .order('created_at', ascending: false);
@@ -191,3 +191,5 @@ class RealTimeStatistikaService {
     }
   }
 }
+
+

@@ -2508,7 +2508,7 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     final endOfYear = DateTime(2025, 12, 31);
 
     final response = await supabase
-        .from('putovanja_istorija')
+        .from('daily_passengers')
         .select('*')
         .eq('putnik_id', putnikId)
         .gte('created_at', startOfYear.toIso8601String())
@@ -2549,7 +2549,7 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
   // 🏆 UKUPNE STATISTIKE (SVI PODACI)
   Future<Map<String, dynamic>> _getUkupneStatistike(String putnikId) async {
     final response = await supabase
-        .from('putovanja_istorija')
+        .from('daily_passengers')
         .select('*')
         .eq('putnik_id', putnikId)
         .order('created_at', ascending: false);
@@ -2680,7 +2680,7 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
 
       // Dohvati sva putovanja za dati mesec
       final response = await Supabase.instance.client
-          .from('putovanja_istorija')
+          .from('daily_passengers')
           .select('datum, status, pokupljen, created_at')
           .eq('putnik_id', putnikId)
           .gte('datum', startStr)
@@ -2939,7 +2939,7 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
 
       // Dohvati sva putovanja za septembar 2025
       final response = await Supabase.instance.client
-          .from('putovanja_istorija')
+          .from('daily_passengers')
           .select('datum, status, pokupljen, created_at')
           .eq('mesecni_putnik_id', putnikId)
           .gte('datum', startStr)
@@ -3263,3 +3263,5 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     );
   }
 }
+
+

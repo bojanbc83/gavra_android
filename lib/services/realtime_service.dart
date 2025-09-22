@@ -113,9 +113,9 @@ class RealtimeService {
       }
     });
 
-    // putovanja_istorija
+    // daily_passengers
     _putovanjaSub = client
-        .from('putovanja_istorija')
+        .from('daily_passengers')
         .stream(primaryKey: ['id']).listen((List<dynamic> data) {
       try {
         final rows = <Map<String, dynamic>>[];
@@ -240,7 +240,7 @@ class RealtimeService {
       } catch (_) {}
     }
 
-    // Subscribe to daily_checkins and putovanja_istorija; filter incoming rows
+    // Subscribe to daily_checkins and daily_passengers; filter incoming rows
     final dailySub = client
         .from('daily_checkins')
         .stream(primaryKey: ['id']).listen((List<dynamic> data) {
@@ -279,7 +279,7 @@ class RealtimeService {
     });
 
     final putovanjaSub = client
-        .from('putovanja_istorija')
+        .from('daily_passengers')
         .stream(primaryKey: ['id']).listen((List<dynamic> data) {
       try {
         final rows = <Map<String, dynamic>>[];
@@ -336,7 +336,7 @@ class RealtimeService {
   Future<void> refreshNow() async {
     try {
       final client = Supabase.instance.client;
-      final putovanja = await client.from('putovanja_istorija').select();
+      final putovanja = await client.from('daily_passengers').select();
       final daily = await client.from('daily_checkins').select();
 
       _lastPutovanjaRows = (putovanja as List?)
@@ -353,3 +353,5 @@ class RealtimeService {
     }
   }
 }
+
+
