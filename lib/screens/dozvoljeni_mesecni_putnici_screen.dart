@@ -1599,8 +1599,21 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
         updatedAt: DateTime.now(),
       );
 
-      final rezultat =
-          await MesecniPutnikService.dodajMesecnogPutnika(noviPutnik);
+      MesecniPutnik? rezultat;
+      try {
+        rezultat = await MesecniPutnikService.dodajMesecnogPutnika(noviPutnik);
+      } catch (e) {
+        if (mounted) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(e.toString()),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return;
+      }
 
       // Kreiraj dnevne putovanja za danas (1 dan unapred) da se odmah pojave u 'Danas' listi
       try {
@@ -3263,5 +3276,3 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     );
   }
 }
-
-

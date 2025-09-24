@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:async';
+import 'dart:convert';
 import 'putnik_service.dart';
 import 'statistika_service.dart';
 
@@ -22,6 +23,37 @@ class DailyCheckInService {
     });
 
     return _sitanNovacController.stream;
+  }
+
+  // Best-effort parser for legacy Map.toString() stored in SharedPreferences.
+  // Example input: "{ukupanPazar: 1200.0, kusur: 120.0}"
+  static Map<String, dynamic> _parsePopisString(String s) {
+    final Map<String, dynamic> out = {};
+    final trimmed = s.trim();
+    if (!trimmed.startsWith('{') || !trimmed.endsWith('}')) return {'raw': s};
+    final inner = trimmed.substring(1, trimmed.length - 1);
+    final parts = inner.split(',');
+    for (final part in parts) {
+      final kv = part.split(':');
+      if (kv.length < 2) continue;
+      final key = kv[0].trim();
+      final value = kv.sublist(1).join(':').trim();
+      // try parse number
+      final numVal = num.tryParse(value);
+      if (numVal != null) {
+        out[key] = numVal;
+        continue;
+      }
+      // try parse boolean
+      final lower = value.toLowerCase();
+      if (lower == 'true' || lower == 'false') {
+        out[key] = lower == 'true';
+        continue;
+      }
+      // fallback to string without surrounding quotes
+  out[key] = value.replaceAll(RegExp(r"^['\"]|['\"]$") , '').trim();
+    }
+    return out;
   }
 
   /// Proveri da li je vozač već uradio check-in danas
@@ -227,12 +259,11 @@ class DailyCheckInService {
       debugPrint('Supabase save failed for popis: $e');
     }
 
-    // Sačuvaj lokalno u SharedPreferences
-    final prefs = await SharedPreferences.getInstance();
-    final popisJson = Map<String, String>.from(
-        popisPodaci.map((key, value) => MapEntry(key, value.toString())));
+  // Sačuvaj lokalno u SharedPreferences kao JSON string
+  final prefs = await SharedPreferences.getInstance();
+  final popisJson = jsonEncode(popisPodaci);
 
-    await prefs.setString('${dateKey}_popis', popisJson.toString());
+  await prefs.setString('${dateKey}_popis', popisJson);
     await prefs.setString(
         '${dateKey}_popis_timestamp', datum.toIso8601String());
 
@@ -253,12 +284,32 @@ class DailyCheckInService {
 
       final popisString = prefs.getString('${dateKey}_popis');
       if (popisString != null) {
-        // Parsiraj string nazad u Map
-        // TODO: Dodati JSON parsing ako bude potrebno
-        return {
-          'datum': checkDate,
-          'popis': popisString,
-        };
+        // Pokušaj da parsiramo JSON
+        try {
+          final decoded = jsonDecode(popisString);
+          if (decoded is Map<String, dynamic>) {
+            return {
+              'datum': checkDate,
+              'popis': decoded,
+            };
+          }
+        } catch (_) {
+          // fallback: pokušaj jednostavnog parsiranja iz Map.toString() formata
+          try {
+            final parsed = _parsePopisString(popisString);
+            return {
+              'datum': checkDate,
+              'popis': parsed,
+            };
+          } catch (e) {
+            debugPrint('⚠️ Neuspešno parsiranje popisa iz SharedPreferences: $e');
+            // as a last resort, return raw string under key 'raw'
+            return {
+              'datum': checkDate,
+              'popis': {'raw': popisString},
+            };
+          }
+        }
       }
     }
 

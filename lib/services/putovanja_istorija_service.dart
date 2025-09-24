@@ -1,7 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/foundation.dart';
-import '../models/daily_passengers.dart';
 import '../models/mesecni_putnik.dart';
+import '../models/putovanja_istorija.dart';
 
 class PutovanjaIstorijaService {
   static final _supabase = Supabase.instance.client;
@@ -450,5 +450,3 @@ class PutovanjaIstorijaService {
     }
   }
 }
-
-

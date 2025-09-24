@@ -1,3 +1,1 @@
-export 'monthly_passengers_screen.dart';
-
-
+export 'dozvoljeni_mesecni_putnici_screen.dart';

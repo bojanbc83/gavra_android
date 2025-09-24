@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/putnik.dart';
 import '../utils/grad_adresa_validator.dart';
@@ -281,14 +282,57 @@ class PutnikService {
       // Attempt update/insert; if Postgrest complains about unknown columns,
       // remove offending keys and retry up to 3 times.
       Map<String, dynamic> send = Map<String, dynamic>.from(data);
+      // Sanitize payload: remove empty-string IDs and convert empty strings -> null
+      // This avoids PostgREST/PG errors like "invalid input syntax for type uuid: \"\"".
+      final Map<String, dynamic> sanitized = {};
+      send.forEach((k, v) {
+        if (v is String && v.trim().isEmpty) {
+          // drop empty id entirely so DB can generate it, or set other empty strings to null
+          if (k.toLowerCase() == 'id') {
+            return; // skip adding empty id
+          }
+          sanitized[k] = null;
+        } else {
+          sanitized[k] = v;
+        }
+      });
+      send = sanitized;
+
+      // If putnik.id is an empty string, treat as null (we should INSERT instead of UPDATE)
+      dynamic targetId = putnik.id;
+      if (targetId is String && targetId.trim().isEmpty) {
+        targetId = null;
+      }
       for (int attempt = 0; attempt < 3; attempt++) {
         try {
-          if (putnik.id != null) {
+          if (targetId != null) {
             await supabase
                 .from('monthly_passengers')
                 .update(send)
-                .eq('id', putnik.id!);
+                .eq('id', targetId);
           } else {
+            // Ensure owner-based RLS works: attach current authenticated user's id
+            try {
+              final currentUserId =
+                  Supabase.instance.client.auth.currentUser?.id;
+              if (currentUserId != null && !send.containsKey('user_id')) {
+                send['user_id'] = currentUserId;
+              }
+            } catch (_) {}
+
+            // Attach local driver identifier (dodao_vozac) from SharedPreferences
+            try {
+              final prefs = await SharedPreferences.getInstance();
+              final currentDriver = prefs.getString('current_driver');
+              if (currentDriver != null &&
+                  currentDriver.isNotEmpty &&
+                  !send.containsKey('dodao_vozac')) {
+                send['dodao_vozac'] = currentDriver;
+              }
+            } catch (_) {
+              // ignore shared_preferences errors
+            }
+
             await supabase.from('monthly_passengers').insert(send);
           }
           break;
@@ -884,8 +928,7 @@ class PutnikService {
     }
 
     // 📊 AUTOMATSKA SINHRONIZACIJA BROJA PUTOVANJA (NOVO za daily_passengers!)
-    if (tabela == 'daily_passengers' &&
-        response['mesecni_putnik_id'] != null) {
+    if (tabela == 'daily_passengers' && response['mesecni_putnik_id'] != null) {
       try {
         debugPrint(
             '📊 [AUTO SYNC PICKUP] Sinhronizujem broj putovanja za mesečnog putnika ID: ${response['mesecni_putnik_id']}');
@@ -1343,8 +1386,7 @@ class PutnikService {
 
       // Pokušaj reset u monthly_passengers tabeli
       try {
-        debugPrint(
-            '🔍 RESET - $imePutnika: tražim u monthly_passengers');
+        debugPrint('🔍 RESET - $imePutnika: tražim u monthly_passengers');
         final mesecniResponse = await supabase
             .from('monthly_passengers')
             .select()
@@ -1666,5 +1708,3 @@ class PutnikService {
     }
   }
 }
-
-

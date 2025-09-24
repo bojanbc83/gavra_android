@@ -1,6 +1,7 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/putnik.dart';
+import '../models/turn_by_turn_instruction.dart';
 import 'geocoding_service.dart';
 import 'traffic_aware_routing_service.dart';
 
@@ -70,6 +71,55 @@ class SmartNavigationService {
       }
     } catch (e) {
       return NavigationResult.error('❌ Greška pri navigaciji: $e');
+    }
+  }
+
+  /// Compute a reroute based on current GPS position and remaining passengers.
+  /// Returns a map with keys: 'optimizedRoute' (List<Putnik>) and 'instructions' (List<TurnByTurnInstruction>)
+  /// If the service cannot compute a reroute (e.g. missing coordinates), returns null.
+  static Future<Map<String, dynamic>?> computeRerouteBasedOnGPS({
+    required Position currentPosition,
+    required List<Putnik> remainingPassengers,
+    required List<TurnByTurnInstruction> currentInstructions,
+    double rerouteThreshold = 50.0,
+  }) async {
+    try {
+      // If there are no passengers, nothing to reroute
+      if (remainingPassengers.isEmpty) return null;
+
+      // Simple fallback: compute optimized order using existing algorithm but do not open maps
+      final coordinates = await _getCoordinatesForPutnici(remainingPassengers);
+      if (coordinates.isEmpty) return null;
+
+      final optimized = await _optimizeRoute(
+        startPosition: currentPosition,
+        coordinates: coordinates,
+        optimizeForTime: true,
+      );
+
+      // Generate simple turn-by-turn instructions between waypoints as fallback
+      final instructions = <TurnByTurnInstruction>[];
+      Position lastPos = currentPosition;
+      int idx = 0;
+      for (final p in optimized) {
+        final dest = coordinates[p]!;
+        instructions.add(TurnByTurnInstruction.simple(
+          index: idx++,
+          text: 'Idite do ${p.ime}, ${p.grad}',
+          startCoord: lastPos,
+          endCoord: dest,
+        ));
+        lastPos = dest;
+      }
+
+      return {
+        'optimizedRoute': optimized,
+        'instructions': instructions,
+        'totalDistance': await _calculateTotalDistance(
+            currentPosition, optimized, coordinates),
+      };
+    } catch (e) {
+      return null;
     }
   }
 
@@ -277,7 +327,8 @@ class SmartNavigationService {
       String osmNavigationUrl = 'https://www.openstreetmap.org/directions?';
 
       // Dodaj početnu poziciju
-      osmNavigationUrl += 'from=${startPosition.latitude}%2C${startPosition.longitude}';
+      osmNavigationUrl +=
+          'from=${startPosition.latitude}%2C${startPosition.longitude}';
 
       // Za OpenStreetMap, koristimo prvi i poslednji destination
       if (optimizedRoute.isNotEmpty) {
@@ -285,8 +336,8 @@ class SmartNavigationService {
         if (lastPutnik.adresa != null && lastPutnik.adresa!.isNotEmpty) {
           final improvedAddress =
               _improveAddressForGeocoding(lastPutnik.adresa!, lastPutnik.grad);
-          final encodedAddress =
-              Uri.encodeComponent('$improvedAddress, ${lastPutnik.grad}, Serbia');
+          final encodedAddress = Uri.encodeComponent(
+              '$improvedAddress, ${lastPutnik.grad}, Serbia');
           osmNavigationUrl += '&to=$encodedAddress';
         }
       }
@@ -300,8 +351,8 @@ class SmartNavigationService {
       if (await canLaunchUrl(uri)) {
         return await launchUrl(
           uri,
-          mode:
-              LaunchMode.externalApplication, // Otvori u navigacionoj aplikaciji
+          mode: LaunchMode
+              .externalApplication, // Otvori u navigacionoj aplikaciji
         );
       } else {
         throw Exception('Ne mogu da otvorim Google Maps');
@@ -399,5 +450,3 @@ class NavigationResult {
     );
   }
 }
-
-

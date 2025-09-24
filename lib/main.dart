@@ -14,12 +14,14 @@ import 'firebase_options.dart';
 // 🤖 GitHub Actions Android workflow for unlimited free APK delivery
 import 'screens/loading_screen.dart';
 import 'screens/welcome_screen.dart';
+import 'screens/home_screen.dart';
 import 'services/gps_service.dart';
 import 'services/local_notification_service.dart';
 import 'services/realtime_notification_service.dart';
 import 'services/sms_service.dart';
 import 'services/theme_service.dart';
 import 'services/timer_manager.dart';
+import 'services/auth_sync_service.dart';
 import 'supabase_client.dart';
 
 final _logger = Logger();
@@ -123,6 +125,10 @@ class _MyAppState extends State<MyApp> {
   String? _initError;
   bool _nocniRezim = false;
   String? _currentDriver; // Dodano za temu
+  // Optional: synchronize Supabase auth session to SharedPreferences
+  // `current_driver` key. Disabled by default; enable if you want Supabase
+  // sign-in/sign-out to update the local driver login automatically.
+  static const bool _enableAuthSyncToCurrentDriver = false;
   // bool _permissionsRequested = false; // Removed - permissions now handled in WelcomeScreen
 
   @override
@@ -130,6 +136,10 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     _initializeTheme();
     _initializeCurrentDriver(); // Dodano
+    _setupSupabaseAuthListener();
+    if (_enableAuthSyncToCurrentDriver) {
+      AuthSyncService.start();
+    }
 
     // Postavi globalnu funkciju za theme toggle
     globalThemeToggler = toggleTheme;
@@ -189,6 +199,72 @@ class _MyAppState extends State<MyApp> {
     _initializeApp();
   }
 
+  // Optional Supabase auth-state listener. Disabled by default; enable
+  // by setting `_enableSupabaseAuthListener = true` below. This is safe and
+  // non-invasive: it only logs events and optionally routes to Welcome/Home
+  // when enabled.
+  static const bool _enableSupabaseAuthListener = false;
+
+  void _setupSupabaseAuthListener() {
+    if (!_enableSupabaseAuthListener) return;
+    try {
+      // `onAuthStateChange` may be exposed as a Stream or callback depending
+      // on the `supabase_flutter` version — use `.listen` and treat payload as
+      // dynamic to remain compatible.
+      Supabase.instance.client.auth.onAuthStateChange.listen((dynamic payload) {
+        try {
+          String evStr = '';
+          dynamic session;
+          // payload shape may be { event: 'SIGNED_IN', session: {...} }
+          try {
+            if (payload == null) {
+              evStr = '';
+            } else if (payload is String) {
+              evStr = payload;
+            } else if (payload is Map) {
+              evStr = (payload['event'] ?? payload['type'] ?? payload['action'])
+                      ?.toString() ??
+                  payload.toString();
+              session =
+                  payload['session'] ?? payload['data'] ?? payload['payload'];
+            } else {
+              // Fallback to string representation
+              evStr = payload.toString();
+            }
+          } catch (_) {
+            evStr = payload?.toString() ?? '';
+          }
+
+          _logger.i(
+              '🔐 Supabase auth event: $evStr, session: ${session?.user?.id ?? session?.user_id ?? session}');
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            final lower = evStr.toLowerCase();
+            if (lower.contains('signout') ||
+                lower.contains('signed_out') ||
+                lower.contains('signedout')) {
+              navigatorKey.currentState?.pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+                  (route) => false);
+            } else if (lower.contains('signin') ||
+                lower.contains('signed_in') ||
+                lower.contains('signedin') ||
+                session != null) {
+              navigatorKey.currentState?.pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const HomeScreen()),
+                  (route) => false);
+            }
+          });
+        } catch (e) {
+          _logger.w('⚠️ Error handling auth event payload: $e');
+        }
+      });
+    } catch (e) {
+      _logger.w('⚠️ Failed to set Supabase auth listener: $e');
+    }
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -206,6 +282,7 @@ class _MyAppState extends State<MyApp> {
     // 🕐 KORISTI TIMER MANAGER za GPS slanje - SPREČAVA MEMORY LEAK
     (() async {
       final vozacId = await getCurrentDriver();
+
       if (vozacId == null || vozacId.isEmpty) return;
 
       // Otkaži postojeći GPS timer ako postoji
@@ -237,6 +314,10 @@ class _MyAppState extends State<MyApp> {
     // 📱 ZAUSTAVITI SMS SERVIS
     SMSService.stopAutomaticSMSService();
     _logger.i('🛑 SMS servis zaustavljen');
+
+    if (_enableAuthSyncToCurrentDriver) {
+      AuthSyncService.stop();
+    }
 
     super.dispose();
   }
@@ -365,5 +446,3 @@ class _MyAppState extends State<MyApp> {
     // return GpsDemoScreen();
   }
 }
-
-

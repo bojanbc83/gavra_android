@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../models/putnik.dart';
 import '../models/turn_by_turn_instruction.dart';
 import '../services/smart_navigation_service.dart';
+import '../services/supabase_realtime_service.dart';
 
 /// 🧭 REAL-TIME GPS NAVIGATION WIDGET
 /// Prikazuje turn-by-turn instrukcije sa real-time GPS praćenjem
@@ -13,10 +16,12 @@ class RealTimeNavigationWidget extends StatefulWidget {
   final Function(List<Putnik> newRoute)? onRouteUpdate;
   final bool showDetailedInstructions;
   final bool enableVoiceInstructions;
+  final String? realtimeRerouteTable;
 
   const RealTimeNavigationWidget({
     Key? key,
     required this.optimizedRoute,
+    this.realtimeRerouteTable,
     this.onStatusUpdate,
     this.onRouteUpdate,
     this.showDetailedInstructions = true,
@@ -32,6 +37,7 @@ class _RealTimeNavigationWidgetState extends State<RealTimeNavigationWidget> {
   List<TurnByTurnInstruction> _currentInstructions = [];
   TurnByTurnInstruction? _activeInstruction;
   Position? _currentPosition;
+  StreamSubscription<Position>? _positionStreamSubscription;
   bool _isNavigating = false;
   bool _isLoading = true;
   String _statusMessage = 'Inicijalizujem navigaciju...';
@@ -39,12 +45,19 @@ class _RealTimeNavigationWidgetState extends State<RealTimeNavigationWidget> {
   double _totalDuration = 0.0;
   int _currentInstructionIndex = 0;
   List<Putnik> _remainingPassengers = [];
+  String? _realtimeSubscriptionKey;
+  DateTime? _lastRerouteAt;
+  final Duration _rerouteDebounce = const Duration(seconds: 5);
 
   @override
   void initState() {
     super.initState();
     _remainingPassengers = List.from(widget.optimizedRoute);
     _initializeNavigation();
+    // Subscribe to realtime reroute table if provided
+    if (widget.realtimeRerouteTable != null) {
+      _subscribeRealtimeReroute(widget.realtimeRerouteTable!);
+    }
   }
 
   @override
@@ -123,20 +136,67 @@ class _RealTimeNavigationWidgetState extends State<RealTimeNavigationWidget> {
   }
 
   /// 🛰️ Pokreni real-time GPS praćenje
-  void _startGPSTracking() {
+  Future<void> _startGPSTracking() async {
+    if (_isNavigating) return;
+
     setState(() {
       _isNavigating = true;
+      _statusMessage = 'Pokrećem GPS praćenje...';
     });
 
-    // GPS stream sa visokom preciznošću
-    Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10, // Update svakih 10 metara
-      ),
-    ).listen((Position position) {
-      _updateNavigationBasedOnGPS(position);
-    });
+    try {
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        setState(() {
+          _statusMessage = 'GPS nije omogućen na uređaju';
+          _isNavigating = false;
+        });
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        setState(() {
+          _statusMessage = 'Dozvola za lokaciju nije odobrena';
+          _isNavigating = false;
+        });
+        return;
+      }
+
+      if (_positionStreamSubscription != null) {
+        // Već slušamo stream
+        return;
+      }
+
+      _positionStreamSubscription = Geolocator.getPositionStream(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 10, // Update svakih 10 metara
+        ),
+      ).listen((Position position) {
+        _updateNavigationBasedOnGPS(position);
+      }, onError: (error) {
+        debugPrint('GPS stream error: $error');
+        if (mounted) {
+          setState(() {
+            _statusMessage = 'Greška pri GPS stream-u: $error';
+          });
+        }
+      });
+    } catch (e) {
+      debugPrint('Failed to start GPS tracking: $e');
+      if (mounted) {
+        setState(() {
+          _statusMessage = 'Greška pri pokretanju GPS praćenja: $e';
+          _isNavigating = false;
+        });
+      }
+    }
   }
 
   /// 📍 Ažuriraj navigaciju na osnovu GPS pozicije
@@ -165,18 +225,47 @@ class _RealTimeNavigationWidgetState extends State<RealTimeNavigationWidget> {
         widget.onStatusUpdate?.call('🔄 Rerautujem zbog odstupanja od rute...');
 
         final newRoute = updateResult['newRoute'];
+        // Atomic replacement: prepare new data first, then assign in a single setState
         if (newRoute != null && newRoute['optimizedRoute'] != null) {
+          final List<TurnByTurnInstruction> newInstructions =
+              (newRoute['instructions'] as List?)
+                      ?.map((e) => e is TurnByTurnInstruction
+                          ? e
+                          : TurnByTurnInstruction.fromJson(
+                              Map<String, dynamic>.from(e)))
+                      .toList() ??
+                  [];
+
+          final List<Putnik> newRemaining =
+              (newRoute['optimizedRoute'] as List?)
+                      ?.map((e) => e is Putnik
+                          ? e
+                          : Putnik.fromMap(Map<String, dynamic>.from(e)))
+                      .toList() ??
+                  [];
+
           setState(() {
-            _currentInstructions = newRoute['instructions'] ?? [];
-            _remainingPassengers = newRoute['optimizedRoute'];
+            _currentInstructions = newInstructions;
+            _remainingPassengers = newRemaining;
             _currentInstructionIndex = 0;
             _activeInstruction = _currentInstructions.isNotEmpty
-                ? _currentInstructions.first
+                ? _currentInstructions[0]
                 : null;
+            _statusMessage = 'Nova ruta dostupna i primenjena';
           });
 
           widget.onRouteUpdate?.call(_remainingPassengers);
           widget.onStatusUpdate?.call('✅ Nova ruta kalkulisana');
+        } else {
+          // Smart navigation service signalled reroute but didn't provide new route
+          widget.onStatusUpdate?.call(
+              '❌ Ne mogu da rerautujem — servis nije dostupan ili nema nove rute');
+          if (mounted) {
+            setState(() {
+              _statusMessage =
+                  'Rerouting nije moguć — nema dostupne Smart Navigation usluge';
+            });
+          }
         }
       } else {
         // Ažuriraj trenutnu instrukciju
@@ -184,9 +273,16 @@ class _RealTimeNavigationWidgetState extends State<RealTimeNavigationWidget> {
         final distanceToNext = updateResult['distanceToNext'] ?? 0.0;
 
         if (currentInstruction != null) {
-          setState(() {
-            _activeInstruction = currentInstruction;
-          });
+          if (currentInstruction is TurnByTurnInstruction) {
+            setState(() {
+              _activeInstruction = currentInstruction;
+            });
+          } else if (currentInstruction is Map) {
+            setState(() {
+              _activeInstruction = TurnByTurnInstruction.fromJson(
+                  Map<String, dynamic>.from(currentInstruction));
+            });
+          }
 
           // Proveri da li treba preći na sledeću instrukciju
           if (distanceToNext < 20.0 &&
@@ -206,7 +302,12 @@ class _RealTimeNavigationWidgetState extends State<RealTimeNavigationWidget> {
       // Proveri da li je putnik pokupljen
       _checkPassengerPickup();
     } catch (e) {
-      // GPS update greška
+      debugPrint('Error in _updateNavigationBasedOnGPS: $e');
+      if (mounted) {
+        setState(() {
+          _statusMessage = 'Greška pri ažuriranju navigacije: $e';
+        });
+      }
     }
   }
 
@@ -219,10 +320,100 @@ class _RealTimeNavigationWidgetState extends State<RealTimeNavigationWidget> {
   }
 
   /// ⏸️ Zaustavi navigaciju
-  void _stopNavigation() {
-    setState(() {
+  Future<void> _stopNavigation() async {
+    // Cancel subscription and stop navigation
+    _positionStreamSubscription?.cancel();
+    _positionStreamSubscription = null;
+
+    if (mounted) {
+      setState(() {
+        _isNavigating = false;
+        _statusMessage = 'Navigacija zaustavljena';
+      });
+    } else {
       _isNavigating = false;
-    });
+    }
+    // Unsubscribe realtime reroute if any
+    if (_realtimeSubscriptionKey != null) {
+      await SupabaseRealtimeService.instance
+          .unsubscribe(_realtimeSubscriptionKey!);
+      _realtimeSubscriptionKey = null;
+    }
+  }
+
+  void _subscribeRealtimeReroute(String table) async {
+    try {
+      _realtimeSubscriptionKey = await SupabaseRealtimeService.instance
+          .subscribeToTable(table, (rows) async {
+        // Debounce events
+        final now = DateTime.now();
+        if (_lastRerouteAt != null &&
+            now.difference(_lastRerouteAt!) < _rerouteDebounce) {
+          return;
+        }
+        _lastRerouteAt = now;
+
+        if (_currentPosition == null) {
+          widget.onStatusUpdate
+              ?.call('❌ Ne mogu rerautovati: nema trenutne GPS pozicije');
+          return;
+        }
+
+        widget.onStatusUpdate
+            ?.call('🔁 Realtime događaj primljen — pokušavam reroute');
+
+        final reroute = await SmartNavigationService.computeRerouteBasedOnGPS(
+          currentPosition: _currentPosition!,
+          remainingPassengers: _remainingPassengers,
+          currentInstructions: _currentInstructions,
+        );
+
+        if (reroute == null || reroute['optimizedRoute'] == null) {
+          widget.onStatusUpdate?.call(
+              '❌ Reroute nije moguć: nema dovoljno podataka ili servis nije dostupan');
+          if (mounted) {
+            setState(() {
+              _statusMessage =
+                  'Rerouting trenutno nije moguć - proverite konekciju/koordinate';
+            });
+          }
+          return;
+        }
+
+        // Atomic replacement handled in existing update flow — but do here as well
+        final List<Putnik> newRemaining = (reroute['optimizedRoute'] as List)
+            .map((e) =>
+                e is Putnik ? e : Putnik.fromMap(Map<String, dynamic>.from(e)))
+            .toList();
+
+        final List<TurnByTurnInstruction> newInstructions =
+            (reroute['instructions'] as List)
+                .map((e) => e is TurnByTurnInstruction
+                    ? e
+                    : TurnByTurnInstruction.fromJson(
+                        Map<String, dynamic>.from(e)))
+                .toList();
+
+        if (mounted) {
+          setState(() {
+            _currentInstructions = newInstructions;
+            _remainingPassengers = newRemaining;
+            _currentInstructionIndex = 0;
+            _activeInstruction = _currentInstructions.isNotEmpty
+                ? _currentInstructions[0]
+                : null;
+            _statusMessage = '✅ Realtime reroute primenjen';
+          });
+        }
+
+        widget.onRouteUpdate?.call(_remainingPassengers);
+        widget.onStatusUpdate
+            ?.call('✅ Realtime reroute primenjen preko table $table');
+      });
+    } catch (e) {
+      widget.onStatusUpdate
+          ?.call('❌ Greška prilikom pretplate na realtime: $e');
+    }
   }
 
   @override
@@ -628,5 +819,3 @@ class _RealTimeNavigationWidgetState extends State<RealTimeNavigationWidget> {
     }
   }
 }
-
-

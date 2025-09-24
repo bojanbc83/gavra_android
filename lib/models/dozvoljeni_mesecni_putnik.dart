@@ -150,11 +150,12 @@ class MesecniPutnik {
 
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{
-      'id': id,
       'putnik_ime': putnikIme,
       'tip': tip,
-      'tip_skole': tipSkole,
-      'broj_telefona': brojTelefona,
+      'tip_skole':
+          tipSkole?.toString().trim().isEmpty == true ? null : tipSkole,
+      'broj_telefona':
+          brojTelefona?.toString().trim().isEmpty == true ? null : brojTelefona,
       // Note: we intentionally do not include a 'polasci_po_danu' JSON field here.
       // Per-day columns (polazak_bc_pon, polazak_vs_pon, ...) are written by services.
       'adresa_bela_crkva': adresaBelaCrkva,
@@ -174,11 +175,16 @@ class MesecniPutnik {
       'updated_at': updatedAt.toIso8601String(),
       'obrisan': obrisan,
       'vreme_placanja': vremePlacanja?.toIso8601String(),
-      'naplata_vozac': vozac,
-      'email': email,
+      'naplata_vozac': vozac?.toString().trim().isEmpty == true ? null : vozac,
+      'email': email?.toString().trim().isEmpty == true ? null : email,
       'canonical_hash': canonicalHash,
       'source_mesecni_putnici_id': sourceMesecniPutniciId,
     };
+
+    // Include 'id' only when non-empty to avoid sending empty string as UUID
+    if (id.trim().isNotEmpty) {
+      map['id'] = id;
+    }
 
     return map;
   }
@@ -273,16 +279,18 @@ class MesecniPutnik {
   String? getPolazakBelaCrkvaZaDan(String dan) {
     final list = polasciPoDanu[dan];
     if (list == null || list.isEmpty) return null;
-    for (final e in list)
+    for (final e in list) {
       if (e.endsWith(' BC')) return e.replaceFirst(' BC', '');
+    }
     return list.first.replaceAll(RegExp(r'\s+(BC|VS)\$'), '');
   }
 
   String? getPolazakVrsacZaDan(String dan) {
     final list = polasciPoDanu[dan];
     if (list == null || list.isEmpty) return null;
-    for (final e in list)
+    for (final e in list) {
       if (e.endsWith(' VS')) return e.replaceFirst(' VS', '');
+    }
     return list.first.replaceAll(RegExp(r'\s+(BC|VS)\$'), '');
   }
 
@@ -296,5 +304,3 @@ class MesecniPutnik {
   int get hashCode => id.hashCode;
 }
 // 🔄 KOMPATIBILNOST SA PUTNIK MODELOM
-
-

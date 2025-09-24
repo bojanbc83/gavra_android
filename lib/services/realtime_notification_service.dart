@@ -7,6 +7,27 @@ import 'local_notification_service.dart';
 import 'notification_navigation_service.dart';
 import 'package:logger/logger.dart';
 
+/*
+ Developer checklist - OneSignal / Firebase Cloud Messaging (FCM)
+
+ 1) Ensure `android/app/google-services.json` is for the same Firebase project
+   used by OneSignal. Mismatched Sender ID causes `INVALID_SENDER` errors.
+
+ 2) In OneSignal dashboard, configure your Firebase Server Key / Sender ID
+   (Project settings -> Cloud Messaging) or use automatic setup if available.
+
+ 3) For local emulator testing, you can avoid push registration by leaving
+   `google-services.json` out of the emulator builds or rely on the runtime
+   guard in `initialize()` which skips push init for emulators and when
+   Firebase is not initialized.
+
+ 4) If you need push on emulator, ensure the emulator has Google Play services
+   and that `google-services.json` matches the app's applicationId/package.
+
+ 5) To reduce noise, enable guarded initialization and log the reason for
+   skipping registration (see `_shouldInitPush`).
+*/
+
 class RealtimeNotificationService {
   /// OneSignal REST API endpoint
   static const String _oneSignalApiUrl =
@@ -59,6 +80,39 @@ class RealtimeNotificationService {
   static Future<void> initialize() async {
     _logger.i(
         '🔔 RealtimeNotificationService initialized - multi-channel: Firebase + OneSignal + Local');
+
+    // Dev-safety: skip push registration on emulators or when Firebase config is missing
+    if (!await _shouldInitPush()) {
+      _logger.w(
+          '⚠️ Skipping push registration (emulator or missing Firebase config). This prevents noisy FCM/OneSignal errors in dev.');
+      return;
+    }
+
+    // If needed, perform further push initialization here (e.g. topic subscriptions)
+  }
+
+  // Return false when running on emulator or when firebase config likely missing.
+  static Future<bool> _shouldInitPush() async {
+    // Heuristics: skip on Android emulators or when google-services.json is absent
+    try {
+      // On Android emulator, the platform environment often exposes 'ANDROID_EMULATOR'
+      if (Platform.isAndroid) {
+        final isEmu = (Platform.environment['ANDROID_EMULATOR'] != null) ||
+            (Platform.environment['EMULATOR_DEVICE'] != null);
+        if (isEmu) return false;
+      }
+    } catch (_) {
+      // ignore platform failures - default to true
+    }
+
+    // If Firebase isn't initialized, skip push init
+    try {
+      if (Firebase.apps.isEmpty) return false;
+    } catch (_) {
+      return false;
+    }
+
+    return true;
   }
 
   /// Setup foreground Firebase message listeners for real-time notifications
@@ -259,5 +313,3 @@ class RealtimeNotificationService {
     }
   }
 }
-
-

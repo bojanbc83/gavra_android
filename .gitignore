@@ -1,3 +1,13 @@
+# Ignore temporary sensitive configuration files
+tmp/
+
+# Flutter/Dart common ignores
+.dart_tool/
+.packages
+build/
+.idea/
+/.vscode/
+pubspec.lock
 # Miscellaneous
 *.class
 *.log

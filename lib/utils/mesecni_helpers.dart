@@ -113,15 +113,15 @@ class MesecniHelpers {
     // - polazak_bc_pon_time / polazak_vs_pon_time (some exports)
     final candidates = <String>[
       // canonical per-day columns
-      'polazak_' + place + '_' + dayKratica,
-      'polazak_' + place + '_' + dayKratica + '_time',
+      'polazak_${place}_$dayKratica',
+      'polazak_${place}_${dayKratica}_time',
       // alternative export variants
-      place + '_polazak_' + dayKratica,
-      place + '_' + dayKratica + '_polazak',
-      place + '_' + dayKratica + '_polazak',
-      place + '_' + dayKratica + '_time',
-      'polazak_' + dayKratica + '_' + place,
-      'polazak_' + dayKratica + '_' + place + '_time',
+      '${place}_polazak_$dayKratica',
+      '${place}_${dayKratica}_polazak',
+      '${place}_${dayKratica}_polazak',
+      '${place}_${dayKratica}_time',
+      'polazak_${dayKratica}_$place',
+      'polazak_${dayKratica}_${place}_time',
     ];
 
     for (final col in candidates) {
@@ -217,5 +217,3 @@ class MesecniHelpers {
     return false;
   }
 }
-
-

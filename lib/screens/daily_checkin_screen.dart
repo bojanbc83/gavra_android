@@ -426,7 +426,30 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen>
   void _showPreviousDayReportDialog(Map<String, dynamic> lastReport) {
     final datum = lastReport['datum'] as DateTime;
     final vozacColor = VozacBoja.get(widget.vozac);
-    final popis = lastReport['popis'] as Map<String, dynamic>;
+    final popisRaw = lastReport['popis'];
+    final Map<String, dynamic> popis = (popisRaw is Map<String, dynamic>)
+        ? popisRaw
+        : (popisRaw is String ? {'raw': popisRaw} : {});
+
+    // Local helpers to safely extract typed values from legacy/unknown popis shapes
+    double safeDouble(String key) {
+      final v = popis[key];
+      if (v == null) return 0.0;
+      if (v is num) return v.toDouble();
+      if (v is String) return double.tryParse(v) ?? 0.0;
+      return 0.0;
+    }
+
+    int safeInt(String key) {
+      final v = popis[key];
+      if (v == null) return 0;
+      if (v is int) return v;
+      if (v is num) return v.toInt();
+      if (v is String)
+        return int.tryParse(v) ??
+            (double.tryParse(v) != null ? double.parse(v).toInt() : 0);
+      return 0;
+    }
 
     showDialog(
       context: context,
@@ -476,28 +499,28 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen>
                 // Statistike
                 _buildStatistikaRow(
                     '💰 Ukupan pazar',
-                    '${popis['ukupanPazar']?.toStringAsFixed(0) ?? 0} din',
+                    '${safeDouble('ukupanPazar').toStringAsFixed(0)} din',
                     Colors.green),
                 _buildStatistikaRow('👥 Dodati putnici',
-                    '${popis['dodatiPutnici'] ?? 0}', Colors.blue),
+                    '${safeInt('dodatiPutnici')}', Colors.blue),
                 _buildStatistikaRow('✅ Pokupljeni putnici',
-                    '${popis['pokupljeniPutnici'] ?? 0}', Colors.green),
+                    '${safeInt('pokupljeniPutnici')}', Colors.green),
                 _buildStatistikaRow('💳 Naplaćeni putnici',
-                    '${popis['naplaceniPutnici'] ?? 0}', Colors.teal),
+                    '${safeInt('naplaceniPutnici')}', Colors.teal),
                 _buildStatistikaRow('❌ Otkazani putnici',
-                    '${popis['otkazaniPutnici'] ?? 0}', Colors.red),
-                _buildStatistikaRow('💸 Dugovi',
-                    '${popis['dugoviPutnici'] ?? 0}', Colors.orange),
+                    '${safeInt('otkazaniPutnici')}', Colors.red),
+                _buildStatistikaRow(
+                    '💸 Dugovi', '${safeInt('dugoviPutnici')}', Colors.orange),
                 _buildStatistikaRow('🎫 Mesečne karte',
-                    '${popis['mesecneKarte'] ?? 0}', Colors.purple),
+                    '${safeInt('mesecneKarte')}', Colors.purple),
                 _buildStatistikaRow(
                     '🛣️ Kilometraža',
-                    '${popis['kilometraza']?.toStringAsFixed(1) ?? 0} km',
+                    '${safeDouble('kilometraza').toStringAsFixed(1)} km',
                     Colors.indigo),
-                if (popis['sitanNovac'] != null && popis['sitanNovac'] > 0)
+                if (safeDouble('sitanNovac') > 0)
                   _buildStatistikaRow(
                       '🪙 Sitan novac',
-                      '${popis['sitanNovac']?.toStringAsFixed(0) ?? 0} din',
+                      '${safeDouble('sitanNovac').toStringAsFixed(0)} din',
                       Colors.amber),
 
                 const SizedBox(height: 16),
@@ -779,9 +802,12 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+          Expanded(
+            child: Text(
+              label,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+            ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -827,5 +853,3 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen>
     });
   }
 }
-
-

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/daily_passengers.dart';
-import '../services/daily_passengers_service.dart';
+import '../models/putovanja_istorija.dart';
+import '../services/putovanja_istorija_service.dart';
 
 class PutovanjaIstorijaScreen extends StatefulWidget {
   const PutovanjaIstorijaScreen({Key? key}) : super(key: key);
@@ -916,5 +916,3 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
     }
   }
 }
-
-

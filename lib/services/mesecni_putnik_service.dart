@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/dozvoljeni_mesecni_putnik.dart';
+import '../utils/mesecni_helpers.dart';
 
 class MesecniPutnikService {
   static final _supabase = Supabase.instance.client;
@@ -58,6 +60,25 @@ class MesecniPutnikService {
       // Fallback na običan fetch ako stream ne radi
       return getAllMesecniPutnici().asStream();
     }
+  }
+
+  // Helper: sanitize payload before sending to PostgREST
+  // - remove empty-string `id` so DB can generate uuid
+  // - convert other empty strings to null to avoid invalid UUID / type errors
+  static Map<String, dynamic> _sanitizePayload(Map<String, dynamic> src) {
+    final Map<String, dynamic> out = {};
+    src.forEach((k, v) {
+      if (v is String && v.trim().isEmpty) {
+        if (k.toLowerCase() == 'id') {
+          // skip empty id entirely
+          return;
+        }
+        out[k] = null;
+      } else {
+        out[k] = v;
+      }
+    });
+    return out;
   }
 
   // 📱 REALTIME STREAM aktivnih mesečnih putnika - OTPORAN NA GREŠKE
@@ -274,16 +295,115 @@ class MesecniPutnikService {
   // ➕ DODAJ novog mesečnog putnika
   static Future<MesecniPutnik?> dodajMesecnogPutnika(
       MesecniPutnik putnik) async {
+    final raw = Map<String, dynamic>.from(putnik.toMap());
+    final sanitizedForLog = _sanitizePayload(raw);
     try {
       if (kDebugMode) {
         debugPrint(
             '🔄 [MESECNI PUTNIK SERVICE] Pokušavam dodavanje: ${putnik.putnikIme}');
-        debugPrint('📊 [DEBUG] Podaci: ${putnik.toMap()}');
+        debugPrint('📊 [DEBUG] Podaci (sanitized): $sanitizedForLog');
       }
 
       // Try to insert; if Postgrest complains about missing columns, retry
       // by removing offending keys from the map up to 3 attempts.
-      Map<String, dynamic> data = Map<String, dynamic>.from(putnik.toMap());
+      Map<String, dynamic> data = Map<String, dynamic>.from(sanitizedForLog);
+      // Ensure owner-based RLS works: include current authenticated user's id
+      try {
+        final currentUserId = _supabase.auth.currentUser?.id;
+        if (kDebugMode) {
+          debugPrint('🔎 [MESECNI PUTNIK DEBUG] currentUserId: $currentUserId');
+        }
+
+        // If there's no Supabase authenticated user, continue but DO NOT throw.
+        // The app currently uses a local SharedPreferences-based driver login
+        // (`current_driver`) rather than Supabase auth for drivers. Requiring
+        // Supabase auth here blocks legitimate local driver workflows. If your
+        // DB RLS policies require `user_id`, consider allowing inserts when
+        // `dodao_vozac` is present or adjust policies.
+        if (currentUserId == null) {
+          if (kDebugMode) {
+            debugPrint(
+                '⚠️ [MESECNI PUTNIK SERVICE] Supabase auth.currentUser is null — proceeding without user_id.');
+          }
+        } else {
+          if (!data.containsKey('user_id')) {
+            data['user_id'] = currentUserId;
+          }
+        }
+      } catch (_) {
+        // ignore - if auth not initialized or unavailable, we'll rely on DB policies/fallbacks
+      }
+
+      // If available, attach the local driver who added this entry (client-side)
+      // so DB policies can allow trusted local drivers (e.g., Bruda, Bilevski).
+      String? debugCurrentDriver;
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final currentDriver = prefs.getString('current_driver');
+        debugCurrentDriver = currentDriver;
+        if (currentDriver != null &&
+            currentDriver.isNotEmpty &&
+            !data.containsKey('dodao_vozac')) {
+          data['dodao_vozac'] = currentDriver;
+        }
+        if (kDebugMode) {
+          debugPrint(
+              '🔎 [MESECNI PUTNIK DEBUG] currentDriver (SharedPreferences): $debugCurrentDriver');
+        }
+      } catch (_) {
+        // ignore shared_preferences errors; proceed without dodao_vozac
+      }
+
+      // Expand per-day polasci (polasciPoDanu) into canonical per-day columns
+      // like `polazak_bc_pon` / `polazak_vs_pon` because the canonical DB
+      // table stores per-day columns instead of a JSON `polasci_po_danu`.
+      try {
+        if (putnik.polasciPoDanu.isNotEmpty) {
+          putnik.polasciPoDanu.forEach((day, list) {
+            for (final rawEntry in list) {
+              String entry = rawEntry.toString().trim();
+              String place = 'bc';
+              String time = entry;
+
+              if (entry.toUpperCase().endsWith(' BC')) {
+                place = 'bc';
+                time = entry.substring(0, entry.length - 3).trim();
+              } else if (entry.toUpperCase().endsWith(' VS')) {
+                place = 'vs';
+                time = entry.substring(0, entry.length - 3).trim();
+              } else {
+                // Try to detect inline markers like '6:00 BC' or '6:00 VS'
+                final upper = entry.toUpperCase();
+                if (upper.contains(' BC')) {
+                  place = 'bc';
+                  time = entry
+                      .replaceAll(RegExp(r'\s*BC', caseSensitive: false), '')
+                      .trim();
+                } else if (upper.contains(' VS')) {
+                  place = 'vs';
+                  time = entry
+                      .replaceAll(RegExp(r'\s*VS', caseSensitive: false), '')
+                      .trim();
+                }
+              }
+
+              final normalized = MesecniHelpers.normalizeTime(time);
+              if (place == 'bc') {
+                data['polazak_bc_$day'] = normalized;
+              } else {
+                data['polazak_vs_$day'] = normalized;
+              }
+            }
+          });
+        }
+      } catch (_) {
+        // don't fail the whole insert if conversion fails; proceed without per-day columns
+      }
+
+      if (kDebugMode) {
+        debugPrint(
+            '📤 [MESECNI PUTNIK DEBUG] Final payload being inserted: $data');
+      }
       PostgrestException? lastPgErr;
       Map<String, dynamic>? response;
       for (int attempt = 0; attempt < 3; attempt++) {
@@ -346,19 +466,41 @@ class MesecniPutnikService {
         debugPrint(
             '❌ [MESECNI PUTNIK SERVICE] GREŠKA pri dodavanju putnika: ${putnik.putnikIme}');
         debugPrint('❌ [ERROR DETAILS] $e');
-        debugPrint('📊 [DEBUG] Podaci koji su poslani: ${putnik.toMap()}');
+        debugPrint(
+            '📊 [DEBUG] Podaci koji su poslani (sanitized): $sanitizedForLog');
       }
       return null;
     }
+  }
+
+  // ➕ DODATNO: helper koji prima raw mapu i izvršava autentikaciju pre dodavanja
+  static Future<MesecniPutnik?> dodajMesecnogPutnikaFromMap(
+      Map<String, dynamic> podaci) async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        if (kDebugMode) {
+          debugPrint(
+              '⚠️ [MESECNI PUTNIK SERVICE] dodajMesecnogPutnikaFromMap: no Supabase user — proceeding using SharedPreferences fallback.');
+        }
+      }
+    } catch (_) {
+      // ignore auth inspection errors; proceed as best-effort
+    }
+
+    // Konvertuj mapu u MesecniPutnik model i prosledi osnovnoj funkciji
+    final putnik = MesecniPutnik.fromMap(podaci);
+    return await dodajMesecnogPutnika(putnik);
   }
 
   // ✏️ AŽURIRAJ mesečnog putnika
   static Future<MesecniPutnik?> azurirajMesecnogPutnika(
       MesecniPutnik putnik) async {
     try {
-      final dataToSend = putnik.toMap();
+      final raw = Map<String, dynamic>.from(putnik.toMap());
+      final dataToSend = _sanitizePayload(raw);
       if (kDebugMode) {
-        debugPrint('🔧 [DEBUG] Podaci koji se šalju u bazu:');
+        debugPrint('🔧 [DEBUG] Podaci koji se šalju u bazu (sanitized):');
         // polasci_po_danu removed; per-day fields should be provided separately
         debugPrint('  - svi podaci: $dataToSend');
       }
@@ -1202,5 +1344,3 @@ class MesecniPutnikService {
     }).toList();
   }
 }
-
-

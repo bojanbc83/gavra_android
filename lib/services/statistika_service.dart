@@ -5,7 +5,9 @@ import 'package:flutter/foundation.dart'; // Za debug logovanje
 import 'putnik_service.dart'; // 🔄 DODANO za real-time streams
 import 'mesecni_putnik_service.dart'; // 🔄 DODANO za mesečne putnike
 import 'dart:async';
-import 'dart:math'; // 🚗 DODANO za kilometražu kalkulacije
+// dart:math moved to helpers where needed
+import 'kilometraza_utils.dart';
+import 'mesecni_grouping_helper.dart';
 import 'package:async/async.dart'; // Za StreamZip i StreamGroup
 import 'package:supabase_flutter/supabase_flutter.dart'; // 🚗 DODANO za GPS podatke
 import 'package:intl/intl.dart'; // Za DateFormat
@@ -388,15 +390,17 @@ class StatistikaService {
         ukupnoPutnika++;
 
         if (putnik.mesecnaKarta == true) {
-          // Za mesečne putnike, grupisi po imenu (samo prvi valjan putnik)
-          if (!mesecniPutniciGrupisani.containsKey(putnik.ime) &&
+          // Za mesečne putnike, grupisi po jedinstvenom `id` kada postoji, fallback na ime
+          final key = mesecniGroupingKey(
+              id: putnik.id?.toString(), putnikIme: putnik.ime);
+          if (!mesecniPutniciGrupisani.containsKey(key) &&
               _jePazarValjan(putnik) &&
               putnik.vremePlacanja != null &&
               putnik.naplatioVozac != null &&
               _jeUVremenskomOpsegu(putnik.vremePlacanja, fromDate, toDate)) {
-            mesecniPutniciGrupisani[putnik.ime] = putnik;
+            mesecniPutniciGrupisani[key] = putnik;
             _debugLog(
-                '🎫 [MESEČNI] Grupisanje: ${putnik.ime} -> prvi valjan polazak');
+                '🎫 [MESEČNI] Grupisanje: ${putnik.ime} (key=$key) -> prvi valjan polazak');
           }
         } else {
           // Jednokratni putnici se računaju normalno
@@ -472,6 +476,9 @@ class StatistikaService {
     // 1. SABERI OBIČNI PAZAR iz putnici tabele
     int brojObicnihPutnika = 0;
     for (final putnik in putnici) {
+      // Skip monthly cards here; they are processed separately
+      if (putnik.mesecnaKarta == true) continue;
+
       if (_jePazarValjan(putnik) && putnik.vremePlacanja != null) {
         if (_jeUVremenskomOpsegu(putnik.vremePlacanja, fromDate, toDate)) {
           final vozac = putnik.naplatioVozac!;
@@ -841,12 +848,13 @@ class StatistikaService {
         if (putnik.vremePlacanja != null &&
             _jeUVremenskomOpsegu(
                 putnik.vremePlacanja, mesecniFrom, mesecniTo)) {
-          // 🎫 GRUPIRANJE: Dodaj samo prvi polazak po imenu (putnikIme)
-          final kljuc = putnik.putnikIme.trim();
+          // 🎫 GRUPIRANJE: Preferiraj jedinstveni `id` kada postoji, fallback na ime
+          final kljuc =
+              mesecniGroupingKey(id: putnik.id, putnikIme: putnik.putnikIme);
           if (!grupisaniMesecniPutnici.containsKey(kljuc)) {
             grupisaniMesecniPutnici[kljuc] = putnik;
             debugPrint(
-                '💰 [DETALJNE STATISTIKE] 🎫 [MESEČNI] Grupisanje: $kljuc -> prvi valjan polazak u mesecu');
+                '💰 [DETALJNE STATISTIKE] 🎫 [MESEČNI] Grupisanje (key=$kljuc): ${putnik.putnikIme} -> prvi valjan polazak u mesecu');
           }
         } else {
           debugPrint(
@@ -995,30 +1003,9 @@ class StatistikaService {
       _debugLog(
           '🔍 KILOMETRAŽA DEBUG - $vozac: ukupno ${lokacije.length} GPS pozicija');
 
-      double ukupno = 0;
-      int validnePozicije = 0;
-      double maksimalnaDistancaPoSegmentu = 5.0; // 5km max po segmentu
-
-      for (int i = 1; i < lokacije.length; i++) {
-        final lat1 = (lokacije[i - 1]['lat'] as num).toDouble();
-        final lng1 = (lokacije[i - 1]['lng'] as num).toDouble();
-        final lat2 = (lokacije[i]['lat'] as num).toDouble();
-        final lng2 = (lokacije[i]['lng'] as num).toDouble();
-
-        final distanca = _distanceKm(lat1, lng1, lat2, lng2);
-
-        // ✅ PAMETAN FILTER: preskoči nerealne distanca (npr. GPS greške)
-        if (distanca <= maksimalnaDistancaPoSegmentu && distanca > 0.001) {
-          ukupno += distanca;
-          validnePozicije++;
-        } else if (distanca > maksimalnaDistancaPoSegmentu) {
-          _debugLog(
-              '⚠️ KILOMETRAŽA FILTER - preskačem nerealnu distancu: ${distanca.toStringAsFixed(2)}km');
-        }
-      }
-
+      final ukupno = sumValidDistances(lokacije);
       _debugLog(
-          '✅ KILOMETRAŽA REZULTAT - $vozac: ${ukupno.toStringAsFixed(2)}km od $validnePozicije validnih segmenata');
+          '✅ KILOMETRAŽA REZULTAT - $vozac: ${ukupno.toStringAsFixed(2)}km');
       return ukupno;
     } catch (e) {
       _debugLog('🚨 Greška pri računanju kilometraže za $vozac: $e');
@@ -1162,17 +1149,5 @@ class StatistikaService {
     return await resetujPazarZaSveVozace(); // Bez from/to parametara = briše sve
   }
 
-  /// Računa rastojanje između dve GPS koordinate u kilometrima (Haversine formula)
-  static double _distanceKm(
-      double lat1, double lon1, double lat2, double lon2) {
-    const double R = 6371; // Radius Zemlje u km
-    double dLat = (lat2 - lat1) * pi / 180.0;
-    double dLon = (lon2 - lon1) * pi / 180.0;
-    double a = 0.5 -
-        cos(dLat) / 2 +
-        cos(lat1 * pi / 180.0) * cos(lat2 * pi / 180.0) * (1 - cos(dLon)) / 2;
-    return R * 2 * asin(sqrt(a));
-  }
+  // distanceKm helper moved to `statistika_helpers.dart` and `kilometraza_utils.dart`.
 }
-
-

@@ -524,9 +524,9 @@ class Putnik {
     };
     final short = dayMap[dan] ?? dan.toLowerCase().substring(0, 3);
     if (grad == 'Bela Crkva') {
-      perDay['polazak_bc_' + short] = polazak;
+      perDay['polazak_bc_$short'] = polazak;
     } else {
-      perDay['polazak_vs_' + short] = polazak;
+      perDay['polazak_vs_$short'] = polazak;
     }
 
     // Merge maps
@@ -670,5 +670,3 @@ class Putnik {
     );
   }
 }
-
-
