@@ -76,3 +76,14 @@ android/build/
 
 # Generated SQL from import tools
 tmp/*.sql
+
+# Prevent committing large generated artifacts that caused previous pushes to fail
+app-debug.zip
+*.zip
+apk_extracted/
+**/apk_extracted/
+**/apk/*.zip
+**/apk/*.apk
+**/kernel_blob.bin
+**/kernel_blob_
+*.keystore
