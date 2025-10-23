@@ -1,0 +1,30 @@
+🚀 GAVRA ANDROID v6.0.1 - RELEASE NOTES
+
+✅ NOVO U OVOJ VERZIJI:
+• Poboljšana navigacija sa OpenStreetMap
+• Optimizovane performanse za Android 14+
+• Ispravke bagova u notifikacijama
+• Bolja kompatibilnost sa Huawei uređajima
+• Ažurirane sigurnosne biblioteke
+
+🔧 TEHNIČKA POBOLJŠANJA:
+• Target SDK ažuriran na 36
+• Smanjena veličina aplikacije
+• Brže pokretanje aplikacije
+• Stabilniji rad u pozadini
+
+🛡️ SIGURNOST:
+• Ažurirane bezbednosne mere
+• Poboljšana zaštita korisničkih podataka
+• Optimizovane dozvole aplikacije
+
+📱 KOMPATIBILNOST:
+• Android 7.0+ (API 24+)
+• Svi Android uređaji
+• Optimizovano za tablete i telefone
+
+🆕 FUNKCIONALNOSTI:
+• Real-time navigacija
+• Offline mape
+• Push notifikacije
+• Multi-language podrška
