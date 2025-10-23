@@ -67,9 +67,7 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
     // 🧹 SEARCH CLEANUP
     _searchSubject.close();
     _filterSubject.close();
-    _searchController.dispose();
-    // Debug logging removed for production
-    super.dispose();
+    _searchController.dispose();    super.dispose();
   }
 
   // 🔄 V3.0 REALTIME MONITORING SETUP (Backend only - no visual heartbeat)
@@ -83,9 +81,7 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
       _checkStreamHealth();
     });
 
-    _initializeRealtimeStream();
-    // Debug logging removed for production
-  }
+    _initializeRealtimeStream();  }
 
   // 💓 HEARTBEAT MONITORING FUNCTIONS
   void _registerStreamHeartbeat(String streamName) {
@@ -100,9 +96,7 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
       final timeSinceLastHeartbeat = now.difference(entry.value);
       if (timeSinceLastHeartbeat.inSeconds > 60) {
         // 60 seconds timeout
-        isHealthy = false;
-        // Debug logging removed for production
-        break;
+        isHealthy = false;        break;
       }
     }
 
@@ -120,9 +114,7 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
       _realtimeHealthStatus.value = 'stream_error';
     } else if (isHealthy) {
       _realtimeHealthStatus.value = 'healthy';
-    }
-    // Debug logging removed for production
-  }
+    }  }
 
   // 🚀 ENHANCED REALTIME STREAM INITIALIZATION
   void _initializeRealtimeStream() {
@@ -146,9 +138,7 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
               _cachedPutovanja = putovanja;
               _isLoading = false;
               _errorMessage = null;
-            });
-          // Debug logging removed for production
-        }
+            });        }
       },
       onError: (Object error) {
         if (mounted) {
@@ -157,13 +147,9 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
             setState(() {
               _isLoading = false;
               _errorMessage = error.toString();
-            });
-          // Debug logging removed for production
-// 🔄 AUTO RETRY after 5 seconds
+            });// 🔄 AUTO RETRY after 5 seconds
           Timer(const Duration(seconds: 5), () {
-            if (mounted) {
-              // Debug logging removed for production
-              _initializeRealtimeStream();
+            if (mounted) {              _initializeRealtimeStream();
             }
           });
         }
@@ -201,9 +187,7 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
     if (mounted)
       setState(() {
         // This will trigger rebuild with filtered data
-      });
-    // Debug logging removed for production
-  }
+      });  }
 
   void _loadInitialData() {
     _initializeRealtimeStream();
@@ -1193,9 +1177,7 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
             _cachedPutovanja.sort((a, b) => a.status.compareTo(b.status));
             break;
         }
-      });
-    // Debug logging removed for production
-  }
+      });  }
 
   // 📄 EXPORT DATA FUNCTIONALITY
   Future<void> _exportData() async {
@@ -1278,9 +1260,7 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
               label: 'Podeli',
               textColor: Theme.of(context).colorScheme.onPrimary,
               onPressed: () {
-                // Implementiraj deljenje fajla
-                // Debug logging removed for production
-              },
+                // Implementiraj deljenje fajla              },
             ),
           ),
         );
@@ -1304,9 +1284,7 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
       ),
     );
 
-    // Ovde bi bila implementacija za print preview
-    // Debug logging removed for production
-  }
+    // Ovde bi bila implementacija za print preview  }
 
   // 📅 DATE SELECTION
   Future<void> _selectDate() async {
@@ -1326,9 +1304,7 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
           _selectedDate = picked;
         });
 
-      // 🔄 REINITIALIZE STREAM FOR NEW DATE
-      // Debug logging removed for production
-      _initializeRealtimeStream();
+      // 🔄 REINITIALIZE STREAM FOR NEW DATE      _initializeRealtimeStream();
     }
   }
 

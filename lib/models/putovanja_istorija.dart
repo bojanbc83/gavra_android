@@ -335,7 +335,3 @@ class PutovanjaIstorija {
   int get hashCode => id.hashCode;
 }
 
-
-
-
-

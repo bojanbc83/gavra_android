@@ -122,12 +122,10 @@ class RealtimeNetworkStatusService {
   void _performHealthCheck() {
     final now = DateTime.now();
 
-
-
     // Check for stale streams (older than 60 seconds)
     for (final entry in _lastResponseTimes.entries) {
       if (now.difference(entry.value).inSeconds > 60) {
-        
+
         break;
       }
     }
@@ -135,12 +133,10 @@ class RealtimeNetworkStatusService {
     // Check for frequent errors (more than 3 per stream)
     for (final errorCount in _errorCounts.values) {
       if (errorCount > 3) {
-        
+
         break;
       }
     }
-
-    
 
     _updateNetworkStatus();
   }
@@ -161,8 +157,6 @@ class RealtimeNetworkStatusService {
         _lastSuccessfulPing = DateTime.now();
         final pingTime = stopwatch.elapsedMilliseconds;
 
-        
-
         // Add ping time to response times for overall health
         _recentResponseTimes.add(Duration(milliseconds: pingTime));
         if (_recentResponseTimes.length > 10) {
@@ -172,7 +166,7 @@ class RealtimeNetworkStatusService {
         throw Exception('No address found');
       }
     } catch (e) {
-      
+
       _lastSuccessfulPing = null;
     }
 
@@ -220,7 +214,6 @@ class RealtimeNetworkStatusService {
       _networkStatus.value = NetworkStatus.offline;
     }
 
-    
   }
 
   /// 📊 GET DETAILED STATUS INFO
@@ -245,8 +238,4 @@ class RealtimeNetworkStatusService {
     _networkStatus.dispose();
   }
 }
-
-
-
-
 

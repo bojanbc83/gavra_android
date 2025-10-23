@@ -28,9 +28,7 @@ class RealTimeStatistikaService {
 
   /// 🔄 GLAVNI KOMBINOVANI STREAM - koristi se svugde
   Stream<List<dynamic>> get kombinovaniPutniciStream {
-    if (_kombinovaniStream == null) {
-      // Debug logging removed for production
-      _kombinovaniStream = CombineLatestStream.combine2(
+    if (_kombinovaniStream == null) {      _kombinovaniStream = CombineLatestStream.combine2(
         PutnikService().streamKombinovaniPutniciFiltered(),
         MesecniPutnikService.streamAktivniMesecniPutnici(),
         (List<Putnik> putnici, List<MesecniPutnik> mesecni) {
@@ -53,9 +51,7 @@ class RealTimeStatistikaService {
 
     final cacheKey = 'pazar_${fromDate.millisecondsSinceEpoch}_${toDate.millisecondsSinceEpoch}';
 
-    if (!_streamCache.containsKey(cacheKey)) {
-      // Debug logging removed for production
-// 🔄 Koristi novi simplifikovani pristup direktno iz StatistikaService
+    if (!_streamCache.containsKey(cacheKey)) {// 🔄 Koristi novi simplifikovani pristup direktno iz StatistikaService
       _streamCache[cacheKey] = StatistikaService.streamPazarSvihVozaca(
         from: fromDate,
         to: toDate,
@@ -78,9 +74,7 @@ class RealTimeStatistikaService {
 
     final cacheKey = 'detaljne_${fromDate.millisecondsSinceEpoch}_${toDate.millisecondsSinceEpoch}';
 
-    if (!_streamCache.containsKey(cacheKey)) {
-      // Debug logging removed for production
-      _streamCache[cacheKey] = kombinovaniPutniciStream
+    if (!_streamCache.containsKey(cacheKey)) {      _streamCache[cacheKey] = kombinovaniPutniciStream
           .map((data) {
             final putnici = data[0] as List<Putnik>;
             final mesecniPutnici = data[1] as List<MesecniPutnik>;
@@ -103,9 +97,7 @@ class RealTimeStatistikaService {
   Stream<Map<String, dynamic>> getPutnikStatistikeStream(String putnikId) {
     final cacheKey = 'putnik_$putnikId';
 
-    if (!_streamCache.containsKey(cacheKey)) {
-      // Debug logging removed for production
-// Kombinuj centralizovani putovanja_istorija stream i filtriraj lokalno po putnikId
+    if (!_streamCache.containsKey(cacheKey)) {// Kombinuj centralizovani putovanja_istorija stream i filtriraj lokalno po putnikId
       _streamCache[cacheKey] = RealtimeService.instance
           .tableStream('putovanja_istorija')
           .map((data) {
@@ -131,9 +123,7 @@ class RealTimeStatistikaService {
   }
 
   /// 🧹 OČISTI CACHE
-  void clearCache() {
-    // Debug logging removed for production
-    _streamCache.clear();
+  void clearCache() {    _streamCache.clear();
     _kombinovaniStream = null;
   }
 
@@ -178,15 +168,6 @@ class RealTimeStatistikaService {
         'uspesnost': uspesnost,
         'poslednje': putovanja.isNotEmpty ? putovanja.first['created_at'] : null,
       };
-    } catch (e) {
-      // Debug logging removed for production
-      return {
-        'ukupnoPutovanja': 0,
-        'otkazi': 0,
-        'ukupanPrihod': 0.0,
-        'uspesnost': 0,
-        'poslednje': null,
-      };
-    }
+    } catch (e) { return null; }
   }
 }

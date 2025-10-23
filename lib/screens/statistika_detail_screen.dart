@@ -122,9 +122,7 @@ class _StatistikaDetailScreenState extends State<StatistikaDetailScreen> {
 
       _kmCache[cacheKey] = ukupnoKm;
       return ukupnoKm;
-    } catch (e) {
-      return 0.0;
-    }
+    } catch (e) { return null; }
   }
 
   // V3.0 Enhanced Haversine Formula with Early Returns

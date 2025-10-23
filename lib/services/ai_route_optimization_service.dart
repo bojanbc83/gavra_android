@@ -4,7 +4,6 @@ import 'dart:math' as math;
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
-
 import '../models/putnik.dart';
 import 'advanced_geocoding_service.dart';
 
@@ -75,11 +74,10 @@ class AIRouteOptimizationService {
     final validPassengers = passengers.where((putnik) => _isPassengerInServiceArea(putnik)).toList();
 
     if (validPassengers.length != passengers.length) {
-      
+
     }
 
     final startTime = DateTime.now();
-    
 
     try {
       // 1. 📍 GEOCODE ALL ADDRESSES - parallel processing
@@ -158,9 +156,6 @@ class AIRouteOptimizationService {
       }
 
       final calculationTime = DateTime.now().difference(startTime);
-
-      
-      
 
       return OptimizedRoute(
         optimizedSequence: optimizedSequence,
@@ -856,8 +851,4 @@ class OptimizedRoute {
     return 'OptimizedRoute(${optimizedSequence.length} stops, ${totalDistance.toStringAsFixed(2)}km, ${estimatedTime.inMinutes}min)';
   }
 }
-
-
-
-
 

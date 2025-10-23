@@ -38,7 +38,7 @@ class SmartAddressAutocompleteService {
   }) async {
     // 🚫 BLOKIRANJE: Samo Bela Crkva i Vršac dozvoljeni
     if (_isCityOutsideServiceArea(currentCity)) {
-      
+
       return [];
     }
 
@@ -161,9 +161,7 @@ class SmartAddressAutocompleteService {
       }
 
       return suggestions;
-    } catch (e) {
-      return [];
-    }
+    } catch (e) { return null; }
   }
 
   /// 🎯 CONTEXTUAL SUGGESTIONS - na bazi konteksta
@@ -240,9 +238,7 @@ class SmartAddressAutocompleteService {
       });
 
       return suggestions;
-    } catch (e) {
-      return [];
-    }
+    } catch (e) { return null; }
   }
 
   /// 📍 LOCATION-BASED SUGGESTIONS
@@ -404,9 +400,7 @@ class SmartAddressAutocompleteService {
       });
 
       return suggestions;
-    } catch (e) {
-      return [];
-    }
+    } catch (e) { return null; }
   }
 
   /// 🔮 PREDICTIVE SUGGESTIONS - kada je query prazan
@@ -811,8 +805,4 @@ class AddressSuggestion {
         'metadata': metadata,
       };
 }
-
-
-
-
 

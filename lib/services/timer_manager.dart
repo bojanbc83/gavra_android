@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-
 /// 🕐 TIMER MANAGER - Centralizovano upravljanje timer-ima za sprečavanje memory leak-ova
 class TimerManager {
 
@@ -23,8 +22,6 @@ class TimerManager {
 
     _activeTimers[name] = timer;
     _timerStartTimes[name] = DateTime.now();
-
-    
 
     return timer;
   }
@@ -171,8 +168,4 @@ extension TimerManagerExtension on Widget {
     TimerManager.cancelTimer('${runtimeType}_$name');
   }
 }
-
-
-
-
 

@@ -36,9 +36,7 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen> with 
 
     // Postavi preselected driver ako je proslećen
     if (widget.preselectedDriverName != null) {
-      _selectedDriver = widget.preselectedDriverName;
-      // Debug logging removed for production
-    }
+      _selectedDriver = widget.preselectedDriverName;    }
 
     _fadeController = AnimationController(
       duration: const Duration(milliseconds: 800),
@@ -456,8 +454,6 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen> with 
       final driverName = _selectedDriver!;
       final email = _emailController.text.trim();
       final password = _passwordController.text;
-      // Debug logging removed for production
-
       // Koristi AuthManager umesto direktno EmailAuthService
       final result = await AuthManager.registerWithEmail(
         driverName,
@@ -469,8 +465,6 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen> with 
       if (mounted) Navigator.of(context).pop();
 
       if (result.isSuccess) {
-        // Debug logging removed for production
-
         // REGISTRUJ VOZAČA LOKALNO
         final localRegistrationSuccess = await DriverRegistrationService.markDriverAsRegistered(
           driverName,
@@ -478,8 +472,6 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen> with 
         );
 
         if (localRegistrationSuccess) {
-          // Debug logging removed for production
-
           // Pokaži uspešnu poruku
           await _showSuccessDialog();
 
@@ -487,25 +479,19 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen> with 
           if (mounted) {
             Navigator.of(context).pop(true);
           }
-        } else {
-          // Debug logging removed for production
-          _showErrorDialog(
+        } else {          _showErrorDialog(
             'Greška!',
             'Vozač je registrovan u sistemu, ali lokalna registracija nije uspešna.',
           );
         }
-      } else {
-        // Debug logging removed for production
-        _showErrorDialog(
+      } else {        _showErrorDialog(
           'Registracija neuspješna',
           result.message,
         );
       }
     } catch (e) {
       // Sakrij loading dialog ako je otvoren
-      if (mounted) Navigator.of(context).pop();
-      // Debug logging removed for production
-      _showErrorDialog(
+      if (mounted) Navigator.of(context).pop();      _showErrorDialog(
         'Greška',
         'Došlo je do greške pri registraciji. Pokušajte ponovo.',
       );

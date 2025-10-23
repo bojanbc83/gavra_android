@@ -65,9 +65,7 @@ class TrafficAwareRoutingService {
 
       // Fallback - proceni na osnovu vremena dana
       return _estimateTrafficFromTimeOfDay(start, destination, departureTime);
-    } catch (e) {
-      return _estimateTrafficFromTimeOfDay(start, destination, departureTime!);
-    }
+    } catch (e) { return null; }
   }
 
   /// 🚦 Optimizuj rutu sa traffic podacima
@@ -384,8 +382,4 @@ extension TrafficLevelExtension on TrafficLevel {
     }
   }
 }
-
-
-
-
 

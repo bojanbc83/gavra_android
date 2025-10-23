@@ -65,18 +65,14 @@ class _AdminMapScreenState extends State<AdminMapScreen> {
                   _isLoading = false;
                   _updateMarkers();
                 });
-              } catch (e) {
-      // Debug logging removed for production
-// Fallback to cached data
+              } catch (e) {// Fallback to cached data
                 if (_gpsLokacije.isEmpty) {
                   _loadGpsLokacije();
                 }
               }
             }
           },
-          onError: (Object error) {
-      // Debug logging removed for production
-// V3.0 Resilience - Auto retry after 5 seconds
+          onError: (Object error) {// V3.0 Resilience - Auto retry after 5 seconds
             Timer(const Duration(seconds: 5), () {
               if (mounted) {
                 _initializeRealtimeMonitoring();
@@ -97,18 +93,14 @@ class _AdminMapScreenState extends State<AdminMapScreen> {
               _putnici = putnici;
               _updateMarkers();
             });
-          } catch (e) {
-      // Debug logging removed for production
-// Fallback to cached data
+          } catch (e) {// Fallback to cached data
             if (_putnici.isEmpty) {
               _loadPutnici();
             }
           }
         }
       },
-      onError: (Object error) {
-      // Debug logging removed for production
-// V3.0 Resilience - Auto retry after 3 seconds
+      onError: (Object error) {// V3.0 Resilience - Auto retry after 3 seconds
         Timer(const Duration(seconds: 3), () {
           if (mounted) {
             _initializeRealtimeMonitoring();
@@ -140,9 +132,7 @@ class _AdminMapScreenState extends State<AdminMapScreen> {
         _lastPutniciLoad = DateTime.now();
       });
       _updateMarkers();
-    } catch (e) {
-      // Debug logging removed for production
-}
+    } catch (e) {}
   }
 
   Future<void> _getCurrentLocation() async {
@@ -168,9 +158,7 @@ class _AdminMapScreenState extends State<AdminMapScreen> {
         LatLng(position.latitude, position.longitude),
         13.0,
       );
-    } catch (e) {
-      // Debug logging removed for production
-}
+    } catch (e) {}
   }
 
   Future<void> _loadGpsLokacije() async {
@@ -189,20 +177,12 @@ class _AdminMapScreenState extends State<AdminMapScreen> {
       final response = await Supabase.instance.client
           .from('gps_lokacije')
           .select()
-          .limit(10); // Uzmi samo 10 da vidimo strukturu
-      // Debug logging removed for production
-final gpsLokacije = <GPSLokacija>[];
+          .limit(10); // Uzmi samo 10 da vidimo strukturufinal gpsLokacije = <GPSLokacija>[];
       for (final json in response as List<dynamic>) {
         try {
           gpsLokacije.add(GPSLokacija.fromMap(json as Map<String, dynamic>));
-        } catch (e) {
-      // Debug logging removed for production
-
-      // Debug logging removed for production
-}
-      }
-      // Debug logging removed for production
-if (mounted) setState(() {
+        } catch (e) {}
+      }if (mounted) setState(() {
         _gpsLokacije = gpsLokacije;
         _lastGpsLoad = DateTime.now();
         _updateMarkers();
@@ -214,9 +194,7 @@ if (mounted) setState(() {
         await Future<void>.delayed(const Duration(milliseconds: 500));
         _fitAllMarkers();
       }
-    } catch (e) {
-      // Debug logging removed for production
-if (mounted) setState(() {
+    } catch (e) {if (mounted) setState(() {
         _gpsLokacije = []; // Postavi praznu listu
         _isLoading = false;
       });
@@ -709,8 +687,4 @@ if (mounted) setState(() {
     );
   }
 }
-
-
-
-
 

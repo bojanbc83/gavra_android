@@ -110,9 +110,7 @@ class OfflineMapService {
       }
 
       return null;
-    } catch (e) {
-      return null;
-    }
+    } catch (e) { return null; }
   }
 
   /// 📍 REVERSE GEOCODING - adresa iz koordinata
@@ -125,8 +123,8 @@ class OfflineMapService {
         '''
         SELECT adresa, grad,
                ABS(latitude - ?) + ABS(longitude - ?) as distance
-        FROM addresses 
-        ORDER BY distance 
+        FROM addresses
+        ORDER BY distance
         LIMIT 1
       ''',
         [coordinates.latitude, coordinates.longitude],
@@ -138,9 +136,7 @@ class OfflineMapService {
       }
 
       return null;
-    } catch (e) {
-      return null;
-    }
+    } catch (e) { return null; }
   }
 
   /// 🎯 OFFLINE ROUTE OPTIMIZATION

@@ -5,7 +5,7 @@ import '../services/auth_manager.dart';
 import '../services/email_auth_service.dart';
 import '../services/permission_service.dart';
 // import '../main.dart' show globalThemeRefresher; // Removed in simple version
-import '../services/simplified_daily_checkin.dart';
+import '../services/daily_checkin_service.dart';
 import 'daily_checkin_screen.dart';
 import 'email_registration_screen.dart';
 import 'home_screen_light.dart';
@@ -43,52 +43,36 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> with TickerProvider
       switch (driverName.toLowerCase()) {
         case 'svetlana':
           // 🎺 SVETLANINA SPECIJALNA PESMA - "Hiljson Mandela & Miach - Anđeo"
-          assetPath = 'assets/svetlana.mp3';
-          // Debug logging removed for production
-          break;
+          assetPath = 'assets/svetlana.mp3';          break;
 
         case 'bruda':
           // 🎵 BRUDINA SPECIJALNA PESMA
-          assetPath = 'assets/bruda.mp3';
-          // Debug logging removed for production
-          break;
+          assetPath = 'assets/bruda.mp3';          break;
 
         case 'bilevski':
           // 🎵 BILEVSKIJEVA SPECIJALNA PESMA
-          assetPath = 'assets/bilevski.mp3';
-          // Debug logging removed for production
-          break;
+          assetPath = 'assets/bilevski.mp3';          break;
 
         case 'bojan':
           // 🎵 BOJANOVA SPECIJALNA PESMA
-          assetPath = 'assets/gavra.mp3';
-          // Debug logging removed for production
-          break;
+          assetPath = 'assets/gavra.mp3';          break;
 
         default:
           // 🎵 Default pesma za ostale vozače
-          assetPath = 'assets/gavra.mp3';
-          // Debug logging removed for production
-          break;
+          assetPath = 'assets/gavra.mp3';          break;
       }
 
       // Postavi i pokreni pesmu - CELA PESMA
       await _globalAudioPlayer!.setAsset(assetPath);
       await _globalAudioPlayer!.setVolume(volume);
       await _globalAudioPlayer!.setLoopMode(LoopMode.off); // Bez ponavljanja
-      await _globalAudioPlayer!.play();
-      // Debug logging removed for production
-// Postaviti listener da se audio player očisti kad pesma završi
+      await _globalAudioPlayer!.play();// Postaviti listener da se audio player očisti kad pesma završi
       _globalAudioPlayer!.playerStateStream.listen((state) {
-        if (state.processingState == ProcessingState.completed) {
-          // Debug logging removed for production
-          _globalAudioPlayer?.dispose();
+        if (state.processingState == ProcessingState.completed) {          _globalAudioPlayer?.dispose();
           _globalAudioPlayer = null;
         }
       });
-    } catch (e) {
-      // Debug logging removed for production
-    }
+    } catch (e) {    }
   }
 
   late AnimationController _fadeController;
@@ -426,32 +410,23 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> with TickerProvider
     try {
       final email = _emailController.text.trim();
       final password = _passwordController.text;
-      // Debug logging removed for production
-
       // Koristi AuthManager umesto direktno EmailAuthService
       final result = await AuthManager.signInWithEmail(email, password);
 
       if (result.isSuccess) {
-        // Debug logging removed for production
-
         // Dobij ime vozača iz trenutne auth session
         final user = AuthManager.getCurrentUser();
         final driverName = (user?.userMetadata?['driver_name'] as String?) ?? user?.email?.split('@')[0] ?? 'Vozač';
-
-        // Debug logging removed for production
-
         // 🔐 ZAHTEVAJ DOZVOLE PRI PRVOM POKRETANJU
         // ignore: use_build_context_synchronously
         await PermissionService.requestAllPermissionsOnFirstLaunch(context);
 
         // 🎨 Theme refresh removed in simple version
-        // Debug logging removed for production
-
         // 🎵 PUSTI PESMU NAKON EMAIL LOGIN-A
         await _EmailLoginScreenState._playDriverWelcomeSong(driverName);
 
         // Provjeri daily check-in
-        final needsCheckIn = !await SimplifiedDailyCheckInService.hasCheckedInToday(driverName);
+        final needsCheckIn = !await DailyCheckInService.hasCheckedInToday(driverName);
 
         if (needsCheckIn) {
           // Idi na daily check-in
@@ -492,9 +467,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> with TickerProvider
           result.message,
         );
       }
-    } catch (e) {
-      // Debug logging removed for production
-      _showErrorDialog(
+    } catch (e) {      _showErrorDialog(
         'Greška',
         'Došlo je do greške pri prijavi. Pokušajte ponovo.',
       );
@@ -527,9 +500,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> with TickerProvider
       } else {
         _showErrorDialog('Greška', 'Nije moguće poslati email za reset šifre.');
       }
-    } catch (e) {
-      // Debug logging removed for production
-      _showErrorDialog('Greška', 'Došlo je do greške. Pokušajte ponovo.');
+    } catch (e) {      _showErrorDialog('Greška', 'Došlo je do greške. Pokušajte ponovo.');
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

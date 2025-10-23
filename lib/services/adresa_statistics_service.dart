@@ -77,7 +77,6 @@ class AdresaStatisticsService {
       // Cache the results
       await CacheService.saveToDisk(_statsCacheKey, stats);
 
-      
       return stats;
     } catch (e) {
       // Logger removed
@@ -486,7 +485,6 @@ class AdresaStatisticsService {
       trends['analysis_period_days'] = daysBack;
       trends['generated_at'] = DateTime.now().toIso8601String();
 
-      
       return trends;
     } catch (e) {
       // Logger removed
@@ -575,8 +573,4 @@ class AdresaStatisticsService {
     };
   }
 }
-
-
-
-
 

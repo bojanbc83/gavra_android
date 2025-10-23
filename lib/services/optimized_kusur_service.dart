@@ -18,9 +18,7 @@ class OptimizedKusurService {
       final cacheKey = 'kusur_$vozacIme';
       final cached = CacheService.getFromMemory<double>(cacheKey);
 
-      if (cached != null) {
-      // Debug logging removed for production
-return cached;
+      if (cached != null) {return cached;
       }
 
       // 2. BAZA DRUGI (autoritativni izvor)
@@ -34,24 +32,18 @@ return cached;
         final kusur = (response.first['kusur'] as num).toDouble();
 
         // Sačuvaj u cache za buduće pozive
-        CacheService.saveToMemory(cacheKey, kusur);
-      // Debug logging removed for production
-return kusur;
+        CacheService.saveToMemory(cacheKey, kusur);return kusur;
       }
 
       // 3. SHARED PREFERENCES FALLBACK (offline mode)
       final prefs = await SharedPreferences.getInstance();
       final fallback = prefs.getDouble('kusur_$vozacIme') ?? 0.0;
 
-      if (fallback > 0) {
-      // Debug logging removed for production
-return fallback;
+      if (fallback > 0) {return fallback;
       }
 
       return 0.0;
-    } catch (e) {
-      // Debug logging removed for production
-// EMERGENCY FALLBACK
+    } catch (e) {// EMERGENCY FALLBACK
       try {
         final prefs = await SharedPreferences.getInstance();
         return prefs.getDouble('kusur_$vozacIme') ?? 0.0;
@@ -81,21 +73,15 @@ return fallback;
         await prefs.setDouble('kusur_$vozacIme', novKusur);
 
         // Emituj stream update
-        _kusurController.add({vozacIme: novKusur});
-      // Debug logging removed for production
-return true;
+        _kusurController.add({vozacIme: novKusur});return true;
       }
 
       throw Exception('Database update failed');
-    } catch (e) {
-      // Debug logging removed for production
-// FALLBACK: Sačuvaj samo lokalno
+    } catch (e) {// FALLBACK: Sačuvaj samo lokalno
       try {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setDouble('kusur_$vozacIme', novKusur);
-        await prefs.setBool('kusur_${vozacIme}_pending_sync', true);
-      // Debug logging removed for production
-return false; // Označava da je samo lokalno sačuvano
+        await prefs.setBool('kusur_${vozacIme}_pending_sync', true);return false; // Označava da je samo lokalno sačuvano
       } catch (_) {
         return false;
       }
@@ -116,14 +102,10 @@ return false; // Označava da je samo lokalno sačuvano
           final success = await updateKusurForVozac(vozacIme, pendingValue);
           if (success) {
             // Ukloni pending flag ako je sync uspešan
-            await prefs.remove(key);
-      // Debug logging removed for production
-}
+            await prefs.remove(key);}
         }
       }
-    } catch (e) {
-      // Debug logging removed for production
-}
+    } catch (e) {}
   }
 
   /// 📡 STREAM ZA REAL-TIME UPDATES

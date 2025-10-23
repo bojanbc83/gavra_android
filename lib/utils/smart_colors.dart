@@ -228,7 +228,3 @@ class SmartSnackBar {
   }
 }
 
-
-
-
-

@@ -358,7 +358,3 @@ class RealtimeRouteTrackingService {
   }
 }
 
-
-
-
-

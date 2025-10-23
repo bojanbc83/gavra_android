@@ -158,9 +158,7 @@ class DnevniPutnikService {
         _adresaCache[adresaId] = adresa;
       }
       return adresa;
-    } catch (e) {
-      return null;
-    }
+    } catch (e) { return null; }
   }
 
   /// Dohvata rutu po ID-u sa cache-om
@@ -175,9 +173,7 @@ class DnevniPutnikService {
       final ruta = Ruta.fromMap(response);
       _rutaCache[rutaId] = ruta;
       return ruta;
-    } catch (e) {
-      return null;
-    }
+    } catch (e) { return null; }
   }
 
   /// Konvertuje DnevniPutnik u Putnik sa relationship podacima
@@ -191,9 +187,7 @@ class DnevniPutnikService {
       }
 
       return dnevniPutnik.toPutnikWithRelations(adresa, ruta);
-    } catch (e) {
-      return null;
-    }
+    } catch (e) { return null; }
   }
 
   /// Dohvata dnevne putnike kao Putnik objekte sa relationship podacima
@@ -207,12 +201,8 @@ class DnevniPutnikService {
         if (putnik != null) {
           putnici.add(putnik);
         }
-      }
-      // Debug logging removed for production
-return putnici;
-    } catch (e) {
-      return [];
-    }
+      }return putnici;
+    } catch (e) { return null; }
   }
 
   /// Batch operacije - dodavanje više putnika odjednom
@@ -227,9 +217,7 @@ return putnici;
       final dodatiPutnici = response.map((json) => DnevniPutnik.fromMap(json)).toList();
 
       return dodatiPutnici;
-    } catch (e) {
-      rethrow;
-    }
+    } catch (e) { rethrow; }
   }
 
   /// Dohvata statistike za dnevne putnike
@@ -252,9 +240,7 @@ return putnici;
         'procenat_pokupljenosti': ukupno > 0 ? (pokupljeni / ukupno * 100).round() : 0,
         'procenat_placenos': ukupno > 0 ? (placeni / ukupno * 100).round() : 0,
       };
-    } catch (e) {
-      return {};
-    }
+    } catch (e) { return null; }
   }
 
   /// Čisti cache (korisno za memory management)
@@ -290,16 +276,10 @@ return putnici;
           p.adresaId == putnik.adresaId,
     );
 
-    if (duplikat) {
-      // Debug logging removed for production
-return false;
+    if (duplikat) {return false;
     }
 
     return true;
   }
 }
-
-
-
-
 

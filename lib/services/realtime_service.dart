@@ -56,22 +56,14 @@ class RealtimeService {
   /// Vrati stream za tabelu. Pozivaoci mogu sami da se pretplate i obrade evente.
   Stream<dynamic> tableStream(String table) {
     final client = Supabase.instance.client;
-    try {
-      // Debug logging removed for production
-      final stream = client.from(table).stream(primaryKey: ['id']).timeout(
+    try {      final stream = client.from(table).stream(primaryKey: ['id']).timeout(
         const Duration(seconds: 30),
-        onTimeout: (sink) {
-          // Debug logging removed for production
-          sink.close();
+        onTimeout: (sink) {          sink.close();
         },
       );
-      return stream.map((data) {
-        // Debug logging removed for production
-        return data;
+      return stream.map((data) {        return data;
       });
-    } catch (e) {
-      // Debug logging removed for production
-// Return an empty list stream so callers can subscribe safely.
+    } catch (e) {// Return an empty list stream so callers can subscribe safely.
       return Stream.value(<dynamic>[]);
     }
   }
@@ -84,9 +76,7 @@ class RealtimeService {
     void Function()? onDone,
     bool? cancelOnError,
   }) {
-    void loggedOnData(dynamic data) {
-      // Debug logging removed for production
-      onData(data);
+    void loggedOnData(dynamic data) {      onData(data);
     }
 
     final stream = tableStream(table);
@@ -155,21 +145,15 @@ class RealtimeService {
             }
           }
           _lastPutovanjaRows = rows;
-          try {
-            // Debug logging removed for production
-          } catch (_) {}
+          try {          } catch (_) {}
           if (!_putovanjaController.isClosed) {
             _putovanjaController.add(rows);
           }
           _emitCombinedPutnici();
-        } catch (e) {
-          // Debug logging removed for production
-// Nastavi rad bez prekidanja
+        } catch (e) {// Nastavi rad bez prekidanja
         }
       },
-      onError: (Object error) {
-        // Debug logging removed for production
-// Pokušaj reconnect preko ConnectionResilience
+      onError: (Object error) {// Pokušaj reconnect preko ConnectionResilience
       },
     );
 
@@ -184,18 +168,12 @@ class RealtimeService {
             }
           }
           _lastMesecniRows = rows;
-          try {
-            // Debug logging removed for production
-          } catch (_) {}
+          try {          } catch (_) {}
           _emitCombinedPutnici();
-        } catch (e) {
-          // Debug logging removed for production
-// Nastavi rad bez prekidanja
+        } catch (e) {// Nastavi rad bez prekidanja
         }
       },
-      onError: (Object error) {
-        // Debug logging removed for production
-// Pokušaj reconnect preko ConnectionResilience
+      onError: (Object error) {// Pokušaj reconnect preko ConnectionResilience
       },
     );
 
@@ -204,21 +182,15 @@ class RealtimeService {
   }
 
   /// Stop any centralized subscriptions started with [startForDriver]
-  Future<void> stopForDriver() async {
-    // Debug logging removed for production
-// Zaustavi sve aktivne subscription-e sa proper error handling
+  Future<void> stopForDriver() async {// Zaustavi sve aktivne subscription-e sa proper error handling
     try {
       await _putovanjaSub?.cancel();
       _putovanjaSub = null;
-    } catch (e) {
-      // Debug logging removed for production
-    }
+    } catch (e) {    }
     try {
       await _mesecniSub?.cancel();
       _mesecniSub = null;
-    } catch (e) {
-      // Debug logging removed for production
-    }
+    } catch (e) {    }
 
     // Clear internal state
     _lastPutovanjaRows.clear();
@@ -230,18 +202,12 @@ class RealtimeService {
     }
     if (!_combinedPutniciController.isClosed) {
       _combinedPutniciController.add([]);
-    }
-    // Debug logging removed for production
-  }
+    }  }
 
   /// 🔄 EMERGENCY RESTART REALTIME CONNECTIONS
-  Future<void> restartConnections(String? vozac) async {
-    // Debug logging removed for production
-    await stopForDriver();
+  Future<void> restartConnections(String? vozac) async {    await stopForDriver();
     await Future<void>.delayed(const Duration(seconds: 2)); // Brief pause
-    startForDriver(vozac);
-    // Debug logging removed for production
-  }
+    startForDriver(vozac);  }
 
   void _emitCombinedPutnici() {
     try {
@@ -287,9 +253,7 @@ class RealtimeService {
             brojTelefona: r['broj_telefona']?.toString(),
           );
           combined.add(putnik);
-        } catch (e) {
-          // Debug logging removed for production
-        }
+        } catch (e) {        }
       }
 
       // Convert mesecni rows - use current MesecniPutnik model structure
@@ -311,20 +275,12 @@ class RealtimeService {
             }
           }
           continue;
-        } catch (e) {
-          // Debug logging removed for production
-        }
-      }
-      // Debug logging removed for production
-      try {
-        // Debug logging removed for production
-      } catch (_) {}
+        } catch (e) {        }
+      }      try {      } catch (_) {}
       if (!_combinedPutniciController.isClosed) {
         _combinedPutniciController.add(combined);
       }
-    } catch (e) {
-      // Debug logging removed for production
-    }
+    } catch (e) {    }
   }
 
   /// Expose a filtered stream for a specific isoDate. This applies client-side filter
@@ -367,9 +323,7 @@ class RealtimeService {
           return matches;
         });
       }
-      final result = filtered.toList();
-      // Debug logging removed for production
-      return result;
+      final result = filtered.toList();      return result;
     });
   }
 
@@ -464,9 +418,7 @@ class RealtimeService {
   /// Trigger a one-off refresh (useful after resets) which will make the service re-query
   /// and emit the latest combined set.
   Future<void> refreshNow() async {
-    try {
-      // Debug logging removed for production
-// 🔄 STANDARDIZOVANO: koristi putovanja_istorija i mesecni_putnici
+    try {// 🔄 STANDARDIZOVANO: koristi putovanja_istorija i mesecni_putnici
       final putovanjaData = await SupabaseSafe.select('putovanja_istorija');
       final mesecniData = await SupabaseSafe.select('mesecni_putnici');
 
@@ -476,12 +428,8 @@ class RealtimeService {
       _lastMesecniRows =
           (mesecniData is List) ? mesecniData.map((e) => Map<String, dynamic>.from(e as Map)).toList() : [];
 
-      try {
-        // Debug logging removed for production
-      } catch (_) {}
+      try {      } catch (_) {}
       _emitCombinedPutnici();
-    } catch (e) {
-      // Debug logging removed for production
-    }
+    } catch (e) {    }
   }
 }

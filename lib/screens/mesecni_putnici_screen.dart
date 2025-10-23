@@ -3423,9 +3423,7 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
         }
       }
       return ''; // Vraća prazan string ako nije poznat
-    } catch (e) {
-      return '';
-    }
+    } catch (e) { return null; }
   }
 
   // Čuva legacy funkciju za kompatibilnost
@@ -4128,15 +4126,7 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
 
         // Fallback na trenutni mesec
         return await _getMesecneStatistike(putnikId);
-      } catch (e) {
-        return {
-          'putovanja': 0,
-          'otkazivanja': 0,
-          'poslednje': 'Greška pri učitavanju',
-          'uspesnost': 0,
-          'error': true,
-        };
-      }
+      } catch (e) { return null; }
     }).handleError((Object error) {
       return {
         'putovanja': 0,
@@ -4384,14 +4374,7 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
         'uspesnost': uspesnost.toStringAsFixed(1),
         'poslednje': poslednjiDatum != null ? _formatDatum(DateTime.parse(poslednjiDatum)) : null,
       };
-    } catch (e) {
-      return {
-        'putovanja': 0,
-        'otkazivanja': 0,
-        'uspesnost': '0.0',
-        'poslednje': 'Greška pri učitavanju',
-      };
-    }
+    } catch (e) { return null; }
   }
 
   // �📅 HELPER FUNKCIJE ZA MESECE
@@ -4537,14 +4520,7 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
         'uspesnost': uspesnost.toStringAsFixed(1),
         'poslednje': poslednjiDatum != null ? _formatDatum(DateTime.parse(poslednjiDatum)) : null,
       };
-    } catch (e) {
-      return {
-        'putovanja': 0,
-        'otkazivanja': 0,
-        'uspesnost': '0.0',
-        'poslednje': null,
-      };
-    }
+    } catch (e) { return null; }
   }
 
   // Helper za konvertovanje meseca u datume

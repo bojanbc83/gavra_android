@@ -18,11 +18,10 @@ class SimplifiedKusurService {
       final cached = CacheService.getFromMemory<double>(cacheKey, maxAge: const Duration(minutes: 2));
 
       if (cached != null) {
-      // Debug logging removed for production
-return cached;
+        return cached;
       }
-      // Debug logging removed for production
-// OPTIMIZOVANO sa SupabaseManager
+
+      // OPTIMIZOVANO sa SupabaseManager
       final response = await SupabaseManager.safeSelect(
         'vozaci',
         columns: 'kusur',
@@ -33,23 +32,14 @@ return cached;
         final kusur = (response.first['kusur'] as num).toDouble();
 
         // Sačuvaj u cache
-        CacheService.saveToMemory(cacheKey, kusur);
-      // Debug logging removed for production
-return kusur;
-      }
-      // Debug logging removed for production
-return 0.0;
-    } catch (e) {
-      // Debug logging removed for production
-return 0.0;
-    }
+        CacheService.saveToMemory(cacheKey, kusur);return kusur;
+      }return 0.0;
+    } catch (e) { return null; }
   }
 
   /// Ažuriraj kusur za određenog vozača u bazi - OPTIMIZOVANO
   static Future<bool> updateKusurForVozac(String vozacIme, double noviKusur) async {
-    try {
-      // Debug logging removed for production
-// OPTIMIZOVANO sa SupabaseManager
+    try {// OPTIMIZOVANO sa SupabaseManager
       final success = await SupabaseManager.safeUpdate(
         'vozaci',
         {'kusur': noviKusur},
@@ -60,19 +50,12 @@ return 0.0;
         // Invalidate cache za ovog vozača
         final cacheKey = 'kusur_vozac_$vozacIme';
         CacheService.clearFromMemory(cacheKey);
-        CacheService.clearFromMemory('kusur_svi_vozaci'); // Clear i glavni cache
-      // Debug logging removed for production
-// Emituj ažuriranje preko stream-a
+        CacheService.clearFromMemory('kusur_svi_vozaci'); // Clear i glavni cache// Emituj ažuriranje preko stream-a
         _emitKusurUpdate(vozacIme, noviKusur);
         return true;
-      } else {
-      // Debug logging removed for production
-return false;
+      } else {return false;
       }
-    } catch (e) {
-      // Debug logging removed for production
-return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// Stream za real-time praćenje kusur-a određenog vozača
@@ -100,11 +83,10 @@ return false;
       );
 
       if (cached != null) {
-      // Debug logging removed for production
-return cached;
+        return cached;
       }
-      // Debug logging removed for production
-// OPTIMIZOVANO sa SupabaseManager
+
+      // OPTIMIZOVANO sa SupabaseManager
       final response = await SupabaseManager.safeSelect(
         'vozaci',
         columns: 'ime, kusur',
@@ -122,13 +104,8 @@ return cached;
       }
 
       // Sačuvaj kompletnu mapu u cache
-      CacheService.saveToMemory(cacheKey, rezultat);
-      // Debug logging removed for production
-return rezultat;
-    } catch (e) {
-      // Debug logging removed for production
-return {};
-    }
+      CacheService.saveToMemory(cacheKey, rezultat);return rezultat;
+    } catch (e) { return null; }
   }
 
   /// Privatni helper za emitovanje ažuriranja

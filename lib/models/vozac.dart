@@ -68,7 +68,3 @@ class Vozac {
   }
 }
 
-
-
-
-

@@ -204,9 +204,7 @@ class PlacanjeService {
       }
 
       return ukupno;
-    } catch (e) {
-      return 0.0;
-    }
+    } catch (e) { return null; }
   }
 
   /// Dobija detaljnu listu svih plaćanja za mesečnog putnika za određeni mesec
@@ -230,8 +228,6 @@ class PlacanjeService {
           .order('created_at', ascending: false);
 
       return (placanja as List).cast<Map<String, dynamic>>();
-    } catch (e) {
-      return [];
-    }
+    } catch (e) { return null; }
   }
 }

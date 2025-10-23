@@ -177,7 +177,3 @@ class GeocodingStatsService {
   }
 }
 
-
-
-
-

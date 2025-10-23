@@ -21,7 +21,7 @@ import '../services/realtime_notification_service.dart';
 import '../services/realtime_route_tracking_service.dart'; // 🚗 NOVO
 import '../services/realtime_service.dart';
 import '../services/route_optimization_service.dart';
-import '../services/simplified_daily_checkin.dart'; // 🚀 OPTIMIZOVANI servis za kusur
+import '../services/daily_checkin_service.dart'; // 🚀 OPTIMIZOVANI servis za kusur
 import '../services/statistika_service.dart'; // DODANO za jedinstvenu logiku pazara
 import '../services/timer_manager.dart'; // 🕐 DODANO za heartbeat management
 import '../utils/grad_adresa_validator.dart'; // 🏘️ NOVO za validaciju gradova
@@ -303,14 +303,7 @@ class _DanasScreenState extends State<DanasScreen> {
         'otkazali': otkazaliUcenici, // 5 - otkazani
         'ostalo': ostalo, // 10 - ostalo da se vrati
       };
-    } catch (e) {
-      // Debug logging removed for production
-      return {
-        'ukupno': 0,
-        'povratak': 0,
-        'slobodno': 0,
-      };
-    }
+    } catch (e) { return null; }
   }
 
   // ✨ DIGITALNI BROJAČ DATUM WIDGET - OPTIMIZOVANO (30s umesto 1s)
@@ -903,7 +896,7 @@ class _DanasScreenState extends State<DanasScreen> {
       }
 
       // 5. SITAN NOVAC
-      final sitanNovac = await SimplifiedDailyCheckInService.getTodayAmount(vozac);
+      final sitanNovac = await DailyCheckInService.getTodayAmount(vozac);
 
       // 6. MAPIRANJE PODATAKA - IDENTIČNO SA STATISTIKA SCREEN
       final dodatiPutnici = (vozacStats['dodati'] ?? 0) as int;
@@ -1221,10 +1214,10 @@ class _DanasScreenState extends State<DanasScreen> {
   ) async {
     try {
       // Sačuvaj kompletan popis
-      await SimplifiedDailyCheckInService.saveDailyReport(vozac, datum, podaci);
+      await DailyCheckInService.saveDailyReport(vozac, datum, podaci);
 
       // Takođe sačuvaj i sitan novac (za kompatibilnost)
-      await SimplifiedDailyCheckInService.saveCheckIn(
+      await DailyCheckInService.saveCheckIn(
         vozac,
         podaci['sitanNovac'] as double,
       );
@@ -1293,9 +1286,7 @@ class _DanasScreenState extends State<DanasScreen> {
     ]; // Koristi iste kratice kao Home screen
     final todayName = dayNames[now.weekday - 1];
 
-    // 🎯 DANAS SCREEN PRIKAZUJE SAMO TRENUTNI DAN - ne prebacuje na Ponedeljak
-    // Debug logging removed for production
-    return todayName;
+    // 🎯 DANAS SCREEN PRIKAZUJE SAMO TRENUTNI DAN - ne prebacuje na Ponedeljak    return todayName;
   }
 
   // ✅ SINHRONIZACIJA SA HOME SCREEN - postavi trenutno vreme i grad
@@ -1352,9 +1343,7 @@ class _DanasScreenState extends State<DanasScreen> {
         } else {
           _selectedGrad = 'Vršac';
         }
-      });
-    // Debug logging removed for production
-  }
+      });  }
 
   @override
   void initState() {
@@ -1370,13 +1359,9 @@ class _DanasScreenState extends State<DanasScreen> {
 
     // ✅ SETUP FILTERS FROM NOTIFICATION DATA
     if (widget.filterGrad != null) {
-      _selectedGrad = widget.filterGrad!;
-      // Debug logging removed for production
-    }
+      _selectedGrad = widget.filterGrad!;    }
     if (widget.filterVreme != null) {
-      _selectedVreme = widget.filterVreme!;
-      // Debug logging removed for production
-    }
+      _selectedVreme = widget.filterVreme!;    }
 
     // Ako nema filter podataka iz notifikacije, koristi default logiku
     if (widget.filterGrad == null || widget.filterVreme == null) {
@@ -1388,14 +1373,10 @@ class _DanasScreenState extends State<DanasScreen> {
     _initializeCurrentDriver().then((_) {
       if (_currentDriver != null && _currentDriver!.isNotEmpty) {
         try {
-          _dailyCheckinSub = SimplifiedDailyCheckInService.initializeRealtimeForDriver(_currentDriver!);
+          _dailyCheckinSub = DailyCheckInService.initializeRealtimeForDriver(_currentDriver!);
 
           // 💓 POKRENI HEARTBEAT MONITORING
-          _startHealthMonitoring();
-          // Debug logging removed for production
-        } catch (e) {
-          // Debug logging removed for production
-        }
+          _startHealthMonitoring();        } catch (e) {        }
       }
     });
     _loadPutnici();
@@ -1415,9 +1396,7 @@ class _DanasScreenState extends State<DanasScreen> {
     RealtimeNotificationCounterService.initialize();
 
     // 🛰️ START GPS TRACKING
-    RealtimeGpsService.startTracking().catchError((Object e) {
-      // Debug logging removed for production
-    });
+    RealtimeGpsService.startTracking().catchError((Object e) {    });
 
     // 🔔 SHOW NOTIFICATION MESSAGE IF PASSENGER NAME PROVIDED
     if (widget.highlightPutnikIme != null) {
@@ -1540,9 +1519,7 @@ class _DanasScreenState extends State<DanasScreen> {
     // Otkaži pretplatu za daily_checkins ako postoji
     try {
       _dailyCheckinSub?.cancel();
-    } catch (e) {
-      // Debug logging removed for production
-    }
+    } catch (e) {    }
 
     // 💓 CLEANUP HEARTBEAT MONITORING
     TimerManager.cancelTimer('danas_screen_heartbeat');
@@ -1552,14 +1529,10 @@ class _DanasScreenState extends State<DanasScreen> {
       if (mounted) {
         _isRealtimeHealthy.dispose();
       }
-    } catch (e) {
-      // Debug logging removed for production
-    }
+    } catch (e) {    }
 
     // 🚨 FAIL-FAST CLEANUP - DISPOSE ALL STREAMS
-    FailFastStreamManager.instance.disposeAll();
-    // Debug logging removed for production
-    super.dispose();
+    FailFastStreamManager.instance.disposeAll();    super.dispose();
   }
 
   // Uklonjeno ručno učitavanje putnika, koristi se stream
@@ -1599,9 +1572,7 @@ class _DanasScreenState extends State<DanasScreen> {
       final hasAddress = p.adresa != null && p.adresa!.isNotEmpty;
 
       return vremeMatch && gradMatch && danMatch && statusOk && hasAddress;
-    }).toList();
-    // Debug logging removed for production
-    if (filtriraniPutnici.isEmpty) {
+    }).toList();    if (filtriraniPutnici.isEmpty) {
       if (mounted)
         setState(() {
           _isLoading = false; // ✅ RESETUJ LOADING
@@ -1667,9 +1638,7 @@ class _DanasScreenState extends State<DanasScreen> {
           ),
         );
       }
-    } catch (e) {
-      // Debug logging removed for production
-      try {
+    } catch (e) {      try {
         // Fallback na osnovnu optimizaciju
         final fallbackOptimized = await RouteOptimizationService.optimizeRouteGeographically(
           filtriraniPutnici,
@@ -1697,9 +1666,7 @@ class _DanasScreenState extends State<DanasScreen> {
             ),
           );
         }
-      } catch (fallbackError) {
-        // Debug logging removed for production
-// Kompletno neuspešna optimizacija - resetuj sve
+      } catch (fallbackError) {// Kompletno neuspešna optimizacija - resetuj sve
         if (mounted)
           setState(() {
             _isLoading = false; // ✅ RESETUJ LOADING
@@ -1951,9 +1918,7 @@ class _DanasScreenState extends State<DanasScreen> {
                 // ✅ UVEK KORISTI SAMO DANAŠNJI DAN
                 final today = DateTime.now();
                 final dayStart = DateTime(today.year, today.month, today.day);
-                final dayEnd = DateTime(today.year, today.month, today.day, 23, 59, 59);
-                // Debug logging removed for production
-                return StreamBuilder<double>(
+                final dayEnd = DateTime(today.year, today.month, today.day, 23, 59, 59);                return StreamBuilder<double>(
                   stream: StatistikaService.streamPazarZaVozaca(
                     _currentDriver ?? '',
                     from: dayStart,
@@ -2145,7 +2110,7 @@ class _DanasScreenState extends State<DanasScreen> {
                                     border: Border.all(color: Colors.orange[300]!),
                                   ),
                                   child: StreamBuilder<double>(
-                                    stream: SimplifiedDailyCheckInService.streamTodayAmount(
+                                    stream: DailyCheckInService.streamTodayAmount(
                                       _currentDriver ?? '',
                                     ),
                                     builder: (context, sitanSnapshot) {
@@ -2409,33 +2374,15 @@ class _DanasScreenState extends State<DanasScreen> {
           isoDate: DateTime.now().toIso8601String().split('T')[0],
           // Ukloni filtriranje po gradu i vremenu za bottom nav - treba da prikaže sve putacije
         ),
-        builder: (context, snapshot) {
-          // Debug logging removed for production
-
-          // Debug logging removed for production
-
-          // Debug logging removed for production
-          if (snapshot.hasData) {
-            // Debug logging removed for production
-          }
+        builder: (context, snapshot) {          if (snapshot.hasData) {          }
 
           // PRIVREMENO: Uvek prikaži bottom nav bar za testiranje
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            // Debug logging removed for production
-          }
-          if (snapshot.hasError) {
-            // Debug logging removed for production
-          }
-          if (!snapshot.hasData) {
-            // Debug logging removed for production
-          }
+          if (snapshot.connectionState == ConnectionState.waiting) {          }
+          if (snapshot.hasError) {          }
+          if (!snapshot.hasData) {          }
 
           // Koristi prazan lista putnika ako nema podataka
-          final allPutnici = snapshot.hasData ? snapshot.data! : <Putnik>[];
-          // Debug logging removed for production
-
-          // Debug logging removed for production
-// Compute slot counts for today using shared helper to ensure parity with Home screen
+          final allPutnici = snapshot.hasData ? snapshot.data! : <Putnik>[];// Compute slot counts for today using shared helper to ensure parity with Home screen
           final todayIso = DateTime.now().toIso8601String().split('T')[0];
           final slotCountsToday = SlotUtils.computeSlotCountsForDate(allPutnici, todayIso);
           final Map<String, int> brojPutnikaBC = Map<String, int>.from(slotCountsToday['BC'] ?? {});
@@ -2474,9 +2421,7 @@ class _DanasScreenState extends State<DanasScreen> {
                           _currentDriver ?? 'Unknown',
                         );
                         await RealtimeService.instance.refreshNow();
-                      } catch (e) {
-                        // Debug logging removed for production
-                      } finally {
+                      } catch (e) {                      } finally {
                         if (mounted) {
                           if (mounted) setState(() => _resettingSlots.remove(key));
                         }
@@ -2508,9 +2453,7 @@ class _DanasScreenState extends State<DanasScreen> {
                           _currentDriver ?? 'Unknown',
                         );
                         await RealtimeService.instance.refreshNow();
-                      } catch (e) {
-                        // Debug logging removed for production
-                      } finally {
+                      } catch (e) {                      } finally {
                         if (mounted) {
                           if (mounted) setState(() => _resettingSlots.remove(key));
                         }
@@ -2573,9 +2516,7 @@ class _DanasScreenState extends State<DanasScreen> {
       } else {
         throw 'Could not launch Google Maps';
       }
-    } catch (e) {
-      // Debug logging removed for production
-      if (mounted) {
+    } catch (e) {      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('❌ Greška pri pokretanju navigacije: $e'),

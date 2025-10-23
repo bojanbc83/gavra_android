@@ -53,9 +53,7 @@ class TrafficAwareOptimizationService {
       );
 
       return optimizedRoute;
-    } catch (e) {
-      return route;
-    }
+    } catch (e) { return null; }
   }
 
   /// 📊 Dobij traffic matrix između svih lokacija
@@ -354,8 +352,4 @@ class TrafficAwareOptimizationService {
     return alerts;
   }
 }
-
-
-
-
 

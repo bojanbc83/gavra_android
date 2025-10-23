@@ -28,9 +28,7 @@ class SupabaseManager {
 
   /// Dobij optimizovani Supabase klijent
   static SupabaseClient get client {
-    if (_client == null) {
-      // Debug logging removed for production
-_client = Supabase.instance.client;
+    if (_client == null) {_client = Supabase.instance.client;
     }
     return _client!;
   }
@@ -40,20 +38,14 @@ _client = Supabase.instance.client;
     Future<T> Function(SupabaseClient) operation,
   ) async {
     // Čekaj da se oslobodi konekcija ako je dostignut limit
-    while (_activeConnections >= _maxConnections) {
-      // Debug logging removed for production
-await Future<void>.delayed(const Duration(milliseconds: 100));
+    while (_activeConnections >= _maxConnections) {await Future<void>.delayed(const Duration(milliseconds: 100));
     }
 
-    _activeConnections++;
-      // Debug logging removed for production
-try {
+    _activeConnections++;try {
       final result = await operation(client);
       return result;
     } finally {
-      _activeConnections--;
-      // Debug logging removed for production
-}
+      _activeConnections--;}
   }
 
   /// Optimizovano čitanje sa timeout-om
@@ -94,10 +86,7 @@ try {
 
         await query.timeout(timeout);
         return true;
-      } catch (e) {
-      // Debug logging removed for production
-return false;
-      }
+      } catch (e) { return null; }
     });
   }
 
@@ -118,10 +107,7 @@ return false;
 
         final response = await query.select().timeout(timeout);
         return List<Map<String, dynamic>>.from(response as List);
-      } catch (e) {
-      // Debug logging removed for production
-return [];
-      }
+      } catch (e) { return null; }
     });
   }
 
@@ -135,10 +121,7 @@ return [];
       try {
         final response = await client.from(table).insert(data).select().single().timeout(timeout);
         return response;
-      } catch (e) {
-      // Debug logging removed for production
-return null;
-      }
+      } catch (e) { return null; }
     });
   }
 
@@ -153,7 +136,5 @@ return null;
 
   /// Resetuj connection pool (za testiranje)
   static void resetConnectionPool() {
-    _activeConnections = 0;
-      // Debug logging removed for production
-}
+    _activeConnections = 0;}
 }

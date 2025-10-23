@@ -44,9 +44,7 @@ class AuthManager {
       } else {
         return AuthResult.error('Registracija neuspešna');
       }
-    } catch (e) {
-      return AuthResult.error('Greška pri registraciji: ${e.toString()}');
-    }
+    } catch (e) { return null; }
   }
 
   /// Prijava vozača sa email-om
@@ -74,9 +72,7 @@ class AuthManager {
       } else {
         return AuthResult.error('Prijava neuspešna');
       }
-    } catch (e) {
-      return AuthResult.error('Greška pri prijavi: ${e.toString()}');
-    }
+    } catch (e) { return null; }
   }
 
   /// 🚗 DRIVER SESSION MANAGEMENT

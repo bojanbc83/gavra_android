@@ -11,7 +11,6 @@ import 'advanced_caching_service.dart';
 /// 100% BESPLATNO - bolje od Google Analytics!
 class PerformanceAnalyticsService {
 
-
   // 📊 METRICS COLLECTORS
   static final Map<String, PerformanceMetric> _metrics = {};
   static final Map<String, List<DataPoint>> _timeSeries = {};
@@ -544,7 +543,6 @@ class PerformanceAnalyticsService {
           isHigherBetter ? value < threshold * 0.5 : value > threshold * 2;
 
       if (isAlert) {
-        
 
         // In production, send to monitoring service
       }
@@ -1014,8 +1012,4 @@ class MetricDetails {
   final Map<String, double> percentiles;
   final double trend;
 }
-
-
-
-
 

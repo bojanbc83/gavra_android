@@ -54,7 +54,3 @@ Map<String, dynamic> _mesecniPutnikToMap(MesecniPutnik p) {
   return p.toMap();
 }
 
-
-
-
-

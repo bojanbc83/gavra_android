@@ -20,9 +20,7 @@ class DatabaseOptimizer {
     final cacheKey = 'putnici_${datum ?? 'all'}_${grad ?? 'all'}_$includeMesecni';
 
     // Proveri cache prvo
-    if (_isCacheValid(cacheKey)) {
-      // Debug logging removed for production
-final cached = _queryCache[cacheKey];
+    if (_isCacheValid(cacheKey)) {final cached = _queryCache[cacheKey];
       if (cached is List) {
         return cached.cast<Map<String, dynamic>>();
       }
@@ -64,13 +62,8 @@ final cached = _queryCache[cacheKey];
 
       // Cache rezultate
       _queryCache[cacheKey] = allResults;
-      _cacheTimestamps[cacheKey] = DateTime.now();
-      // Debug logging removed for production
-return allResults;
-    } catch (e) {
-      // Debug logging removed for production
-return [];
-    }
+      _cacheTimestamps[cacheKey] = DateTime.now();return allResults;
+    } catch (e) { return null; }
   }
 
   /// 🚀 BULK OPERATIONS - za batch update-ove
@@ -90,13 +83,9 @@ return [];
           'update_data': updates,
           'target_table': tabela,
         },
-      );
-      // Debug logging removed for production
-_clearCacheForTable(tabela);
+      );_clearCacheForTable(tabela);
       return true;
-    } catch (e) {
-      // Debug logging removed for production
-// Fallback na individual updates
+    } catch (e) {// Fallback na individual updates
       return await _fallbackIndividualUpdates(ids, updates, tabela);
     }
   }
@@ -130,10 +119,7 @@ _clearCacheForTable(tabela);
       _cacheTimestamps[cacheKey] = DateTime.now();
 
       return results;
-    } catch (e) {
-      // Debug logging removed for production
-return {};
-    }
+    } catch (e) { return null; }
   }
 
   /// 🔍 OPTIMIZED SEARCH sa paginacijom
@@ -160,10 +146,7 @@ return {};
         'hasMore': results.length == limit,
         'totalCount': await _getSearchCount(query, searchTables),
       };
-    } catch (e) {
-      // Debug logging removed for production
-return {'results': <dynamic>[], 'hasMore': false, 'totalCount': 0};
-    }
+    } catch (e) { return null; }
   }
 
   /// 🎯 INDEX OPTIMIZATION RECOMMENDATIONS
@@ -212,9 +195,7 @@ return {'results': <dynamic>[], 'hasMore': false, 'totalCount': 0};
     } else {
       _queryCache.clear();
       _cacheTimestamps.clear();
-    }
-      // Debug logging removed for production
-}
+    }}
 
   /// 📈 CONNECTION POOL OPTIMIZATION
   static Future<void> optimizeConnectionPool() async {
@@ -230,11 +211,7 @@ return {'results': <dynamic>[], 'hasMore': false, 'totalCount': 0};
           'connection_timeout': 30,
           'idle_timeout': 300,
         },
-      );
-      // Debug logging removed for production
-} catch (e) {
-      // Debug logging removed for production
-}
+      );} catch (e) {}
   }
 
   /// PRIVATE HELPER METHODS
@@ -270,10 +247,7 @@ return {'results': <dynamic>[], 'hasMore': false, 'totalCount': 0};
         await _supabase.from(tabela).update(updates).eq('id', id);
       }
       return true;
-    } catch (e) {
-      // Debug logging removed for production
-return false;
-    }
+    } catch (e) { return null; }
   }
 
   static Future<int> _getSearchCount(String query, List<String> tables) async {
@@ -286,8 +260,6 @@ return false;
         },
       );
       return result;
-    } catch (e) {
-      return 0;
-    }
+    } catch (e) { return null; }
   }
 }

@@ -50,15 +50,9 @@ class PutovanjaIstorijaService {
             return b.vremePolaska.compareTo(a.vremePolaska);
           });
           return list;
-        } catch (e) {
-      // Debug logging removed for production
-return <PutovanjaIstorija>[];
-        }
+        } catch (e) { return null; }
       });
-    } catch (e) {
-      // Debug logging removed for production
-return Stream.value([]);
-    }
+    } catch (e) { return null; }
   }
 
   // 📱 OPTIMIZOVAN REALTIME STREAM putovanja za određeni datum
@@ -77,15 +71,9 @@ return Stream.value([]);
           .map((data) {
             try {
               return data.map((json) => PutovanjaIstorija.fromMap(json)).toList();
-            } catch (e) {
-      // Debug logging removed for production
-return <PutovanjaIstorija>[];
-            }
+            } catch (e) { return null; }
           });
-    } catch (e) {
-      // Debug logging removed for production
-return Stream.value([]);
-    }
+    } catch (e) { return null; }
   }
 
   // 📱 REALTIME STREAM putovanja za mesečnog putnika
@@ -101,15 +89,9 @@ return Stream.value([]);
               .toList();
           list.sort((a, b) => b.datum.compareTo(a.datum));
           return list;
-        } catch (e) {
-      // Debug logging removed for production
-return <PutovanjaIstorija>[];
-        }
+        } catch (e) { return null; }
       });
-    } catch (e) {
-      // Debug logging removed for production
-return Stream.value([]);
-    }
+    } catch (e) { return null; }
   }
 
   // 🔍 DOBIJ sva putovanja (with caching)
@@ -121,9 +103,7 @@ return Stream.value([]);
         cacheKey,
         maxAge: _cacheExpiry,
       );
-      if (cached != null) {
-      // Debug logging removed for production
-return cached
+      if (cached != null) {return cached
             .map(
               (json) => PutovanjaIstorija.fromMap(json as Map<String, dynamic>),
             )
@@ -148,10 +128,7 @@ return cached
         return dataList.map<PutovanjaIstorija>((json) => PutovanjaIstorija.fromMap(json)).toList();
       }
       return [];
-    } catch (e) {
-      // Debug logging removed for production
-return [];
-    }
+    } catch (e) { return null; }
   }
 
   // 🔍 DOBIJ putovanja za određeni datum (with caching)
@@ -167,9 +144,7 @@ return [];
         cacheKey,
         maxAge: _cacheExpiry,
       );
-      if (cached != null) {
-      // Debug logging removed for production
-return cached
+      if (cached != null) {return cached
             .map(
               (json) => PutovanjaIstorija.fromMap(json as Map<String, dynamic>),
             )
@@ -190,10 +165,7 @@ return cached
         return dataList.map<PutovanjaIstorija>((json) => PutovanjaIstorija.fromMap(json)).toList();
       }
       return [];
-    } catch (e) {
-      // Debug logging removed for production
-return [];
-    }
+    } catch (e) { return null; }
   }
 
   // 🔍 DOBIJ putovanja za vremenski opseg
@@ -224,10 +196,7 @@ return [];
             .toList();
       }
       return [];
-    } catch (e) {
-      // Debug logging removed for production
-return [];
-    }
+    } catch (e) { return null; }
   }
 
   // 🔍 DOBIJ putovanja po ID
@@ -239,10 +208,7 @@ return [];
 
       if (response == null) return null;
       return PutovanjaIstorija.fromMap(response);
-    } catch (e) {
-      // Debug logging removed for production
-return null;
-    }
+    } catch (e) { return null; }
   }
 
   // 🔍 DOBIJ putovanja mesečnog putnika
@@ -267,10 +233,7 @@ return null;
             .toList();
       }
       return [];
-    } catch (e) {
-      // Debug logging removed for production
-return [];
-    }
+    } catch (e) { return null; }
   }
 
   // ➕ DODAJ novo putovanje (with cache invalidation)
@@ -280,9 +243,7 @@ return [];
     try {
       // Validate before adding
       final validation = putovanje.validateFull();
-      if (validation.isNotEmpty) {
-      // Debug logging removed for production
-return null;
+      if (validation.isNotEmpty) {return null;
       }
 
       final response = await SupabaseSafe.run(
@@ -297,13 +258,8 @@ return null;
       await _clearCacheForDate(result.datum);
       if (result.mesecniPutnikId != null) {
         await _clearCacheForMesecni(result.mesecniPutnikId!);
-      }
-      // Debug logging removed for production
-return result;
-    } catch (e) {
-      // Debug logging removed for production
-return null;
-    }
+      }return result;
+    } catch (e) { return null; }
   }
 
   // ➕ DODAJ novo putovanje za mesečnog putnika
@@ -339,10 +295,7 @@ return null;
         await _clearCacheForMesecni(mesecniPutnik.id);
       }
       return result;
-    } catch (e) {
-      // Debug logging removed for production
-return null;
-    }
+    } catch (e) { return null; }
   }
 
   // ➕ DODAJ novo putovanje za dnevnog putnika
@@ -377,10 +330,7 @@ return null;
         await _clearCacheForDate(datum);
       }
       return result;
-    } catch (e) {
-      // Debug logging removed for production
-return null;
-    }
+    } catch (e) { return null; }
   }
 
   // ✏️ AŽURIRAJ putovanje (with cache invalidation)
@@ -390,9 +340,7 @@ return null;
     try {
       // Validate before updating
       final validation = putovanje.validateFull();
-      if (validation.isNotEmpty) {
-      // Debug logging removed for production
-return null;
+      if (validation.isNotEmpty) {return null;
       }
 
       final response = await SupabaseSafe.run(
@@ -407,13 +355,8 @@ return null;
       await _clearCacheForDate(result.datum);
       if (result.mesecniPutnikId != null) {
         await _clearCacheForMesecni(result.mesecniPutnikId!);
-      }
-      // Debug logging removed for production
-return result;
-    } catch (e) {
-      // Debug logging removed for production
-return null;
-    }
+      }return result;
+    } catch (e) { return null; }
   }
 
   // ✏️ AŽURIRAJ status putovanja
@@ -442,13 +385,8 @@ return null;
       await SupabaseSafe.run(
         () => _supabase.from('putovanja_istorija').update(updateData).eq('id', putovanjeId),
         fallback: <dynamic>[],
-      );
-      // Debug logging removed for production
-return true;
-    } catch (e) {
-      // Debug logging removed for production
-return false;
-    }
+      );return true;
+    } catch (e) { return null; }
   }
 
   // 🗑️ OBRIŠI putovanje (with cache invalidation)
@@ -468,13 +406,8 @@ return false;
         if (putovanje.mesecniPutnikId != null) {
           await _clearCacheForMesecni(putovanje.mesecniPutnikId!);
         }
-      }
-      // Debug logging removed for production
-return true;
-    } catch (e) {
-      // Debug logging removed for production
-return false;
-    }
+      }return true;
+    } catch (e) { return null; }
   }
 
   // 📊 STATISTIKE - ukupan broj putovanja
@@ -507,10 +440,7 @@ return false;
 
       final list = response is List ? response : <dynamic>[];
       return list.length;
-    } catch (e) {
-      // Debug logging removed for production
-return 0;
-    }
+    } catch (e) { return null; }
   }
 
   // 📊 STATISTIKE - ukupna zarada
@@ -548,10 +478,7 @@ return 0;
       }
 
       return ukupno;
-    } catch (e) {
-      // Debug logging removed for production
-return 0.0;
-    }
+    } catch (e) { return null; }
   }
 
   // 🔍 NAPREDNA PRETRAGA
@@ -571,9 +498,7 @@ return 0.0;
       if (query != null && query.length > 2) {
         cacheKey = _getSearchCacheKey(query);
         final cached = await CacheService.getFromMemory<List<PutovanjaIstorija>>(cacheKey);
-        if (cached != null) {
-      // Debug logging removed for production
-return cached;
+        if (cached != null) {return cached;
         }
       }
 
@@ -636,10 +561,7 @@ return cached;
         return results;
       }
       return [];
-    } catch (e) {
-      // Debug logging removed for production
-return [];
-    }
+    } catch (e) { return null; }
   }
 
   // 📦 BATCH OPERACIJE - dodavanje više putovanja odjednom
@@ -650,9 +572,7 @@ return [];
       // Validate all first
       for (final putovanje in putovanja) {
         final validation = putovanje.validateFull();
-        if (validation.isNotEmpty) {
-      // Debug logging removed for production
-return [];
+        if (validation.isNotEmpty) {return [];
         }
       }
 
@@ -681,15 +601,10 @@ return [];
             putovanja.map((p) => p.mesecniPutnikId).where((id) => id != null).cast<String>().toSet();
         for (final mesecniId in affectedMesecni) {
           await _clearCacheForMesecni(mesecniId);
-        }
-      // Debug logging removed for production
-return results;
+        }return results;
       }
       return [];
-    } catch (e) {
-      // Debug logging removed for production
-return [];
-    }
+    } catch (e) { return null; }
   }
 
   // 📦 BATCH OPERACIJE - ažuriranje više putovanja odjednom
@@ -704,13 +619,8 @@ return [];
         if (result != null) {
           results.add(result);
         }
-      }
-      // Debug logging removed for production
-return results;
-    } catch (e) {
-      // Debug logging removed for production
-return [];
-    }
+      }return results;
+    } catch (e) { return null; }
   }
 
   // 📦 BATCH OPERACIJE - brisanje više putovanja odjednom
@@ -739,13 +649,8 @@ return [];
       final affectedMesecni = putovanja.map((p) => p.mesecniPutnikId).where((id) => id != null).cast<String>().toSet();
       for (final mesecniId in affectedMesecni) {
         await _clearCacheForMesecni(mesecniId);
-      }
-      // Debug logging removed for production
-return true;
-    } catch (e) {
-      // Debug logging removed for production
-return false;
-    }
+      }return true;
+    } catch (e) { return null; }
   }
 
   // 📊 NAPREDNE STATISTIKE
@@ -798,10 +703,7 @@ return false;
         'period_start': odDatuma?.toIso8601String().split('T')[0],
         'period_end': doDatuma?.toIso8601String().split('T')[0],
       };
-    } catch (e) {
-      // Debug logging removed for production
-return {};
-    }
+    } catch (e) { return null; }
   }
 
   // 📄 EXPORT funkcionalnost
@@ -846,13 +748,8 @@ return {};
         );
       }
 
-      final csvContent = csvLines.join('\n');
-      // Debug logging removed for production
-return csvContent;
-    } catch (e) {
-      // Debug logging removed for production
-return '';
-    }
+      final csvContent = csvLines.join('\n');return csvContent;
+    } catch (e) { return null; }
   }
 
   // 🧹 MAINTENANCE funkcije
@@ -867,11 +764,7 @@ return '';
         () => _supabase.from('putovanja_istorija').delete().lt('datum_putovanja', cutoffDateStr),
       );
 
-      await _clearCache();
-      // Debug logging removed for production
-} catch (e) {
-      // Debug logging removed for production
-}
+      await _clearCache();} catch (e) {}
   }
 
   // 📊 CACHE STATISTIKE
@@ -879,8 +772,4 @@ return '';
     return CacheService.getStats();
   }
 }
-
-
-
-
 

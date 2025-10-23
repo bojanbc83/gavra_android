@@ -226,7 +226,3 @@ class PerformanceCacheService {
   }
 }
 
-
-
-
-

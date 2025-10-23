@@ -92,9 +92,7 @@ class RouteOptimizationService {
             desiredAccuracy: LocationAccuracy.high,
             timeLimit: const Duration(seconds: 5),
           );
-        } catch (e) {
-          return _fallbackToOriginalOrder(aktivniPutnici);
-        }
+        } catch (e) { return null; }
       }
 
       if (startLocation == null) {
@@ -122,9 +120,7 @@ class RouteOptimizationService {
       );
 
       return optimizedRoute;
-    } catch (e) {
-      return _fallbackToOriginalOrder(aktivniPutnici);
-    }
+    } catch (e) { return null; }
   }
 
   /// 🌍 Geocoding uklonjen - koristi se lokalna optimizacija
@@ -419,8 +415,4 @@ class RouteOptimizationService {
     return !imaAktivnihNaKraju; // True ako otkazani NISU između aktivnih
   }
 }
-
-
-
-
 

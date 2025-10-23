@@ -11,10 +11,7 @@ import 'statistika_service.dart';
 
 class DailyCheckInService {
   static const String _checkInPrefix = 'daily_checkin_';
-  // Stream controller za real-time ažuriranje kocke
-  static final StreamController<double> _sitanNovacController = StreamController<double>.broadcast();
-
-  /// Stream za real-time ažuriranje sitnog novca u UI
+  // Stream controller za real-time ažuriranje kocke  /// Stream za real-time ažuriranje sitnog novca u UI
   static Stream<double> streamTodayAmount(String vozac) {
     // ✅ FIX: Koristi direktan SimplifiedKusurService stream za realtime ažuriranje
     return SimplifiedKusurService.streamKusurForVozac(vozac).map((kusurFromBaza) {
@@ -233,9 +230,7 @@ class DailyCheckInService {
       } else {
         rethrow; // Proslijedi dalju grešku
       }
-    } catch (e) {
-      rethrow;
-    }
+    } catch (e) { rethrow; }
   }
 
   /// Kreiraj tabelu daily_checkins ako ne postoji
@@ -289,21 +284,21 @@ class DailyCheckInService {
             updated_at TIMESTAMPTZ DEFAULT now(),
             UNIQUE(vozac, datum)
           );
-          
+
           CREATE INDEX IF NOT EXISTS idx_daily_checkins_vozac ON public.daily_checkins(vozac);
           CREATE INDEX IF NOT EXISTS idx_daily_checkins_datum ON public.daily_checkins(datum);
-          
+
           ALTER TABLE public.daily_checkins ENABLE ROW LEVEL SECURITY;
-          
+
           DROP POLICY IF EXISTS "daily_checkins_read_policy" ON public.daily_checkins;
           CREATE POLICY "daily_checkins_read_policy" ON public.daily_checkins FOR SELECT TO authenticated USING (true);
-          
+
           DROP POLICY IF EXISTS "daily_checkins_insert_policy" ON public.daily_checkins;
           CREATE POLICY "daily_checkins_insert_policy" ON public.daily_checkins FOR INSERT TO authenticated WITH CHECK (true);
-          
+
           DROP POLICY IF EXISTS "daily_checkins_update_policy" ON public.daily_checkins;
           CREATE POLICY "daily_checkins_update_policy" ON public.daily_checkins FOR UPDATE TO authenticated USING (true);
-          
+
           GRANT SELECT, INSERT, UPDATE, DELETE ON public.daily_checkins TO authenticated;
         ''';
 
@@ -318,9 +313,7 @@ class DailyCheckInService {
       }
 
       return false; // Sve je neuspešno
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// Dohvati istoriju check-in-ova za vozača
@@ -512,9 +505,7 @@ class DailyCheckInService {
       // 7. SAČUVAJ AUTOMATSKI POPIS
       await saveDailyReport(vozac, targetDate, automatskiPopis);
       return automatskiPopis;
-    } catch (e) {
-      return null;
-    }
+    } catch (e) { return null; }
   }
 
   /// 📊 HELPER: Sačuvaj popis u Supabase

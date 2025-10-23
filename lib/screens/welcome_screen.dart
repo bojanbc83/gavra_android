@@ -9,7 +9,7 @@ import '../services/local_notification_service.dart';
 import '../services/permission_service.dart';
 import '../services/realtime_notification_service.dart';
 // import '../main.dart' show globalThemeRefresher; // Removed - not used in simple version
-import '../services/simplified_daily_checkin.dart';
+import '../services/daily_checkin_service.dart';
 import '../utils/vozac_boja.dart';
 import 'daily_checkin_screen.dart';
 import 'email_login_screen.dart';
@@ -74,23 +74,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
       if (defaultTargetPlatform == TargetPlatform.android) {
         final status = await Permission.notification.status;
         if (!status.isGranted) {
-          await Permission.notification.request();
-          // Debug logging removed for production
-        } else {
-          // Debug logging removed for production
-        }
+          await Permission.notification.request();        } else {        }
       }
 
       // Also request Firebase/iOS style permissions via RealtimeNotificationService
       try {
-        await RealtimeNotificationService.requestNotificationPermissions();
-        // Debug logging removed for production
-      } catch (e) {
-        // Debug logging removed for production
-      }
-    } catch (e) {
-      // Debug logging removed for production
-    }
+        await RealtimeNotificationService.requestNotificationPermissions();      } catch (e) {      }
+    } catch (e) {    }
   }
 
   // 🔄 AUTO-LOGIN BEZ PESME - Proveri da li je vozač već logovan
@@ -105,32 +95,26 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
     final savedDriver = await AuthManager.getCurrentDriver();
 
     // Ako je neko ulogovan u Supabase ALI nema saved driver, sinhronizuj
-    if (driverFromSupabase != null && (savedDriver == null || savedDriver != driverFromSupabase)) {
-      // Debug logging removed for production
-      await AuthManager.setCurrentDriver(driverFromSupabase);
+    if (driverFromSupabase != null && (savedDriver == null || savedDriver != driverFromSupabase)) {      await AuthManager.setCurrentDriver(driverFromSupabase);
     }
 
     // Koristi driver iz Supabase ako postoji, inače iz local storage
     final activeDriver = driverFromSupabase ?? savedDriver;
 
     if (activeDriver != null && activeDriver.isNotEmpty) {
-      // Vozač je već logovan - PROVERI DAILY CHECK-IN
-      // Debug logging removed for production
-// 🎨 Theme refresh removed in simple version
+      // Vozač je već logovan - PROVERI DAILY CHECK-IN// 🎨 Theme refresh removed in simple version
 
       // 🔐 ZAHTEVAJ DOZVOLE PRI PRVOM POKRETANJU (auto-login)
       // ignore: use_build_context_synchronously
       await PermissionService.requestAllPermissionsOnFirstLaunch(context);
 
       // 📅 PROVERI DA LI JE VOZAČ URADIO DAILY CHECK-IN
-      final hasCheckedIn = await SimplifiedDailyCheckInService.hasCheckedInToday(activeDriver);
+      final hasCheckedIn = await DailyCheckInService.hasCheckedInToday(activeDriver);
 
       if (!mounted) return;
 
       if (!hasCheckedIn) {
-        // POŠALJI NA DAILY CHECK-IN SCREEN
-        // Debug logging removed for production
-        Navigator.pushReplacement(
+        // POŠALJI NA DAILY CHECK-IN SCREEN        Navigator.pushReplacement(
           context,
           MaterialPageRoute<void>(
             builder: (context) => DailyCheckInScreen(
@@ -148,9 +132,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
           ),
         );
       } else {
-        // DIREKTNO NA HOME SCREEN
-        // Debug logging removed for production
-        Navigator.pushReplacement(
+        // DIREKTNO NA HOME SCREEN        Navigator.pushReplacement(
           context,
           MaterialPageRoute<void>(builder: (context) => const HomeScreen()),
         );
@@ -216,15 +198,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
         'Dozvoljen je samo login za: ${VozacBoja.validDrivers.join(", ")}',
       );
       return;
-    }
-    // Debug logging removed for production
-// PROVERI DA LI JE VOZAČ VEĆ REGISTROVAN SA EMAIL-OM
+    }// PROVERI DA LI JE VOZAČ VEĆ REGISTROVAN SA EMAIL-OM
     final isRegistered = await DriverRegistrationService.isDriverRegistered(driverName);
 
     if (isRegistered) {
-      // VOZAČ JE REGISTROVAN - IDI NA EMAIL LOGIN
-      // Debug logging removed for production
-      if (!mounted) return;
+      // VOZAČ JE REGISTROVAN - IDI NA EMAIL LOGIN      if (!mounted) return;
       Navigator.push(
         context,
         MaterialPageRoute<void>(
@@ -232,9 +210,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
         ),
       );
     } else {
-      // VOZAČ NIJE REGISTROVAN - IDI NA EMAIL REGISTRACIJU
-      // Debug logging removed for production
-      if (!mounted) return;
+      // VOZAČ NIJE REGISTROVAN - IDI NA EMAIL REGISTRACIJU      if (!mounted) return;
       final result = await Navigator.push<bool>(
         context,
         MaterialPageRoute<bool>(
@@ -245,9 +221,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
       );
 
       // Ako je registracija uspešna, automatski idi na login
-      if (result == true) {
-        // Debug logging removed for production
-        if (!mounted) return;
+      if (result == true) {        if (!mounted) return;
         Navigator.push(
           context,
           MaterialPageRoute<void>(

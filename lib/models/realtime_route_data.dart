@@ -33,9 +33,7 @@ class RealtimeRouteData {
       return currentRoute.firstWhere(
         (p) => p.vremePokupljenja == null && p.status != 'otkazan',
       );
-    } catch (e) {
-      return null;
-    }
+    } catch (e) { return null; }
   }
 
   /// 📊 Procenti završetka rute
@@ -101,8 +99,4 @@ class TrafficAlert {
     }
   }
 }
-
-
-
-
 

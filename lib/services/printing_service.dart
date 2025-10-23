@@ -21,9 +21,7 @@ class PrintingService {
     String selectedGrad,
     BuildContext context,
   ) async {
-    try {
-      // Debug logging removed for production
-// ✅ KORISTI ISTI STREAM kao home_screen za tačne podatke
+    try {// ✅ KORISTI ISTI STREAM kao home_screen za tačne podatke
       // Try to compute isoDate from selectedDay (if present) - otherwise leave null
       String? isoDate;
       try {
@@ -161,11 +159,7 @@ class PrintingService {
         onLayout: (PdfPageFormat format) async => pdf,
         name:
             'Spisak_putnika_${selectedDay}_${selectedVreme}_${selectedGrad}_${DateFormat('dd_MM_yyyy').format(DateTime.now())}.pdf',
-      );
-      // Debug logging removed for production
-} catch (e) {
-      // Debug logging removed for production
-if (context.mounted) {
+      );} catch (e) {if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('❌ Greška pri štampanju: $e'),
@@ -488,8 +482,4 @@ if (context.mounted) {
     );
   }
 }
-
-
-
-
 

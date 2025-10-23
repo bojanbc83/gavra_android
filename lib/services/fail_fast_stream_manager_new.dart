@@ -28,7 +28,7 @@ class FailFastStreamManager {
   /// 🚀 REGISTER CRITICAL STREAM (must not fail)
   void registerCriticalStream(String streamName) {
     _criticalStreams.add(streamName);
-    
+
   }
 
   /// 📡 ADD STREAM SUBSCRIPTION WITH FAIL-FAST
@@ -53,7 +53,6 @@ class FailFastStreamManager {
         _errorCounts[streamName] = 0;
         onData(data);
 
-        
       },
       onError: (Object error, StackTrace stackTrace) {
         _handleStreamError(streamName, error, stackTrace);
@@ -65,7 +64,6 @@ class FailFastStreamManager {
         _cleanupSubscription(streamName);
         onDone?.call();
 
-        
       },
     );
 
@@ -73,7 +71,6 @@ class FailFastStreamManager {
     _subscriptionStartTimes[streamName] = DateTime.now();
     _errorCounts[streamName] = 0;
 
-    
   }
 
   /// 🚨 HANDLE STREAM ERROR WITH FAIL-FAST LOGIC
@@ -85,12 +82,9 @@ class FailFastStreamManager {
     _errorCounts[streamName] = (_errorCounts[streamName] ?? 0) + 1;
     final errorCount = _errorCounts[streamName]!;
 
-    
-
     // FAIL-FAST for critical streams
     if (_criticalStreams.contains(streamName) &&
         errorCount >= maxErrorsBeforeFail) {
-      
 
       // Cancel all subscriptions and terminate app
       _emergencyShutdown(streamName, error, stackTrace);
@@ -99,7 +93,7 @@ class FailFastStreamManager {
 
     // Regular streams - cancel after max errors
     if (errorCount >= maxErrorsBeforeFail) {
-      
+
       cancelSubscription(streamName);
     }
   }
@@ -114,7 +108,6 @@ class FailFastStreamManager {
     disposeAll();
 
     // Log critical failure
-    
 
     // In production, this could trigger app restart or emergency mode
     // For now, we just clean up everything
@@ -152,7 +145,7 @@ class FailFastStreamManager {
     }
 
     for (final streamName in staleStreams) {
-      
+
       cancelSubscription(streamName);
     }
   }
@@ -183,7 +176,6 @@ class FailFastStreamManager {
 
   /// 🧹 DISPOSE ALL SUBSCRIPTIONS
   void disposeAll() {
-    
 
     for (final subscription in _activeSubscriptions.values) {
       subscription.cancel();
@@ -194,7 +186,6 @@ class FailFastStreamManager {
     _errorCounts.clear();
     _criticalStreams.clear();
 
-    
   }
 
   /// 🔄 RESET ERROR COUNTS (called periodically)
@@ -229,8 +220,4 @@ class FailFastStreamManager {
     return true;
   }
 }
-
-
-
-
 

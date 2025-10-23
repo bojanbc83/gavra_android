@@ -157,7 +157,3 @@ class GPSLokacijaService {
   }
 }
 
-
-
-
-

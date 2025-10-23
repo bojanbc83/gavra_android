@@ -123,7 +123,3 @@ class IstorijaHaplataWidget extends StatelessWidget {
   }
 }
 
-
-
-
-

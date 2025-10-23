@@ -18,7 +18,7 @@ class GeocodingService {
   ) async {
     // 🚫 PROVERI DA LI JE GRAD DOZVOLJEN (samo Bela Crkva i Vršac)
     if (_isCityBlocked(grad)) {
-      
+
       return null;
     }
 
@@ -32,7 +32,7 @@ class GeocodingService {
     if (memoryCached != null) {
       await GeocodingStatsService.incrementCacheHits();
       await GeocodingStatsService.addPopularLocation('${grad}_$adresa');
-      
+
       return memoryCached;
     }
 
@@ -149,9 +149,7 @@ class GeocodingService {
     try {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getKeys().where((key) => key.startsWith(_cachePrefix)).length;
-    } catch (e) {
-      return 0;
-    }
+    } catch (e) { return null; }
   }
 
   /// 🚫 PROVERI DA LI JE GRAD VAN DOZVOLJENE RELACIJE
@@ -172,8 +170,4 @@ class GeocodingService {
     );
   }
 }
-
-
-
-
 

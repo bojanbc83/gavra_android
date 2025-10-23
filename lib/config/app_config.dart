@@ -11,7 +11,3 @@ class AppConfig {
   static const String supabaseAnonKey = 'your-supabase-anon-key';
 }
 
-
-
-
-

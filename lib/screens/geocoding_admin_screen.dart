@@ -60,9 +60,7 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
     // 🧹 SEARCH CLEANUP
     _searchSubject.close();
     _filterSubject.close();
-    _searchController.dispose();
-    // Debug logging removed for production
-    super.dispose();
+    _searchController.dispose();    super.dispose();
   }
 
   // 🔄 V3.0 REALTIME MONITORING SETUP
@@ -83,9 +81,7 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
       });
     }
 
-    _initializeRealtimeStream();
-    // Debug logging removed for production
-  }
+    _initializeRealtimeStream();  }
 
   // 💓 HEARTBEAT MONITORING FUNCTIONS
   void _registerStreamHeartbeat(String streamName) {
@@ -100,9 +96,7 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
       final timeSinceLastHeartbeat = now.difference(entry.value);
       if (timeSinceLastHeartbeat.inSeconds > 90) {
         // 90 seconds timeout for admin stats
-        isHealthy = false;
-        // Debug logging removed for production
-        break;
+        isHealthy = false;        break;
       }
     }
 
@@ -120,9 +114,7 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
       _realtimeHealthStatus.value = 'stream_error';
     } else if (isHealthy) {
       _realtimeHealthStatus.value = 'healthy';
-    }
-    // Debug logging removed for production
-  }
+    }  }
 
   // 🚀 ENHANCED REALTIME STREAM INITIALIZATION
   void _initializeRealtimeStream() {
@@ -155,10 +147,7 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
     if (mounted)
       setState(() {
         // Trigger rebuild with filtered data
-      });
-
-    // Debug logging removed for production
-  }
+      });  }
 
   void _loadInitialData() {
     _loadData();
@@ -182,9 +171,7 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
           });
 
         // Sort locations
-        _sortLocations();
-        // Debug logging removed for production
-      }
+        _sortLocations();      }
     } catch (e) {
       if (mounted) {
         _geocodingStreamHealthy.value = false;
@@ -192,13 +179,9 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
           setState(() {
             _isLoading = false;
             _errorMessage = e.toString();
-          });
-        // Debug logging removed for production
-// 🔄 AUTO RETRY after 10 seconds for admin screens
+          });// 🔄 AUTO RETRY after 10 seconds for admin screens
         Timer(const Duration(seconds: 10), () {
-          if (mounted && _autoRefreshEnabled) {
-            // Debug logging removed for production
-            _loadData();
+          if (mounted && _autoRefreshEnabled) {            _loadData();
           }
         });
       }
@@ -412,9 +395,7 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
               if (mounted)
                 setState(() {
                   _autoRefreshEnabled = !_autoRefreshEnabled;
-                });
-              // Debug logging removed for production
-            },
+                });            },
             icon: Icon(
               _autoRefreshEnabled ? Icons.sync : Icons.sync_disabled,
               color: _autoRefreshEnabled ? Colors.white : Colors.white54,
@@ -552,9 +533,7 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
         if (mounted)
           setState(() {
             _selectedFilter = value;
-          });
-        // Debug logging removed for production
-      },
+          });      },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
@@ -585,9 +564,7 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
           setState(() {
             _sortBy = value;
             _sortLocations();
-          });
-        // Debug logging removed for production
-      },
+          });      },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
@@ -830,9 +807,7 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
         return '${dateTime.day}.${dateTime.month}.${dateTime.year} ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
       }
       return 'N/A';
-    } catch (e) {
-      return 'N/A';
-    }
+    } catch (e) { return null; }
   }
 
   // ❌ ERROR WIDGET

@@ -193,7 +193,3 @@ enum HapticType {
   error,
 }
 
-
-
-
-

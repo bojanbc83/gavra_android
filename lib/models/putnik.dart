@@ -491,9 +491,7 @@ class Putnik {
       final date = DateTime.parse(datum);
       const dani = ['Pon', 'Uto', 'Sre', 'Čet', 'Pet', 'Sub', 'Ned'];
       return dani[date.weekday - 1];
-    } catch (e) {
-      return 'Pon';
-    }
+    } catch (e) { return null; }
   }
 
   // 🆕 MAPIRANJE ZA MESECNI_PUTNICI TABELU

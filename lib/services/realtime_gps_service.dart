@@ -47,9 +47,7 @@ class RealtimeGpsService {
         _speedController.add(speedKmh);
       });
 
-    } catch (e) {
-      rethrow;
-    }
+    } catch (e) { rethrow; }
   }
 
   /// 🛑 STOP GPS TRACKING
@@ -64,9 +62,7 @@ class RealtimeGpsService {
       return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
-    } catch (e) {
-      rethrow;
-    }
+    } catch (e) { rethrow; }
   }
 
   /// 📏 CALCULATE DISTANCE TO DESTINATION
@@ -97,8 +93,4 @@ class RealtimeGpsService {
     _speedController.close();
   }
 }
-
-
-
-
 

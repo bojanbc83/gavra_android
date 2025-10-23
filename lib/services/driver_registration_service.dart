@@ -1,7 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-
 class DriverRegistrationService {
   static const String _registeredDriversKey = 'registered_drivers';
   static const String _driverEmailKey = 'driver_email_';
@@ -21,9 +20,7 @@ class DriverRegistrationService {
       final registeredDrivers =
           prefs.getStringList(_registeredDriversKey) ?? [];
       return registeredDrivers.contains(driverName);
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// Registruj vozača lokalno (nakon uspešne email registracije)
@@ -46,9 +43,7 @@ class DriverRegistrationService {
       await prefs.setString('$_driverEmailKey$driverName', email);
 
       return true;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// Dohvati email vozača
@@ -56,9 +51,7 @@ class DriverRegistrationService {
     try {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getString('$_driverEmailKey$driverName');
-    } catch (e) {
-      return null;
-    }
+    } catch (e) { return null; }
   }
 
   /// Reset registracije vozača (za testing/debugging)
@@ -76,9 +69,7 @@ class DriverRegistrationService {
       await prefs.remove('$_driverEmailKey$driverName');
 
       return true;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// Dohvati listu svih registrovanih vozača
@@ -86,9 +77,7 @@ class DriverRegistrationService {
     try {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getStringList(_registeredDriversKey) ?? [];
-    } catch (e) {
-      return [];
-    }
+    } catch (e) { return null; }
   }
 
   /// Proveri da li je vozač trenutno ulogovan u Supabase
@@ -100,9 +89,7 @@ class DriverRegistrationService {
         return driverName;
       }
       return null;
-    } catch (e) {
-      return null;
-    }
+    } catch (e) { return null; }
   }
 
   /// Odjavi vozača iz Supabase
@@ -110,13 +97,7 @@ class DriverRegistrationService {
     try {
       await Supabase.instance.client.auth.signOut();
       return true;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 }
-
-
-
-
 

@@ -3,26 +3,26 @@ MIGRATION HELPER - Kako zameniti postojeće StatistikaWidget-e
 
 1. PRONAĐI postojeće widget-e koji koriste StatistikaService
 2. ZAMENI import:
-   
+
    STARO:
    import 'package:gavra_android/services/statistika_service.dart';
-   
+
    NOVO:
    import 'package:gavra_android/services/clean_statistika_service.dart';
    // ili koristi originalni optimizovani
    import 'package:gavra_android/services/statistika_service.dart';
 
 3. AŽURIRAJ pozive:
-   
+
    STARO:
    StatistikaService.dohvatiUkupneStatistike()
-   
+
    NOVO:
    CleanStatistikaService.dohvatiUkupneStatistike()
    // ili koristi originalni optimizovani StatistikaService
 
 4. DODAJ no_duplicates proveru:
-   
+
    final stats = await CleanStatistikaService.dohvatiUkupneStatistike();
    if (stats['no_duplicates'] == true) {
      // Podaci su čisti

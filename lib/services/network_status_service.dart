@@ -3,10 +3,7 @@ import 'dart:io';
 
 /// 📡 NETWORK STATUS SERVICE
 /// Jednostavan network monitoring bez dodatnih paketa
-class NetworkStatusService {
-  static final StreamController<bool> _statusController = StreamController<bool>.broadcast();
-
-  static bool _isOnline = true;
+class NetworkStatusService {  static bool _isOnline = true;
   static Timer? _checkTimer;
 
   /// 📡 STREAM NETWORK STATUS
@@ -53,8 +50,4 @@ class NetworkStatusService {
     _statusController.close();
   }
 }
-
-
-
-
 

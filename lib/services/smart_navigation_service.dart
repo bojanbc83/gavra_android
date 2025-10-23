@@ -72,9 +72,7 @@ class SmartNavigationService {
       } else {
         return NavigationResult.error('❌ Greška pri otvaranju Google Maps');
       }
-    } catch (e) {
-      return NavigationResult.error('❌ Greška pri navigaciji: $e');
-    }
+    } catch (e) { return null; }
   }
 
   /// 📍 Dobij trenutnu GPS poziciju vozača
@@ -325,9 +323,7 @@ class SmartNavigationService {
       } else {
         throw Exception('Ne mogu da otvorim Google Maps');
       }
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// 🛠️ Poboljšaj adresu za geocoding
@@ -417,8 +413,4 @@ class NavigationResult {
   final List<Putnik>? optimizedPutnici;
   final double? totalDistance;
 }
-
-
-
-
 

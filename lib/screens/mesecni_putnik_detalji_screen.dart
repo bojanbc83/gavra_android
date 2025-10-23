@@ -121,9 +121,7 @@ class _MesecniPutnikDetaljiScreenState extends State<MesecniPutnikDetaljiScreen>
 
       // 🔄 V3.0: Mark data stream as healthy after successful load
       _dataStreamHealthy.value = true;
-    } catch (e) {
-      // Debug logging removed for production
-if (!mounted) return; // 🔄 RESILIENCE: Check before updating state
+    } catch (e) {if (!mounted) return; // 🔄 RESILIENCE: Check before updating state
 
       // 🔄 V3.0: Mark data stream as unhealthy on error
       _dataStreamHealthy.value = false;
@@ -1106,8 +1104,4 @@ if (!mounted) return; // 🔄 RESILIENCE: Check before updating state
     return '${DateFormat('dd.MM').format(pocetak)} - ${DateFormat('dd.MM.yyyy').format(kraj)}';
   }
 }
-
-
-
-
 

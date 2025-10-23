@@ -57,9 +57,7 @@ class FirebaseService {
     try {
       final messaging = FirebaseMessaging.instance;
       return await messaging.getToken();
-    } catch (e) {
-      return null;
-    }
+    } catch (e) { return null; }
   }
 
   /// Postavlja FCM listener

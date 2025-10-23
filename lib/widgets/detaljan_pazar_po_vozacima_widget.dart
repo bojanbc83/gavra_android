@@ -240,7 +240,3 @@ class DetaljanPazarPoVozacimaWidget extends StatelessWidget {
   }
 }
 
-
-
-
-

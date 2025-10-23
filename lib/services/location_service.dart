@@ -3,9 +3,7 @@ import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
-
 class LocationService {
-
 
   /// Proverava i traži permisije za lokaciju
   static Future<bool> requestLocationPermission() async {
@@ -52,7 +50,6 @@ class LocationService {
         timeLimit: const Duration(seconds: 10),
       );
 
-      
       return position;
     } catch (e) {
       // Logger removed
@@ -159,8 +156,4 @@ class LocationService {
     return Geolocator.distanceBetween(startLat, startLng, endLat, endLng);
   }
 }
-
-
-
-
 

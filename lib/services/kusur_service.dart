@@ -28,9 +28,7 @@ class KusurService {
       }
 
       return 0.0;
-    } catch (e) {
-      return 0.0;
-    }
+    } catch (e) { return null; }
   }
 
   /// Ažuriraj kusur za određenog vozača u bazi
@@ -48,9 +46,7 @@ class KusurService {
       _emitKusurUpdate(vozacIme, noviKusur);
 
       return true;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// Stream za real-time praćenje kusur-a određenog vozača
@@ -81,9 +77,7 @@ class KusurService {
       }
 
       return rezultat;
-    } catch (e) {
-      return {};
-    }
+    } catch (e) { return null; }
   }
 
   /// Privatni helper za emitovanje ažuriranja
@@ -117,8 +111,4 @@ class KusurService {
     _kusurController.close();
   }
 }
-
-
-
-
 

@@ -36,25 +36,17 @@ class QueryPerformanceMonitor {
   /// Beleži uspešan query
   static void _recordSuccess(String queryName, int duration, Map<String, dynamic>? metadata) {
     final stats = _stats.putIfAbsent(queryName, () => QueryStats(queryName));
-    stats.addSuccess(duration);
-      // Debug logging removed for production
-}
+    stats.addSuccess(duration);}
 
   /// Beleži query sa greškom
   static void _recordError(String queryName, int duration, dynamic error, Map<String, dynamic>? metadata) {
     final stats = _stats.putIfAbsent(queryName, () => QueryStats(queryName));
-    stats.addError(duration, error);
-      // Debug logging removed for production
-}
+    stats.addError(duration, error);}
 
   /// Upozorava na spore query-jeve
-  static void _alertSlowQuery(String queryName, int duration, Map<String, dynamic>? metadata) {
-      // Debug logging removed for production
-// Možda dodati notifikaciju ili log u Supabase
+  static void _alertSlowQuery(String queryName, int duration, Map<String, dynamic>? metadata) {// Možda dodati notifikaciju ili log u Supabase
     final stats = _stats[queryName];
-    if (stats != null && stats.averageDuration > slowQueryThreshold) {
-      // Debug logging removed for production
-}
+    if (stats != null && stats.averageDuration > slowQueryThreshold) {}
   }
 
   /// Dobija statistike za sve query-jeve
@@ -69,9 +61,7 @@ class QueryPerformanceMonitor {
 
   /// Reset statistike
   static void resetStats() {
-    _stats.clear();
-      // Debug logging removed for production
-}
+    _stats.clear();}
 
   /// Dobija top 10 najsporijih query-jeva
   static List<QueryStats> getTopSlowQueries({int limit = 10}) {
@@ -133,9 +123,7 @@ class QueryPerformanceMonitor {
 
   /// Enable/disable monitoring
   static void setEnabled(bool enabled) {
-    _isEnabled = enabled;
-      // Debug logging removed for production
-}
+    _isEnabled = enabled;}
 }
 
 /// 📊 Query statistike za jedan query tip

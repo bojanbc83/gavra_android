@@ -381,7 +381,3 @@ class MiniNetworkErrorWidget extends StatelessWidget {
   }
 }
 
-
-
-
-

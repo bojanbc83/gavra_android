@@ -811,9 +811,7 @@ class StatistikaService {
         } else if (distanca > maksimalnaDistancaPoSegmentu) {}
       }
       return ukupno;
-    } catch (e) {
-      return 0.0;
-    }
+    } catch (e) { return null; }
   }
 
   /// � JAVNA METODA: Dobij kilometražu za vozača u određenom periodu
@@ -833,9 +831,7 @@ class StatistikaService {
       // Obriši sve GPS pozicije iz tabele
       await supabase.from('gps_lokacije').delete().neq('id', 0); // Briše sve redove (neq sa nepostojećim ID)
       return true;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// 💰 RESETUJ PAZAR ZA ODREĐENOG VOZAČA - briše podatke o naplatama
@@ -870,9 +866,7 @@ class StatistikaService {
         // ignore: empty_catches
       }
       return true;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// 💰 RESETUJ SAMO DANAS PAZAR ZA VOZAČA - brži reset za današnji dan
@@ -940,10 +934,7 @@ class StatistikaService {
   Future<Map<String, dynamic>> dohvatiCleanStatistike() async {
     try {
       return await CleanStatistikaService.dohvatiUkupneStatistike();
-    } catch (e) {
-      // Debug logging removed for production
-      rethrow;
-    }
+    } catch (e) { rethrow; }
   }
 
   /// Proveri da li podaci nemaju duplikate
@@ -951,10 +942,7 @@ class StatistikaService {
     try {
       final stats = await CleanStatistikaService.dohvatiUkupneStatistike();
       return stats['no_duplicates'] as bool;
-    } catch (e) {
-      // Debug logging removed for production
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// Dohvati clean mesečne statistike bez duplikata
@@ -967,20 +955,14 @@ class StatistikaService {
         mesec,
         godina,
       );
-    } catch (e) {
-      // Debug logging removed for production
-      rethrow;
-    }
+    } catch (e) { rethrow; }
   }
 
   /// Dohvati clean listu svih putnika bez duplikata
   Future<List<Map<String, dynamic>>> dohvatiCleanSvePutnike() async {
     try {
       return await CleanStatistikaService.dohvatiSvePutnikeClean();
-    } catch (e) {
-      // Debug logging removed for production
-      rethrow;
-    }
+    } catch (e) { rethrow; }
   }
 
   /// Dohvati clean ukupan iznos bez duplikata
@@ -988,10 +970,7 @@ class StatistikaService {
     try {
       final stats = await CleanStatistikaService.dohvatiUkupneStatistike();
       return (stats['ukupno_sve'] as num).toDouble();
-    } catch (e) {
-      // Debug logging removed for production
-      rethrow;
-    }
+    } catch (e) { rethrow; }
   }
 
   /// � KREIRAJ DAILY_CHECKINS TABELU AKO NE POSTOJI
@@ -1000,10 +979,7 @@ class StatistikaService {
       final supabase = Supabase.instance.client;
       await supabase.rpc<void>('create_daily_checkins_table_if_not_exists');
       return true;
-    } catch (e) {
-      // Debug logging removed for production
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// �🔍 DUBOKA ANALIZA MESEČNIH KARATA ZA DANAŠNJI DAN
@@ -1018,9 +994,7 @@ class StatistikaService {
       //   await kreirajDailyCheckinsTabelu();
       // } catch (e) {
       //   // Ignoraj greške pri kreiranju tabele
-      //
-      // Debug logging removed for production
-// }
+      //// }
 
       // Učitaj sve mesečne putnike
       final mesecniService = MesecniPutnikService();
@@ -1115,12 +1089,6 @@ class StatistikaService {
       rezultat['broj_problematicnih'] = problematicni.length;
 
       return rezultat;
-    } catch (e) {
-      return {
-        'greska': e.toString(),
-        'datum_analize': '${danas.day}.${danas.month}.${danas.year}',
-        'status': 'NEUSPESNO',
-      };
-    }
+    } catch (e) { return null; }
   }
 }

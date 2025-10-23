@@ -5,7 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-
 import 'local_notification_service.dart';
 import 'notification_navigation_service.dart';
 
@@ -53,10 +52,10 @@ class RealtimeNotificationService {
       if (httpResponse.statusCode >= 200 && httpResponse.statusCode < 300) {
         // Logger removed
       } else {
-        
+
       }
     } catch (e) {
-      
+
     }
   }
 
@@ -69,18 +68,16 @@ class RealtimeNotificationService {
   static Future<void> handleInitialMessage(RemoteMessage? message) async {
     if (message == null) return;
     try {
-      
+
       await _handleFirebaseNotificationTap(message);
     } catch (e) {
       // Logger removed
     }
   }
 
-
-
   /// Initialize service with full multi-channel support (Firebase + OneSignal + Local)
   static Future<void> initialize() async {
-    
+
   }
 
   /// Setup foreground Firebase message listeners for real-time notifications
@@ -113,7 +110,7 @@ class RealtimeNotificationService {
           payload: (message.data['type'] as String?) ?? 'firebase_foreground',
         );
       } else {
-        
+
       }
     });
 
@@ -180,7 +177,6 @@ class RealtimeNotificationService {
         data: data,
       );
 
-      
     } catch (e) {
       // Logger removed
     }
@@ -188,7 +184,6 @@ class RealtimeNotificationService {
 
   /// Test notification functionality with multi-channel support
   static Future<void> sendTestNotification(String message) async {
-    
 
     // Show local notification
     await LocalNotificationService.showRealtimeNotification(
@@ -263,8 +258,4 @@ class RealtimeNotificationService {
     }
   }
 }
-
-
-
-
 

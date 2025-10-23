@@ -43,9 +43,7 @@ class RutaService {
         cacheKey,
         maxAge: _cacheExpiry,
       );
-      if (cached != null) {
-      // Debug logging removed for production
-return cached
+      if (cached != null) {return cached
             .map((json) => Ruta.fromMap(json as Map<String, dynamic>))
             .toList();
       }
@@ -64,10 +62,7 @@ return cached
         return dataList.map((json) => Ruta.fromMap(json)).toList();
       }
       return [];
-    } catch (e) {
-      // Debug logging removed for production
-return [];
-    }
+    } catch (e) { return null; }
   }
 
   /// Dohvata samo aktivne rute (sa keširanje)
@@ -79,9 +74,7 @@ return [];
         cacheKey,
         maxAge: _cacheExpiry,
       );
-      if (cached != null) {
-      // Debug logging removed for production
-return cached
+      if (cached != null) {return cached
             .map((json) => Ruta.fromMap(json as Map<String, dynamic>))
             .toList();
       }
@@ -101,10 +94,7 @@ return cached
         return dataList.map((json) => Ruta.fromMap(json)).toList();
       }
       return [];
-    } catch (e) {
-      // Debug logging removed for production
-return [];
-    }
+    } catch (e) { return null; }
   }
 
   /// Dohvata rutu po ID-u (sa keširanje i error handling)
@@ -113,18 +103,14 @@ return [];
       // Pokušaj cache prvo
       final cacheKey = _getByIdCacheKey(id);
       final cached = await CacheService.getFromMemory<Ruta>(cacheKey);
-      if (cached != null) {
-      // Debug logging removed for production
-return cached;
+      if (cached != null) {return cached;
       }
 
       final response = await SupabaseSafe.run(
         () => _supabase.from('rute').select().eq('id', id).single(),
       );
 
-      if (response == null) {
-      // Debug logging removed for production
-return null;
+      if (response == null) {return null;
       }
 
       final ruta = Ruta.fromMap(response);
@@ -133,10 +119,7 @@ return null;
       CacheService.saveToMemory(cacheKey, ruta);
 
       return ruta;
-    } catch (e) {
-      // Debug logging removed for production
-return null;
-    }
+    } catch (e) { return null; }
   }
 
   /// Kreira novu rutu (sa validacijom i cache invalidation)
@@ -144,17 +127,13 @@ return null;
     try {
       // Validacija pre dodavanja
       final validation = ruta.validateFull();
-      if (validation.isNotEmpty) {
-      // Debug logging removed for production
-return null;
+      if (validation.isNotEmpty) {return null;
       }
 
       // Proveri duplikate
       final existingRute =
           await _checkForDuplicates(ruta.polazak, ruta.dolazak, ruta.naziv);
-      if (existingRute.isNotEmpty) {
-      // Debug logging removed for production
-return null;
+      if (existingRute.isNotEmpty) {return null;
       }
 
       final response = await SupabaseSafe.run(
@@ -166,13 +145,8 @@ return null;
       final novaRuta = Ruta.fromMap(response);
 
       // Očisti cache
-      await _clearCache();
-      // Debug logging removed for production
-return novaRuta;
-    } catch (e) {
-      // Debug logging removed for production
-return null;
-    }
+      await _clearCache();return novaRuta;
+    } catch (e) { return null; }
   }
 
   /// Proverava duplikate ruta
@@ -196,10 +170,7 @@ return null;
             .toList();
       }
       return [];
-    } catch (e) {
-      // Debug logging removed for production
-return [];
-    }
+    } catch (e) { return null; }
   }
 
   /// Ažurira rutu (sa validacijom i cache invalidation)
@@ -217,28 +188,19 @@ return [];
             .single(),
       );
 
-      if (response == null) {
-      // Debug logging removed for production
-return null;
+      if (response == null) {return null;
       }
 
       final azuriranaRuta = Ruta.fromMap(response);
 
       // Validacija nakon ažuriranja
       final validation = azuriranaRuta.validateFull();
-      if (validation.isNotEmpty) {
-      // Debug logging removed for production
-return null;
+      if (validation.isNotEmpty) {return null;
       }
 
       // Očisti cache
-      await _clearCacheForId(id);
-      // Debug logging removed for production
-return azuriranaRuta;
-    } catch (e) {
-      // Debug logging removed for production
-return null;
-    }
+      await _clearCacheForId(id);return azuriranaRuta;
+    } catch (e) { return null; }
   }
 
   /// Ažurira celu rutu (alternativa sa Ruta objektom)
@@ -246,9 +208,7 @@ return null;
     try {
       // Validacija
       final validation = ruta.validateFull();
-      if (validation.isNotEmpty) {
-      // Debug logging removed for production
-return null;
+      if (validation.isNotEmpty) {return null;
       }
 
       final updatedRuta = ruta.withUpdatedTime();
@@ -267,13 +227,8 @@ return null;
       final result = Ruta.fromMap(response);
 
       // Očisti cache
-      await _clearCacheForId(ruta.id);
-      // Debug logging removed for production
-return result;
-    } catch (e) {
-      // Debug logging removed for production
-return null;
-    }
+      await _clearCacheForId(ruta.id);return result;
+    } catch (e) { return null; }
   }
 
   /// Deaktivira rutu (soft delete sa cache invalidation)
@@ -287,13 +242,8 @@ return null;
       );
 
       // Očisti cache
-      await _clearCacheForId(id);
-      // Debug logging removed for production
-return true;
-    } catch (e) {
-      // Debug logging removed for production
-return false;
-    }
+      await _clearCacheForId(id);return true;
+    } catch (e) { return null; }
   }
 
   /// Aktivira rutu
@@ -307,13 +257,8 @@ return false;
       );
 
       // Očisti cache
-      await _clearCacheForId(id);
-      // Debug logging removed for production
-return true;
-    } catch (e) {
-      // Debug logging removed for production
-return false;
-    }
+      await _clearCacheForId(id);return true;
+    } catch (e) { return null; }
   }
 
   /// Briše rutu potpuno (hard delete)
@@ -321,9 +266,7 @@ return false;
     try {
       // Prvo proveri da li postoje povezani putnici
       final hasDependencies = await _checkRutaDependencies(id);
-      if (hasDependencies) {
-      // Debug logging removed for production
-return false;
+      if (hasDependencies) {return false;
       }
 
       await SupabaseSafe.run(
@@ -331,13 +274,8 @@ return false;
       );
 
       // Očisti cache
-      await _clearCacheForId(id);
-      // Debug logging removed for production
-return true;
-    } catch (e) {
-      // Debug logging removed for production
-return false;
-    }
+      await _clearCacheForId(id);return true;
+    } catch (e) { return null; }
   }
 
   /// Proverava da li ruta ima povezane putnici
@@ -353,9 +291,7 @@ return false;
       );
 
       return response is List && response.isNotEmpty;
-    } catch (e) {
-      // Debug logging removed for production
-return true; // Sigurnost - pretpostavi da ima zavisnosti
+    } catch (e) {return true; // Sigurnost - pretpostavi da ima zavisnosti
     }
   }
 
@@ -381,9 +317,7 @@ return true; // Sigurnost - pretpostavi da ima zavisnosti
           maxUdaljenost == null) {
         cacheKey = _getSearchCacheKey(query);
         final cached = await CacheService.getFromMemory<List<Ruta>>(cacheKey);
-        if (cached != null) {
-      // Debug logging removed for production
-return cached;
+        if (cached != null) {return cached;
         }
       }
 
@@ -445,10 +379,7 @@ return cached;
         return results;
       }
       return [];
-    } catch (e) {
-      // Debug logging removed for production
-return [];
-    }
+    } catch (e) { return null; }
   }
 
   /// Traži rute po nazivu, polasku ili destinaciji (stara metoda za kompatibilnost)
@@ -486,10 +417,7 @@ return [];
             .toList();
       }
       return [];
-    } catch (e) {
-      // Debug logging removed for production
-return [];
-    }
+    } catch (e) { return null; }
   }
 
   /// Dohvata sve rute koje kreću iz određenog grada
@@ -548,9 +476,7 @@ return [];
       // Validacija svih ruta
       for (final ruta in rute) {
         final validation = ruta.validateFull();
-        if (validation.isNotEmpty) {
-      // Debug logging removed for production
-return [];
+        if (validation.isNotEmpty) {return [];
         }
       }
 
@@ -567,15 +493,10 @@ return [];
             .toList();
 
         // Očisti cache
-        await _clearCache();
-      // Debug logging removed for production
-return results;
+        await _clearCache();return results;
       }
       return [];
-    } catch (e) {
-      // Debug logging removed for production
-return [];
-    }
+    } catch (e) { return null; }
   }
 
   /// Ažurira više ruta odjednom
@@ -588,13 +509,8 @@ return [];
         if (result != null) {
           results.add(result);
         }
-      }
-      // Debug logging removed for production
-return results;
-    } catch (e) {
-      // Debug logging removed for production
-return [];
-    }
+      }return results;
+    } catch (e) { return null; }
   }
 
   /// Deaktivira više ruta odjednom
@@ -608,13 +524,8 @@ return [];
       );
 
       // Očisti cache
-      await _clearCache();
-      // Debug logging removed for production
-return true;
-    } catch (e) {
-      // Debug logging removed for production
-return false;
-    }
+      await _clearCache();return true;
+    } catch (e) { return null; }
   }
 
   /// Aktivira više ruta odjednom
@@ -628,13 +539,8 @@ return false;
       );
 
       // Očisti cache
-      await _clearCache();
-      // Debug logging removed for production
-return true;
-    } catch (e) {
-      // Debug logging removed for production
-return false;
-    }
+      await _clearCache();return true;
+    } catch (e) { return null; }
   }
 
   // 📊 STATISTIKE I ANALITIKE
@@ -647,9 +553,7 @@ return false;
         cacheKey,
         maxAge: const Duration(minutes: 30),
       );
-      if (cached != null) {
-      // Debug logging removed for production
-return cached;
+      if (cached != null) {return cached;
       }
 
       final rute = await getAllRute();
@@ -721,10 +625,7 @@ return cached;
       await CacheService.saveToDisk(cacheKey, stats);
 
       return stats;
-    } catch (e) {
-      // Debug logging removed for production
-return {};
-    }
+    } catch (e) { return null; }
   }
 
   /// Dohvata statistike za specifičnu rutu
@@ -779,10 +680,7 @@ return {};
             : <String, int>{},
         'generirano': DateTime.now().toIso8601String(),
       };
-    } catch (e) {
-      // Debug logging removed for production
-return {};
-    }
+    } catch (e) { return null; }
   }
 
   /// Pomoćna metoda za kalkulaciju putnika po danima
@@ -830,13 +728,8 @@ return {};
         );
       }
 
-      final csvContent = csvLines.join('\n');
-      // Debug logging removed for production
-return csvContent;
-    } catch (e) {
-      // Debug logging removed for production
-return '';
-    }
+      final csvContent = csvLines.join('\n');return csvContent;
+    } catch (e) { return null; }
   }
 
   // 🧹 MAINTENANCE FUNKCIJE
@@ -854,11 +747,7 @@ return '';
             .lt('updated_at', cutoffDateStr),
       );
 
-      await _clearCache();
-      // Debug logging removed for production
-} catch (e) {
-      // Debug logging removed for production
-}
+      await _clearCache();} catch (e) {}
   }
 
   /// Cache statistike
@@ -866,8 +755,4 @@ return '';
     return CacheService.getStats();
   }
 }
-
-
-
-
 

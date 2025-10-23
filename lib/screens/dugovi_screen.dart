@@ -61,9 +61,7 @@ class _DugoviScreenState extends State<DugoviScreen> {
     // 🧹 SEARCH CLEANUP
     _searchSubject.close();
     _filterSubject.close();
-    _searchController.dispose();
-    // Debug logging removed for production
-    super.dispose();
+    _searchController.dispose();    super.dispose();
   }
 
   // 🔄 V3.0 REALTIME MONITORING SETUP
@@ -77,9 +75,7 @@ class _DugoviScreenState extends State<DugoviScreen> {
       _checkStreamHealth();
     });
 
-    _initializeRealtimeStream();
-    // Debug logging removed for production
-  }
+    _initializeRealtimeStream();  }
 
   // 💓 HEARTBEAT MONITORING FUNCTIONS
   void _registerStreamHeartbeat(String streamName) {
@@ -93,9 +89,7 @@ class _DugoviScreenState extends State<DugoviScreen> {
     for (final entry in _streamHeartbeats.entries) {
       final timeSinceLastHeartbeat = now.difference(entry.value);
       if (timeSinceLastHeartbeat.inSeconds > 60) {
-        isHealthy = false;
-        // Debug logging removed for production
-        break;
+        isHealthy = false;        break;
       }
     }
 
@@ -113,9 +107,7 @@ class _DugoviScreenState extends State<DugoviScreen> {
       _realtimeHealthStatus.value = 'stream_error';
     } else if (isHealthy) {
       _realtimeHealthStatus.value = 'healthy';
-    }
-    // Debug logging removed for production
-  }
+    }  }
 
   // 🚀 ENHANCED REALTIME STREAM INITIALIZATION
   void _initializeRealtimeStream() {
@@ -157,9 +149,7 @@ class _DugoviScreenState extends State<DugoviScreen> {
               _cachedDugovi = duznici;
               _isLoading = false;
               _errorMessage = null;
-            });
-          // Debug logging removed for production
-        }
+            });        }
       },
       onError: (Object error) {
         if (mounted) {
@@ -168,13 +158,9 @@ class _DugoviScreenState extends State<DugoviScreen> {
             setState(() {
               _isLoading = false;
               _errorMessage = error.toString();
-            });
-          // Debug logging removed for production
-// 🔄 AUTO RETRY after 5 seconds
+            });// 🔄 AUTO RETRY after 5 seconds
           Timer(const Duration(seconds: 5), () {
-            if (mounted) {
-              // Debug logging removed for production
-              _initializeRealtimeStream();
+            if (mounted) {              _initializeRealtimeStream();
             }
           });
         }
@@ -199,10 +185,7 @@ class _DugoviScreenState extends State<DugoviScreen> {
     if (mounted)
       setState(() {
         // Trigger rebuild with filtered data
-      });
-
-    // Debug logging removed for production
-  }
+      });  }
 
   void _loadInitialData() {
     _initializeRealtimeStream();

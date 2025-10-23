@@ -140,13 +140,7 @@ class SlotUtils {
       final dt = DateTime.parse(isoDate);
       const abbr = ['pon', 'uto', 'sre', 'cet', 'pet', 'sub', 'ned'];
       return abbr[dt.weekday - 1];
-    } catch (e) {
-      return 'pon';
-    }
+    } catch (e) { return null; }
   }
 }
-
-
-
-
 

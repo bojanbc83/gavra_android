@@ -43,9 +43,7 @@ class MesecniPutnikService {
           await supabase.from('mesecni_putnici').select().eq('putnik_ime', ime).eq('obrisan', false).single();
 
       return MesecniPutnik.fromMap(response);
-    } catch (e) {
-      return null;
-    }
+    } catch (e) { return null; }
   }
 
   /// Stream za aktivne mesečne putnike (legacy compatibility)
@@ -70,9 +68,7 @@ class MesecniPutnikService {
                     ),
                   )
                   .toList();
-            } catch (e) {
-              return <MesecniPutnik>[];
-            }
+            } catch (e) { return null; }
           })
           .handleError((err) {
             return <MesecniPutnik>[];
@@ -149,9 +145,7 @@ class MesecniPutnikService {
       clearCache();
 
       return true;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// Ažurira mesečnog putnika (legacy metoda name)
@@ -196,9 +190,7 @@ class MesecniPutnikService {
       clearCache();
 
       return true;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// Sinhronizuje broj otkazivanja sa istorijom
@@ -216,9 +208,7 @@ class MesecniPutnikService {
       clearCache();
 
       return true;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// Ažurira plaćanje za mesec (vozacId je UUID)
@@ -275,9 +265,7 @@ class MesecniPutnikService {
       });
 
       return true;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// Helper funkcija za validaciju UUID formata
@@ -310,9 +298,7 @@ class MesecniPutnikService {
       }
 
       return ukupno;
-    } catch (e) {
-      return 0.0;
-    }
+    } catch (e) { return null; }
   }
 
   /// Briše mesečnog putnika (soft delete)
@@ -327,9 +313,7 @@ class MesecniPutnikService {
       clearCache();
 
       return true;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// Traži mesečne putnike po imenu, prezimenu ili broju telefona
@@ -393,9 +377,7 @@ class MesecniPutnikService {
           .order('created_at', ascending: false) as List<dynamic>;
 
       return ukrcavanja.cast<Map<String, dynamic>>();
-    } catch (e) {
-      return [];
-    }
+    } catch (e) { return null; }
   }
 
   /// Dohvata sve otkaze za mesečnog putnika
@@ -411,9 +393,7 @@ class MesecniPutnikService {
           .order('created_at', ascending: false) as List<dynamic>;
 
       return otkazi.cast<Map<String, dynamic>>();
-    } catch (e) {
-      return [];
-    }
+    } catch (e) { return null; }
   }
 
   /// Dohvata sva plaćanja za mesečnog putnika iz putovanja_istorija
@@ -475,9 +455,7 @@ class MesecniPutnikService {
       }
 
       return svaPlacanja;
-    } catch (e) {
-      return [];
-    }
+    } catch (e) { return null; }
   }
 
   /// Helper funkcija za dobijanje imena vozača iz UUID-a
@@ -507,9 +485,7 @@ class MesecniPutnikService {
 
       // Supabase returns List<dynamic> of maps
       return response.map<Map<String, dynamic>>((e) => Map<String, dynamic>.from(e)).toList();
-    } catch (e) {
-      return [];
-    }
+    } catch (e) { return null; }
   }
 
   /// Stream za realtime ažuriranja mesečnih putnika
@@ -541,9 +517,7 @@ class MesecniPutnikService {
                     ),
                   )
                   .toList();
-            } catch (e) {
-              return <MesecniPutnik>[];
-            }
+            } catch (e) { return null; }
           })
           .handleError((err) {
             return <MesecniPutnik>[];
@@ -578,9 +552,7 @@ class MesecniPutnikService {
       final brojPutovanja = jedinstveniDatumi.length;
 
       return brojPutovanja;
-    } catch (e) {
-      return 0;
-    }
+    } catch (e) { return null; }
   }
 
   /// Izračunava broj otkazivanja iz istorije
@@ -607,9 +579,7 @@ class MesecniPutnikService {
       final brojOtkazivanja = jedinstveniDatumi.length;
 
       return brojOtkazivanja;
-    } catch (e) {
-      return 0;
-    }
+    } catch (e) { return null; }
   }
 
   // ==================== ENHANCED CAPABILITIES ====================
@@ -827,9 +797,7 @@ class MesecniPutnikService {
         }
       }
       return null;
-    } catch (e) {
-      return null;
-    }
+    } catch (e) { return null; }
   }
 
   /// 🔍 Dobija vozača iz poslednjeg plaćanja po imenu putnika (fallback)
@@ -851,8 +819,6 @@ class MesecniPutnikService {
         }
       }
       return null;
-    } catch (e) {
-      return null;
-    }
+    } catch (e) { return null; }
   }
 }

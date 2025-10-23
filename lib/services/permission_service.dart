@@ -148,9 +148,7 @@ class PermissionService {
           (smsStatus.isGranted || smsStatus.isLimited);
 
       return allCriticalGranted;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// 🛰️ SPECIJALNO ZAHTEVANJE LOKACIJSKIH DOZVOLA
@@ -174,9 +172,7 @@ class PermissionService {
       return serviceEnabled &&
           permission != LocationPermission.denied &&
           permission != LocationPermission.deniedForever;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// 🔍 PROVERA POSTOJEĆIH DOZVOLA
@@ -187,9 +183,7 @@ class PermissionService {
       final sms = await Permission.sms.status;
 
       return location && (phone.isGranted || phone.isLimited) && (sms.isGranted || sms.isLimited);
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// 📍 BRZA PROVERA LOKACIJSKE DOZVOLE
@@ -201,9 +195,7 @@ class PermissionService {
       return serviceEnabled &&
           permission != LocationPermission.denied &&
           permission != LocationPermission.deniedForever;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// 🚗 INSTANT GPS ZA NAVIGACIJU (bez dodatnih dialoga)
@@ -268,9 +260,7 @@ class PermissionService {
       return serviceEnabled &&
           permission != LocationPermission.denied &&
           permission != LocationPermission.deniedForever;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// 📞 INSTANT POZIV (bez dodatnih dialoga)
@@ -283,9 +273,7 @@ class PermissionService {
 
       final result = await Permission.phone.request();
       return result.isGranted || result.isLimited;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// 📱 INSTANT SMS (bez dodatnih dialoga)
@@ -298,9 +286,7 @@ class PermissionService {
 
       final result = await Permission.sms.request();
       return result.isGranted || result.isLimited;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// 🔔 STATUS SVIH DOZVOLA

@@ -8,11 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class ConnectionResilienceService {
   static final _supabase = Supabase.instance.client;
 
-  // Stream kontroleri
-  static final StreamController<bool> _connectionStateController = StreamController<bool>.broadcast();
-  static final StreamController<String> _connectionStatusController = StreamController<String>.broadcast();
-
-  // Stanje konekcije
+  // Stream kontroleri  // Stanje konekcije
   static bool _isOnline = true;
   static bool _isSupabaseConnected = true;
   static Timer? _reconnectTimer;
@@ -65,9 +61,7 @@ class ConnectionResilienceService {
     try {
       final result = await InternetAddress.lookup('google.com');
       return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return null; }
   }
 
   /// 👂 MONITORING NETWORK KONEKCIJE
@@ -76,9 +70,7 @@ class ConnectionResilienceService {
       final wasOnline = _isOnline;
       final isConnected = await _checkNetworkConnection();
 
-      if (wasOnline != isConnected) {
-      // Debug logging removed for production
-_updateConnectionState(isConnected);
+      if (wasOnline != isConnected) {_updateConnectionState(isConnected);
 
         if (isConnected && !_isSupabaseConnected) {
           // Network je vraćen, pokušaj reconnect na Supabase
@@ -122,18 +114,12 @@ _updateConnectionState(isConnected);
       try {
         await _checkSupabaseConnection();
 
-        if (_isSupabaseConnected) {
-      // Debug logging removed for production
-return;
+        if (_isSupabaseConnected) {return;
         }
-      } catch (e) {
-      // Debug logging removed for production
-}
+      } catch (e) {}
 
       if (attempt < _maxRetries) {
-        final delay = _baseRetryDelay * attempt;
-      // Debug logging removed for production
-await Future<void>.delayed(delay);
+        final delay = _baseRetryDelay * attempt;await Future<void>.delayed(delay);
       }
     }
   }
@@ -188,8 +174,4 @@ await Future<void>.delayed(delay);
     _connectionStatusController.close();
   }
 }
-
-
-
-
 

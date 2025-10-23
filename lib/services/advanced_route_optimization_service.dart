@@ -106,9 +106,7 @@ class AdvancedRouteOptimizationService {
       _logOptimizationResults(putnici, optimizedRoute, coordinates);
 
       return optimizedRoute;
-    } catch (e) {
-      return _fallbackToTimeOptimizedOrder(aktivniPutnici, departureTime);
-    }
+    } catch (e) { return null; }
   }
 
   /// 🧮 EXACT TSP sa Dynamic Programming (Held-Karp algoritam)
@@ -335,9 +333,7 @@ class AdvancedRouteOptimizationService {
         desiredAccuracy: LocationAccuracy.high,
         timeLimit: const Duration(seconds: 5),
       );
-    } catch (e) {
-      return null;
-    }
+    } catch (e) { return null; }
   }
 
   static Future<Map<Putnik, Position>> _batchGeocode(
@@ -494,9 +490,7 @@ class AdvancedRouteOptimizationService {
         hour,
         minute,
       );
-    } catch (e) {
-      return baseDate;
-    }
+    } catch (e) { return null; }
   }
 
   static void _logOptimizationResults(
@@ -649,8 +643,4 @@ class AdvancedRouteOptimizationService {
     return _nearestNeighborWithImprovements(start, coordinates);
   }
 }
-
-
-
-
 

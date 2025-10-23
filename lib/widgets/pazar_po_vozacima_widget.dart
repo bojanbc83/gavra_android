@@ -166,7 +166,3 @@ class PazarPoVozacimaWidget extends StatelessWidget {
   }
 }
 
-
-
-
-

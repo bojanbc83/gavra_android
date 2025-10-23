@@ -204,8 +204,6 @@ class NotificationNavigationService {
         }
       }
       return null;
-    } catch (e) {
-      return null;
-    }
+    } catch (e) { return null; }
   }
 }

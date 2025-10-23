@@ -188,10 +188,7 @@ class OptimizedPutnikService {
           }
 
           return true;
-        } catch (e) {
-      // Debug logging removed for production
-return false;
-        }
+        } catch (e) { return null; }
       },
       metadata: {'count': putovanja.length},
     );
@@ -216,10 +213,7 @@ return false;
           DatabaseOptimizer.clearCache(tabela);
 
           return true;
-        } catch (e) {
-      // Debug logging removed for production
-return false;
-        }
+        } catch (e) { return null; }
       },
       metadata: {
         'tabela': tabela,

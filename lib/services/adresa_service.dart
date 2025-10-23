@@ -187,7 +187,7 @@ class AdresaService {
 
       // Validate after update
       if (!updatedAdresa.isCompletelyValid) {
-        
+
       }
 
       // Update cache
@@ -478,7 +478,6 @@ class AdresaService {
         });
       }
 
-      
       return grouped;
     } catch (e) {
       // Logger removed
@@ -690,8 +689,4 @@ class AdresaService {
     };
   }
 }
-
-
-
-
 

@@ -65,9 +65,7 @@ class _LoadingScreenState extends State<LoadingScreen> with TickerProviderStateM
   void _initializeV3Loading() {
     _initializeAnimations();
     _setupTimeout();
-    _startLoadingProcess();
-    // Debug logging removed for production
-  }
+    _startLoadingProcess();  }
 
   void _initializeAnimations() {
     // Pulsing animation for enhanced visual feedback
@@ -104,9 +102,7 @@ class _LoadingScreenState extends State<LoadingScreen> with TickerProviderStateM
 
   void _setupTimeout() {
     _timeoutTimer = Timer(timeoutDuration, () {
-      if (mounted && !_hasError.value) {
-        // Debug logging removed for production
-        _handleLoadingError('Učitavanje traje predugo. Pokušajte ponovo.');
+      if (mounted && !_hasError.value) {        _handleLoadingError('Učitavanje traje predugo. Pokušajte ponovo.');
       }
     });
   }
@@ -118,9 +114,7 @@ class _LoadingScreenState extends State<LoadingScreen> with TickerProviderStateM
       if (mounted && !_hasError.value) {
         _navigateToMainApp();
       }
-    } catch (e) {
-      // Debug logging removed for production
-      _handleLoadingError(e.toString());
+    } catch (e) {      _handleLoadingError(e.toString());
     }
   }
 
@@ -130,9 +124,7 @@ class _LoadingScreenState extends State<LoadingScreen> with TickerProviderStateM
 
       // Update current stage
       _currentStage.value = stage;
-      _statusMessage.value = stage.message;
-      // Debug logging removed for production
-// Simulate realistic loading with progressive delay
+      _statusMessage.value = stage.message;// Simulate realistic loading with progressive delay
       final delay = stageDelay.inMilliseconds + (_retryCount * 200);
       await Future<void>.delayed(Duration(milliseconds: delay));
 
@@ -183,15 +175,11 @@ class _LoadingScreenState extends State<LoadingScreen> with TickerProviderStateM
       setState(() {
         _hasError.value = true;
         _errorMessage.value = error;
-      });
-    // Debug logging removed for production
-  }
+      });  }
 
   void _navigateToMainApp() {
     _timeoutTimer?.cancel();
-    _loadingTimer?.cancel();
-    // Debug logging removed for production
-    if (mounted) {
+    _loadingTimer?.cancel();    if (mounted) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute<void>(
           builder: (context) => const WelcomeScreen(),
@@ -216,9 +204,7 @@ class _LoadingScreenState extends State<LoadingScreen> with TickerProviderStateM
         _progress.value = 0.0;
         _currentStage.value = LoadingStage.initializing;
         _statusMessage.value = LoadingStage.initializing.message;
-      });
-    // Debug logging removed for production
-// Restart the process
+      });// Restart the process
     _initializeV3Loading();
   }
 
@@ -631,9 +617,7 @@ class _LoadingScreenState extends State<LoadingScreen> with TickerProviderStateM
                   // Cancel/Exit button
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () {
-                        // Debug logging removed for production
-                        SystemNavigator.pop();
+                      onPressed: () {                        SystemNavigator.pop();
                       },
                       icon: const Icon(
                         Icons.close,

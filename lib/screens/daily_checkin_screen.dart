@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../services/simplified_daily_checkin.dart';
+import '../services/daily_checkin_service.dart';
 import '../theme.dart';
 import '../utils/smart_colors.dart';
 import '../utils/vozac_boja.dart';
@@ -98,7 +98,7 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen> with TickerProv
     if (mounted) setState(() => _isLoading = true);
 
     try {
-      await SimplifiedDailyCheckInService.saveCheckIn(widget.vozac, iznos);
+      await DailyCheckInService.saveCheckIn(widget.vozac, iznos);
 
       if (mounted) {
         // Haptic feedback
@@ -403,20 +403,18 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen> with TickerProv
       final yesterday = DateTime.now().subtract(const Duration(days: 1));
 
       // 🚫 PRESKAČI VIKENDE - ne radi se subotom i nedeljom
-      if (yesterday.weekday == 6 || yesterday.weekday == 7) {
-      // Debug logging removed for production
-return;
+      if (yesterday.weekday == 6 || yesterday.weekday == 7) {return;
       }
 
       // Proveri da li postoji popis od juče
-      final lastReport = await SimplifiedDailyCheckInService.getLastDailyReport(widget.vozac);
+      final lastReport = await DailyCheckInService.getLastDailyReport(widget.vozac);
 
       if (lastReport != null && mounted) {
         // POSTOJI RUČNI POPIS - Prikaži ga
         _showPreviousDayReportDialog(lastReport);
       } else {
         // NEMA RUČNOG POPISA - Generiši automatski
-        final automatskiPopis = await SimplifiedDailyCheckInService.generateAutomaticReport(
+        final automatskiPopis = await DailyCheckInService.generateAutomaticReport(
           widget.vozac,
           yesterday,
         );
@@ -426,9 +424,7 @@ return;
           _showAutomaticReportDialog(automatskiPopis);
         }
       }
-    } catch (e) {
-      // Debug logging removed for production
-}
+    } catch (e) {}
   }
 
   // 📊 DIALOG ZA PRIKAZ POPISA IZ PRETHODNOG DANA
@@ -905,22 +901,12 @@ return;
         const Duration(
           seconds: 10,
         ),
-      );
-      // Debug logging removed for production
-} on TimeoutException {
-      // Debug logging removed for production
-throw Exception(
+      );} on TimeoutException {throw Exception(
         'Nema internet konekcije. Kusur neće biti sačuvan u bazi.',
       );
-    } on SocketException {
-      // Debug logging removed for production
-throw Exception('Nema mrežne konekcije. Kusur neće biti sačuvan u bazi.');
-    } on PostgrestException catch (e) {
-      // Debug logging removed for production
-throw Exception('Greška u bazi podataka: ${e.message}');
-    } catch (e) {
-      // Debug logging removed for production
-throw Exception('Neočekivana greška pri ažuriranju kusura: $e');
+    } on SocketException {throw Exception('Nema mrežne konekcije. Kusur neće biti sačuvan u bazi.');
+    } on PostgrestException catch (e) {throw Exception('Greška u bazi podataka: ${e.message}');
+    } catch (e) {throw Exception('Neočekivana greška pri ažuriranju kusura: $e');
     }
   }
 
@@ -945,13 +931,9 @@ throw Exception('Neočekivana greška pri ažuriranju kusura: $e');
           'datum': DateTime.now().toIso8601String().split('T')[0],
           'timestamp': DateTime.now().toIso8601String(),
         }),
-      );
-      // Debug logging removed for production
-// Pokreni sync kada se vrati internet konekcija
+      );// Pokreni sync kada se vrati internet konekcija
       _scheduleOfflineSync();
-    } catch (e) {
-      // Debug logging removed for production
-}
+    } catch (e) {}
   }
 
   // Sync offline kusur podatke kada se vrati internet
@@ -966,9 +948,7 @@ throw Exception('Neočekivana greška pri ažuriranju kusura: $e');
           timer.cancel();
         }
       } catch (e) {
-        // Još uvek nema internet, nastavi pokušaje
-      // Debug logging removed for production
-}
+        // Još uvek nema internet, nastavi pokušaje}
     });
   }
 
@@ -992,11 +972,7 @@ throw Exception('Neočekivana greška pri ažuriranju kusura: $e');
             .eq('datum', DateTime.now().toIso8601String().split('T')[0]);
 
         // Obriši offline podatke nakon uspešnog sync-a
-        await prefs.remove('offline_kusur_data');
-      // Debug logging removed for production
-}
-    } catch (e) {
-      // Debug logging removed for production
-}
+        await prefs.remove('offline_kusur_data');}
+    } catch (e) {}
   }
 }

@@ -137,7 +137,3 @@ class GPSLokacija {
   }
 }
 
-
-
-
-
