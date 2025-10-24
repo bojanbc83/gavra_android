@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:supabase_flutter/supabase_flutter.dart';
+// import 'package:supabase_flutter/supabase_flutter.dart'; // REMOVED - migrated to Firebase
 
 /// 🌐 CONNECTION RESILIENCE SERVICE
 /// Automatski reconnect, network monitoring, fallback strategije (FIXED VERSION)
 class ConnectionResilienceService {
-  static final _supabase = Supabase.instance.client;
+  // static final _supabase = Supabase.instance.client; // REMOVED - migrated to Firebase
 
   // Stream kontroleri
   static final StreamController<bool> _connectionStateController = StreamController<bool>.broadcast();
@@ -77,8 +77,8 @@ class ConnectionResilienceService {
       final isConnected = await _checkNetworkConnection();
 
       if (wasOnline != isConnected) {
-      // Debug logging removed for production
-_updateConnectionState(isConnected);
+        // Debug logging removed for production
+        _updateConnectionState(isConnected);
 
         if (isConnected && !_isSupabaseConnected) {
           // Network je vraćen, pokušaj reconnect na Supabase
@@ -123,17 +123,17 @@ _updateConnectionState(isConnected);
         await _checkSupabaseConnection();
 
         if (_isSupabaseConnected) {
-      // Debug logging removed for production
-return;
+          // Debug logging removed for production
+          return;
         }
       } catch (e) {
-      // Debug logging removed for production
-}
+        // Debug logging removed for production
+      }
 
       if (attempt < _maxRetries) {
         final delay = _baseRetryDelay * attempt;
-      // Debug logging removed for production
-await Future<void>.delayed(delay);
+        // Debug logging removed for production
+        await Future<void>.delayed(delay);
       }
     }
   }
@@ -188,8 +188,3 @@ await Future<void>.delayed(delay);
     _connectionStatusController.close();
   }
 }
-
-
-
-
-

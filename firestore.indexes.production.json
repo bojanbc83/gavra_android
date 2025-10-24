@@ -1,0 +1,100 @@
+{
+    "indexes": [
+        {
+            "collectionGroup": "mesecni_putnici",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "vozac_id",
+                    "mode": "ASCENDING"
+                },
+                {
+                    "fieldPath": "aktivan",
+                    "mode": "ASCENDING"
+                },
+                {
+                    "fieldPath": "created_at",
+                    "mode": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "dnevni_putnici",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "vozac_id",
+                    "mode": "ASCENDING"
+                },
+                {
+                    "fieldPath": "datum_polaska",
+                    "mode": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "putovanja_istorija",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "vozac_id",
+                    "mode": "ASCENDING"
+                },
+                {
+                    "fieldPath": "datum",
+                    "mode": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "gps_lokacije",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "vozac_id",
+                    "mode": "ASCENDING"
+                },
+                {
+                    "fieldPath": "timestamp",
+                    "mode": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "vozaci",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "aktivan",
+                    "mode": "ASCENDING"
+                },
+                {
+                    "fieldPath": "last_seen",
+                    "mode": "DESCENDING"
+                }
+            ]
+        }
+    ],
+    "fieldOverrides": [
+        {
+            "collectionGroup": "adrese",
+            "fieldPath": "naziv",
+            "indexes": [
+                {
+                    "order": "ASCENDING",
+                    "queryScope": "COLLECTION"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "mesecni_putnici",
+            "fieldPath": "ime_prezime",
+            "indexes": [
+                {
+                    "order": "ASCENDING",
+                    "queryScope": "COLLECTION"
+                }
+            ]
+        }
+    ]
+}

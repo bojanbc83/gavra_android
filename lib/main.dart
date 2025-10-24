@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'firebase_options.dart';
 import 'globals.dart';
@@ -16,7 +15,6 @@ import 'services/offline_map_service.dart';
 import 'services/simple_usage_monitor.dart';
 import 'services/theme_service.dart';
 import 'services/voice_navigation_service.dart';
-import 'supabase_client.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,15 +38,7 @@ void main() async {
     // Continue without Firebase if it fails
   }
 
-  // 🌐 SUPABASE INICIJALIZACIJA
-  try {
-    await Supabase.initialize(
-      url: supabaseUrl,
-      anonKey: supabaseAnonKey,
-    ).timeout(const Duration(seconds: 5));
-  } catch (e) {
-    // Continue without Supabase if it fails
-  }
+  // 🔥 FIREBASE JE VEĆ INICIJALIZOVAN GORE
 
   // 🛰️ INITIALIZE BACKGROUND GPS SERVICE (OPTIONAL - Disabled for stability)
   // try {
@@ -93,23 +83,10 @@ class _MyAppState extends State<MyApp> {
     _setupAuthListener();
   }
 
-  // 🔐 SETUP AUTH STATE LISTENER ZA EMAIL VERIFICATION
+  // � FIREBASE AUTH STATE LISTENER - Firebase AuthManager handles this
   void _setupAuthListener() {
-    try {
-      Supabase.instance.client.auth.onAuthStateChange.listen((data) {
-        final AuthChangeEvent event = data.event;
-        final Session? session = data.session;
-
-        // Debug logging removed for production
-
-        if (event == AuthChangeEvent.signedIn && session != null) {
-          // Korisnik je uspešno ulogovan nakon email verification
-          // Debug logging removed for production
-        }
-      });
-    } catch (e) {
-      // Debug logging removed for production
-    }
+    // Firebase AuthManager već handluje auth state changes
+    // Videti lib/services/auth_manager.dart
   }
 
   Future<void> _initializeApp() async {

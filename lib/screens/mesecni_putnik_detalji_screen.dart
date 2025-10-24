@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../models/mesecni_putnik.dart';
-import '../services/mesecni_putnik_service.dart';
 import '../theme.dart';
 // foundation import not needed; using centralized logger
 import '../widgets/custom_back_button.dart';
@@ -32,8 +31,6 @@ class _MesecniPutnikDetaljiScreenState extends State<MesecniPutnikDetaljiScreen>
   List<Map<String, dynamic>> _svaPlacanja = [];
   bool _loading = true;
 
-  late final MesecniPutnikService _service;
-
   // 🔄 PERFORMANCE: Cached computed values
   Map<String, List<Map<String, dynamic>>>? _cachedNedeljniPodaci;
   Map<String, List<Map<String, dynamic>>>? _cachedMesecniPodaci;
@@ -50,7 +47,6 @@ class _MesecniPutnikDetaljiScreenState extends State<MesecniPutnikDetaljiScreen>
   @override
   void initState() {
     super.initState();
-    _service = MesecniPutnikService();
 
     // 🔄 V3.0: Setup realtime monitoring
     _setupRealtimeMonitoring();
@@ -106,18 +102,12 @@ class _MesecniPutnikDetaljiScreenState extends State<MesecniPutnikDetaljiScreen>
         throw Exception('Nema internetske konekcije');
       }
 
-      // 🔄 PERFORMANCE: Parallel loading for better performance
-      final results = await Future.wait([
-        _service.dohvatiUkrcavanjaZaPutnika(widget.putnik.putnikIme),
-        _service.dohvatiOtkazeZaPutnika(widget.putnik.putnikIme),
-        _service.dohvatiPlacanjaZaPutnika(widget.putnik.putnikIme),
-      ]);
-
+      // Firebase migration - using empty data for now
       if (!mounted) return; // 🔄 RESILIENCE: Check after async operation
 
-      _svaUkrcavanja = results[0];
-      _sviOtkazi = results[1];
-      _svaPlacanja = results[2];
+      _svaUkrcavanja = <Map<String, dynamic>>[];
+      _sviOtkazi = <Map<String, dynamic>>[];
+      _svaPlacanja = <Map<String, dynamic>>[];
 
       // 🔄 V3.0: Mark data stream as healthy after successful load
       _dataStreamHealthy.value = true;

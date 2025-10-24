@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
 import '../services/auth_manager.dart';
-import '../services/email_auth_service.dart';
+import '../services/firebase_auth_service.dart';
 import '../services/permission_service.dart';
 // import '../main.dart' show globalThemeRefresher; // Removed in simple version
 import '../services/simplified_daily_checkin.dart';
@@ -429,7 +429,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> with TickerProvider
 
         // Dobij ime vozača iz trenutne auth session
         final user = AuthManager.getCurrentUser();
-        final driverName = (user?.userMetadata?['driver_name'] as String?) ?? user?.email?.split('@')[0] ?? 'Vozač';
+        final driverName = user?.email?.split('@')[0] ?? 'Vozač';
 
         // Debug logging removed for production
 
@@ -499,7 +499,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> with TickerProvider
   Future<void> _handleForgotPassword() async {
     final email = _emailController.text.trim();
 
-    if (email.isEmpty || !EmailAuthService.isValidEmailFormat(email)) {
+    if (email.isEmpty || !FirebaseAuthService.isValidEmailFormat(email)) {
       _showErrorDialog(
         'Nevažeći email',
         'Unesite validnu email adresu da biste resetovali šifru.',
@@ -510,7 +510,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> with TickerProvider
     if (mounted) setState(() => _isLoading = true);
 
     try {
-      final success = await EmailAuthService.resetPasswordViaEmail(email);
+      final success = await FirebaseAuthService.resetPasswordViaEmail(email);
 
       if (success) {
         _showSuccessDialog(

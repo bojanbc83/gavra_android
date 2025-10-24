@@ -1,212 +1,167 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../models/adresa.dart';
 import '../models/vozac.dart';
-import 'adresa_service.dart';
 
-/// Servis za upravljanje vozačima
+/// 🔥 GAVRA 013 - VOZAC SERVICE (FIREBASE)
+///
+/// Migrirano sa Supabase na Firebase Firestore
+/// Upravlja vozačima i njihovim podacima
+
 class VozacService {
-  VozacService({SupabaseClient? supabaseClient})
-      : _supabase = supabaseClient ?? Supabase.instance.client;
-  final SupabaseClient _supabase;
+  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  static const String _collectionName = 'vozaci';
 
-  /// Dohvata sve vozače
+  /// 📋 Dohvata sve aktivne vozače
   Future<List<Vozac>> getAllVozaci() async {
-    final response = await _supabase
-        .from('vozaci')
-        .select()
-        .eq('aktivan', true)
-        .order('ime');
+    try {
+      final querySnapshot =
+          await _firestore.collection(_collectionName).where('aktivan', isEqualTo: true).orderBy('ime').get();
 
-    return response.map((json) => Vozac.fromMap(json)).toList();
+      return querySnapshot.docs.map((doc) => Vozac.fromMap(doc.data())).toList();
+    } catch (e) {
+      throw Exception('Greška pri dohvatanju vozača: $e');
+    }
   }
 
-  /// Dohvata vozača po ID-u
+  /// 👤 Dohvata vozača po ID-u
   Future<Vozac?> getVozacById(String id) async {
-    final response =
-        await _supabase.from('vozaci').select().eq('id', id).single();
+    try {
+      final docSnapshot = await _firestore.collection(_collectionName).doc(id).get();
 
-    return Vozac.fromMap(response);
+      if (!docSnapshot.exists) return null;
+
+      return Vozac.fromMap(docSnapshot.data()!);
+    } catch (e) {
+      throw Exception('Greška pri dohvatanju vozača po ID: $e');
+    }
   }
 
-  /// Kreira novog vozača
-  Future<Vozac> createVozac(Vozac vozac) async {
-    final response =
-        await _supabase.from('vozaci').insert(vozac.toMap()).select().single();
+  /// 🔍 Dohvata vozača po imenu (first match)
+  Future<Vozac?> getVozacByIme(String ime) async {
+    try {
+      final querySnapshot = await _firestore
+          .collection(_collectionName)
+          .where('aktivan', isEqualTo: true)
+          .where('ime', isEqualTo: ime)
+          .limit(1)
+          .get();
 
-    return Vozac.fromMap(response);
+      if (querySnapshot.docs.isEmpty) return null;
+
+      return Vozac.fromMap(querySnapshot.docs.first.data());
+    } catch (e) {
+      throw Exception('Greška pri dohvatanju vozača po imenu: $e');
+    }
   }
 
-  /// Ažurira vozača
+  /// ➕ Dodaje novog vozača
+  Future<Vozac> addVozac(Vozac vozac) async {
+    try {
+      final docRef = _firestore.collection(_collectionName).doc();
+
+      // Kreiranje novog vozača sa generisanim ID-om
+      final newVozac = Vozac(
+        id: docRef.id,
+        ime: vozac.ime,
+        prezime: vozac.prezime,
+        brojTelefona: vozac.brojTelefona,
+        email: vozac.email,
+        adresaId: vozac.adresaId,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
+      await docRef.set(newVozac.toMap());
+      return newVozac;
+    } catch (e) {
+      throw Exception('Greška pri dodavanju vozača: $e');
+    }
+  }
+
+  /// ✏️ Ažurira postojećeg vozača
   Future<Vozac> updateVozac(String id, Map<String, dynamic> updates) async {
-    updates['updated_at'] = DateTime.now().toIso8601String();
+    try {
+      // Dodaj updated_at timestamp
+      updates['updated_at'] = FieldValue.serverTimestamp();
+      updates['poslednja_aktivnost'] = FieldValue.serverTimestamp();
 
-    final response = await _supabase
-        .from('vozaci')
-        .update(updates)
-        .eq('id', id)
-        .select()
-        .single();
+      final docRef = _firestore.collection(_collectionName).doc(id);
+      await docRef.update(updates);
 
-    return Vozac.fromMap(response);
-  }
-
-  /// Deaktivira vozača (soft delete)
-  Future<void> deactivateVozac(String id) async {
-    await _supabase.from('vozaci').update({
-      'aktivan': false,
-      'updated_at': DateTime.now().toIso8601String(),
-    }).eq('id', id);
-  }
-
-  /// Traži vozače po imenu ili prezimenu
-  Future<List<Vozac>> searchVozaci(String query) async {
-    // Ako je query prazan, vrati sve vozače
-    if (query.trim().isEmpty) {
-      return getAllVozaci();
-    }
-
-    final response = await _supabase
-        .from('vozaci')
-        .select()
-        .eq('aktivan', true)
-        .or('ime.ilike.%$query%,prezime.ilike.%$query%')
-        .order('ime');
-
-    return response.map((json) => Vozac.fromMap(json)).toList();
-  }
-
-  /// Traži vozača po punom imenu (ime + prezime)
-  Future<Vozac?> getVozacByPunoIme(String punoIme) async {
-    final parts = punoIme.trim().split(' ');
-    if (parts.isEmpty) return null;
-
-    if (parts.length == 1) {
-      // Samo ime
-      final response = await _supabase
-          .from('vozaci')
-          .select()
-          .eq('aktivan', true)
-          .eq('ime', parts[0])
-          .maybeSingle();
-
-      return response != null ? Vozac.fromMap(response) : null;
-    } else {
-      // Ime i prezime
-      final ime = parts[0];
-      final prezime = parts.sublist(1).join(' ');
-
-      final response = await _supabase
-          .from('vozaci')
-          .select()
-          .eq('aktivan', true)
-          .eq('ime', ime)
-          .eq('prezime', prezime)
-          .maybeSingle();
-
-      return response != null ? Vozac.fromMap(response) : null;
-    }
-  }
-
-  /// Stream za realtime ažuriranja vozača
-  Stream<List<Vozac>> get vozaciStream {
-    return _supabase
-        .from('vozaci')
-        .stream(primaryKey: ['id'])
-        .eq('aktivan', true)
-        .order('ime')
-        .map((data) => data.map((json) => Vozac.fromMap(json)).toList());
-  }
-
-  /// Address relationship methods
-
-  /// Dohvata adresu vozača
-  Future<Adresa?> getVozacAdresa(String vozacId) async {
-    final vozac = await getVozacById(vozacId);
-    if (vozac?.adresaId == null) return null;
-
-    final adresaService = AdresaService(supabaseClient: _supabase);
-    return await adresaService.getAdresaById(vozac!.adresaId!);
-  }
-
-  /// Dodeljuje adresu vozaču
-  Future<Vozac> assignAddressToVozac(String vozacId, String adresaId) async {
-    return await updateVozac(vozacId, {'adresa_id': adresaId});
-  }
-
-  /// Uklanja adresu od vozača
-  Future<Vozac> removeAddressFromVozac(String vozacId) async {
-    return await updateVozac(vozacId, {'adresa_id': null});
-  }
-
-  /// Dohvata sve vozače sa adresama
-  Future<List<Map<String, dynamic>>> getVozaciSaAdresama() async {
-    final vozaci = await getAllVozaci();
-    final adresaService = AdresaService(supabaseClient: _supabase);
-
-    final List<Map<String, dynamic>> result = [];
-
-    for (final vozac in vozaci) {
-      Adresa? adresa;
-      if (vozac.adresaId != null) {
-        try {
-          adresa = await adresaService.getAdresaById(vozac.adresaId!);
-        } catch (e) {
-          // Ignore if address not found
-        }
+      // Vrati ažuriran dokument
+      final updatedDoc = await docRef.get();
+      if (!updatedDoc.exists) {
+        throw Exception('Vozač sa ID $id ne postoji nakon ažuriranja');
       }
 
-      result.add({
-        'vozac': vozac,
-        'adresa': adresa,
+      return Vozac.fromMap(updatedDoc.data()!);
+    } catch (e) {
+      throw Exception('Greška pri ažuriranju vozača: $e');
+    }
+  }
+
+  /// 🗑️ Briše vozača (soft delete)
+  Future<void> deleteVozac(String id) async {
+    try {
+      await _firestore.collection(_collectionName).doc(id).update({
+        'aktivan': false,
+        'updated_at': FieldValue.serverTimestamp(),
       });
+    } catch (e) {
+      throw Exception('Greška pri brisanju vozača: $e');
     }
-
-    return result;
   }
 
-  /// Traži vozače po adresi (grad ili ulica)
-  Future<List<Vozac>> searchVozaciByAddress(String addressQuery) async {
-    final adresaService = AdresaService(supabaseClient: _supabase);
-    final adrese = await adresaService.searchAdrese(addressQuery);
-    final adresaIds = adrese.map((a) => a.id).toList();
+  /// 🔍 Pretraga vozača po različitim kriterijumima
+  Future<List<Vozac>> searchVozaci(String searchTerm) async {
+    try {
+      // Pretraži po imenu i email-u
+      final querySnapshot = await _firestore.collection(_collectionName).where('aktivan', isEqualTo: true).get();
 
-    if (adresaIds.isEmpty) return [];
+      // Client-side filtering (Firestore ne podržava složenu pretragu)
+      final results = querySnapshot.docs
+          .map((doc) => Vozac.fromMap(doc.data()))
+          .where(
+            (vozac) =>
+                vozac.punoIme.toLowerCase().contains(searchTerm.toLowerCase()) ||
+                (vozac.email?.toLowerCase().contains(searchTerm.toLowerCase()) ?? false) ||
+                (vozac.brojTelefona?.contains(searchTerm) ?? false),
+          )
+          .toList();
 
-    // Use OR conditions for each address ID instead of in_ if method doesn't exist
-    if (adresaIds.length == 1) {
-      final response = await _supabase
-          .from('vozaci')
-          .select()
-          .eq('aktivan', true)
-          .eq('adresa_id', adresaIds.first)
-          .order('ime');
+      return results;
+    } catch (e) {
+      throw Exception('Greška pri pretraži vozača: $e');
+    }
+  }
 
-      return response.map((json) => Vozac.fromMap(json)).toList();
-    } else {
-      // For multiple IDs, we'd need to make multiple queries or use a different approach
-      final List<Vozac> results = [];
-      for (final adresaId in adresaIds) {
-        final response = await _supabase
-            .from('vozaci')
-            .select()
-            .eq('aktivan', true)
-            .eq('adresa_id', adresaId)
-            .order('ime');
+  /// 📍 Označi poslednju aktivnost vozača
+  Future<void> updateLastActivity(String id) async {
+    try {
+      await _firestore.collection(_collectionName).doc(id).update({
+        'updated_at': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      throw Exception('Greška pri ažuriranju poslednje aktivnosti: $e');
+    }
+  }
 
-        final vozaci = response.map((json) => Vozac.fromMap(json)).toList();
-        results.addAll(vozaci);
-      }
+  /// 📊 Real-time stream aktivnih vozača
+  Stream<List<Vozac>> getActiveVozaciStream() {
+    return _firestore.collection(_collectionName).where('aktivan', isEqualTo: true).orderBy('ime').snapshots().map(
+          (snapshot) => snapshot.docs.map((doc) => Vozac.fromMap(doc.data())).toList(),
+        );
+  }
 
-      // Remove duplicates and sort
-      final uniqueResults = results.toSet().toList();
-      uniqueResults.sort((a, b) => a.ime.compareTo(b.ime));
-      return uniqueResults;
+  /// 📱 Ažuriraj device token za push notifikacije
+  Future<void> updateDeviceToken(String vozacId, String? deviceToken) async {
+    try {
+      await _firestore.collection(_collectionName).doc(vozacId).update({
+        'device_token': deviceToken,
+        'updated_at': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      throw Exception('Greška pri ažuriranju device token-a: $e');
     }
   }
 }
-
-
-
-
-

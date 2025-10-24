@@ -3,11 +3,9 @@ import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/putnik.dart';
-import '../services/putnik_service.dart';
-import '../services/statistika_service.dart';
+import '../services/firestore_service.dart';
 import '../theme.dart';
 import '../utils/vozac_boja.dart';
 import '../widgets/custom_back_button.dart';
@@ -63,7 +61,7 @@ class _StatistikaDetailScreenState extends State<StatistikaDetailScreen> {
       });
 
     _putnikSubscription =
-        PutnikService().streamKombinovaniPutniciFiltered().timeout(const Duration(seconds: 30)).listen(
+        FirestoreService.streamKombinovaniPutniciFiltered().timeout(const Duration(seconds: 30)).listen(
       (putnici) {
         if (mounted) {
           if (mounted)
@@ -96,15 +94,8 @@ class _StatistikaDetailScreenState extends State<StatistikaDetailScreen> {
     }
 
     try {
-      final response = await Supabase.instance.client
-          .from('gps_lokacije')
-          .select('lat, lng, timestamp')
-          .eq('name', vozac)
-          .gte('timestamp', range.start.toIso8601String())
-          .lte('timestamp', range.end.toIso8601String())
-          .order('timestamp');
-
-      final lokacije = (response as List).cast<Map<String, dynamic>>();
+      // Firebase migration - GPS data not implemented yet
+      final lokacije = <Map<String, dynamic>>[];
 
       if (lokacije.length < 2) {
         _kmCache[cacheKey] = 0.0;
@@ -419,12 +410,8 @@ class _StatistikaDetailScreenState extends State<StatistikaDetailScreen> {
   }
 
   Widget _buildStatisticsContent() {
-    // Cache future da se ne poziva stalno
-    _statistikeFuture ??= StatistikaService.instance.detaljneStatistikePoVozacima(
-      _cachedPutnici,
-      _selectedRange!.start,
-      _selectedRange!.end,
-    );
+    // Firebase migration - statistics not implemented yet
+    _statistikeFuture ??= Future.value(<String, Map<String, dynamic>>{});
 
     return FutureBuilder<Map<String, Map<String, dynamic>>>(
       future: _statistikeFuture,

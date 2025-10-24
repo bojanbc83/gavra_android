@@ -1,305 +1,526 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:async';
+import 'dart:developer' as developer;
 
-import '../models/adresa.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../models/dnevni_putnik.dart';
-import '../models/putnik.dart';
-import '../models/ruta.dart';
-import 'adresa_service.dart';
 
-/// Servis za upravljanje dnevnim putnicima
+/// Service za upravljanje dnevnim putnicima u Firebase Firestore
 class DnevniPutnikService {
-  DnevniPutnikService({SupabaseClient? supabaseClient}) : _supabase = supabaseClient ?? Supabase.instance.client;
-  final SupabaseClient _supabase;
+  static const String _collectionName = 'dnevni_putnici';
 
-  // Logger instance - koristićemo dlog funkciju iz logging.dart
-  // static final // Logger removed;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Cache za adrese i rute
-  final Map<String, Adresa> _adresaCache = {};
-  final Map<String, Ruta> _rutaCache = {};
+  /// Referenca na kolekciju dnevnih putnika
+  CollectionReference<Map<String, dynamic>> get _collection => _firestore.collection(_collectionName);
 
-  // Instanciranje servisa
-  late final AdresaService _adresaService = AdresaService();
-
-  /// Dohvata sve dnevne putnike za dati datum
-  Future<List<DnevniPutnik>> getDnevniPutniciZaDatum(DateTime datum) async {
-    final datumString = datum.toIso8601String().split('T')[0];
-
-    final response = await _supabase.from('dnevni_putnici').select('''
-          *
-        ''').eq('datum', datumString).eq('obrisan', false).order('polazak');
-
-    return response.map((json) => DnevniPutnik.fromMap(json)).toList();
-  }
-
-  /// Dohvata dnevnog putnika po ID-u
-  Future<DnevniPutnik?> getDnevniPutnikById(String id) async {
-    final response = await _supabase.from('dnevni_putnici').select('''
-          *
-        ''').eq('id', id).single();
-
-    return DnevniPutnik.fromMap(response);
-  }
+  // CRUD Operacije
 
   /// Kreira novog dnevnog putnika
-  Future<DnevniPutnik> createDnevniPutnik(DnevniPutnik putnik) async {
-    final response = await _supabase.from('dnevni_putnici').insert(putnik.toMap()).select('''
-          *
-        ''').single();
-
-    return DnevniPutnik.fromMap(response);
-  }
-
-  /// Ažurira dnevnog putnika
-  Future<DnevniPutnik> updateDnevniPutnik(
-    String id,
-    Map<String, dynamic> updates,
-  ) async {
-    updates['updated_at'] = DateTime.now().toIso8601String();
-
-    final response = await _supabase.from('dnevni_putnici').update(updates).eq('id', id).select('''
-          *
-        ''').single();
-
-    return DnevniPutnik.fromMap(response);
-  }
-
-  /// Označava putnika kao pokupljenog
-  Future<void> oznaciKaoPokupio(String id, String vozacId) async {
-    await updateDnevniPutnik(id, {
-      'status': 'pokupljen',
-      'vreme_pokupljenja': DateTime.now().toIso8601String(),
-      'pokupio_vozac_id': vozacId,
-    });
-  }
-
-  /// Označava putnika kao plaćenog
-  Future<void> oznaciKaoPlacen(String id, String vozacId) async {
-    await updateDnevniPutnik(id, {
-      'vreme_placanja': DateTime.now().toIso8601String(),
-      'naplatio_vozac_id': vozacId,
-    });
-  }
-
-  /// Otkaži putnika
-  Future<void> otkaziPutnika(String id, String vozacId) async {
-    await updateDnevniPutnik(id, {
-      'status': 'otkazan',
-      'otkazao_vozac_id': vozacId,
-      'vreme_otkazivanja': DateTime.now().toIso8601String(),
-    });
-  }
-
-  /// Briše putnika (soft delete)
-  Future<void> obrisiPutnika(String id) async {
-    await _supabase.from('dnevni_putnici').update({
-      'obrisan': true,
-      'updated_at': DateTime.now().toIso8601String(),
-    }).eq('id', id);
-  }
-
-  /// Traži dnevne putnike po imenu, prezimenu ili broju telefona
-  Future<List<DnevniPutnik>> searchDnevniPutnici(
-    String query, {
-    DateTime? datum,
-  }) async {
-    var queryBuilder = _supabase.from('dnevni_putnici').select('''
-          *
-        ''').eq('obrisan', false).or('ime.ilike.%$query%,prezime.ilike.%$query%,broj_telefona.ilike.%$query%');
-
-    if (datum != null) {
-      final datumString = datum.toIso8601String().split('T')[0];
-      queryBuilder = queryBuilder.eq('datum', datumString);
-    }
-
-    final response = await queryBuilder.order('polazak');
-    return response.map((json) => DnevniPutnik.fromMap(json)).toList();
-  }
-
-  /// Dohvata putnike za datu rutu i datum
-  Future<List<DnevniPutnik>> getPutniciZaRutu(
-    String rutaId,
-    DateTime datum,
-  ) async {
-    final datumString = datum.toIso8601String().split('T')[0];
-
-    final response = await _supabase.from('dnevni_putnici').select('''
-          *
-        ''').eq('ruta_id', rutaId).eq('datum', datumString).eq('obrisan', false).order('polazak');
-
-    return response.map((json) => DnevniPutnik.fromMap(json)).toList();
-  }
-
-  /// Stream za realtime ažuriranja dnevnih putnika
-  Stream<List<DnevniPutnik>> dnevniPutniciStreamZaDatum(DateTime datum) {
-    final datumString = datum.toIso8601String().split('T')[0];
-
-    return _supabase.from('dnevni_putnici').stream(primaryKey: ['id']).order('polazak').map(
-          (data) => data
-              .where(
-                (putnik) => putnik['datum'] == datumString && putnik['obrisan'] == false,
-              )
-              .map((json) => DnevniPutnik.fromMap(json))
-              .toList(),
-        );
-  }
-
-  // ✅ RELATIONSHIP HELPER METODE
-
-  /// Dohvata adresu po ID-u sa cache-om
-  Future<Adresa?> _getAdresaById(String adresaId) async {
-    if (_adresaCache.containsKey(adresaId)) {
-      return _adresaCache[adresaId];
-    }
-
+  Future<String> createDnevniPutnik(DnevniPutnik putnik) async {
     try {
-      final adresa = await _adresaService.getAdresaById(adresaId);
-      if (adresa != null) {
-        _adresaCache[adresaId] = adresa;
-      }
-      return adresa;
+      developer.log('Creating dnevni putnik: ${putnik.id}', name: 'DnevniPutnikService');
+
+      await _collection.doc(putnik.id).set(putnik.toMap());
+
+      developer.log('Successfully created dnevni putnik: ${putnik.id}', name: 'DnevniPutnikService');
+      return putnik.id;
     } catch (e) {
-      return null;
+      developer.log('Error creating dnevni putnik: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to create dnevni putnik: $e');
     }
   }
 
-  /// Dohvata rutu po ID-u sa cache-om
-  Future<Ruta?> _getRutaById(String rutaId) async {
-    if (_rutaCache.containsKey(rutaId)) {
-      return _rutaCache[rutaId];
-    }
-
+  /// Dobija dnevnog putnika po ID
+  Future<DnevniPutnik?> getDnevniPutnik(String id) async {
     try {
-      final response = await _supabase.from('rute').select().eq('id', rutaId).single();
+      developer.log('Getting dnevni putnik: $id', name: 'DnevniPutnikService');
 
-      final ruta = Ruta.fromMap(response);
-      _rutaCache[rutaId] = ruta;
-      return ruta;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  /// Konvertuje DnevniPutnik u Putnik sa relationship podacima
-  Future<Putnik?> dnevniPutnikToPutnik(DnevniPutnik dnevniPutnik) async {
-    try {
-      final adresa = await _getAdresaById(dnevniPutnik.adresaId);
-      final ruta = await _getRutaById(dnevniPutnik.rutaId);
-
-      if (adresa == null || ruta == null) {
+      final doc = await _collection.doc(id).get();
+      if (!doc.exists || doc.data() == null) {
         return null;
       }
 
-      return dnevniPutnik.toPutnikWithRelations(adresa, ruta);
+      return DnevniPutnik.fromMap(doc.data()!);
     } catch (e) {
-      return null;
+      developer.log('Error getting dnevni putnik: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to get dnevni putnik: $e');
     }
   }
 
-  /// Dohvata dnevne putnike kao Putnik objekte sa relationship podacima
-  Future<List<Putnik>> getDnevniPutniciKaoPutnici(DateTime datum) async {
+  /// Dobija sve dnevne putnike
+  Future<List<DnevniPutnik>> getAllDnevniPutnici() async {
     try {
-      final dnevniPutnici = await getDnevniPutniciZaDatum(datum);
-      final List<Putnik> putnici = [];
+      developer.log('Getting all dnevni putnici', name: 'DnevniPutnikService');
 
-      for (final dnevniPutnik in dnevniPutnici) {
-        final putnik = await dnevniPutnikToPutnik(dnevniPutnik);
-        if (putnik != null) {
-          putnici.add(putnik);
+      final querySnapshot =
+          await _collection.where('obrisan', isEqualTo: false).orderBy('createdAt', descending: true).get();
+
+      return querySnapshot.docs.map((doc) => DnevniPutnik.fromMap(doc.data())).toList();
+    } catch (e) {
+      developer.log('Error getting all dnevni putnici: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to get all dnevni putnici: $e');
+    }
+  }
+
+  /// Dobija dnevne putnike po ruti
+  Future<List<DnevniPutnik>> getDnevniPutniciByRuta(String rutaId) async {
+    try {
+      developer.log('Getting dnevni putnici by ruta: $rutaId', name: 'DnevniPutnikService');
+
+      final querySnapshot = await _collection
+          .where('ruta_id', isEqualTo: rutaId)
+          .where('obrisan', isEqualTo: false)
+          .orderBy('vremePolaska')
+          .get();
+
+      return querySnapshot.docs.map((doc) => DnevniPutnik.fromMap(doc.data())).toList();
+    } catch (e) {
+      developer.log('Error getting dnevni putnici by ruta: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to get dnevni putnici by ruta: $e');
+    }
+  }
+
+  /// Dobija dnevne putnike po datumu
+  Future<List<DnevniPutnik>> getDnevniPutniciByDatum(DateTime datum) async {
+    try {
+      developer.log('Getting dnevni putnici by datum: $datum', name: 'DnevniPutnikService');
+
+      final startOfDay = DateTime(datum.year, datum.month, datum.day);
+      final endOfDay = DateTime(datum.year, datum.month, datum.day, 23, 59, 59);
+
+      final querySnapshot = await _collection
+          .where('datum', isGreaterThanOrEqualTo: startOfDay.toIso8601String().split('T')[0])
+          .where('datum', isLessThanOrEqualTo: endOfDay.toIso8601String().split('T')[0])
+          .where('obrisan', isEqualTo: false)
+          .orderBy('vremePolaska')
+          .get();
+
+      return querySnapshot.docs.map((doc) => DnevniPutnik.fromMap(doc.data())).toList();
+    } catch (e) {
+      developer.log('Error getting dnevni putnici by datum: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to get dnevni putnici by datum: $e');
+    }
+  }
+
+  /// Dobija dnevne putnike po statusu
+  Future<List<DnevniPutnik>> getDnevniPutniciByStatus(DnevniPutnikStatus status) async {
+    try {
+      developer.log('Getting dnevni putnici by status: ${status.value}', name: 'DnevniPutnikService');
+
+      final querySnapshot = await _collection
+          .where('status', isEqualTo: status.value)
+          .where('obrisan', isEqualTo: false)
+          .orderBy('createdAt', descending: true)
+          .get();
+
+      return querySnapshot.docs.map((doc) => DnevniPutnik.fromMap(doc.data())).toList();
+    } catch (e) {
+      developer.log('Error getting dnevni putnici by status: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to get dnevni putnici by status: $e');
+    }
+  }
+
+  /// Dobija dnevne putnike po vozaču
+  Future<List<DnevniPutnik>> getDnevniPutniciByVozac(String vozacId) async {
+    try {
+      developer.log('Getting dnevni putnici by vozac: $vozacId', name: 'DnevniPutnikService');
+
+      final querySnapshot = await _collection
+          .where('dodao_vozac_id', isEqualTo: vozacId)
+          .where('obrisan', isEqualTo: false)
+          .orderBy('createdAt', descending: true)
+          .get();
+
+      return querySnapshot.docs.map((doc) => DnevniPutnik.fromMap(doc.data())).toList();
+    } catch (e) {
+      developer.log('Error getting dnevni putnici by vozac: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to get dnevni putnici by vozac: $e');
+    }
+  }
+
+  /// Ažurira dnevnog putnika
+  Future<void> updateDnevniPutnik(DnevniPutnik putnik) async {
+    try {
+      developer.log('Updating dnevni putnik: ${putnik.id}', name: 'DnevniPutnikService');
+
+      final updatedPutnik = DnevniPutnik(
+        id: putnik.id,
+        ime: putnik.ime,
+        brojTelefona: putnik.brojTelefona,
+        adresaId: putnik.adresaId,
+        rutaId: putnik.rutaId,
+        datumPutovanja: putnik.datumPutovanja,
+        vremePolaska: putnik.vremePolaska,
+        brojMesta: putnik.brojMesta,
+        cena: putnik.cena,
+        status: putnik.status,
+        napomena: putnik.napomena,
+        vremePokupljenja: putnik.vremePokupljenja,
+        pokupioVozacId: putnik.pokupioVozacId,
+        vremePlacanja: putnik.vremePlacanja,
+        naplatioVozacId: putnik.naplatioVozacId,
+        dodaoVozacId: putnik.dodaoVozacId,
+        obrisan: putnik.obrisan,
+        createdAt: putnik.createdAt,
+        updatedAt: DateTime.now(),
+      );
+
+      await _collection.doc(putnik.id).update(updatedPutnik.toMap());
+
+      developer.log('Successfully updated dnevni putnik: ${putnik.id}', name: 'DnevniPutnikService');
+    } catch (e) {
+      developer.log('Error updating dnevni putnik: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to update dnevni putnik: $e');
+    }
+  }
+
+  /// Briše dnevnog putnika (logički - postavlja obrisan na true)
+  Future<void> deleteDnevniPutnik(String id) async {
+    try {
+      developer.log('Deleting dnevni putnik: $id', name: 'DnevniPutnikService');
+
+      await _collection.doc(id).update({
+        'obrisan': true,
+        'updated_at': DateTime.now().toIso8601String(),
+      });
+
+      developer.log('Successfully deleted dnevni putnik: $id', name: 'DnevniPutnikService');
+    } catch (e) {
+      developer.log('Error deleting dnevni putnik: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to delete dnevni putnik: $e');
+    }
+  }
+
+  /// Pokuplja putnika (označava kao pokupljen)
+  Future<void> pokupljajPutnika(String putnikId, String vozacId) async {
+    try {
+      developer.log('Pokupljanje putnika: $putnikId by vozac: $vozacId', name: 'DnevniPutnikService');
+
+      await _collection.doc(putnikId).update({
+        'status': DnevniPutnikStatus.pokupljen.value,
+        'pokupio_vozac_id': vozacId,
+        'vreme_pokupljenja': DateTime.now().toIso8601String(),
+        'updated_at': DateTime.now().toIso8601String(),
+      });
+
+      developer.log('Successfully pokupljen putnik: $putnikId', name: 'DnevniPutnikService');
+    } catch (e) {
+      developer.log('Error pokupljanje putnika: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to pokupiti putnika: $e');
+    }
+  }
+
+  /// Naplaćuje putovanje (označava kao pokupljen sa plaćanjem)
+  Future<void> naplataPutovanja(String putnikId, String vozacId) async {
+    try {
+      developer.log('Naplata putovanja: $putnikId by vozac: $vozacId', name: 'DnevniPutnikService');
+
+      await _collection.doc(putnikId).update({
+        'status': DnevniPutnikStatus.pokupljen.value,
+        'naplatio_vozac_id': vozacId,
+        'vreme_placanja': DateTime.now().toIso8601String(),
+        'updated_at': DateTime.now().toIso8601String(),
+      });
+
+      developer.log('Successfully naplaceno putovanje: $putnikId', name: 'DnevniPutnikService');
+    } catch (e) {
+      developer.log('Error naplata putovanja: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to naplatiti putovanje: $e');
+    }
+  }
+
+  /// Otkazuje rezervaciju
+  Future<void> otkaziRezervaciju(String putnikId) async {
+    try {
+      developer.log('Otkazivanje rezervacije: $putnikId', name: 'DnevniPutnikService');
+
+      await _collection.doc(putnikId).update({
+        'status': DnevniPutnikStatus.otkazan.value,
+        'updated_at': DateTime.now().toIso8601String(),
+      });
+
+      developer.log('Successfully otkazana rezervacija: $putnikId', name: 'DnevniPutnikService');
+    } catch (e) {
+      developer.log('Error otkazivanje rezervacije: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to otkazati rezervaciju: $e');
+    }
+  }
+
+  // Real-time Stream operacije
+
+  /// Stream za praćenje svih dnevnih putnika
+  Stream<List<DnevniPutnik>> watchAllDnevniPutnici() {
+    try {
+      developer.log('Starting watch all dnevni putnici stream', name: 'DnevniPutnikService');
+
+      return _collection
+          .where('obrisan', isEqualTo: false)
+          .orderBy('createdAt', descending: true)
+          .snapshots()
+          .map((snapshot) {
+        return snapshot.docs.map((doc) => DnevniPutnik.fromMap(doc.data())).toList();
+      });
+    } catch (e) {
+      developer.log('Error in watch all dnevni putnici stream: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to watch all dnevni putnici: $e');
+    }
+  }
+
+  /// Stream za praćenje dnevnih putnika po ruti
+  Stream<List<DnevniPutnik>> watchDnevniPutniciByRuta(String rutaId) {
+    try {
+      developer.log('Starting watch dnevni putnici by ruta stream: $rutaId', name: 'DnevniPutnikService');
+
+      return _collection
+          .where('ruta_id', isEqualTo: rutaId)
+          .where('obrisan', isEqualTo: false)
+          .orderBy('vremePolaska')
+          .snapshots()
+          .map((snapshot) {
+        return snapshot.docs.map((doc) => DnevniPutnik.fromMap(doc.data())).toList();
+      });
+    } catch (e) {
+      developer.log('Error in watch dnevni putnici by ruta stream: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to watch dnevni putnici by ruta: $e');
+    }
+  }
+
+  /// Stream za praćenje dnevnih putnika po datumu
+  Stream<List<DnevniPutnik>> watchDnevniPutniciByDatum(DateTime datum) {
+    try {
+      developer.log('Starting watch dnevni putnici by datum stream: $datum', name: 'DnevniPutnikService');
+
+      final startOfDay = DateTime(datum.year, datum.month, datum.day);
+      final endOfDay = DateTime(datum.year, datum.month, datum.day, 23, 59, 59);
+
+      return _collection
+          .where('datum', isGreaterThanOrEqualTo: startOfDay.toIso8601String().split('T')[0])
+          .where('datum', isLessThanOrEqualTo: endOfDay.toIso8601String().split('T')[0])
+          .where('obrisan', isEqualTo: false)
+          .orderBy('vremePolaska')
+          .snapshots()
+          .map((snapshot) {
+        return snapshot.docs.map((doc) => DnevniPutnik.fromMap(doc.data())).toList();
+      });
+    } catch (e) {
+      developer.log('Error in watch dnevni putnici by datum stream: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to watch dnevni putnici by datum: $e');
+    }
+  }
+
+  /// Stream za praćenje dnevnih putnika po statusu
+  Stream<List<DnevniPutnik>> watchDnevniPutniciByStatus(DnevniPutnikStatus status) {
+    try {
+      developer.log('Starting watch dnevni putnici by status stream: ${status.value}', name: 'DnevniPutnikService');
+
+      return _collection
+          .where('status', isEqualTo: status.value)
+          .where('obrisan', isEqualTo: false)
+          .orderBy('createdAt', descending: true)
+          .snapshots()
+          .map((snapshot) {
+        return snapshot.docs.map((doc) => DnevniPutnik.fromMap(doc.data())).toList();
+      });
+    } catch (e) {
+      developer.log('Error in watch dnevni putnici by status stream: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to watch dnevni putnici by status: $e');
+    }
+  }
+
+  /// Stream za praćenje jednog dnevnog putnika
+  Stream<DnevniPutnik?> watchDnevniPutnik(String id) {
+    try {
+      developer.log('Starting watch dnevni putnik stream: $id', name: 'DnevniPutnikService');
+
+      return _collection.doc(id).snapshots().map((snapshot) {
+        if (!snapshot.exists || snapshot.data() == null) {
+          return null;
+        }
+        return DnevniPutnik.fromMap(snapshot.data()!);
+      });
+    } catch (e) {
+      developer.log('Error in watch dnevni putnik stream: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to watch dnevni putnik: $e');
+    }
+  }
+
+  // Statistike i izvještaji
+
+  /// Dobija broj dnevnih putnika po statusu
+  Future<Map<DnevniPutnikStatus, int>> getCountByStatus() async {
+    try {
+      developer.log('Getting count by status', name: 'DnevniPutnikService');
+
+      final querySnapshot = await _collection.where('obrisan', isEqualTo: false).get();
+
+      final counts = <DnevniPutnikStatus, int>{};
+      for (final status in DnevniPutnikStatus.values) {
+        counts[status] = 0;
+      }
+
+      for (final doc in querySnapshot.docs) {
+        final data = doc.data();
+        final status = DnevniPutnikStatusExtension.fromString(
+          data['status'] as String? ?? 'rezervisan',
+        );
+        counts[status] = (counts[status] ?? 0) + 1;
+      }
+
+      return counts;
+    } catch (e) {
+      developer.log('Error getting count by status: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to get count by status: $e');
+    }
+  }
+
+  /// Dobija ukupnu zaradu od dnevnih putnika (pokupljenih sa plaćanjem)
+  Future<double> getTotalEarnings() async {
+    try {
+      developer.log('Getting total earnings', name: 'DnevniPutnikService');
+
+      final querySnapshot = await _collection.where('obrisan', isEqualTo: false).get();
+
+      double total = 0.0;
+      for (final doc in querySnapshot.docs) {
+        final data = doc.data();
+        // Računa samo one koji imaju vreme plaćanja (naplaćeni)
+        if (data['vreme_placanja'] != null) {
+          final cena = (data['cena'] as num?)?.toDouble() ?? 0.0;
+          final brojMesta = (data['broj_mesta'] as int?) ?? 1;
+          total += cena * brojMesta;
         }
       }
-      // Debug logging removed for production
-return putnici;
+
+      return total;
     } catch (e) {
-      return [];
+      developer.log('Error getting total earnings: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to get total earnings: $e');
     }
   }
 
-  /// Batch operacije - dodavanje više putnika odjednom
-  Future<List<DnevniPutnik>> dodajViseputnika(
-    List<DnevniPutnik> putnici,
-  ) async {
+  /// Dobija zaradu po datumu
+  Future<double> getEarningsByDate(DateTime datum) async {
     try {
-      final List<Map<String, dynamic>> data = putnici.map((p) => p.toMap()).toList();
+      developer.log('Getting earnings by date: $datum', name: 'DnevniPutnikService');
 
-      final response = await _supabase.from('dnevni_putnici').insert(data).select();
+      final startOfDay = DateTime(datum.year, datum.month, datum.day);
+      final endOfDay = DateTime(datum.year, datum.month, datum.day, 23, 59, 59);
 
-      final dodatiPutnici = response.map((json) => DnevniPutnik.fromMap(json)).toList();
+      final querySnapshot = await _collection
+          .where('datum', isGreaterThanOrEqualTo: startOfDay.toIso8601String().split('T')[0])
+          .where('datum', isLessThanOrEqualTo: endOfDay.toIso8601String().split('T')[0])
+          .where('obrisan', isEqualTo: false)
+          .get();
 
-      return dodatiPutnici;
+      double total = 0.0;
+      for (final doc in querySnapshot.docs) {
+        final data = doc.data();
+        // Računa samo one koji imaju vreme plaćanja (naplaćeni)
+        if (data['vreme_placanja'] != null) {
+          final cena = (data['cena'] as num?)?.toDouble() ?? 0.0;
+          final brojMesta = (data['broj_mesta'] as int?) ?? 1;
+          total += cena * brojMesta;
+        }
+      }
+
+      return total;
     } catch (e) {
-      rethrow;
+      developer.log('Error getting earnings by date: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to get earnings by date: $e');
     }
   }
 
-  /// Dohvata statistike za dnevne putnike
-  Future<Map<String, dynamic>> getStatistike(DateTime datum) async {
+  // Batch operacije
+
+  /// Kreira više dnevnih putnika odjednom
+  Future<List<String>> createBatchDnevniPutnici(List<DnevniPutnik> putnici) async {
     try {
-      final putnici = await getDnevniPutniciZaDatum(datum);
+      developer.log('Creating batch dnevni putnici: ${putnici.length}', name: 'DnevniPutnikService');
 
-      final ukupno = putnici.length;
-      final pokupljeni = putnici.where((p) => p.isPokupljen).length;
-      final placeni = putnici.where((p) => p.isPlacen).length;
-      final otkazani = putnici.where((p) => p.status == DnevniPutnikStatus.otkazan).length;
-      final ukupnaZarada = putnici.fold<double>(0, (sum, p) => sum + (p.isPlacen ? p.cena : 0));
+      final batch = _firestore.batch();
+      final ids = <String>[];
 
-      return {
-        'ukupno': ukupno,
-        'pokupljeni': pokupljeni,
-        'placeni': placeni,
-        'otkazani': otkazani,
-        'ukupna_zarada': ukupnaZarada,
-        'procenat_pokupljenosti': ukupno > 0 ? (pokupljeni / ukupno * 100).round() : 0,
-        'procenat_placenos': ukupno > 0 ? (placeni / ukupno * 100).round() : 0,
-      };
+      for (final putnik in putnici) {
+        final docRef = _collection.doc(putnik.id);
+        batch.set(docRef, putnik.toMap());
+        ids.add(putnik.id);
+      }
+
+      await batch.commit();
+
+      developer.log('Successfully created batch dnevni putnici: ${ids.length}', name: 'DnevniPutnikService');
+      return ids;
     } catch (e) {
-      return {};
+      developer.log('Error creating batch dnevni putnici: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to create batch dnevni putnici: $e');
     }
   }
 
-  /// Čisti cache (korisno za memory management)
-  void clearCache() {
-    _adresaCache.clear();
-    _rutaCache.clear();
+  /// Ažurira više dnevnih putnika odjednom
+  Future<void> updateBatchDnevniPutnici(List<DnevniPutnik> putnici) async {
+    try {
+      developer.log('Updating batch dnevni putnici: ${putnici.length}', name: 'DnevniPutnikService');
+
+      final batch = _firestore.batch();
+
+      for (final putnik in putnici) {
+        final updatedPutnik = DnevniPutnik(
+          id: putnik.id,
+          ime: putnik.ime,
+          brojTelefona: putnik.brojTelefona,
+          adresaId: putnik.adresaId,
+          rutaId: putnik.rutaId,
+          datumPutovanja: putnik.datumPutovanja,
+          vremePolaska: putnik.vremePolaska,
+          brojMesta: putnik.brojMesta,
+          cena: putnik.cena,
+          status: putnik.status,
+          napomena: putnik.napomena,
+          vremePokupljenja: putnik.vremePokupljenja,
+          pokupioVozacId: putnik.pokupioVozacId,
+          vremePlacanja: putnik.vremePlacanja,
+          naplatioVozacId: putnik.naplatioVozacId,
+          dodaoVozacId: putnik.dodaoVozacId,
+          obrisan: putnik.obrisan,
+          createdAt: putnik.createdAt,
+          updatedAt: DateTime.now(),
+        );
+
+        final docRef = _collection.doc(putnik.id);
+        batch.update(docRef, updatedPutnik.toMap());
+      }
+
+      await batch.commit();
+
+      developer.log('Successfully updated batch dnevni putnici: ${putnici.length}', name: 'DnevniPutnikService');
+    } catch (e) {
+      developer.log('Error updating batch dnevni putnici: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to update batch dnevni putnici: $e');
+    }
   }
 
-  /// Validacija pre dodavanja novog putnika
-  Future<bool> validateNoviPutnik(DnevniPutnik putnik) async {
-    if (!putnik.isValid) {
-      return false;
+  /// Briše više dnevnih putnika odjednom (logički)
+  Future<void> deleteBatchDnevniPutnici(List<String> ids) async {
+    try {
+      developer.log('Deleting batch dnevni putnici: ${ids.length}', name: 'DnevniPutnikService');
+
+      final batch = _firestore.batch();
+
+      for (final id in ids) {
+        final docRef = _collection.doc(id);
+        batch.update(docRef, {
+          'obrisan': true,
+          'updated_at': DateTime.now().toIso8601String(),
+        });
+      }
+
+      await batch.commit();
+
+      developer.log('Successfully deleted batch dnevni putnici: ${ids.length}', name: 'DnevniPutnikService');
+    } catch (e) {
+      developer.log('Error deleting batch dnevni putnici: $e', name: 'DnevniPutnikService', level: 1000);
+      throw Exception('Failed to delete batch dnevni putnici: $e');
     }
-
-    // Proveri da li adresa i ruta postoje
-    final adresa = await _getAdresaById(putnik.adresaId);
-    final ruta = await _getRutaById(putnik.rutaId);
-
-    if (adresa == null) {
-      return false;
-    }
-
-    if (ruta == null) {
-      return false;
-    }
-
-    // Proveri duplikate za isti datum i vreme
-    final postojeciPutnici = await getDnevniPutniciZaDatum(putnik.datumPutovanja);
-    final duplikat = postojeciPutnici.any(
-      (p) =>
-          p.ime.toLowerCase() == putnik.ime.toLowerCase() &&
-          p.vremePolaska == putnik.vremePolaska &&
-          p.adresaId == putnik.adresaId,
-    );
-
-    if (duplikat) {
-      // Debug logging removed for production
-return false;
-    }
-
-    return true;
   }
 }
-
-
-
-
-

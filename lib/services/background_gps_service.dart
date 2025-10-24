@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+// import 'package:supabase_flutter/supabase_flutter.dart'; // Firebase migration
 
 /// 🛰️ BESPLATNO BACKGROUND GPS TRACKING (SIMPLIFIED)
 /// Kontinuirani GPS tracking koristeći samo flutter_background_service
@@ -100,7 +100,7 @@ void onStart(ServiceInstance service) async {
       // Pošalji na Supabase (ako je moguće)
       await _sendLocationToSupabase(position);
 
-      print('🛰️ GPS Location: ${position.latitude}, ${position.longitude}');
+      // Debug removed
 
       // Invoke frontend sa novom pozicijom
       service.invoke('update', {
@@ -109,7 +109,7 @@ void onStart(ServiceInstance service) async {
         'timestamp': DateTime.now().toIso8601String(),
       });
     } catch (e) {
-      print('❌ GPS Error: $e');
+      // Debug removed
     }
   });
 
@@ -128,7 +128,9 @@ Future<bool> onIosBackground(ServiceInstance service) async {
 /// 📡 POŠALJI LOKACIJU NA SUPABASE
 Future<void> _sendLocationToSupabase(Position position) async {
   try {
-    // Samo ako je Supabase dostupan
+    // Firebase migration - GPS tracking will be implemented with Firestore
+    // TODO: Implement Firebase GPS tracking
+    /*
     if (Supabase.instance.client.auth.currentUser != null) {
       await Supabase.instance.client.from('gps_tracking').insert({
         'user_id': Supabase.instance.client.auth.currentUser!.id,
@@ -138,8 +140,9 @@ Future<void> _sendLocationToSupabase(Position position) async {
         'timestamp': DateTime.now().toIso8601String(),
       });
     }
+    */
   } catch (e) {
     // Ignoriši Supabase greške u background service
-    print('⚠️ Supabase send failed (background): $e');
+    // Debug removed
   }
 }

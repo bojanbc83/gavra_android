@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../models/putnik.dart';
-import '../services/putnik_service.dart';
+import '../services/firestore_service.dart';
 import '../theme.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/putnik_list.dart';
@@ -128,12 +128,8 @@ class _DugoviScreenState extends State<DugoviScreen> {
         _errorMessage = null;
       });
 
-    _dugoviSubscription = PutnikService()
-        .streamKombinovaniPutniciFiltered(
-          isoDate: DateTime.now().toIso8601String().split('T')[0],
-        )
-        .timeout(const Duration(seconds: 30))
-        .listen(
+    _dugoviSubscription =
+        FirestoreService.streamKombinovaniPutniciFiltered().timeout(const Duration(seconds: 30)).listen(
       (putnici) {
         if (mounted) {
           _registerStreamHeartbeat('dugovi_stream');

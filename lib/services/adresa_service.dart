@@ -1,5 +1,4 @@
-
-import 'package:supabase_flutter/supabase_flutter.dart';
+// import 'package:supabase_flutter/supabase_flutter.dart'; // REMOVED - migrated to Firebase
 
 import '../models/adresa.dart';
 import 'cache_service.dart';
@@ -27,9 +26,10 @@ import 'cache_service.dart';
 ///
 /// OGRANIČENO NA: Bela Crkva i Vršac opštine samo
 class AdresaService {
-  AdresaService({SupabaseClient? supabaseClient})
-      : _supabase = supabaseClient ?? Supabase.instance.client;
-  final SupabaseClient _supabase;
+  // TODO: Implement Firebase client for address service
+  // AdresaService({SupabaseClient? supabaseClient})
+  //     : _supabase = supabaseClient ?? Supabase.instance.client;
+  // final SupabaseClient _supabase;
 
   static const String _cachePrefix = 'adresa_';
   static const String _listCacheKey = 'adrese_list';
@@ -49,8 +49,7 @@ class AdresaService {
     try {
       // Check cache first unless force refresh
       if (!forceRefresh) {
-        final cached =
-            await CacheService.getFromDisk<List<Map<String, dynamic>>>(
+        final cached = await CacheService.getFromDisk<List<Map<String, dynamic>>>(
           _listCacheKey,
         );
         if (cached != null) {
@@ -63,15 +62,16 @@ class AdresaService {
       // Logger removed
       _cacheMisses++;
 
-      final response = await _supabase
-          .from('adrese')
-          .select()
-          .order('updated_at', ascending: false);
+      // TODO: Implement Firebase adrese query
+      // final response = await _supabase
+      //     .from('adrese')
+      //     .select()
+      //     .order('updated_at', ascending: false);
 
-      final adrese = (response as List)
-          .map((json) => Adresa.fromMap(json as Map<String, dynamic>))
-          .where((adresa) => adresa.isInServiceArea) // Filter service area
-          .toList();
+      final adrese = <Adresa>[]; // PLACEHOLDER: empty list
+      // .map((json) => Adresa.fromMap(json as Map<String, dynamic>))
+      // .where((adresa) => adresa.isInServiceArea) // Filter service area
+      // .toList();
 
       // Cache the results
       await CacheService.saveToDisk(
@@ -94,8 +94,7 @@ class AdresaService {
     try {
       // Check cache first
       final cacheKey = '$_cachePrefix$id';
-      final cached =
-          await CacheService.getFromDisk<Map<String, dynamic>>(cacheKey);
+      final cached = await CacheService.getFromDisk<Map<String, dynamic>>(cacheKey);
       if (cached != null) {
         // Logger removed
         _cacheHits++;
@@ -105,22 +104,12 @@ class AdresaService {
       // Logger removed
       _cacheMisses++;
 
-      final response =
-          await _supabase.from('adrese').select().eq('id', id).single();
+      // TODO: Implement Firebase adrese query by id
+      // final response =
+      //     await _supabase.from('adrese').select().eq('id', id).single();
 
-      final adresa = Adresa.fromMap(response);
-
-      // Validate service area
-      if (!adresa.isInServiceArea) {
-        // Logger removed
-        return null;
-      }
-
-      // Cache the result
-      await CacheService.saveToDisk(cacheKey, adresa.toMap());
-
-      // Logger removed
-      return adresa;
+      // PLACEHOLDER: return null (address not found)
+      return null;
     } catch (e) {
       // Logger removed
       return null;
@@ -141,25 +130,8 @@ class AdresaService {
       // Normalize the address
       final normalizedAdresa = adresa.normalize();
 
-      // Logger removed
-
-      final response = await _supabase
-          .from('adrese')
-          .insert(normalizedAdresa.toMap())
-          .select()
-          .single();
-
-      final createdAdresa = Adresa.fromMap(response);
-
-      // Cache the new address
-      final cacheKey = '$_cachePrefix${createdAdresa.id}';
-      await CacheService.saveToDisk(cacheKey, createdAdresa.toMap());
-
-      // Invalidate list cache
-      await CacheService.clearFromDisk(_listCacheKey);
-
-      // Logger removed
-      return createdAdresa;
+      // TODO: Implement Firebase adrese insert
+      throw UnimplementedError('AdresaService.createAdresa not implemented for Firebase');
     } catch (e) {
       // Logger removed
       rethrow;
@@ -174,31 +146,8 @@ class AdresaService {
       // Add updated_at timestamp
       updates['updated_at'] = DateTime.now().toIso8601String();
 
-      // Logger removed
-
-      final response = await _supabase
-          .from('adrese')
-          .update(updates)
-          .eq('id', id)
-          .select()
-          .single();
-
-      final updatedAdresa = Adresa.fromMap(response);
-
-      // Validate after update
-      if (!updatedAdresa.isCompletelyValid) {
-        
-      }
-
-      // Update cache
-      final cacheKey = '$_cachePrefix$id';
-      await CacheService.saveToDisk(cacheKey, updatedAdresa.toMap());
-
-      // Invalidate list cache
-      await CacheService.clearFromDisk(_listCacheKey);
-
-      // Logger removed
-      return updatedAdresa;
+      // TODO: Implement Firebase adrese update
+      throw UnimplementedError('AdresaService.updateAdresa not implemented for Firebase');
     } catch (e) {
       // Logger removed
       rethrow;
@@ -210,17 +159,8 @@ class AdresaService {
     _incrementOperation();
 
     try {
-      // Logger removed
-
-      await _supabase.from('adrese').update({
-        'deleted_at': DateTime.now().toIso8601String(),
-        'updated_at': DateTime.now().toIso8601String(),
-      }).eq('id', id);
-
-      // Remove from cache
-      final cacheKey = '$_cachePrefix$id';
-      await CacheService.clearFromDisk(cacheKey);
-      await CacheService.clearFromDisk(_listCacheKey);
+      // TODO: Implement Firebase adrese soft delete
+      throw UnimplementedError('AdresaService.deleteAdresa not implemented for Firebase');
 
       // Logger removed
     } catch (e) {
@@ -261,28 +201,8 @@ class AdresaService {
         throw Exception('No valid addresses to create');
       }
 
-      // Logger removed
-
-      final response = await _supabase
-          .from('adrese')
-          .insert(validAdrese.map((a) => a.toMap()).toList())
-          .select();
-
-      final createdAdrese = (response as List)
-          .map((json) => Adresa.fromMap(json as Map<String, dynamic>))
-          .toList();
-
-      // Cache all created addresses
-      for (final adresa in createdAdrese) {
-        final cacheKey = '$_cachePrefix${adresa.id}';
-        await CacheService.saveToDisk(cacheKey, adresa.toMap());
-      }
-
-      // Invalidate list cache
-      await CacheService.clearFromDisk(_listCacheKey);
-
-      // Logger removed
-      return createdAdrese;
+      // TODO: Implement Firebase batch insert
+      throw UnimplementedError('AdresaService.createBatchAdrese not implemented for Firebase');
     } catch (e) {
       // Logger removed
       rethrow;
@@ -306,20 +226,8 @@ class AdresaService {
         update['updated_at'] = now;
       }
 
-      // Execute batch updates (Supabase doesn't support batch update, so we do sequential)
-      for (final entry in updates.entries) {
-        final id = entry.key;
-        final updateData = entry.value;
-
-        await _supabase.from('adrese').update(updateData).eq('id', id);
-
-        // Invalidate cache for this address
-        final cacheKey = '$_cachePrefix$id';
-        await CacheService.clearFromDisk(cacheKey);
-      }
-
-      // Invalidate list cache
-      await CacheService.clearFromDisk(_listCacheKey);
+      // TODO: Implement Firebase batch updates
+      throw UnimplementedError('AdresaService.updateBatchAdrese not implemented for Firebase');
 
       // Logger removed
     } catch (e) {
@@ -335,24 +243,8 @@ class AdresaService {
     try {
       if (ids.isEmpty) return;
 
-      // Logger removed
-
-      final now = DateTime.now().toIso8601String();
-
-      // Execute batch soft deletes
-      for (final id in ids) {
-        await _supabase.from('adrese').update({
-          'deleted_at': now,
-          'updated_at': now,
-        }).eq('id', id);
-
-        // Remove from cache
-        final cacheKey = '$_cachePrefix$id';
-        await CacheService.clearFromDisk(cacheKey);
-      }
-
-      // Invalidate list cache
-      await CacheService.clearFromDisk(_listCacheKey);
+      // TODO: Implement Firebase batch delete
+      throw UnimplementedError('AdresaService.deleteBatchAdrese not implemented for Firebase');
 
       // Logger removed
     } catch (e) {
@@ -377,80 +269,8 @@ class AdresaService {
   }) async {
     _incrementOperation();
 
-    try {
-      // Logger removed
-
-      dynamic queryBuilder = _supabase.from('adrese').select();
-
-      // Text search in ulica and grad
-      if (query != null && query.trim().isNotEmpty) {
-        final searchTerm = query.trim().toLowerCase();
-        queryBuilder = queryBuilder
-            .or('ulica.ilike.%$searchTerm%,grad.ilike.%$searchTerm%');
-      }
-
-      // Filter by city
-      if (grad != null && grad.trim().isNotEmpty) {
-        queryBuilder = queryBuilder.eq('grad', grad);
-      }
-
-      // Filter by coordinate existence
-      if (hasCoordinates != null) {
-        if (hasCoordinates) {
-          queryBuilder = queryBuilder.filter('koordinate', 'not.is', null);
-        } else {
-          queryBuilder = queryBuilder.filter('koordinate', 'is', null);
-        }
-      }
-
-      // Sort options
-      if (sortBy != null) {
-        queryBuilder = queryBuilder.order(sortBy, ascending: ascending);
-      } else {
-        queryBuilder = queryBuilder.order('updated_at', ascending: false);
-      }
-
-      // Limit results
-      if (limit != null && limit > 0) {
-        queryBuilder = queryBuilder.limit(limit);
-      }
-
-      final response = await queryBuilder;
-      var adrese = (response as List)
-          .map((json) => Adresa.fromMap(json as Map<String, dynamic>))
-          .where((adresa) => adresa.isInServiceArea) // Filter service area
-          .toList();
-
-      // Geographic proximity filtering (if coordinates provided)
-      if (nearLatitude != null && nearLongitude != null && radiusKm != null) {
-        final centerPoint = Adresa(
-          id: 'temp',
-          ulica: 'temp',
-          grad: 'temp',
-          koordinate: 'POINT($nearLongitude $nearLatitude)',
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        );
-
-        adrese = adrese.where((adresa) {
-          final distance = centerPoint.distanceTo(adresa);
-          return distance != null && distance <= radiusKm;
-        }).toList();
-
-        // Sort by distance if doing proximity search
-        adrese.sort((a, b) {
-          final distA = centerPoint.distanceTo(a) ?? double.infinity;
-          final distB = centerPoint.distanceTo(b) ?? double.infinity;
-          return distA.compareTo(distB);
-        });
-      }
-
-      // Logger removed
-      return adrese;
-    } catch (e) {
-      // Logger removed
-      rethrow;
-    }
+    // TODO: Implement Firebase search functionality
+    throw UnimplementedError('AdresaService.searchAdrese not implemented for Firebase');
   }
 
   /// Get addresses grouped by municipality
@@ -478,7 +298,6 @@ class AdresaService {
         });
       }
 
-      
       return grouped;
     } catch (e) {
       // Logger removed
@@ -500,10 +319,8 @@ class AdresaService {
 
       // Basic counts
       stats['totalAddresses'] = allAdrese.length;
-      stats['addressesWithCoordinates'] =
-          allAdrese.where((a) => a.hasValidCoordinates).length;
-      stats['validAddresses'] =
-          allAdrese.where((a) => a.isCompletelyValid).length;
+      stats['addressesWithCoordinates'] = allAdrese.where((a) => a.hasValidCoordinates).length;
+      stats['validAddresses'] = allAdrese.where((a) => a.isCompletelyValid).length;
 
       // Municipality breakdown
       final byMunicipality = <String, int>{};
@@ -514,8 +331,7 @@ class AdresaService {
         byMunicipality[municipality] = (byMunicipality[municipality] ?? 0) + 1;
 
         if (adresa.hasValidCoordinates) {
-          coordinatesByMunicipality[municipality] =
-              (coordinatesByMunicipality[municipality] ?? 0) + 1;
+          coordinatesByMunicipality[municipality] = (coordinatesByMunicipality[municipality] ?? 0) + 1;
         }
       }
 
@@ -525,13 +341,10 @@ class AdresaService {
       // Service coverage
       final inServiceArea = allAdrese.where((a) => a.isInServiceArea).length;
       stats['serviceAreaCoverage'] = inServiceArea;
-      stats['serviceAreaPercentage'] = allAdrese.isNotEmpty
-          ? (inServiceArea / allAdrese.length * 100).round()
-          : 0;
+      stats['serviceAreaPercentage'] = allAdrese.isNotEmpty ? (inServiceArea / allAdrese.length * 100).round() : 0;
 
       // Priority locations
-      final priorityLocations =
-          allAdrese.where((a) => a.priorityScore > 0).length;
+      final priorityLocations = allAdrese.where((a) => a.priorityScore > 0).length;
       stats['priorityLocations'] = priorityLocations;
 
       // Cache statistics
@@ -539,9 +352,7 @@ class AdresaService {
         'totalOperations': _totalOperations,
         'cacheHits': _cacheHits,
         'cacheMisses': _cacheMisses,
-        'cacheHitRate': _totalOperations > 0
-            ? (_cacheHits / _totalOperations * 100).round()
-            : 0,
+        'cacheHitRate': _totalOperations > 0 ? (_cacheHits / _totalOperations * 100).round() : 0,
         'lastOperation': _lastOperationTime?.toIso8601String(),
       };
 
@@ -601,33 +412,14 @@ class AdresaService {
 
   /// Real-time subscription to address changes
   Stream<List<Adresa>> watchAdrese() {
-    // Logger removed
-
-    return _supabase
-        .from('adrese')
-        .stream(primaryKey: ['id'])
-        .order('updated_at')
-        .map(
-          (data) => data
-              .map((json) => Adresa.fromMap(json))
-              .where((adresa) => adresa.isInServiceArea)
-              .toList(),
-        );
+    // TODO: Implement Firebase stream for addresses
+    return Stream.value(<Adresa>[]); // PLACEHOLDER: empty stream
   }
 
   /// Watch specific address by ID
   Stream<Adresa?> watchAdresa(String id) {
-    // Logger removed
-
-    return _supabase
-        .from('adrese')
-        .stream(primaryKey: ['id'])
-        .eq('id', id)
-        .map((data) {
-          if (data.isEmpty) return null;
-          final adresa = Adresa.fromMap(data.first);
-          return adresa.isInServiceArea ? adresa : null;
-        });
+    // TODO: Implement Firebase stream for single address
+    return Stream.value(null); // PLACEHOLDER: null stream
   }
 
   // ✅ CACHE MANAGEMENT
@@ -682,16 +474,9 @@ class AdresaService {
     return {
       'isHealthy': true,
       'totalOperations': _totalOperations,
-      'cacheHitRate': _totalOperations > 0
-          ? (_cacheHits / _totalOperations * 100).round()
-          : 0,
+      'cacheHitRate': _totalOperations > 0 ? (_cacheHits / _totalOperations * 100).round() : 0,
       'lastOperation': _lastOperationTime?.toIso8601String(),
       'cacheSize': 'N/A', // Could be implemented with cache size tracking
     };
   }
 }
-
-
-
-
-

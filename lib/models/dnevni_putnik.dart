@@ -98,6 +98,12 @@ class DnevniPutnik {
       updatedAt: DateTime.parse(map['updated_at'] as String),
     );
   }
+
+  /// Factory constructor za kreiranje iz JSON podataka (Firebase/Firestore)
+  factory DnevniPutnik.fromJson(Map<String, dynamic> json) {
+    return DnevniPutnik.fromMap(json);
+  }
+
   final String id;
   final String ime;
   final String? brojTelefona;
@@ -352,8 +358,3 @@ class DnevniPutnik {
     return id.hashCode ^ ime.hashCode ^ datumPutovanja.hashCode ^ vremePolaska.hashCode;
   }
 }
-
-
-
-
-

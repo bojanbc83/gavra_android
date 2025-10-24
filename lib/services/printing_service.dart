@@ -1,16 +1,21 @@
 // 'dart:typed_data' not required; elements available via Flutter packages
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:printing/printing.dart';
+import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:intl/intl.dart';
-import 'package:flutter/foundation.dart';
+import 'package:printing/printing.dart';
+
 import '../models/putnik.dart';
-import '../services/putnik_service.dart';
+// import '../services/putnik_service.dart'; // Firebase migration
 import '../utils/text_utils.dart';
 
-class PrintingService {
-  static final PutnikService _putnikService = PutnikService();
+class PrintingService { Printing.layoutPdf(
+        onLayout = (PdfPageFormat format) async => pdf,
+        name =
+            'Spisak_putnika_${selectedDay}_${selectedVreme}_${selectedGrad}_${DateFormat('dd_MM_yyyy').format(DateTime.now())}.pdf',
+      );
+  // static final PutnikService _putnikService = PutnikService(); // Firebase migration
 
   // Use centralized logger
 
@@ -21,19 +26,9 @@ class PrintingService {
     String selectedGrad,
     BuildContext context,
   ) async {
-    try {
-      // Debug logging removed for production
-// ✅ KORISTI ISTI STREAM kao home_screen za tačne podatke
-      // Try to compute isoDate from selectedDay (if present) - otherwise leave null
-      String? isoDate;
-      try {
-        // selectedDay is a full name like "Ponedeljak" - map to next matching date (best-effort)
-        // Fallback: use today
-        isoDate = DateTime.now().toIso8601String().split('T')[0];
-      } catch (_) {
-        isoDate = DateTime.now().toIso8601String().split('T')[0];
-      }
-
+    throw UnimplementedError('Firebase migration pending');
+  }
+      /*
       List<Putnik> sviPutnici = await _putnikService
           .streamKombinovaniPutniciFiltered(
             isoDate: isoDate,
@@ -41,6 +36,7 @@ class PrintingService {
             vreme: selectedVreme,
           )
           .first;
+      */
 
       // Konvertuj pun naziv dana u kraticu za poređenje sa bazom
       String getDayAbbreviation(String fullDayName) {
@@ -96,33 +92,26 @@ class PrintingService {
           final normalizedPutnikGrad = TextUtils.normalizeText(putnik.grad);
           final normalizedGrad = TextUtils.normalizeText(selectedGrad);
           final odgovarajuciGrad =
-              normalizedPutnikGrad.contains(normalizedGrad) ||
-                  normalizedGrad.contains(normalizedPutnikGrad);
+              normalizedPutnikGrad.contains(normalizedGrad) || normalizedGrad.contains(normalizedPutnikGrad);
 
           // Poređenje vremena - normalizuj oba formata
           final putnikPolazak = putnik.polazak.toString().trim();
           final selectedVremeStr = selectedVreme.trim();
-          final odgovarajuciPolazak =
-              normalizeTime(putnikPolazak) == normalizeTime(selectedVremeStr) ||
-                  (normalizeTime(putnikPolazak)
-                      .startsWith(normalizeTime(selectedVremeStr)));
+          final odgovarajuciPolazak = normalizeTime(putnikPolazak) == normalizeTime(selectedVremeStr) ||
+              (normalizeTime(putnikPolazak).startsWith(normalizeTime(selectedVremeStr)));
 
           // DODAJ FILTRIRANJE PO DANU I ZA MESEČNE PUTNIKE
-          final odgovarajuciDan =
-              putnik.dan.toLowerCase().contains(danBaza.toLowerCase());
+          final odgovarajuciDan = putnik.dan.toLowerCase().contains(danBaza.toLowerCase());
 
-          final result = odgovarajuciGrad &&
-              odgovarajuciPolazak &&
-              odgovarajuciDan &&
-              normalizedStatus != 'obrisan';
+          final result = odgovarajuciGrad && odgovarajuciPolazak && odgovarajuciDan && normalizedStatus != 'obrisan';
 
           return result;
         } else {
           // DNEVNI/OBIČNI PUTNICI - standardno filtriranje
           final normalizedPutnikGrad = TextUtils.normalizeText(putnik.grad);
           final normalizedGrad = TextUtils.normalizeText(selectedGrad);
-          final gradMatch = normalizedPutnikGrad.contains(normalizedGrad) ||
-              normalizedGrad.contains(normalizedPutnikGrad);
+          final gradMatch =
+              normalizedPutnikGrad.contains(normalizedGrad) || normalizedGrad.contains(normalizedPutnikGrad);
 
           // Konvertuj pun naziv dana u kraticu za poređenje sa bazom
           final odgovara = gradMatch &&
@@ -157,15 +146,11 @@ class PrintingService {
       );
 
       // Otvori pregled za štampanje
-      await Printing.layoutPdf(
-        onLayout: (PdfPageFormat format) async => pdf,
-        name:
-            'Spisak_putnika_${selectedDay}_${selectedVreme}_${selectedGrad}_${DateFormat('dd_MM_yyyy').format(DateTime.now())}.pdf',
-      );
+      await
       // Debug logging removed for production
-} catch (e) {
+    } void catch (e) {
       // Debug logging removed for production
-if (context.mounted) {
+      if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('❌ Greška pri štampanju: $e'),
@@ -177,7 +162,7 @@ if (context.mounted) {
   }
 
   /// Kreira PDF dokument sa spiskom putnika
-  static Future<Uint8List> _createPutniksPDF(
+  Future<Uint8List> _createPutniksPDF(
     List<Putnik> putnici,
     String selectedDay,
     String selectedVreme,
@@ -188,8 +173,7 @@ if (context.mounted) {
     // Grupiši putnike po statusu
     final pokupljeni = putnici.where((p) => p.jePokupljen).toList();
     final otkazani = putnici.where((p) => p.jeOtkazan).toList();
-    final cekaju =
-        putnici.where((p) => !p.jePokupljen && !p.jeOtkazan).toList();
+    final cekaju = putnici.where((p) => !p.jePokupljen && !p.jeOtkazan).toList();
 
     // Sortiraj po gradu/destinaciji
     pokupljeni.sort((a, b) => a.grad.compareTo(b.grad));
@@ -263,7 +247,7 @@ if (context.mounted) {
   }
 
   /// Kreira zaglavlje dokumenta
-  static pw.Widget _buildHeader(
+  pw.Widget _buildHeader(
     String selectedDay,
     String selectedVreme,
     String selectedGrad,
@@ -333,7 +317,7 @@ if (context.mounted) {
   }
 
   /// Kreira sekciju sa statistikama
-  static pw.Widget _buildStatisticsSection(
+  pw.Widget _buildStatisticsSection(
     int pokupljeni,
     int otkazani,
     int cekaju,
@@ -360,7 +344,7 @@ if (context.mounted) {
   }
 
   /// Kreira karticu sa statistikom
-  static pw.Widget _buildStatCard(String label, String value, PdfColor color) {
+  pw.Widget _buildStatCard(String label, String value, PdfColor color) {
     return pw.Column(
       children: [
         pw.Text(
@@ -380,7 +364,7 @@ if (context.mounted) {
   }
 
   /// Kreira naslov sekcije
-  static pw.Widget _buildSectionTitle(String title, Color color) {
+  pw.Widget _buildSectionTitle(String title, Color color) {
     return pw.Container(
       width: double.infinity,
       padding: const pw.EdgeInsets.symmetric(vertical: 8, horizontal: 12),
@@ -401,7 +385,7 @@ if (context.mounted) {
   }
 
   /// Kreira tabelu sa putnicima
-  static pw.Widget _buildPutnikTable(List<Putnik> putnici) {
+  pw.Widget _buildPutnikTable(List<Putnik> putnici) {
     return pw.Table(
       border: pw.TableBorder.all(color: PdfColors.grey),
       columnWidths: const {
@@ -452,7 +436,7 @@ if (context.mounted) {
   }
 
   /// Kreira ćeliju tabele
-  static pw.Widget _buildTableCell(String text, {bool isHeader = false}) {
+  pw.Widget _buildTableCell(String text, {bool isHeader = false}) {
     return pw.Container(
       padding: const pw.EdgeInsets.all(8),
       child: pw.Text(
@@ -467,7 +451,7 @@ if (context.mounted) {
   }
 
   /// Kreira footer dokumenta
-  static pw.Widget _buildFooter() {
+  pw.Widget _buildFooter() {
     return pw.Column(
       children: [
         pw.Divider(),
@@ -488,8 +472,3 @@ if (context.mounted) {
     );
   }
 }
-
-
-
-
-

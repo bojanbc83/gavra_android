@@ -1,0 +1,80 @@
+rules_version='2'
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ==============================================================================
+    // GAVRA 013 - PRODUCTION FIRESTORE SECURITY RULES
+    // Created during Supabase → Firebase migration
+    // ==============================================================================
+
+    // 👤 AUTHENTICATED USERS ONLY
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // 👨‍💼 USER OWNS RESOURCE
+    function isOwner(uid) {
+      return request.auth.uid == uid;
+    }
+
+    // 🚌 VOZACI COLLECTION - Only authenticated drivers can read/write their own data
+    match /vozaci/{vozacId} {
+      allow read, write: if isAuthenticated() && isOwner(vozacId);
+    }
+
+    // 👥 MESECNI PUTNICI - Only authenticated users can manage their passengers
+    match /mesecni_putnici/{putnikId} {
+      allow read, write: if isAuthenticated() && isOwner(resource.data.vozac_id);
+      allow create: if isAuthenticated();
+    }
+
+    // 🎫 DNEVNI PUTNICI - Only authenticated users can manage their passengers  
+    match /dnevni_putnici/{putnikId} {
+      allow read, write: if isAuthenticated() && isOwner(resource.data.vozac_id);
+      allow create: if isAuthenticated();
+    }
+
+    // 📍 ADRESE - All authenticated users can read addresses
+    match /adrese/{adresaId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated(); // Drivers can add new addresses
+    }
+
+    // 🚗 VOZILA - Only vehicle owners can modify their vehicles
+    match /vozila/{voziloId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && isOwner(resource.data.vlasnik_id);
+    }
+
+    // 🛣️ PUTOVANJA ISTORIJA - Drivers can read/write their trip history
+    match /putovanja_istorija/{putovanjeId} {
+      allow read, write: if isAuthenticated() && isOwner(resource.data.vozac_id);
+      allow create: if isAuthenticated();
+    }
+
+    // 📍 GPS LOKACIJE - Real-time GPS tracking for active trips
+    match /gps_lokacije/{lokacijaId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && isOwner(resource.data.vozac_id);
+      allow create: if isAuthenticated();
+    }
+
+    // 🗺️ RUTE - All authenticated users can read routes
+    match /rute/{rutaId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated(); // Drivers can optimize routes
+    }
+
+    // 📊 ANALYTICS & SYSTEM COLLECTIONS (read-only for users)
+    match /system_stats/{document} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Only backend can write system stats
+    }
+
+    // 🔔 NOTIFICATIONS (users can read their own notifications)
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated() && isOwner(resource.data.user_id);
+      allow write: if false; // Only backend creates notifications
+    }
+  }
+}

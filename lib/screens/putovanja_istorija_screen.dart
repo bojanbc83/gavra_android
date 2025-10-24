@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../models/putovanja_istorija.dart';
-import '../services/putovanja_istorija_service.dart';
 import '../theme.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/realtime_error_widgets.dart'; // 🚨 REALTIME error handling
@@ -134,8 +133,8 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
         _errorMessage = null;
       });
 
-    _putovanjaSubscription =
-        PutovanjaIstorijaService.streamPutovanjaZaDatum(_selectedDate).timeout(const Duration(seconds: 30)).listen(
+    // Firebase migration - empty stream for now
+    _putovanjaSubscription = Stream<List<PutovanjaIstorija>>.value([]).listen(
       (putovanja) {
         if (mounted) {
           _registerStreamHeartbeat('putovanja_stream');
@@ -1254,11 +1253,8 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
   // 📄 CSV EXPORT IMPLEMENTATION
   Future<void> _exportToCSV(List<PutovanjaIstorija> data) async {
     try {
-      final csvContent = await PutovanjaIstorijaService.exportToCSV(
-        odDatuma: _selectedDate,
-        doDatuma: _selectedDate,
-        tipPutnika: _selectedFilter == 'svi' ? null : _selectedFilter,
-      );
+      // Firebase migration - export not implemented yet
+      final csvContent = 'Export not available yet';
 
       if (csvContent.isNotEmpty) {
         // U realnoj aplikaciji, ovde bi bio kod za čuvanje fajla
@@ -1422,7 +1418,7 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
         updatedAt: DateTime.now(),
       );
 
-      await PutovanjaIstorijaService.dodajPutovanje(novoPutovanje);
+      // Firebase migration - add operation not implemented yet
 
       if (mounted) {
         Navigator.pop(context);
@@ -1555,7 +1551,7 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
         updatedAt: DateTime.now(),
       );
 
-      await PutovanjaIstorijaService.azurirajPutovanje(azuriranoPutovanje);
+      // Firebase migration - update operation not implemented yet
 
       if (mounted) {
         Navigator.pop(context);
@@ -1636,7 +1632,7 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
       updatedAt: DateTime.now(),
     );
 
-    await PutovanjaIstorijaService.azurirajPutovanje(azuriranoPutovanje);
+    // Firebase migration - update operation not implemented yet
     if (mounted) {
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(

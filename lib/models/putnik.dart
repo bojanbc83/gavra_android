@@ -93,6 +93,11 @@ class Putnik {
     throw Exception('Nepoznata struktura podataka - nisu iz mesecni_putnici ni putovanja_istorija');
   }
 
+  /// Factory constructor za kreiranje iz JSON podataka (Firebase/Firestore)
+  factory Putnik.fromJson(Map<String, dynamic> json) {
+    return Putnik.fromMap(json);
+  }
+
   // NOVI: Factory za mesecni_putnici tabelu
   factory Putnik.fromMesecniPutnici(Map<String, dynamic> map) {
     final weekday = DateTime.now().weekday;
@@ -605,5 +610,39 @@ class Putnik {
   static String _getDanNedeljeKratica(int weekday) {
     const daniKratice = ['pon', 'uto', 'sre', 'cet', 'pet', 'sub', 'ned'];
     return daniKratice[weekday - 1];
+  }
+
+  /// 🔥 FIREBASE SUPPORT: toMap() metoda za Firestore
+  Map<String, dynamic> toMap() {
+    return {
+      'ime': ime,
+      'polazak': polazak,
+      'pokupljen': pokupljen,
+      'vreme_dodavanja': vremeDodavanja?.toIso8601String(),
+      'mesecna_karta': mesecnaKarta,
+      'dan': dan,
+      'status': status,
+      'status_vreme': statusVreme,
+      'vreme_pokupljenja': vremePokupljenja?.toIso8601String(),
+      'vreme_placanja': vremePlacanja?.toIso8601String(),
+      'placeno': placeno,
+      'cena': cena,
+      'naplatio_vozac': naplatioVozac,
+      'pokupijo_vozac': pokupioVozac,
+      'dodao_vozac': dodaoVozac,
+      'vozac': vozac,
+      'grad': grad,
+      'otkazao_vozac': otkazaoVozac,
+      'vreme_otkazivanja': vremeOtkazivanja?.toIso8601String(),
+      'adresa': adresa,
+      'obrisan': obrisan,
+      'priority': priority,
+      'broj_telefona': brojTelefona,
+      'datum': datum,
+      'ruta_naziv': rutaNaziv,
+      'adresa_koordinate': adresaKoordinate,
+      'created_at': DateTime.now().toIso8601String(),
+      'updated_at': DateTime.now().toIso8601String(),
+    };
   }
 }

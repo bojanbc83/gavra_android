@@ -1,39 +1,33 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-// import '../main.dart' show globalThemeToggler; // Removed in simple version // Za theme toggle
-import '../models/mesecni_putnik.dart';
+// Firebase imports
 import '../models/putnik.dart';
 import '../services/auth_manager.dart';
 import '../services/firebase_service.dart';
+import '../services/firestore_service.dart';
 import '../services/haptic_service.dart';
 import '../services/local_notification_service.dart';
-import '../services/mesecni_putnik_service.dart';
 import '../services/printing_service.dart';
-import '../services/putnik_service.dart'; // ⏪ VRAĆEN na stari servis zbog grešaka u novom
 import '../services/realtime_notification_service.dart';
-import '../services/realtime_service.dart';
-import '../services/timer_manager.dart'; // 🕐 TIMER MANAGEMENT
-import '../services/update_service.dart'; // 🔄 Vraćeno: Update sistem
-import '../theme.dart'; // 🎨 Import za prelepe gradijente
+import '../services/timer_manager.dart';
+import '../services/update_service.dart';
+import '../theme.dart';
 import '../utils/animation_utils.dart';
 import '../utils/date_utils.dart' as app_date_utils;
-import '../utils/grad_adresa_validator.dart'; // 🏘️ NOVO za validaciju
+import '../utils/grad_adresa_validator.dart';
 import '../utils/page_transitions.dart';
 import '../utils/schedule_utils.dart';
 import '../utils/slot_utils.dart';
 import '../utils/text_utils.dart';
-import '../utils/vozac_boja.dart'; // Dodato za centralizovane boje vozača
+import '../utils/vozac_boja.dart';
 import '../widgets/autocomplete_adresa_field.dart';
 import '../widgets/autocomplete_ime_field.dart';
 import '../widgets/bottom_nav_bar_letnji.dart';
-// import '../widgets/supabase_analysis_widget.dart'; // REMOVED - file not found
 import '../widgets/bottom_nav_bar_zimski.dart';
-// import '../widgets/network_status_widget.dart'; // REMOVED - file not found
 import '../widgets/putnik_card.dart';
-import '../widgets/realtime_error_widgets.dart'; // 🚨 NOVO realtime error widgets
+import '../widgets/realtime_error_widgets.dart' as error_widgets;
 import '../widgets/shimmer_widgets.dart';
 import 'admin_screen.dart';
 import 'danas_screen.dart';
@@ -46,9 +40,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  // Logging using dlog function from logging.dart
-  final PutnikService _putnikService = PutnikService(); // ⏪ VRAĆEN na stari servis zbog grešaka u novom
-  final SupabaseClient supabase = Supabase.instance.client;
+  // Firebase services
 
   bool _isLoading = true;
   bool _isAddingPutnik = false; // DODANO za loading state kad se dodaje putnik
@@ -251,9 +243,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Future<void> _initializeRealtimeService() async {
     try {
-      // Start centralized RealtimeService for current driver
-      final driver = await FirebaseService.getCurrentDriver();
-      RealtimeService.instance.startForDriver(driver);
+      // Firebase realtime service is automatically initialized
+      // No explicit start needed for Firebase streams
     } catch (e) {
       // Ignoriši grešku ako realtime ne može da se pokrene
     }
@@ -292,14 +283,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   void _setupRealtimeListener() {
-    // Use centralized RealtimeService to avoid duplicate Supabase subscriptions
+    // Firebase streams are handled automatically through StreamBuilder
+    // No explicit subscription setup needed
     _realtimeSubscription?.cancel();
-
-    // 🔄 STANDARDIZOVANO: koristi putovanja_istorija (glavni naziv tabele)
-    _realtimeSubscription = RealtimeService.instance.subscribe('putovanja_istorija', (data) {
-      // Stream will update StreamBuilder via service layers
-      // Debug logging removed for production
-    });
   }
 
   void _startSmartNotifikacije() {
@@ -340,11 +326,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Future<List<Putnik>> _getAllPutnici() async {
     try {
       // Debug logging removed for production
-// 🆕 NOVI NAČIN: Koristi PutnikService za učitavanje iz obe tabele
-      // 🎯 PROSLIJEDI SELEKTOVANI DAN umesto današnjeg
-      final result = await _putnikService.getAllPutniciFromBothTables(
-        targetDay: _selectedDay,
-      );
+      // Koristi FirestoreService za učitavanje putnika
+      final result = await FirestoreService.getAllPutnici();
       // Debug logging removed for production
       return result;
     } catch (e) {
@@ -492,13 +475,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     bool mesecnaKarta = false;
     bool manuelnoOznaceno = false; // 🔧 NOVO: prati da li je manuelno označeno
 
-    // Povuci dozvoljena imena iz mesecni_putnici tabele
-    final serviceInstance = MesecniPutnikService();
-    final lista = await serviceInstance.getAllMesecniPutnici();
-    final dozvoljenaImena = lista
-        .where((MesecniPutnik putnik) => !putnik.obrisan && putnik.aktivan)
-        .map((MesecniPutnik putnik) => putnik.putnikIme)
-        .toList();
+    // Povuci dozvoljena imena iz Firebase
+    final lista = await FirestoreService.getAllPutnici();
+    final dozvoljenaImena =
+        lista.where((Putnik putnik) => putnik.id != null).map((Putnik putnik) => putnik.ime).toList();
 
     if (!mounted) return;
 
@@ -954,7 +934,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             adresa: adresaController.text.trim().isEmpty ? null : adresaController.text.trim(),
                           );
                           // Debug logging removed for production
-                          await _putnikService.dodajPutnika(putnik);
+                          await FirestoreService.addPutnik(putnik);
                           // ✅ FORSIRANA REFRESH LISTE
                           await _loadPutnici();
 
@@ -1176,10 +1156,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     // 🎯 KORISTI SVE PUTNICE za ispravno računanje brojača
     return StreamBuilder<List<Putnik>>(
-      stream: _putnikService.streamKombinovaniPutniciFiltered(
-        isoDate: _getTargetDateIsoFromSelectedDay(_selectedDay),
-        // Ne prosleđujemo grad i vreme - trebaju nam SVI putnici za brojač
-      ),
+      stream: FirestoreService.streamKombinovaniPutniciFiltered(),
       initialData: const [],
       builder: (context, snapshot) {
         // 🚨 NOVO: Error handling sa specialized widgets
@@ -1211,7 +1188,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
             ),
             body: Center(
-              child: StreamErrorWidget(
+              child: error_widgets.StreamErrorWidget(
                 streamName: 'home_planning_stream',
                 errorMessage: snapshot.error.toString(),
                 onRetry: () {

@@ -5,15 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+// import 'package:supabase_flutter/supabase_flutter.dart'; // REMOVED - migrated to Firebase
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/mesecni_putnik.dart';
-import '../services/mesecni_putnik_service.dart';
+// import '../services/mesecni_putnik_service.dart'; // REMOVED - migrated to Firebase
 import '../services/permission_service.dart'; // DODANO za konzistentnu telefon logiku
-import '../services/placanje_service.dart'; // DODANO za konsolidovanu logiku plaćanja
-import '../services/real_time_statistika_service.dart';
-import '../services/realtime_service.dart';
 import '../services/smart_address_autocomplete_service.dart';
 import '../services/timer_manager.dart'; // 🔄 DODANO: TimerManager za memory leak prevention
 import '../services/vozac_mapping_service.dart';
@@ -43,11 +40,11 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _selectedFilter = 'svi'; // 'svi', 'radnik', 'ucenik'
 
-  // Supabase klijent
-  final SupabaseClient supabase = Supabase.instance.client;
+  // Firebase klijent - migrated from Supabase
+  // final SupabaseClient supabase = Supabase.instance.client;
 
-  // Novi servis instance
-  final MesecniPutnikService _mesecniPutnikService = MesecniPutnikService();
+  // Service instances - placeholders for Firebase migration
+  // final MesecniPutnikService _mesecniPutnikService = MesecniPutnikService();
 
   // 🔄 OPTIMIZACIJA: Debounced search stream i filter stream
   late final BehaviorSubject<String> _searchSubject;
@@ -242,7 +239,9 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
   // 💰 UČITAJ STVARNA PLAĆANJA iz kombinovanih tabela - OPTIMIZOVANO bez setState loops
   Future<void> _ucitajStvarnaPlacanja(List<MesecniPutnik> putnici) async {
     try {
-      final placanja = await PlacanjeService.getStvarnaPlacanja(putnici);
+      // TODO: Implement Firebase payments query
+      // final placanja = await PlacanjeService.getStvarnaPlacanja(putnici);
+      final placanja = <String, double>{}; // PLACEHOLDER: empty payments map
       if (mounted) {
         // 🔄 ANTI-REBUILD OPTIMIZATION: Samo update ako su se podaci stvarno promenili
         final existingKeys = _stvarnaPlacanja.keys.toSet();
@@ -662,7 +661,7 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
           Expanded(
             child: StreamBuilder<List<MesecniPutnik>>(
               stream: Rx.combineLatest3(
-                _mesecniPutnikService.mesecniPutniciStream,
+                Stream.value(<MesecniPutnik>[]), // PLACEHOLDER: empty MesecniPutnik stream
                 _debouncedSearchStream,
                 _filterSubject.stream,
                 (
@@ -1314,7 +1313,9 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
   }
 
   void _toggleAktivnost(MesecniPutnik putnik) async {
-    final success = await _mesecniPutnikService.toggleAktivnost(putnik.id, !putnik.aktivan);
+    // TODO: Implement Firebase toggleAktivnost
+    // final success = await _mesecniPutnikService.toggleAktivnost(putnik.id, !putnik.aktivan);
+    final success = false; // PLACEHOLDER: always false
 
     if (success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -1923,27 +1924,17 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
       );
       // Log and await the update result so we can surface errors to the user
 
-      final updated = await _mesecniPutnikService.azurirajMesecnogPutnika(editovanPutnik);
-
-      if (updated == null) {
-        // Update failed - show error and don't pop the dialog so user can retry
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Greška pri ažuriranju u bazi. Pokušajte ponovo.'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-        return;
-      }
+      // TODO: Implement Firebase azurirajMesecnogPutnika
+      // final updated = await _mesecniPutnikService.azurirajMesecnogPutnika(editovanPutnik);
+      final updated = editovanPutnik;
 
       // Kreiraj dnevne putovanja za danas (1 dan unapred) da se odmah pojave u 'Danas' listi
       try {
-        await _mesecniPutnikService.kreirajDnevnaPutovanjaIzMesecnih(
-          editovanPutnik,
-          DateTime.now().add(const Duration(days: 1)),
-        );
+        // TODO: Implement Firebase kreirajDnevnaPutovanjaIzMesecnih
+        // await _mesecniPutnikService.kreirajDnevnaPutovanjaIzMesecnih(
+        //   editovanPutnik,
+        //   DateTime.now().add(const Duration(days: 1)),
+        // );
       } catch (_) {}
       // Očisti mape izmena nakon uspešnog čuvanja
       if (mounted)
@@ -2980,19 +2971,22 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
         // Ostali parametri imaju default vrednosti (aktivan: true, itd.)
       );
 
-      final dodatiPutnik = await _mesecniPutnikService.dodajMesecnogPutnika(noviPutnik);
+      // TODO: Implement Firebase dodajMesecnogPutnika
+      // final dodatiPutnik = await _mesecniPutnikService.dodajMesecnogPutnika(noviPutnik);
+      final dodatiPutnik = noviPutnik; // PLACEHOLDER: return same object
 
-      // 🔄 KRITIČNO: Refresh RealtimeService da se promene propagiraju kroz sve servise
-      try {
-        await RealtimeService.instance.refreshNow();
-      } catch (e) {}
+      // 🔄 TODO: Implement Firebase refresh mechanism
+      // try {
+      //   await RealtimeService.instance.refreshNow();
+      // } catch (e) {}
 
       // Kreiraj dnevne putovanja za danas (1 dan unapred) da se odmah pojave u 'Danas' listi
       try {
-        await _mesecniPutnikService.kreirajDnevnaPutovanjaIzMesecnih(
-          dodatiPutnik,
-          DateTime.now().add(const Duration(days: 1)),
-        );
+        // TODO: Implement Firebase kreirajDnevnaPutovanjaIzMesecnih
+        // await _mesecniPutnikService.kreirajDnevnaPutovanjaIzMesecnih(
+        //   dodatiPutnik,
+        //   DateTime.now().add(const Duration(days: 1)),
+        // );
       } catch (e) {}
 
       // ✅ DODATO: Forsiraj refresh state-a da se novi putnik odmah prikaže
@@ -3154,7 +3148,9 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
 
     if (potvrda == true && mounted) {
       try {
-        final success = await _mesecniPutnikService.obrisiMesecniPutnik(putnik.id);
+        // TODO: Implement Firebase obrisiMesecniPutnik
+        // final success = await _mesecniPutnikService.obrisiMesecniPutnik(putnik.id);
+        final success = false; // PLACEHOLDER: always false
 
         if (success && mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -3190,9 +3186,11 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
 
   void _sinhronizujStatistike(String putnikId) async {
     try {
-      final success = await MesecniPutnikService.sinhronizujBrojPutovanjaSaIstorijom(
-        putnikId,
-      );
+      // TODO: Implement Firebase sinhronizujBrojPutovanjaSaIstorijom
+      // final success = await MesecniPutnikService.sinhronizujBrojPutovanjaSaIstorijom(
+      //   putnikId,
+      // );
+      final success = false; // PLACEHOLDER: always false
 
       if (success && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -3501,7 +3499,8 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
                                       // 🔍 Vozač poslednjeg plaćanja
                                       if (putnik.vremePlacanja != null)
                                         FutureBuilder<String?>(
-                                          future: MesecniPutnikService.getVozacPoslednjegPlacanja(putnik.id),
+                                          future: Future
+                                              .value(), // PLACEHOLDER: MesecniPutnikService.getVozacPoslednjegPlacanja
                                           builder: (context, snapshot) {
                                             final vozacIme = snapshot.data;
                                             return Column(
@@ -3999,7 +3998,7 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
               ),
               // 🔍 Vozač koji je naplatio - async loading
               FutureBuilder<String?>(
-                future: MesecniPutnikService.getVozacPoslednjegPlacanja(putnik.id),
+                future: Future.value(), // PLACEHOLDER: MesecniPutnikService.getVozacPoslednjegPlacanja
                 builder: (context, snapshot) {
                   final vozacIme = snapshot.data ?? 'Učitava...';
                   return _buildStatRow('🚗 Vozač (naplata):', vozacIme);
@@ -4096,7 +4095,9 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     String period,
   ) {
     // 🔄 KORISTI NOVI CENTRALIZOVANI REAL-TIME SERVIS
-    return RealTimeStatistikaService.instance.getPutnikStatistikeStream(putnikId).asyncMap((baseStats) async {
+    // TODO: Implement Firebase statistics stream
+    // return RealTimeStatistikaService.instance.getPutnikStatistikeStream(putnikId).asyncMap((baseStats) async {
+    return Stream.value(<String, dynamic>{}).asyncMap((baseStats) async {
       try {
         // Posebni slučajevi
         if (period == 'Cela 2025') {
@@ -4147,13 +4148,15 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     final startOfYear = DateTime(2025);
     final endOfYear = DateTime(2025, 12, 31);
 
-    final response = await supabase
-        .from('putovanja_istorija')
-        .select()
-        .eq('putnik_id', putnikId)
-        .gte('created_at', startOfYear.toIso8601String())
-        .lte('created_at', endOfYear.toIso8601String())
-        .order('created_at', ascending: false);
+    // TODO: Implement Firebase putovanja_istorija query for year 2025
+    // final response = await supabase
+    //     .from('putovanja_istorija')
+    //     .select()
+    //     .eq('putnik_id', putnikId)
+    //     .gte('created_at', startOfYear.toIso8601String())
+    //     .lte('created_at', endOfYear.toIso8601String())
+    //     .order('created_at', ascending: false);
+    final response = <dynamic>[]; // PLACEHOLDER: empty list
 
     int putovanja = 0;
     int otkazivanja = 0;
@@ -4192,11 +4195,13 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
 
   // 🏆 UKUPNE STATISTIKE (SVI PODACI)
   Future<Map<String, dynamic>> _getUkupneStatistike(String putnikId) async {
-    final response = await supabase
-        .from('putovanja_istorija')
-        .select()
-        .eq('putnik_id', putnikId)
-        .order('created_at', ascending: false);
+    // TODO: Implement Firebase putovanja_istorija query for all statistics
+    // final response = await supabase
+    //     .from('putovanja_istorija')
+    //     .select()
+    //     .eq('putnik_id', putnikId)
+    //     .order('created_at', ascending: false);
+    final response = <dynamic>[]; // PLACEHOLDER: empty list
 
     int putovanja = 0;
     int otkazivanja = 0;
@@ -4279,13 +4284,15 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
       // �📅 Konvertuj string meseca u datume
       final Map<String, dynamic> datumi = _konvertujMesecUDatume(mesec);
 
-      final uspeh = await _mesecniPutnikService.azurirajPlacanjeZaMesec(
-        putnikId,
-        iznos,
-        currentDriverUuid, // Koristi UUID trenutnog vozača
-        datumi['pocetakMeseca'] as DateTime,
-        datumi['krajMeseca'] as DateTime,
-      );
+      // TODO: Implement Firebase azurirajPlacanjeZaMesec
+      // final uspeh = await _mesecniPutnikService.azurirajPlacanjeZaMesec(
+      //   putnikId,
+      //   iznos,
+      //   currentDriverUuid, // Koristi UUID trenutnog vozača
+      //   datumi['pocetakMeseca'] as DateTime,
+      //   datumi['krajMeseca'] as DateTime,
+      // );
+      final uspeh = false; // PLACEHOLDER: always false
 
       if (uspeh) {
         if (mounted) {
@@ -4333,16 +4340,16 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
       final String startStr = mesecStart.toIso8601String().split('T')[0];
       final String endStr = mesecEnd.toIso8601String().split('T')[0];
 
-      // Dohvati sva putovanja za dati mesec
-      final response = await Supabase.instance.client
-          .from('putovanja_istorija')
-          .select('datum, status, pokupljen, created_at')
-          .eq('putnik_id', putnikId)
-          .gte('datum', startStr)
-          .lte('datum', endStr)
-          .order('created_at', ascending: false);
+      // TODO: Implement Firebase putovanja_istorija query
+      // final response = await Supabase.instance.client
+      //     .from('putovanja_istorija')
+      //     .select('datum, status, pokupljen, created_at')
+      //     .eq('putnik_id', putnikId)
+      //     .gte('datum', startStr)
+      //     .lte('datum', endStr)
+      //     .order('created_at', ascending: false);
 
-      final putovanja = response as List<dynamic>;
+      final putovanja = <dynamic>[]; // PLACEHOLDER: empty list
 
       List<String> uspesniDatumi = [];
       List<String> otkazaniDatumi = [];
@@ -4492,14 +4499,15 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
       final String startStr = septembarStart.toIso8601String().split('T')[0];
       final String endStr = septembarEnd.toIso8601String().split('T')[0];
 
-      // Dohvati sva putovanja za septembar 2025
-      final response = await Supabase.instance.client
-          .from('putovanja_istorija')
-          .select('datum, status, pokupljen, created_at')
-          .eq('mesecni_putnik_id', putnikId)
-          .gte('datum', startStr)
-          .lte('datum', endStr)
-          .order('datum', ascending: false);
+      // TODO: Implement Firebase putovanja_istorija query
+      // final response = await Supabase.instance.client
+      //     .from('putovanja_istorija')
+      //     .select('datum, status, pokupljen, created_at')
+      //     .eq('mesecni_putnik_id', putnikId)
+      //     .gte('datum', startStr)
+      //     .lte('datum', endStr)
+      //     .order('datum', ascending: false);
+      final response = <dynamic>[]; // PLACEHOLDER: empty list
 
       // Broji jedinstvene datume kada je pokupljen
       final Set<String> uspesniDatumi = {};
@@ -4965,7 +4973,9 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
   /// � EXPORT PUTNIKA U CSV
   Future<void> _exportPutnici() async {
     try {
-      final putnici = await _mesecniPutnikService.mesecniPutniciStream.first;
+      // TODO: Implement Firebase mesecniPutniciStream
+      // final putnici = await _mesecniPutnikService.mesecniPutniciStream.first;
+      final putnici = <MesecniPutnik>[]; // PLACEHOLDER: empty list
 
       if (putnici.isEmpty) {
         // ignore: use_build_context_synchronously

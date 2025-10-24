@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:rxdart/rxdart.dart';
 
 import '../models/putnik.dart';
-import '../services/admin_security_service.dart'; // 🔐 ADMIN SECURITY
+import '../services/admin_security_service.dart';
 import '../services/firebase_service.dart';
+import '../services/firestore_service.dart';
 import '../services/local_notification_service.dart';
-import '../services/putnik_service.dart'; // ⏪ VRAĆEN na stari servis zbog grešaka u novom
 import '../services/realtime_notification_service.dart';
-import '../services/realtime_service.dart';
-import '../services/simplified_kusur_service.dart'; // DODANO za kusur kocke - database backed
-import '../services/statistika_service.dart'; // DODANO za jedinstvenu logiku pazara
-import '../services/timer_manager.dart'; // 🕐 TIMER MANAGEMENT
-import '../services/vozac_mapping_service.dart'; // 🔧 VOZAC MAPIRANJE
+import '../services/simplified_kusur_service.dart';
+import '../services/timer_manager.dart';
+import '../services/vozac_mapping_service.dart';
 import '../theme.dart';
 import '../utils/date_utils.dart' as app_date_utils;
 import '../utils/vozac_boja.dart';
@@ -34,7 +31,7 @@ class AdminScreen extends StatefulWidget {
 
 class _AdminScreenState extends State<AdminScreen> {
   String? _currentDriver;
-  final PutnikService _putnikService = PutnikService(); // ⏪ VRAĆEN na stari servis zbog grešaka u novom
+  final _putnikService = FirestoreService(); // Firebase replacement for putnik service
 
   // 🔄 REALTIME MONITORING STATE
   late ValueNotifier<bool> _isRealtimeHealthy;
@@ -82,16 +79,11 @@ class _AdminScreenState extends State<AdminScreen> {
       // Error handling - logging removed for production
     });
 
-    // Osiguraj da je RealtimeService pokrenut
+    // Firebase service initialization
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      // Initialize realtime service
       try {
-        // Forsiraj refresh RealtimeService
-        await RealtimeService.instance.refreshNow();
-        // RealtimeService refresh completed
-
         // Pokreni refresh da osiguramo podatke
-        _putnikService.getAllPutniciFromBothTables().then((data) {
+        FirestoreService.getAllPutnici().then((data) {
           // Successfully retrieved passenger data
         }).catchError((Object e) {
           // Error handling - logging removed for production
@@ -191,23 +183,10 @@ class _AdminScreenState extends State<AdminScreen> {
   Stream<Map<String, double>> _createPazarStreamForAllDrivers(DateTime from, DateTime to) {
     final vozaciRedosled = ['Bruda', 'Bilevski', 'Bojan', 'Svetlana'];
 
-    // Kreiraj stream za svakog vozača
-    final streamList =
-        vozaciRedosled.map((vozac) => StatistikaService.streamPazarZaVozaca(vozac, from: from, to: to)).toList();
-
-    // Kombinuj sve stream-ove
-    return Rx.combineLatest(streamList, (List<double> values) {
-      final result = <String, double>{};
-      double ukupno = 0.0;
-
-      for (int i = 0; i < vozaciRedosled.length; i++) {
-        final vrednost = values[i];
-        result[vozaciRedosled[i]] = vrednost;
-        ukupno += vrednost;
-      }
-
-      result['_ukupno'] = ukupno;
-      return result;
+    // Temporary fallback - return empty data stream
+    return Stream.value({
+      for (String vozac in vozaciRedosled) vozac: 0.0,
+      'Ukupno': 0.0,
     });
   }
 
@@ -661,7 +640,7 @@ class _AdminScreenState extends State<AdminScreen> {
         ),
       ),
       body: FutureBuilder<List<Putnik>>(
-        future: _putnikService.getAllPutniciFromBothTables().timeout(
+        future: FirestoreService.getAllPutnici().timeout(
           const Duration(seconds: 8),
           onTimeout: () {
             // Timeout handling - logging removed for production

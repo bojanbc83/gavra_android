@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+
+// import 'package:supabase_flutter/supabase_flutter.dart'; // Firebase migration
 
 import '../globals.dart';
 import '../models/mesecni_putnik.dart';
 import '../screens/danas_screen.dart';
-import 'supabase_safe.dart';
+// import 'supabase_safe.dart'; // Firebase migration
 
 class LocalNotificationService {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -315,11 +316,15 @@ class LocalNotificationService {
     String putnikIme,
   ) async {
     try {
+      // Firebase migration
+      throw UnimplementedError('Firebase migration pending');
+      /*
       final supabase = Supabase.instance.client;
+      */
 
       // Traži u putovanja_istorija tabeli (dnevni putnici)
-      final dnevniResult = await SupabaseSafe.run(
-        () => supabase
+      // final dnevniResult = await SupabaseSafe.run( // Firebase migration
+      //   () => supabase
             .from('putovanja_istorija')
             .select('putnik_ime, grad, vreme_polaska, dan, polazak')
             .eq('putnik_ime', putnikIme)
@@ -343,7 +348,7 @@ class LocalNotificationService {
       const mesecniFields = '*,'
           'polasci_po_danu';
 
-      final mesecniResult = await supabase
+      // final mesecniResult = await supabase // Firebase migration
           .from('mesecni_putnici')
           .select(mesecniFields)
           .eq('putnik_ime', putnikIme)

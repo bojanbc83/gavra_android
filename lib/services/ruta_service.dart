@@ -1,873 +1,419 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:developer' as developer;
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/ruta.dart';
-import 'cache_service.dart';
-import 'supabase_safe.dart';
 
-/// Servis za upravljanje rutama
+/// Service za upravljanje rutama u Firebase Firestore
+/// Migrirano sa Supabase na Firebase Firestore
 class RutaService {
-  RutaService({SupabaseClient? supabaseClient})
-      : _supabase = supabaseClient ?? Supabase.instance.client;
-  final SupabaseClient _supabase;
+  RutaService();
+  static const String _collectionName = 'rute';
 
-  // Cache konfiguracija
-  static const String _cacheKeyPrefix = 'rute';
-  static const Duration _cacheExpiry = Duration(minutes: 10);
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Cache ključevi
-  static String _getAllCacheKey() => '${_cacheKeyPrefix}_all';
-  static String _getActiveCacheKey() => '${_cacheKeyPrefix}_active';
-  static String _getByIdCacheKey(String id) => '${_cacheKeyPrefix}_id_$id';
-  static String _getSearchCacheKey(String query) =>
-      '${_cacheKeyPrefix}_search_$query';
-  static String _getStatsCacheKey() => '${_cacheKeyPrefix}_statistics';
+  /// Referenca na kolekciju ruta
+  CollectionReference<Map<String, dynamic>> get _collection => _firestore.collection(_collectionName);
 
-  // Čišćenje cache-a
-  static Future<void> _clearCache() async {
-    await CacheService.clearFromDisk(_getAllCacheKey());
-    await CacheService.clearFromDisk(_getActiveCacheKey());
-    await CacheService.clearFromDisk(_getStatsCacheKey());
-  }
+  // CRUD Operacije
 
-  static Future<void> _clearCacheForId(String id) async {
-    await CacheService.clearFromDisk(_getByIdCacheKey(id));
-    await _clearCache();
-  }
-
-  /// Dohvata sve rute (sa keširanje)
+  /// Dobija sve rute
   Future<List<Ruta>> getAllRute() async {
     try {
-      // Pokušaj cache prvo
-      final cacheKey = _getAllCacheKey();
-      final cached = await CacheService.getFromDisk<List<dynamic>>(
-        cacheKey,
-        maxAge: _cacheExpiry,
-      );
-      if (cached != null) {
-      // Debug logging removed for production
-return cached
-            .map((json) => Ruta.fromMap(json as Map<String, dynamic>))
-            .toList();
-      }
+      developer.log('Getting all rute', name: 'RutaService');
 
-      final response = await SupabaseSafe.run(
-        () => _supabase.from('rute').select().order('naziv'),
-        fallback: <dynamic>[],
-      );
+      final querySnapshot = await _collection.orderBy('naziv').get();
 
-      if (response is List) {
-        final dataList = response.cast<Map<String, dynamic>>();
-
-        // Keširaj rezultat
-        await CacheService.saveToDisk(cacheKey, dataList);
-
-        return dataList.map((json) => Ruta.fromMap(json)).toList();
-      }
-      return [];
+      return querySnapshot.docs.map((doc) => Ruta.fromMap(doc.data())).toList();
     } catch (e) {
-      // Debug logging removed for production
-return [];
+      developer.log('Error getting all rute: $e', name: 'RutaService', level: 1000);
+      throw Exception('Failed to get all rute: $e');
     }
   }
 
-  /// Dohvata samo aktivne rute (sa keširanje)
+  /// Dobija samo aktivne rute
   Future<List<Ruta>> getActiveRute() async {
     try {
-      // Pokušaj cache prvo
-      final cacheKey = _getActiveCacheKey();
-      final cached = await CacheService.getFromDisk<List<dynamic>>(
-        cacheKey,
-        maxAge: _cacheExpiry,
-      );
-      if (cached != null) {
-      // Debug logging removed for production
-return cached
-            .map((json) => Ruta.fromMap(json as Map<String, dynamic>))
-            .toList();
-      }
+      developer.log('Getting active rute', name: 'RutaService');
 
-      final response = await SupabaseSafe.run(
-        () =>
-            _supabase.from('rute').select().eq('aktivan', true).order('naziv'),
-        fallback: <dynamic>[],
-      );
+      final querySnapshot = await _collection.where('aktivan', isEqualTo: true).orderBy('naziv').get();
 
-      if (response is List) {
-        final dataList = response.cast<Map<String, dynamic>>();
-
-        // Keširaj rezultat
-        await CacheService.saveToDisk(cacheKey, dataList);
-
-        return dataList.map((json) => Ruta.fromMap(json)).toList();
-      }
-      return [];
+      return querySnapshot.docs.map((doc) => Ruta.fromMap(doc.data())).toList();
     } catch (e) {
-      // Debug logging removed for production
-return [];
+      developer.log('Error getting active rute: $e', name: 'RutaService', level: 1000);
+      throw Exception('Failed to get active rute: $e');
     }
   }
 
-  /// Dohvata rutu po ID-u (sa keširanje i error handling)
+  /// Dobija rutu po ID
   Future<Ruta?> getRutaById(String id) async {
     try {
-      // Pokušaj cache prvo
-      final cacheKey = _getByIdCacheKey(id);
-      final cached = await CacheService.getFromMemory<Ruta>(cacheKey);
-      if (cached != null) {
-      // Debug logging removed for production
-return cached;
+      developer.log('Getting ruta by ID: $id', name: 'RutaService');
+
+      final doc = await _collection.doc(id).get();
+      if (!doc.exists || doc.data() == null) {
+        return null;
       }
 
-      final response = await SupabaseSafe.run(
-        () => _supabase.from('rute').select().eq('id', id).single(),
-      );
+      return Ruta.fromMap(doc.data()!);
+    } catch (e) {
+      developer.log('Error getting ruta by ID: $e', name: 'RutaService', level: 1000);
+      throw Exception('Failed to get ruta by ID: $e');
+    }
+  }
 
-      if (response == null) {
-      // Debug logging removed for production
-return null;
+  /// Dodaje novu rutu
+  Future<Ruta> addRuta(Ruta ruta) async {
+    try {
+      developer.log('Adding ruta: ${ruta.id}', name: 'RutaService');
+
+      // Validacija pre dodavanja
+      if (!ruta.isValidForDatabase) {
+        final errors = ruta.validateFull();
+        throw Exception('Validation failed: ${errors.values.join(', ')}');
       }
 
-      final ruta = Ruta.fromMap(response);
+      await _collection.doc(ruta.id).set(ruta.toMap());
 
-      // Keširaj u memory
-      CacheService.saveToMemory(cacheKey, ruta);
-
+      developer.log('Successfully added ruta: ${ruta.id}', name: 'RutaService');
       return ruta;
     } catch (e) {
-      // Debug logging removed for production
-return null;
+      developer.log('Error adding ruta: $e', name: 'RutaService', level: 1000);
+      throw Exception('Failed to add ruta: $e');
     }
   }
 
-  /// Kreira novu rutu (sa validacijom i cache invalidation)
-  Future<Ruta?> createRuta(Ruta ruta) async {
+  /// Ažurira rutu
+  Future<Ruta> updateRuta(String id, Map<String, dynamic> updates) async {
     try {
-      // Validacija pre dodavanja
-      final validation = ruta.validateFull();
-      if (validation.isNotEmpty) {
-      // Debug logging removed for production
-return null;
+      developer.log('Updating ruta: $id', name: 'RutaService');
+
+      // Dobij postojeću rutu
+      final existingRuta = await getRutaById(id);
+      if (existingRuta == null) {
+        throw Exception('Ruta with ID $id not found');
       }
 
-      // Proveri duplikate
-      final existingRute =
-          await _checkForDuplicates(ruta.polazak, ruta.dolazak, ruta.naziv);
-      if (existingRute.isNotEmpty) {
-      // Debug logging removed for production
-return null;
-      }
-
-      final response = await SupabaseSafe.run(
-        () => _supabase.from('rute').insert(ruta.toMap()).select().single(),
+      // Kreiraj novu rutu sa ažuriranim podacima
+      final updatedRuta = existingRuta.copyWith(
+        naziv: updates['naziv'] as String?,
+        polazak: updates['polazak'] as String?,
+        dolazak: updates['dolazak'] as String?,
+        opis: updates['opis'] as String?,
+        udaljenostKm: (updates['udaljenost_km'] as num?)?.toDouble(),
+        prosecnoVreme: updates['prosecno_vreme'] != null ? Duration(seconds: updates['prosecno_vreme'] as int) : null,
+        aktivan: updates['aktivan'] as bool?,
+        updatedAt: DateTime.now(),
       );
 
-      if (response == null) return null;
+      // Validacija pre ažuriranja
+      if (!updatedRuta.isValidForDatabase) {
+        final errors = updatedRuta.validateFull();
+        throw Exception('Validation failed: ${errors.values.join(', ')}');
+      }
 
-      final novaRuta = Ruta.fromMap(response);
+      await _collection.doc(id).update(updatedRuta.toMap());
 
-      // Očisti cache
-      await _clearCache();
-      // Debug logging removed for production
-return novaRuta;
+      developer.log('Successfully updated ruta: $id', name: 'RutaService');
+      return updatedRuta;
     } catch (e) {
-      // Debug logging removed for production
-return null;
+      developer.log('Error updating ruta: $e', name: 'RutaService', level: 1000);
+      throw Exception('Failed to update ruta: $e');
     }
   }
 
-  /// Proverava duplikate ruta
-  Future<List<Ruta>> _checkForDuplicates(
-    String polazak,
-    String dolazak,
-    String naziv,
-  ) async {
+  /// Briše rutu (logički - označava kao neaktivnu)
+  Future<void> deleteRuta(String id) async {
     try {
-      final response = await SupabaseSafe.run(
-        () => _supabase
-            .from('rute')
-            .select()
-            .or('and(polazak.eq.$polazak,dolazak.eq.$dolazak),naziv.eq.$naziv'),
-        fallback: <dynamic>[],
-      );
+      developer.log('Deleting ruta: $id', name: 'RutaService');
 
-      if (response is List) {
-        return response
-            .map((json) => Ruta.fromMap(json as Map<String, dynamic>))
-            .toList();
-      }
-      return [];
+      await _collection.doc(id).update({
+        'aktivan': false,
+        'updated_at': DateTime.now().toIso8601String(),
+      });
+
+      developer.log('Successfully deleted ruta: $id', name: 'RutaService');
     } catch (e) {
-      // Debug logging removed for production
-return [];
-    }
-  }
-
-  /// Ažurira rutu (sa validacijom i cache invalidation)
-  Future<Ruta?> updateRuta(String id, Map<String, dynamic> updates) async {
-    try {
-      // Dodaj timestamp
-      updates['updated_at'] = DateTime.now().toIso8601String();
-
-      final response = await SupabaseSafe.run(
-        () => _supabase
-            .from('rute')
-            .update(updates)
-            .eq('id', id)
-            .select()
-            .single(),
-      );
-
-      if (response == null) {
-      // Debug logging removed for production
-return null;
-      }
-
-      final azuriranaRuta = Ruta.fromMap(response);
-
-      // Validacija nakon ažuriranja
-      final validation = azuriranaRuta.validateFull();
-      if (validation.isNotEmpty) {
-      // Debug logging removed for production
-return null;
-      }
-
-      // Očisti cache
-      await _clearCacheForId(id);
-      // Debug logging removed for production
-return azuriranaRuta;
-    } catch (e) {
-      // Debug logging removed for production
-return null;
-    }
-  }
-
-  /// Ažurira celu rutu (alternativa sa Ruta objektom)
-  Future<Ruta?> updateRutaObject(Ruta ruta) async {
-    try {
-      // Validacija
-      final validation = ruta.validateFull();
-      if (validation.isNotEmpty) {
-      // Debug logging removed for production
-return null;
-      }
-
-      final updatedRuta = ruta.withUpdatedTime();
-
-      final response = await SupabaseSafe.run(
-        () => _supabase
-            .from('rute')
-            .update(updatedRuta.toMap())
-            .eq('id', ruta.id)
-            .select()
-            .single(),
-      );
-
-      if (response == null) return null;
-
-      final result = Ruta.fromMap(response);
-
-      // Očisti cache
-      await _clearCacheForId(ruta.id);
-      // Debug logging removed for production
-return result;
-    } catch (e) {
-      // Debug logging removed for production
-return null;
-    }
-  }
-
-  /// Deaktivira rutu (soft delete sa cache invalidation)
-  Future<bool> deactivateRuta(String id) async {
-    try {
-      await SupabaseSafe.run(
-        () => _supabase.from('rute').update({
-          'aktivan': false,
-          'updated_at': DateTime.now().toIso8601String(),
-        }).eq('id', id),
-      );
-
-      // Očisti cache
-      await _clearCacheForId(id);
-      // Debug logging removed for production
-return true;
-    } catch (e) {
-      // Debug logging removed for production
-return false;
+      developer.log('Error deleting ruta: $e', name: 'RutaService', level: 1000);
+      throw Exception('Failed to delete ruta: $e');
     }
   }
 
   /// Aktivira rutu
-  Future<bool> activateRuta(String id) async {
+  Future<void> activateRuta(String id) async {
     try {
-      await SupabaseSafe.run(
-        () => _supabase.from('rute').update({
-          'aktivan': true,
-          'updated_at': DateTime.now().toIso8601String(),
-        }).eq('id', id),
-      );
+      developer.log('Activating ruta: $id', name: 'RutaService');
 
-      // Očisti cache
-      await _clearCacheForId(id);
-      // Debug logging removed for production
-return true;
+      await _collection.doc(id).update({
+        'aktivan': true,
+        'updated_at': DateTime.now().toIso8601String(),
+      });
+
+      developer.log('Successfully activated ruta: $id', name: 'RutaService');
     } catch (e) {
-      // Debug logging removed for production
-return false;
+      developer.log('Error activating ruta: $e', name: 'RutaService', level: 1000);
+      throw Exception('Failed to activate ruta: $e');
     }
   }
 
-  /// Briše rutu potpuno (hard delete)
-  Future<bool> deleteRuta(String id) async {
+  /// Deaktivira rutu
+  Future<void> deactivateRuta(String id) async {
     try {
-      // Prvo proveri da li postoje povezani putnici
-      final hasDependencies = await _checkRutaDependencies(id);
-      if (hasDependencies) {
-      // Debug logging removed for production
-return false;
-      }
+      developer.log('Deactivating ruta: $id', name: 'RutaService');
 
-      await SupabaseSafe.run(
-        () => _supabase.from('rute').delete().eq('id', id),
-      );
+      await _collection.doc(id).update({
+        'aktivan': false,
+        'updated_at': DateTime.now().toIso8601String(),
+      });
 
-      // Očisti cache
-      await _clearCacheForId(id);
-      // Debug logging removed for production
-return true;
+      developer.log('Successfully deactivated ruta: $id', name: 'RutaService');
     } catch (e) {
-      // Debug logging removed for production
-return false;
+      developer.log('Error deactivating ruta: $e', name: 'RutaService', level: 1000);
+      throw Exception('Failed to deactivate ruta: $e');
     }
   }
 
-  /// Proverava da li ruta ima povezane putnici
-  Future<bool> _checkRutaDependencies(String rutaId) async {
-    try {
-      final response = await SupabaseSafe.run(
-        () => _supabase
-            .from('dnevni_putnici')
-            .select('id')
-            .eq('ruta_id', rutaId)
-            .limit(1),
-        fallback: <dynamic>[],
-      );
+  // Search operacije
 
-      return response is List && response.isNotEmpty;
+  /// Pretražuje rute po nazivu, polasku ili dolasku
+  Future<List<Ruta>> searchRute(String query) async {
+    try {
+      developer.log('Searching rute with query: $query', name: 'RutaService');
+
+      final querySnapshot = await _collection.where('aktivan', isEqualTo: true).orderBy('naziv').get();
+
+      final allRute = querySnapshot.docs.map((doc) => Ruta.fromMap(doc.data())).toList();
+
+      // Filter client-side zbog ograničenja Firestore složenih upita
+      return allRute.where((ruta) => ruta.containsQuery(query)).toList();
     } catch (e) {
-      // Debug logging removed for production
-return true; // Sigurnost - pretpostavi da ima zavisnosti
+      developer.log('Error searching rute: $e', name: 'RutaService', level: 1000);
+      throw Exception('Failed to search rute: $e');
     }
   }
 
-  /// Napredna pretraga ruta
-  Future<List<Ruta>> searchRute({
-    String? query,
-    bool? aktivan,
-    double? minUdaljenost,
-    double? maxUdaljenost,
-    int? minVremeMinuti,
-    int? maxVremeMinuti,
-    String? polazak,
-    String? dolazak,
-    int limit = 100,
-  }) async {
+  /// Pronalazi rute koje povezuju određena mesta
+  Future<List<Ruta>> findRuteByDestinations(String grad1, String grad2) async {
     try {
-      // Keširaj jednostavne pretrage
-      String? cacheKey;
-      if (query != null &&
-          query.length > 2 &&
-          aktivan == null &&
-          minUdaljenost == null &&
-          maxUdaljenost == null) {
-        cacheKey = _getSearchCacheKey(query);
-        final cached = await CacheService.getFromMemory<List<Ruta>>(cacheKey);
-        if (cached != null) {
-      // Debug logging removed for production
-return cached;
+      developer.log('Finding rute between: $grad1 and $grad2', name: 'RutaService');
+
+      final querySnapshot = await _collection.where('aktivan', isEqualTo: true).get();
+
+      final allRute = querySnapshot.docs.map((doc) => Ruta.fromMap(doc.data())).toList();
+
+      return allRute.where((ruta) => ruta.connectsCities(grad1, grad2)).toList();
+    } catch (e) {
+      developer.log('Error finding rute by destinations: $e', name: 'RutaService', level: 1000);
+      throw Exception('Failed to find rute by destinations: $e');
+    }
+  }
+
+  // Real-time Stream operacije
+
+  /// Stream za praćenje svih ruta
+  Stream<List<Ruta>> watchAllRute() {
+    try {
+      developer.log('Starting watch all rute stream', name: 'RutaService');
+
+      return _collection.orderBy('naziv').snapshots().map((snapshot) {
+        return snapshot.docs.map((doc) => Ruta.fromMap(doc.data())).toList();
+      });
+    } catch (e) {
+      developer.log('Error in watch all rute stream: $e', name: 'RutaService', level: 1000);
+      throw Exception('Failed to watch all rute: $e');
+    }
+  }
+
+  /// Stream za praćenje aktivnih ruta
+  Stream<List<Ruta>> watchActiveRute() {
+    try {
+      developer.log('Starting watch active rute stream', name: 'RutaService');
+
+      return _collection.where('aktivan', isEqualTo: true).orderBy('naziv').snapshots().map((snapshot) {
+        return snapshot.docs.map((doc) => Ruta.fromMap(doc.data())).toList();
+      });
+    } catch (e) {
+      developer.log('Error in watch active rute stream: $e', name: 'RutaService', level: 1000);
+      throw Exception('Failed to watch active rute: $e');
+    }
+  }
+
+  /// Stream za praćenje jedne rute
+  Stream<Ruta?> watchRuta(String id) {
+    try {
+      developer.log('Starting watch ruta stream: $id', name: 'RutaService');
+
+      return _collection.doc(id).snapshots().map((snapshot) {
+        if (!snapshot.exists || snapshot.data() == null) {
+          return null;
+        }
+        return Ruta.fromMap(snapshot.data()!);
+      });
+    } catch (e) {
+      developer.log('Error in watch ruta stream: $e', name: 'RutaService', level: 1000);
+      throw Exception('Failed to watch ruta: $e');
+    }
+  }
+
+  // Statistike i izvještaji
+
+  /// Dobija broj ruta po statusu
+  Future<Map<String, int>> getRouteStatistics() async {
+    try {
+      developer.log('Getting route statistics', name: 'RutaService');
+
+      final querySnapshot = await _collection.get();
+
+      int total = 0;
+      int active = 0;
+      int inactive = 0;
+
+      for (final doc in querySnapshot.docs) {
+        final data = doc.data();
+        total++;
+        if (data['aktivan'] == true) {
+          active++;
+        } else {
+          inactive++;
         }
       }
 
-      final response = await SupabaseSafe.run(
-        () {
-          var q = _supabase.from('rute').select();
-
-          // Tekstualna pretraga
-          if (query != null && query.isNotEmpty) {
-            q = q.or(
-              'naziv.ilike.%$query%,polazak.ilike.%$query%,dolazak.ilike.%$query%,opis.ilike.%$query%',
-            );
-          }
-
-          // Filteri
-          if (aktivan != null) {
-            q = q.eq('aktivan', aktivan);
-          }
-          if (polazak != null) {
-            q = q.eq('polazak', polazak);
-          }
-          if (dolazak != null) {
-            q = q.eq('dolazak', dolazak);
-          }
-          if (minUdaljenost != null) {
-            q = q.gte('udaljenost_km', minUdaljenost);
-          }
-          if (maxUdaljenost != null) {
-            q = q.lte('udaljenost_km', maxUdaljenost);
-          }
-          if (minVremeMinuti != null) {
-            q = q.gte(
-              'prosecno_vreme',
-              minVremeMinuti * 60,
-            ); // Konvertuj u sekunde
-          }
-          if (maxVremeMinuti != null) {
-            q = q.lte(
-              'prosecno_vreme',
-              maxVremeMinuti * 60,
-            ); // Konvertuj u sekunde
-          }
-
-          return q.order('naziv').limit(limit);
-        },
-        fallback: <dynamic>[],
-      );
-
-      if (response is List) {
-        final results = response
-            .map<Ruta>((json) => Ruta.fromMap(json as Map<String, dynamic>))
-            .toList();
-
-        // Keširaj jednostavne pretrage
-        if (cacheKey != null) {
-          CacheService.saveToMemory(cacheKey, results);
-        }
-
-        return results;
-      }
-      return [];
+      return {
+        'total': total,
+        'active': active,
+        'inactive': inactive,
+      };
     } catch (e) {
-      // Debug logging removed for production
-return [];
+      developer.log('Error getting route statistics: $e', name: 'RutaService', level: 1000);
+      throw Exception('Failed to get route statistics: $e');
     }
   }
 
-  /// Traži rute po nazivu, polasku ili destinaciji (stara metoda za kompatibilnost)
-  Future<List<Ruta>> searchRuteSimple(String query) async {
-    return searchRute(query: query, aktivan: true);
-  }
-
-  /// Dohvata rute između dva grada (poboljšana verzija)
-  Future<List<Ruta>> getRuteIzmedju(
-    String polazak,
-    String destinacija, {
-    bool sameAktivan = true,
-  }) async {
+  /// Dobija najduge rute
+  Future<List<Ruta>> getLongestRoutes({int limit = 10}) async {
     try {
-      final response = await SupabaseSafe.run(
-        () {
-          var q = _supabase
-              .from('rute')
-              .select()
-              .eq('polazak', polazak)
-              .eq('dolazak', destinacija);
+      developer.log('Getting longest routes', name: 'RutaService');
 
-          if (sameAktivan) {
-            q = q.eq('aktivan', true);
-          }
+      final querySnapshot = await _collection.where('aktivan', isEqualTo: true).get();
 
-          return q.order('naziv');
-        },
-        fallback: <dynamic>[],
-      );
+      final rute =
+          querySnapshot.docs.map((doc) => Ruta.fromMap(doc.data())).where((ruta) => ruta.udaljenostKm != null).toList();
 
-      if (response is List) {
-        return response
-            .map((json) => Ruta.fromMap(json as Map<String, dynamic>))
-            .toList();
-      }
-      return [];
+      rute.sort((a, b) => (b.udaljenostKm ?? 0).compareTo(a.udaljenostKm ?? 0));
+
+      return rute.take(limit).toList();
     } catch (e) {
-      // Debug logging removed for production
-return [];
+      developer.log('Error getting longest routes: $e', name: 'RutaService', level: 1000);
+      throw Exception('Failed to get longest routes: $e');
     }
   }
 
-  /// Dohvata sve rute koje kreću iz određenog grada
-  Future<List<Ruta>> getRuteOdGrada(String grad) async {
-    return searchRute(polazak: grad, aktivan: true);
+  /// Dobija najbrže rute
+  Future<List<Ruta>> getFastestRoutes({int limit = 10}) async {
+    try {
+      developer.log('Getting fastest routes', name: 'RutaService');
+
+      final querySnapshot = await _collection.where('aktivan', isEqualTo: true).get();
+
+      final rute = querySnapshot.docs
+          .map((doc) => Ruta.fromMap(doc.data()))
+          .where((ruta) => ruta.prosecnoVreme != null)
+          .toList();
+
+      rute.sort((a, b) => (a.prosecnoVreme ?? Duration.zero).compareTo(b.prosecnoVreme ?? Duration.zero));
+
+      return rute.take(limit).toList();
+    } catch (e) {
+      developer.log('Error getting fastest routes: $e', name: 'RutaService', level: 1000);
+      throw Exception('Failed to get fastest routes: $e');
+    }
   }
 
-  /// Dohvata sve rute koje dolaze u određeni grad
-  Future<List<Ruta>> getRuteDoGrada(String grad) async {
-    return searchRute(dolazak: grad, aktivan: true);
-  }
+  // Batch operacije
 
-  /// Dohvata kratke rute (manje od 30km)
-  Future<List<Ruta>> getKratkeRute() async {
-    return searchRute(aktivan: true, maxUdaljenost: 30);
-  }
-
-  /// Dohvata dugačke rute (više od 100km)
-  Future<List<Ruta>> getDugackeRute() async {
-    return searchRute(aktivan: true, minUdaljenost: 100);
-  }
-
-  /// Dohvata brze rute (manje od 30min)
-  Future<List<Ruta>> getBrzeRute() async {
-    return searchRute(aktivan: true, maxVremeMinuti: 30);
-  }
-
-  /// Dohvata spore rute (više od 2h)
-  Future<List<Ruta>> getSporeRute() async {
-    return searchRute(aktivan: true, minVremeMinuti: 120);
-  }
-
-  /// Stream za realtime ažuriranja ruta (poboljšana verzija)
-  Stream<List<Ruta>> get ruteStream {
-    return _supabase
-        .from('rute')
-        .stream(primaryKey: ['id'])
-        .order('naziv')
-        .map((data) => data.map((json) => Ruta.fromMap(json)).toList());
-  }
-
-  /// Stream samo za aktivne rute
-  Stream<List<Ruta>> get activeRuteStream {
-    return _supabase
-        .from('rute')
-        .stream(primaryKey: ['id'])
-        .eq('aktivan', true)
-        .order('naziv')
-        .map((data) => data.map((json) => Ruta.fromMap(json)).toList());
-  }
-
-  // 📦 BATCH OPERACIJE
   /// Kreira više ruta odjednom
-  Future<List<Ruta>> batchCreateRute(List<Ruta> rute) async {
+  Future<List<String>> createBatchRute(List<Ruta> rute) async {
     try {
+      developer.log('Creating batch rute: ${rute.length}', name: 'RutaService');
+
       // Validacija svih ruta
       for (final ruta in rute) {
-        final validation = ruta.validateFull();
-        if (validation.isNotEmpty) {
-      // Debug logging removed for production
-return [];
+        if (!ruta.isValidForDatabase) {
+          final errors = ruta.validateFull();
+          throw Exception('Validation failed for ruta ${ruta.naziv}: ${errors.values.join(', ')}');
         }
       }
 
-      final maps = rute.map((r) => r.toMap()).toList();
+      final batch = _firestore.batch();
+      final ids = <String>[];
 
-      final response = await SupabaseSafe.run(
-        () => _supabase.from('rute').insert(maps).select(),
-        fallback: <dynamic>[],
-      );
-
-      if (response is List) {
-        final results = response
-            .map<Ruta>((json) => Ruta.fromMap(json as Map<String, dynamic>))
-            .toList();
-
-        // Očisti cache
-        await _clearCache();
-      // Debug logging removed for production
-return results;
+      for (final ruta in rute) {
+        final docRef = _collection.doc(ruta.id);
+        batch.set(docRef, ruta.toMap());
+        ids.add(ruta.id);
       }
-      return [];
+
+      await batch.commit();
+
+      developer.log('Successfully created batch rute: ${ids.length}', name: 'RutaService');
+      return ids;
     } catch (e) {
-      // Debug logging removed for production
-return [];
+      developer.log('Error creating batch rute: $e', name: 'RutaService', level: 1000);
+      throw Exception('Failed to create batch rute: $e');
     }
   }
 
   /// Ažurira više ruta odjednom
-  Future<List<Ruta>> batchUpdateRute(List<Ruta> rute) async {
+  Future<void> updateBatchRute(List<Ruta> rute) async {
     try {
-      final results = <Ruta>[];
+      developer.log('Updating batch rute: ${rute.length}', name: 'RutaService');
 
+      // Validacija svih ruta
       for (final ruta in rute) {
-        final result = await updateRutaObject(ruta);
-        if (result != null) {
-          results.add(result);
+        if (!ruta.isValidForDatabase) {
+          final errors = ruta.validateFull();
+          throw Exception('Validation failed for ruta ${ruta.naziv}: ${errors.values.join(', ')}');
         }
       }
-      // Debug logging removed for production
-return results;
+
+      final batch = _firestore.batch();
+
+      for (final ruta in rute) {
+        final updatedRuta = ruta.withUpdatedTime();
+        final docRef = _collection.doc(ruta.id);
+        batch.update(docRef, updatedRuta.toMap());
+      }
+
+      await batch.commit();
+
+      developer.log('Successfully updated batch rute: ${rute.length}', name: 'RutaService');
     } catch (e) {
-      // Debug logging removed for production
-return [];
+      developer.log('Error updating batch rute: $e', name: 'RutaService', level: 1000);
+      throw Exception('Failed to update batch rute: $e');
     }
   }
 
   /// Deaktivira više ruta odjednom
-  Future<bool> batchDeactivateRute(List<String> ids) async {
+  Future<void> deactivateBatchRute(List<String> ids) async {
     try {
-      await SupabaseSafe.run(
-        () => _supabase.from('rute').update({
+      developer.log('Deactivating batch rute: ${ids.length}', name: 'RutaService');
+
+      final batch = _firestore.batch();
+
+      for (final id in ids) {
+        final docRef = _collection.doc(id);
+        batch.update(docRef, {
           'aktivan': false,
           'updated_at': DateTime.now().toIso8601String(),
-        }).inFilter('id', ids),
-      );
-
-      // Očisti cache
-      await _clearCache();
-      // Debug logging removed for production
-return true;
-    } catch (e) {
-      // Debug logging removed for production
-return false;
-    }
-  }
-
-  /// Aktivira više ruta odjednom
-  Future<bool> batchActivateRute(List<String> ids) async {
-    try {
-      await SupabaseSafe.run(
-        () => _supabase.from('rute').update({
-          'aktivan': true,
-          'updated_at': DateTime.now().toIso8601String(),
-        }).inFilter('id', ids),
-      );
-
-      // Očisti cache
-      await _clearCache();
-      // Debug logging removed for production
-return true;
-    } catch (e) {
-      // Debug logging removed for production
-return false;
-    }
-  }
-
-  // 📊 STATISTIKE I ANALITIKE
-  /// Dohvata detaljne statistike za sve rute
-  Future<Map<String, dynamic>> getRuteStatistics() async {
-    try {
-      // Pokušaj cache
-      final cacheKey = _getStatsCacheKey();
-      final cached = await CacheService.getFromDisk<Map<String, dynamic>>(
-        cacheKey,
-        maxAge: const Duration(minutes: 30),
-      );
-      if (cached != null) {
-      // Debug logging removed for production
-return cached;
+        });
       }
 
-      final rute = await getAllRute();
-      final aktivneRute = rute.where((r) => r.aktivan).toList();
-      final neaktivneRute = rute.where((r) => !r.aktivan).toList();
+      await batch.commit();
 
-      // Kalkuliši statistike
-      final ukupnaUdaljenost = aktivneRute
-          .where((r) => r.udaljenostKm != null)
-          .fold<double>(0, (sum, r) => sum + r.udaljenostKm!);
-
-      final prosecnaUdaljenost =
-          aktivneRute.where((r) => r.udaljenostKm != null).isNotEmpty
-              ? ukupnaUdaljenost /
-                  aktivneRute.where((r) => r.udaljenostKm != null).length
-              : 0.0;
-
-      final ukupnoVreme = aktivneRute
-          .where((r) => r.prosecnoVreme != null)
-          .fold<int>(0, (sum, r) => sum + r.prosecnoVreme!.inMinutes);
-
-      final prosecnoVreme =
-          aktivneRute.where((r) => r.prosecnoVreme != null).isNotEmpty
-              ? ukupnoVreme /
-                  aktivneRute.where((r) => r.prosecnoVreme != null).length
-              : 0.0;
-
-      // Grupisanje po gradovima
-      final polasciCount = <String, int>{};
-      final dolasciCount = <String, int>{};
-
-      for (final ruta in aktivneRute) {
-        polasciCount[ruta.polazak] = (polasciCount[ruta.polazak] ?? 0) + 1;
-        dolasciCount[ruta.dolazak] = (dolasciCount[ruta.dolazak] ?? 0) + 1;
-      }
-
-      final stats = {
-        'ukupno_ruta': rute.length,
-        'aktivne_rute': aktivneRute.length,
-        'neaktivne_rute': neaktivneRute.length,
-        'procenat_aktivnih': rute.isNotEmpty
-            ? (aktivneRute.length / rute.length * 100).round()
-            : 0,
-        'ukupna_udaljenost_km': ukupnaUdaljenost,
-        'prosecna_udaljenost_km':
-            double.parse(prosecnaUdaljenost.toStringAsFixed(1)),
-        'ukupno_vreme_minuti': ukupnoVreme,
-        'prosecno_vreme_minuti': double.parse(prosecnoVreme.toStringAsFixed(1)),
-        'najčešći_polazak': polasciCount.isNotEmpty
-            ? polasciCount.entries
-                .reduce((a, b) => a.value > b.value ? a : b)
-                .key
-            : null,
-        'najčešći_dolazak': dolasciCount.isNotEmpty
-            ? dolasciCount.entries
-                .reduce((a, b) => a.value > b.value ? a : b)
-                .key
-            : null,
-        'polasci_distribution': polasciCount,
-        'dolasci_distribution': dolasciCount,
-        'kratke_rute': aktivneRute.where((r) => r.jeKratkaRuta).length,
-        'dugačke_rute': aktivneRute.where((r) => r.jeDugackaRuta).length,
-        'brze_rute': aktivneRute.where((r) => r.jeBrzaRuta).length,
-        'spore_rute': aktivneRute.where((r) => r.jeSporaRuta).length,
-        'generirano': DateTime.now().toIso8601String(),
-      };
-
-      // Keširaj statistike
-      await CacheService.saveToDisk(cacheKey, stats);
-
-      return stats;
+      developer.log('Successfully deactivated batch rute: ${ids.length}', name: 'RutaService');
     } catch (e) {
-      // Debug logging removed for production
-return {};
+      developer.log('Error deactivating batch rute: $e', name: 'RutaService', level: 1000);
+      throw Exception('Failed to deactivate batch rute: $e');
     }
-  }
-
-  /// Dohvata statistike za specifičnu rutu
-  Future<Map<String, dynamic>> getRutaStatistics(String rutaId) async {
-    try {
-      // Dobij info o ruti
-      final ruta = await getRutaById(rutaId);
-      if (ruta == null) return {};
-
-      // Dobij putnici na ovoj ruti
-      final putnici = await SupabaseSafe.run(
-        () => _supabase
-            .from('dnevni_putnici')
-            .select('cena, datum, status')
-            .eq('ruta_id', rutaId),
-        fallback: <dynamic>[],
-      );
-
-      if (putnici is! List) return {'ruta_info': ruta.toMap()};
-
-      // Kalkuliši statistike putnika
-      final ukupnoPutnika = putnici.length;
-      final ukupnaZarada = putnici.fold<double>(
-        0,
-        (sum, p) => sum + ((p['cena'] as num?)?.toDouble() ?? 0),
-      );
-
-      final prosecnaZarada =
-          ukupnoPutnika > 0 ? ukupnaZarada / ukupnoPutnika : 0.0;
-
-      // Status distribucija
-      final statusCount = <String, int>{};
-      for (final p in putnici) {
-        final status = p['status'] as String? ?? 'unknown';
-        statusCount[status] = (statusCount[status] ?? 0) + 1;
-      }
-
-      return {
-        'ruta_info': ruta.toMap(),
-        'ukupno_putnika': ukupnoPutnika,
-        'ukupna_zarada': ukupnaZarada,
-        'prosecna_zarada_po_putniku':
-            double.parse(prosecnaZarada.toStringAsFixed(2)),
-        'status_distribution': statusCount,
-        'zarada_po_km': ruta.udaljenostKm != null && ruta.udaljenostKm! > 0
-            ? double.parse(
-                (ukupnaZarada / ruta.udaljenostKm!).toStringAsFixed(2),
-              )
-            : 0.0,
-        'putnika_po_danu': ukupnoPutnika > 0 && putnici.isNotEmpty
-            ? _calculateDailyPassengers(putnici)
-            : <String, int>{},
-        'generirano': DateTime.now().toIso8601String(),
-      };
-    } catch (e) {
-      // Debug logging removed for production
-return {};
-    }
-  }
-
-  /// Pomoćna metoda za kalkulaciju putnika po danima
-  Map<String, int> _calculateDailyPassengers(List<dynamic> putnici) {
-    final dailyCount = <String, int>{};
-
-    for (final p in putnici) {
-      final datum = p['datum'] as String?;
-      if (datum != null) {
-        final dan = datum.split('T')[0]; // Uzmi samo datum deo
-        dailyCount[dan] = (dailyCount[dan] ?? 0) + 1;
-      }
-    }
-
-    return dailyCount;
-  }
-
-  // 📄 EXPORT FUNKCIONALNOST
-  /// Exportuje rute u CSV format
-  Future<String> exportRuteToCSV({bool sameAktivne = true}) async {
-    try {
-      final rute = sameAktivne ? await getActiveRute() : await getAllRute();
-
-      final csvLines = <String>[];
-
-      // Header
-      csvLines.add(
-        'ID,Naziv,Polazak,Dolazak,Opis,Udaljenost (km),Prosečno vreme (min),Aktivan,Kreiran',
-      );
-
-      // Data rows
-      for (final ruta in rute) {
-        csvLines.add(
-          [
-            ruta.id,
-            '"${ruta.naziv}"',
-            '"${ruta.polazak}"',
-            '"${ruta.dolazak}"',
-            '"${ruta.opis ?? ''}"',
-            ruta.udaljenostKm?.toString() ?? '',
-            ruta.prosecnoVreme?.inMinutes.toString() ?? '',
-            ruta.aktivan ? 'Da' : 'Ne',
-            ruta.createdAt.toIso8601String(),
-          ].join(','),
-        );
-      }
-
-      final csvContent = csvLines.join('\n');
-      // Debug logging removed for production
-return csvContent;
-    } catch (e) {
-      // Debug logging removed for production
-return '';
-    }
-  }
-
-  // 🧹 MAINTENANCE FUNKCIJE
-  /// Čišćenje starih neaktivnih ruta
-  Future<void> cleanupOldInactiveRute({int daysToKeep = 365}) async {
-    try {
-      final cutoffDate = DateTime.now().subtract(Duration(days: daysToKeep));
-      final cutoffDateStr = cutoffDate.toIso8601String();
-
-      await SupabaseSafe.run(
-        () => _supabase
-            .from('rute')
-            .delete()
-            .eq('aktivan', false)
-            .lt('updated_at', cutoffDateStr),
-      );
-
-      await _clearCache();
-      // Debug logging removed for production
-} catch (e) {
-      // Debug logging removed for production
-}
-  }
-
-  /// Cache statistike
-  Map<String, dynamic> getCacheStats() {
-    return CacheService.getStats();
   }
 }
-
-
-
-
-
