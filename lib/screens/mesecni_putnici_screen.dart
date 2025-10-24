@@ -1315,25 +1315,23 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
   void _toggleAktivnost(MesecniPutnik putnik) async {
     // TODO: Implement Firebase toggleAktivnost
     // final success = await _mesecniPutnikService.toggleAktivnost(putnik.id, !putnik.aktivan);
-    final success = false; // PLACEHOLDER: always false
-
-    if (success && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            '${putnik.putnikIme} je ${!putnik.aktivan ? "aktiviran" : "deaktiviran"}',
-          ),
-          backgroundColor: !putnik.aktivan ? Colors.green : Colors.orange,
-        ),
-      );
-    } else if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Greška pri promeni statusa'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
+    // if (success && mounted) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(
+    //       content: Text(
+    //         '${putnik.putnikIme} je ${!putnik.aktivan ? "aktiviran" : "deaktiviran"}',
+    //       ),
+    //       backgroundColor: !putnik.aktivan ? Colors.green : Colors.orange,
+    //     ),
+    //   );
+    // } else if (mounted) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(
+    //       content: Text('Greška pri promeni statusa'),
+    //       backgroundColor: Colors.red,
+    //     ),
+    //   );
+    // }
   }
 
   void _editPutnik(MesecniPutnik putnik) {
@@ -1896,10 +1894,10 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
       return;
     }
 
-    // Koristi vrednosti iz controller-a umesto iz varijabli
-    final ime = _imeController.text.trim();
-    final tipSkole = _tipSkoleController.text.trim();
-    final brojTelefona = _brojTelefonaController.text.trim();
+    // TODO: Koristi vrednosti iz controller-a umesto iz varijabli
+    // final ime = _imeController.text.trim();
+    // final tipSkole = _tipSkoleController.text.trim();
+    // final brojTelefona = _brojTelefonaController.text.trim();
 
     try {
       // Pripremi mapu polazaka po danima (JSON)
@@ -1914,19 +1912,19 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
         if (vs.isNotEmpty) polasci.add('$vs VS');
         if (polasci.isNotEmpty) polasciPoDanu[dan] = polasci;
       }
-      final editovanPutnik = originalPutnik.copyWith(
-        putnikIme: ime,
-        tip: _noviTip,
-        tipSkole: tipSkole.isEmpty ? null : tipSkole,
-        brojTelefona: brojTelefona.isEmpty ? null : brojTelefona,
-        polasciPoDanu: polasciPoDanu,
-        radniDani: _getRadniDaniString(),
-      );
+      // TODO: Kreirati editovani putnik
+      // final editovanPutnik = originalPutnik.copyWith(
+      //   putnikIme: ime,
+      //   tip: _noviTip,
+      //   tipSkole: tipSkole.isEmpty ? null : tipSkole,
+      //   brojTelefona: brojTelefona.isEmpty ? null : brojTelefona,
+      //   polasciPoDanu: polasciPoDanu,
+      //   radniDani: _getRadniDaniString(),
+      // );
       // Log and await the update result so we can surface errors to the user
 
       // TODO: Implement Firebase azurirajMesecnogPutnika
-      // final updated = await _mesecniPutnikService.azurirajMesecnogPutnika(editovanPutnik);
-      final updated = editovanPutnik;
+      // await _mesecniPutnikService.azurirajMesecnogPutnika(editovanPutnik);
 
       // Kreiraj dnevne putovanja za danas (1 dan unapred) da se odmah pojave u 'Danas' listi
       try {
@@ -3150,27 +3148,25 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
       try {
         // TODO: Implement Firebase obrisiMesecniPutnik
         // final success = await _mesecniPutnikService.obrisiMesecniPutnik(putnik.id);
-        final success = false; // PLACEHOLDER: always false
-
-        if (success && mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('${putnik.putnikIme} je uspešno obrisan'),
-              backgroundColor: Colors.green,
-              action: SnackBarAction(
-                label: 'SINHRONIZUJ STATISTIKE',
-                onPressed: () => _sinhronizujStatistike(putnik.id),
-              ),
-            ),
-          );
-        } else if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Greška pri brisanju putnika'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
+        // if (success && mounted) {
+        //   ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(
+        //       content: Text('${putnik.putnikIme} je uspešno obrisan'),
+        //       backgroundColor: Colors.green,
+        //       action: SnackBarAction(
+        //         label: 'SINHRONIZUJ STATISTIKE',
+        //         onPressed: () => _sinhronizujStatistike(putnik.id),
+        //       ),
+        //     ),
+        //   );
+        // } else if (mounted) {
+        //   ScaffoldMessenger.of(context).showSnackBar(
+        //     const SnackBar(
+        //       content: Text('Greška pri brisanju putnika'),
+        //       backgroundColor: Colors.red,
+        //     ),
+        //   );
+        // }
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -3184,33 +3180,32 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     }
   }
 
-  void _sinhronizujStatistike(String putnikId) async {
-    try {
-      // TODO: Implement Firebase sinhronizujBrojPutovanjaSaIstorijom
-      // final success = await MesecniPutnikService.sinhronizujBrojPutovanjaSaIstorijom(
-      //   putnikId,
-      // );
-      final success = false; // PLACEHOLDER: always false
-
-      if (success && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Statistike su uspešno sinhronizovane sa istorijom'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Greška pri sinhronizaciji: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-  }
+  // TODO: Implement _sinhronizujStatistike
+  // void _sinhronizujStatistike(String putnikId) async {
+  //   try {
+  //     // TODO: Implement Firebase sinhronizujBrojPutovanjaSaIstorijom
+  //     // final success = await MesecniPutnikService.sinhronizujBrojPutovanjaSaIstorijom(
+  //     //   putnikId,
+  //     // );
+  //     // if (success && mounted) {
+  //     //   ScaffoldMessenger.of(context).showSnackBar(
+  //     //     const SnackBar(
+  //     //       content: Text('Statistike su uspešno sinhronizovane sa istorijom'),
+  //     //       backgroundColor: Colors.green,
+  //     //     ),
+  //     //   );
+  //     // }
+  //   } catch (e) {
+  //     if (mounted) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text('Greška pri sinhronizaciji: $e'),
+  //           backgroundColor: Colors.red,
+  //         ),
+  //       );
+  //     }
+  //   }
+  // }
 
   // Helper funkcija za brojanje kontakata
   int _prebrojKontakte(MesecniPutnik putnik) {
@@ -4145,9 +4140,6 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
 
   // 📅 GODIŠNJE STATISTIKE (2025)
   Future<Map<String, dynamic>> _getGodisnjeStatistike(String putnikId) async {
-    final startOfYear = DateTime(2025);
-    final endOfYear = DateTime(2025, 12, 31);
-
     // TODO: Implement Firebase putovanja_istorija query for year 2025
     // final response = await supabase
     //     .from('putovanja_istorija')
@@ -4278,43 +4270,41 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     String mesec,
   ) async {
     try {
-      // � Učitaj trenutnog vozača kao UUID
-      final currentDriverUuid = await _getCurrentDriverUuid();
+      // TODO: Učitaj trenutnog vozača kao UUID
+      // final currentDriverUuid = await _getCurrentDriverUuid();
 
-      // �📅 Konvertuj string meseca u datume
-      final Map<String, dynamic> datumi = _konvertujMesecUDatume(mesec);
+      // TODO: Konvertuj string meseca u datume
+      // final Map<String, dynamic> datumi = _konvertujMesecUDatume(mesec);
 
       // TODO: Implement Firebase azurirajPlacanjeZaMesec
       // final uspeh = await _mesecniPutnikService.azurirajPlacanjeZaMesec(
       //   putnikId,
       //   iznos,
-      //   currentDriverUuid, // Koristi UUID trenutnog vozača
+      //   currentDriverUuid,
       //   datumi['pocetakMeseca'] as DateTime,
       //   datumi['krajMeseca'] as DateTime,
       // );
-      final uspeh = false; // PLACEHOLDER: always false
-
-      if (uspeh) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                '✅ Dodato plaćanje od ${iznos.toStringAsFixed(0)} RSD za $mesec',
-              ),
-              backgroundColor: Colors.green,
-            ),
-          );
-        }
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('❌ Greška pri čuvanju plaćanja'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }
+      // if (uspeh) {
+      //   if (mounted) {
+      //     ScaffoldMessenger.of(context).showSnackBar(
+      //       SnackBar(
+      //         content: Text(
+      //           '✅ Dodato plaćanje od ${iznos.toStringAsFixed(0)} RSD za $mesec',
+      //         ),
+      //         backgroundColor: Colors.green,
+      //       ),
+      //     );
+      //   }
+      // } else {
+      //   if (mounted) {
+      //     ScaffoldMessenger.of(context).showSnackBar(
+      //       const SnackBar(
+      //         content: Text('❌ Greška pri čuvanju plaćanja'),
+      //         backgroundColor: Colors.red,
+      //       ),
+      //     );
+      //   }
+      // }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -4334,11 +4324,13 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     int godina,
   ) async {
     try {
-      final DateTime mesecStart = DateTime(godina, mesec);
-      final DateTime mesecEnd = DateTime(godina, mesec + 1, 0, 23, 59, 59);
+      // TODO: Kreirati datume
+      // final DateTime mesecStart = DateTime(godina, mesec);
+      // final DateTime mesecEnd = DateTime(godina, mesec + 1, 0, 23, 59, 59);
 
-      final String startStr = mesecStart.toIso8601String().split('T')[0];
-      final String endStr = mesecEnd.toIso8601String().split('T')[0];
+      // TODO: Kreirati string datume
+      // final String startStr = mesecStart.toIso8601String().split('T')[0];
+      // final String endStr = mesecEnd.toIso8601String().split('T')[0];
 
       // TODO: Implement Firebase putovanja_istorija query
       // final response = await Supabase.instance.client
@@ -4493,11 +4485,13 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
   // 📊 DOBIJ MESEČNE STATISTIKE ZA SEPTEMBAR 2025
   Future<Map<String, dynamic>> _getMesecneStatistike(String putnikId) async {
     try {
-      final DateTime septembarStart = DateTime(2025, 9);
-      final DateTime septembarEnd = DateTime(2025, 9, 30, 23, 59, 59);
+      // TODO: Kreirati septembar datume
+      // final DateTime septembarStart = DateTime(2025, 9);
+      // final DateTime septembarEnd = DateTime(2025, 9, 30, 23, 59, 59);
 
-      final String startStr = septembarStart.toIso8601String().split('T')[0];
-      final String endStr = septembarEnd.toIso8601String().split('T')[0];
+      // TODO: Kreirati string datume
+      // final String startStr = septembarStart.toIso8601String().split('T')[0];
+      // final String endStr = septembarEnd.toIso8601String().split('T')[0];
 
       // TODO: Implement Firebase putovanja_istorija query
       // final response = await Supabase.instance.client
@@ -4549,35 +4543,35 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     }
   }
 
-  // Helper za konvertovanje meseca u datume
-  Map<String, dynamic> _konvertujMesecUDatume(String izabranMesec) {
-    // Parsiraj izabrani mesec (format: "Septembar 2025")
-    final parts = izabranMesec.split(' ');
-    if (parts.length != 2) {
-      throw Exception('Neispravno format meseca: $izabranMesec');
-    }
+  // TODO: Helper za konvertovanje meseca u datume
+  // Map<String, dynamic> _konvertujMesecUDatume(String izabranMesec) {
+  //   // Parsiraj izabrani mesec (format: "Septembar 2025")
+  //   final parts = izabranMesec.split(' ');
+  //   if (parts.length != 2) {
+  //     throw Exception('Neispravno format meseca: $izabranMesec');
+  //   }
 
-    final monthName = parts[0];
-    final year = int.tryParse(parts[1]);
-    if (year == null) {
-      throw Exception('Neispravna godina: ${parts[1]}');
-    }
+  //   final monthName = parts[0];
+  //   final year = int.tryParse(parts[1]);
+  //   if (year == null) {
+  //     throw Exception('Neispravna godina: ${parts[1]}');
+  //   }
 
-    final monthNumber = _getMonthNumber(monthName);
-    if (monthNumber == 0) {
-      throw Exception('Neispravno ime meseca: $monthName');
-    }
+  //   final monthNumber = _getMonthNumber(monthName);
+  //   if (monthNumber == 0) {
+  //     throw Exception('Neispravno ime meseca: $monthName');
+  //   }
 
-    DateTime pocetakMeseca = DateTime(year, monthNumber);
-    DateTime krajMeseca = DateTime(year, monthNumber + 1, 0, 23, 59, 59);
+  //   DateTime pocetakMeseca = DateTime(year, monthNumber);
+  //   DateTime krajMeseca = DateTime(year, monthNumber + 1, 0, 23, 59, 59);
 
-    return {
-      'pocetakMeseca': pocetakMeseca,
-      'krajMeseca': krajMeseca,
-      'mesecBroj': monthNumber,
-      'godina': year,
-    };
-  }
+  //   return {
+  //     'pocetakMeseca': pocetakMeseca,
+  //     'krajMeseca': krajMeseca,
+  //     'mesecBroj': monthNumber,
+  //     'godina': year,
+  //   };
+  // }
 
   // 📅 BUILDER ZA CHECKBOX RADNIH DANA
   Widget _buildRadniDanCheckbox(String danKod, String danNaziv) {

@@ -54,7 +54,6 @@ class DanasScreen extends StatefulWidget {
 
 class _DanasScreenState extends State<DanasScreen> {
   // final supabase = Supabase.instance.client; // REMOVED - migrated to Firebase
-  final _firestoreService = FirestoreService(); // 🔄 Firebase replacement for putnik_service
   final Set<String> _resettingSlots = {};
   // 🕐 TIMER MANAGEMENT - sada koristi TimerManager singleton umesto direktnih Timer-a
 
@@ -553,11 +552,6 @@ class _DanasScreenState extends State<DanasScreen> {
     return StreamBuilder<List<Putnik>>(
       stream: Stream.fromFuture(() async {
         // Fetch ALL active monthly passengers (not just 'zakupljeno')
-        const mesecniFields = '*,'
-            'polasci_po_danu,'
-            'polazak_bc_pon,polazak_bc_uto,polazak_bc_sre,polazak_bc_cet,polazak_bc_pet,'
-            'polazak_vs_pon,polazak_vs_uto,polazak_vs_sre,polazak_vs_cet,polazak_vs_pet';
-
         // TODO: Replace with Firebase mesecni_putnici query
         // final mesecniResponse =
         //     await supabase.from('mesecni_putnici').select(mesecniFields).eq('aktivan', true).eq('obrisan', false);
@@ -585,7 +579,6 @@ class _DanasScreenState extends State<DanasScreen> {
         }
 
         // Fetch daily passengers for today
-        final danas = DateTime.now().toIso8601String().split('T')[0];
         // TODO: Replace with Firebase putovanja_istorija query
         // final dnevniResponse =
         //     await supabase.from('putovanja_istorija').select().eq('datum', danas).eq('tip_putnika', 'dnevni');
@@ -870,24 +863,14 @@ class _DanasScreenState extends State<DanasScreen> {
     try {
       // 1. OSNOVNI PODACI
       final today = DateTime.now();
-      final dayStart = DateTime(today.year, today.month, today.day);
-      final dayEnd = DateTime(today.year, today.month, today.day, 23, 59, 59);
 
-      // 2. REALTIME STREAM ZA KOMBINOVANE PUTNIKE
-      late List<Putnik> putnici;
-      try {
-        final isoDate = DateTime.now().toIso8601String().split('T')[0];
-        final stream = FirestoreService.streamKombinovaniPutniciFiltered();
-        // TODO: Apply date, grad, vreme filters in-memory
-        putnici = await stream.first.timeout(const Duration(seconds: 10));
-      } catch (e) {
-        putnici = []; // Prazan list kao fallback
-      }
+      // 2. REALTIME STREAM ZA KOMBINOVANE PUTNIKE - PLACEHOLDER
+      // TODO: Implement Firebase stream for combined passengers
+      // final stream = FirestoreService.streamKombinovaniPutniciFiltered();
 
       // 3. REALTIME DETALJNE STATISTIKE - PLACEHOLDER
       // TODO: Implement detaljneStatistikePoVozacima in Firebase
       // final detaljneStats = await StatistikaService.instance.detaljneStatistikePoVozacima(
-      //   putnici,
       //   dayStart,
       //   dayEnd,
       // );
@@ -1947,9 +1930,6 @@ class _DanasScreenState extends State<DanasScreen> {
                 });
                 // KORISTI NOVU STANDARDIZOVANU LOGIKU ZA PAZAR 💰
                 // ✅ UVEK KORISTI SAMO DANAŠNJI DAN
-                final today = DateTime.now();
-                final dayStart = DateTime(today.year, today.month, today.day);
-                final dayEnd = DateTime(today.year, today.month, today.day, 23, 59, 59);
                 // Debug logging removed for production
                 return StreamBuilder<double>(
                   stream: Stream.value(0.0), // PLACEHOLDER: StatistikaService.streamPazarZaVozaca replaced
@@ -2047,7 +2027,8 @@ class _DanasScreenState extends State<DanasScreen> {
                                   ),
                                   child: StreamBuilder<int>(
                                     stream: Stream.value(
-                                        0), // PLACEHOLDER: StatistikaService.streamBrojMesecnihKarataZaVozaca replaced
+                                      0,
+                                    ), // PLACEHOLDER: StatistikaService.streamBrojMesecnihKarataZaVozaca replaced
                                     // TODO: Implement Firebase monthly tickets stream
                                     builder: (context, mesecneSnapshot) {
                                       final brojMesecnih = mesecneSnapshot.data ?? 0;

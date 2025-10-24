@@ -31,7 +31,6 @@ class AdminScreen extends StatefulWidget {
 
 class _AdminScreenState extends State<AdminScreen> {
   String? _currentDriver;
-  final _putnikService = FirestoreService(); // Firebase replacement for putnik service
 
   // 🔄 REALTIME MONITORING STATE
   late ValueNotifier<bool> _isRealtimeHealthy;

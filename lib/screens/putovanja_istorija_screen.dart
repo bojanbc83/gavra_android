@@ -1404,19 +1404,20 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
     }
 
     try {
-      final novoPutovanje = PutovanjaIstorija(
-        id: '', // Biće automatski generisan u Supabase
-        putnikIme: _noviPutnikIme.trim(),
-        brojTelefona: _noviPutnikTelefon.trim().isEmpty ? null : _noviPutnikTelefon.trim(),
-        adresaPolaska: 'Bela Crkva', // Default vrednost
-        vremePolaska: '07:00', // Default vrednost
-        tipPutnika: _noviTipPutnika,
-        cena: _novaCena,
-        datum: _selectedDate,
-        vremeAkcije: DateTime.now(),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
+      // TODO: Implement Firebase putovanja_istorija creation
+      // final novoPutovanje = PutovanjaIstorija(
+      //   id: '',
+      //   putnikIme: _noviPutnikIme.trim(),
+      //   brojTelefona: _noviPutnikTelefon.trim().isEmpty ? null : _noviPutnikTelefon.trim(),
+      //   adresaPolaska: 'Bela Crkva',
+      //   vremePolaska: '07:00',
+      //   tipPutnika: _noviTipPutnika,
+      //   cena: _novaCena,
+      //   datum: _selectedDate,
+      //   vremeAkcije: DateTime.now(),
+      //   createdAt: DateTime.now(),
+      //   updatedAt: DateTime.now(),
+      // );
 
       // Firebase migration - add operation not implemented yet
 
@@ -1534,22 +1535,23 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
     }
 
     try {
-      final azuriranoPutovanje = PutovanjaIstorija(
-        id: originalPutovanje.id,
-        mesecniPutnikId: originalPutovanje.mesecniPutnikId,
-        putnikIme: _noviPutnikIme.trim(),
-        brojTelefona: _noviPutnikTelefon.trim().isEmpty ? null : _noviPutnikTelefon.trim(),
-        adresaPolaska: originalPutovanje.adresaPolaska,
-        vremePolaska: originalPutovanje.vremePolaska,
-        tipPutnika: _noviTipPutnika,
-        status: originalPutovanje.status,
-        pokupljen: originalPutovanje.pokupljen,
-        cena: _novaCena,
-        datum: originalPutovanje.datum,
-        vremeAkcije: originalPutovanje.vremeAkcije,
-        createdAt: originalPutovanje.createdAt,
-        updatedAt: DateTime.now(),
-      );
+      // TODO: Implement Firebase putovanja_istorija update
+      // final azuriranoPutovanje = PutovanjaIstorija(
+      //   id: originalPutovanje.id,
+      //   mesecniPutnikId: originalPutovanje.mesecniPutnikId,
+      //   putnikIme: _noviPutnikIme.trim(),
+      //   brojTelefona: _noviPutnikTelefon.trim().isEmpty ? null : _noviPutnikTelefon.trim(),
+      //   adresaPolaska: originalPutovanje.adresaPolaska,
+      //   vremePolaska: originalPutovanje.vremePolaska,
+      //   tipPutnika: _noviTipPutnika,
+      //   status: originalPutovanje.status,
+      //   pokupljen: originalPutovanje.pokupljen,
+      //   cena: _novaCena,
+      //   datum: originalPutovanje.datum,
+      //   vremeAkcije: originalPutovanje.vremeAkcije,
+      //   createdAt: originalPutovanje.createdAt,
+      //   updatedAt: DateTime.now(),
+      // );
 
       // Firebase migration - update operation not implemented yet
 
@@ -1615,22 +1617,23 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
     PutovanjaIstorija putovanje,
     String noviStatus,
   ) async {
-    final azuriranoPutovanje = PutovanjaIstorija(
-      id: putovanje.id,
-      mesecniPutnikId: putovanje.mesecniPutnikId,
-      putnikIme: putovanje.putnikIme,
-      brojTelefona: putovanje.brojTelefona,
-      adresaPolaska: putovanje.adresaPolaska,
-      vremePolaska: putovanje.vremePolaska,
-      tipPutnika: putovanje.tipPutnika,
-      status: noviStatus,
-      pokupljen: noviStatus == 'pokupljen',
-      cena: putovanje.cena,
-      datum: putovanje.datum,
-      vremeAkcije: putovanje.vremeAkcije,
-      createdAt: putovanje.createdAt,
-      updatedAt: DateTime.now(),
-    );
+    // TODO: Implement Firebase putovanja_istorija status update
+    // final azuriranoPutovanje = PutovanjaIstorija(
+    //   id: putovanje.id,
+    //   mesecniPutnikId: putovanje.mesecniPutnikId,
+    //   putnikIme: putovanje.putnikIme,
+    //   brojTelefona: putovanje.brojTelefona,
+    //   adresaPolaska: putovanje.adresaPolaska,
+    //   vremePolaska: putovanje.vremePolaska,
+    //   tipPutnika: putovanje.tipPutnika,
+    //   status: noviStatus,
+    //   pokupljen: noviStatus == 'pokupljen',
+    //   cena: putovanje.cena,
+    //   datum: putovanje.datum,
+    //   vremeAkcije: putovanje.vremeAkcije,
+    //   createdAt: putovanje.createdAt,
+    //   updatedAt: DateTime.now(),
+    // );
 
     // Firebase migration - update operation not implemented yet
     if (mounted) {

@@ -1,8 +1,9 @@
+import 'dart:developer' as developer;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/dnevni_putnik.dart';
 import '../models/putnik.dart';
-import '../utils/vozac_boja.dart';
 
 /// 🔥 FIREBASE REALTIME SERVICE
 /// Zamena za Supabase realtime sa Firebase Firestore streams
@@ -32,7 +33,7 @@ class RealtimeService {
         }).toList();
       });
     } catch (e) {
-      VozacBoja.crvenaGreska('RealtimeService.dnevniPutniciStream: $e');
+      developer.log('RealtimeService.dnevniPutniciStream: $e', name: 'RealtimeService', level: 1000);
       return Stream.value([]);
     }
   }
@@ -47,7 +48,7 @@ class RealtimeService {
         }).toList();
       });
     } catch (e) {
-      VozacBoja.crvenaGreska('RealtimeService.putniciStream: $e');
+      developer.log('RealtimeService.putniciStream: $e', name: 'RealtimeService', level: 1000);
       return Stream.value([]);
     }
   }
@@ -62,7 +63,7 @@ class RealtimeService {
         }).toList();
       });
     } catch (e) {
-      VozacBoja.crvenaGreska('RealtimeService.putniciSaDugovimStream: $e');
+      developer.log('RealtimeService.putniciSaDugovimStream: $e', name: 'RealtimeService', level: 1000);
       return Stream.value([]);
     }
   }
@@ -89,7 +90,7 @@ class RealtimeService {
 
           ukupnaZarada += dnevniPutnik.cena;
 
-          String linija = dnevniPutnik.vozilo?.ime ?? 'Nepoznata linija';
+          String linija = dnevniPutnik.rutaId.isNotEmpty ? dnevniPutnik.rutaId : 'Nepoznata linija';
           putniciPoLiniji[linija] = (putniciPoLiniji[linija] ?? 0) + 1;
         }
 
@@ -101,7 +102,7 @@ class RealtimeService {
         };
       });
     } catch (e) {
-      VozacBoja.crvenaGreska('RealtimeService.statistikaDanasStream: $e');
+      developer.log('RealtimeService.statistikaDanasStream: $e', name: 'RealtimeService', level: 1000);
       return Stream.value({
         'ukupno_putnika': 0,
         'ukupna_zarada': 0.0,
@@ -122,7 +123,7 @@ class RealtimeService {
         return null;
       });
     } catch (e) {
-      VozacBoja.crvenaGreska('RealtimeService.putnikStream: $e');
+      developer.log('RealtimeService.putnikStream: $e', name: 'RealtimeService', level: 1000);
       return Stream.value(null);
     }
   }
@@ -138,7 +139,7 @@ class RealtimeService {
         return null;
       });
     } catch (e) {
-      VozacBoja.crvenaGreska('RealtimeService.dnevniPutnikStream: $e');
+      developer.log('RealtimeService.dnevniPutnikStream: $e', name: 'RealtimeService', level: 1000);
       return Stream.value(null);
     }
   }
@@ -146,6 +147,6 @@ class RealtimeService {
   /// Cleanup - dispose svih stream-ova
   static void dispose() {
     // Firebase streams se automatski cleanup-uju kada se ne koriste
-    VozacBoja.plavaInfo('RealtimeService.dispose: Firebase streams cleaned up');
+    developer.log('RealtimeService.dispose: Firebase streams cleaned up', name: 'RealtimeService');
   }
 }

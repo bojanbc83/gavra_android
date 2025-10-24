@@ -12,7 +12,6 @@ import '../services/permission_service.dart';
 import '../services/putnik_service.dart';
 import '../theme.dart';
 import '../utils/smart_colors.dart';
-import '../utils/vozac_boja.dart';
 
 /// Widget za prikaz putnik kartice sa podrškom za mesečne i dnevne putnike
 
@@ -95,11 +94,11 @@ class _PutnikCardState extends State<PutnikCard> {
         }
 
         // STRIKTNA VALIDACIJA VOZAČA
-        if (!VozacBoja.isValidDriver(widget.currentDriver)) {
+        if (widget.currentDriver == null || widget.currentDriver!.isEmpty) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SmartSnackBar.error(
-                'NEVALJAN VOZAČ! Dozvoljen je samo: ${VozacBoja.validDrivers.join(", ")}',
+                'NEVALJAN VOZAČ! Potrebno je ulogovati se.',
                 context,
               ),
             );
@@ -111,7 +110,7 @@ class _PutnikCardState extends State<PutnikCard> {
         HapticService.success();
 
         try {
-          await PutnikService().oznaciPokupljen(_putnik.id!, widget.currentDriver!);
+          await PutnikService().oznaciPokupljen(_putnik.id!.toString(), widget.currentDriver ?? 'Nepoznat vozač');
 
           // � FORSIRAJ UI REFRESH NA PARENT WIDGET
           if (mounted && widget.onChanged != null) {
@@ -121,11 +120,11 @@ class _PutnikCardState extends State<PutnikCard> {
           // 🆕 DODAJ KRATKU PAUZU pre dohvatanja (da se baza ažurira)
           await Future<void>.delayed(const Duration(milliseconds: 500));
 
-          final updatedPutnik = await PutnikService().getPutnikFromAnyTable(_putnik.id!);
+          final updatedPutnik = await PutnikService().getPutnikFromAnyTable(_putnik.id!.toString());
           if (updatedPutnik != null && mounted) {
             if (mounted)
               setState(() {
-                _putnik = updatedPutnik;
+                _putnik = updatedPutnik as Putnik;
               });
 
             // 🎉 PRIKAZ USPEŠNE PORUKE
@@ -249,7 +248,7 @@ class _PutnikCardState extends State<PutnikCard> {
       if (updatedPutnik != null && mounted) {
         if (mounted)
           setState(() {
-            _putnik = updatedPutnik;
+            _putnik = updatedPutnik as Putnik;
           });
       } else if (mounted) {
         // Fallback: kreiraj novo stanje putnika sa resetovanim vrednostima
@@ -1173,7 +1172,7 @@ class _PutnikCardState extends State<PutnikCard> {
       // Validacija vozača sa fallback
       String finalDriver = widget.currentDriver ?? 'Nepoznat vozač';
 
-      if (!VozacBoja.isValidDriver(widget.currentDriver)) {
+      if (widget.currentDriver == null || widget.currentDriver!.isEmpty) {
         // Umesto da prekidamo plaćanje, koristimo fallback vozača
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -1210,9 +1209,9 @@ class _PutnikCardState extends State<PutnikCard> {
         }
 
         await PutnikService().oznaciPlaceno(
-          _putnik.id!,
-          iznos,
+          _putnik.id!.toString(),
           finalDriver,
+          iznos,
         );
       }
 
@@ -1324,7 +1323,7 @@ class _PutnikCardState extends State<PutnikCard> {
     try {
       // Pozovi service za postavljanje statusa
       await PutnikService().oznaciBolovanjeGodisnji(
-        _putnik.id!,
+        _putnik.id!.toString(),
         status,
         widget.currentDriver ?? '',
       );
@@ -2156,9 +2155,7 @@ class _PutnikCardState extends State<PutnikCard> {
                           'Dodao:',
                           style: TextStyle(
                             fontSize: 13,
-                            color: VozacBoja.isValidDriver(_putnik.dodaoVozac)
-                                ? VozacBoja.get(_putnik.dodaoVozac)
-                                : Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                            color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -2168,9 +2165,7 @@ class _PutnikCardState extends State<PutnikCard> {
                               : (_putnik.dodaoVozac?.isNotEmpty == true ? 'ranije' : 'sistem'),
                           style: TextStyle(
                             fontSize: 13,
-                            color: VozacBoja.isValidDriver(_putnik.dodaoVozac)
-                                ? VozacBoja.get(_putnik.dodaoVozac)
-                                : Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                            color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -2184,9 +2179,7 @@ class _PutnikCardState extends State<PutnikCard> {
                             'Otkazao:',
                             style: TextStyle(
                               fontSize: 13,
-                              color: VozacBoja.isValidDriver(_putnik.otkazaoVozac)
-                                  ? VozacBoja.get(_putnik.otkazaoVozac)
-                                  : Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                              color: Theme.of(context).colorScheme.error,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -2194,9 +2187,7 @@ class _PutnikCardState extends State<PutnikCard> {
                             _putnik.otkazaoVozac?.isNotEmpty == true ? _putnik.otkazaoVozac! : 'sistem',
                             style: TextStyle(
                               fontSize: 13,
-                              color: VozacBoja.isValidDriver(_putnik.otkazaoVozac)
-                                  ? VozacBoja.get(_putnik.otkazaoVozac).withOpacity(0.8)
-                                  : Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                              color: Theme.of(context).colorScheme.error.withOpacity(0.8),
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -2207,7 +2198,7 @@ class _PutnikCardState extends State<PutnikCard> {
                               ),
                               style: TextStyle(
                                 fontSize: 12,
-                                color: VozacBoja.get(_putnik.otkazaoVozac).withOpacity(0.8),
+                                color: Theme.of(context).colorScheme.error.withOpacity(0.8),
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -2240,9 +2231,7 @@ class _PutnikCardState extends State<PutnikCard> {
                         }(),
                         style: TextStyle(
                           fontSize: 13,
-                          color: VozacBoja.isValidDriver(_putnik.pokupioVozac ?? widget.currentDriver)
-                              ? VozacBoja.get(_putnik.pokupioVozac ?? widget.currentDriver)
-                              : Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                          color: Theme.of(context).colorScheme.primary,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -2254,9 +2243,7 @@ class _PutnikCardState extends State<PutnikCard> {
                             'Plaćeno',
                             style: TextStyle(
                               fontSize: 13,
-                              color: VozacBoja.isValidDriver(_putnik.naplatioVozac)
-                                  ? VozacBoja.get(_putnik.naplatioVozac)
-                                  : Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                              color: Theme.of(context).colorScheme.primary,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -2264,9 +2251,7 @@ class _PutnikCardState extends State<PutnikCard> {
                             '${_putnik.iznosPlacanja!.toStringAsFixed(0)}${_putnik.vremePlacanja != null ? ' ${_formatVreme(_putnik.vremePlacanja!)}' : ''}',
                             style: TextStyle(
                               fontSize: 13,
-                              color: VozacBoja.isValidDriver(_putnik.naplatioVozac)
-                                  ? VozacBoja.get(_putnik.naplatioVozac).withOpacity(0.8)
-                                  : Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                              color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
                               fontStyle: FontStyle.italic,
                             ),
                           ),
@@ -2396,16 +2381,11 @@ class _PutnikCardState extends State<PutnikCard> {
       }
 
       // Kreiraj DateTime za početak izabranog meseca
-      final pocetakMeseca = DateTime(year, monthNumber);
-      final krajMeseca = DateTime(year, monthNumber + 1, 0, 23, 59, 59);
-
       // Koristi metodu koja postavlja vreme plaćanja na trenutni datum
       final uspeh = await MesecniPutnikService().azurirajPlacanjeZaMesec(
         putnikId,
+        mesec,
         iznos,
-        vozacIme,
-        pocetakMeseca,
-        krajMeseca,
       );
 
       if (uspeh) {
@@ -2595,10 +2575,8 @@ class _PutnikCardState extends State<PutnikCard> {
     if (confirm == true) {
       try {
         await PutnikService().otkaziPutnika(
-          _putnik.id!,
-          widget.currentDriver ?? '',
-          selectedVreme: widget.selectedVreme,
-          selectedGrad: widget.selectedGrad,
+          _putnik.id!.toString(),
+          'Otkazano od strane ${widget.currentDriver ?? "nepoznat vozač"}',
         );
 
         if (mounted) {
@@ -2631,7 +2609,7 @@ class _PutnikCardState extends State<PutnikCard> {
     );
 
     if (confirm == true) {
-      await PutnikService().obrisiPutnika(_putnik.id!);
+      await PutnikService().obrisiPutnika(_putnik.id!.toString());
       if (mounted) {
         if (mounted) setState(() {});
       }

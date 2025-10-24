@@ -127,10 +127,8 @@ class AdresaService {
         throw Exception('Address validation failed: $errors');
       }
 
-      // Normalize the address
-      final normalizedAdresa = adresa.normalize();
-
       // TODO: Implement Firebase adrese insert
+      // final normalizedAdresa = adresa.normalize();
       throw UnimplementedError('AdresaService.createAdresa not implemented for Firebase');
     } catch (e) {
       // Logger removed

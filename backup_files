@@ -1,7 +1,13 @@
+// BACKUP SERVICE - DISABLED DUE TO FIREBASE MIGRATION
+// This entire service has been migrated to Firebase and is no longer used
+// Keep for reference purposes only
+
+// ignore_for_file: unused_import, undefined_identifier, dead_code
+
 // import 'package:supabase_flutter/supabase_flutter.dart'; // Firebase migration
 import '../models/gps_lokacija.dart';
 
-/// Servis za upravljanje GPS lokacijama vozila
+/// Servis za upravljanje GPS lokacijama vozila - BACKUP ONLY
 class GPSLokacijaService {
   // GPSLokacijaService({SupabaseClient? supabaseClient})
   //     : _supabase = supabaseClient ?? Supabase.instance.client; // Firebase migration

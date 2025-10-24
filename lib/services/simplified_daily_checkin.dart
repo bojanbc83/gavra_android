@@ -32,6 +32,8 @@ class SimplifiedDailyCheckInService {
   static Future<double> getTodayAmount(String vozac) async {
     try {
       final data = await DailyCheckInService.getTodayCheckIn(vozac);
+      if (data == null) return 0.0;
+
       final amount = data['sitan_novac'];
       if (amount is num) return amount.toDouble();
       if (amount is String) return double.tryParse(amount) ?? 0.0;
@@ -85,7 +87,11 @@ class SimplifiedDailyCheckInService {
 
   /// 🔗 LEGACY SUPPORT - initializeRealtimeForDriver wrapper
   static StreamSubscription<dynamic>? initializeRealtimeForDriver(String vozac) {
-    return DailyCheckInService.initializeRealtimeForDriver(vozac);
+    try {
+      return DailyCheckInService.initializeRealtimeForDriver(vozac) as StreamSubscription<dynamic>?;
+    } catch (e) {
+      return null;
+    }
   }
 
   /// 🔄 SYNC OFFLINE CHANGES

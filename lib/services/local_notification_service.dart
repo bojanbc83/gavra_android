@@ -8,7 +8,7 @@ import 'package:just_audio/just_audio.dart';
 // import 'package:supabase_flutter/supabase_flutter.dart'; // Firebase migration
 
 import '../globals.dart';
-import '../models/mesecni_putnik.dart';
+// import '../models/mesecni_putnik.dart'; // Unused after Firebase migration
 import '../screens/danas_screen.dart';
 // import 'supabase_safe.dart'; // Firebase migration
 
@@ -316,106 +316,14 @@ class LocalNotificationService {
     String putnikIme,
   ) async {
     try {
-      // Firebase migration
-      throw UnimplementedError('Firebase migration pending');
-      /*
-      final supabase = Supabase.instance.client;
-      */
-
-      // Traži u putovanja_istorija tabeli (dnevni putnici)
-      // final dnevniResult = await SupabaseSafe.run( // Firebase migration
-      //   () => supabase
-            .from('putovanja_istorija')
-            .select('putnik_ime, grad, vreme_polaska, dan, polazak')
-            .eq('putnik_ime', putnikIme)
-            .eq('obrisan', false)
-            .order('created_at', ascending: false)
-            .limit(1),
-        fallback: <dynamic>[],
-      );
-
-      if (dnevniResult is List && dnevniResult.isNotEmpty) {
-        final data = dnevniResult.first;
-        return {
-          'grad': data['grad'],
-          'polazak': data['vreme_polaska'] ?? data['polazak'],
-          'dan': data['dan'],
-          'tip': 'dnevni',
-        };
-      }
-
-      // Traži u mesecni_putnici tabeli
-      const mesecniFields = '*,'
-          'polasci_po_danu';
-
-      // final mesecniResult = await supabase // Firebase migration
-          .from('mesecni_putnici')
-          .select(mesecniFields)
-          .eq('putnik_ime', putnikIme)
-          .eq('aktivan', true)
-          .eq('obrisan', false)
-          .order('created_at', ascending: false)
-          .limit(1);
-
-      if (mesecniResult.isNotEmpty) {
-        final data = mesecniResult.first;
-        final mesecniPutnik = MesecniPutnik.fromMap(data);
-
-        // Preuzmi trenutni dan i određi polazak
-        final sada = DateTime.now();
-        final danNedelje = _getDanNedelje(sada.weekday);
-
-        String? polazak;
-        String? grad;
-
-        // Pokušaj da nađeš polazak za trenutni dan
-        final polazakBC = mesecniPutnik.getPolazakBelaCrkvaZaDan(danNedelje);
-        final polazakVS = mesecniPutnik.getPolazakVrsacZaDan(danNedelje);
-
-        if (polazakBC != null && polazakBC.isNotEmpty) {
-          polazak = polazakBC;
-          grad = 'Bela Crkva';
-        } else if (polazakVS != null && polazakVS.isNotEmpty) {
-          polazak = polazakVS;
-          grad = 'Vršac';
-        }
-
-        if (polazak != null && grad != null) {
-          return {
-            'grad': grad,
-            'polazak': polazak,
-            'dan': danNedelje,
-            'tip': 'mesecni',
-          };
-        }
-      }
-
+      // TODO: Implement Firebase query for putnik search
+      // For now, return null indicating no passenger found
       return null;
     } catch (e) {
-      // Return null on error - fallback to basic navigation
+      print('Error fetching putnik data: $e');
       return null;
     }
   }
 
-  // Helper metoda za formatiranje dana nedelje
-  static String _getDanNedelje(int weekday) {
-    switch (weekday) {
-      case 1:
-        return 'pon';
-      case 2:
-        return 'uto';
-      case 3:
-        return 'sre';
-      case 4:
-        return 'cet';
-      case 5:
-        return 'pet';
-      case 6:
-        return 'sub';
-      case 7:
-        return 'ned';
-      default:
-        return 'pon';
-    }
-  }
+  // Helper method removed due to Firebase migration
 }

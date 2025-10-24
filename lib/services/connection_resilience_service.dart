@@ -100,9 +100,10 @@ class ConnectionResilienceService {
   /// 🔍 PROVERA SUPABASE KONEKCIJE
   static Future<void> _checkSupabaseConnection() async {
     try {
-      // Jednostavan test query
-      await _supabase.from('mesecni_putnici').select('id').limit(1).timeout(const Duration(seconds: 10));
+      // MIGRATED TO FIREBASE - Connection check disabled
+      // await _supabase.from('mesecni_putnici').select('id').limit(1).timeout(const Duration(seconds: 10));
 
+      // For now, always consider connected since we migrated to Firebase
       if (!_isSupabaseConnected) {
         _updateSupabaseState(true);
       }

@@ -127,9 +127,10 @@ class RealtimeRouteTrackingService {
       // Pošalji GPS u bazu (postojeći servis)
       final voziloId = await _getDefaultVehicleId();
       if (voziloId != null) {
-        await GpsService.sendCurrentLocation(
-          vozacId: _currentDriverId!,
-          voziloId: voziloId,
+        await GpsService.saveGpsLocation(
+          _currentDriverId!,
+          currentPosition.latitude,
+          currentPosition.longitude,
         );
       }
 
@@ -357,8 +358,3 @@ class RealtimeRouteTrackingService {
     _trafficAlertsController.close();
   }
 }
-
-
-
-
-
