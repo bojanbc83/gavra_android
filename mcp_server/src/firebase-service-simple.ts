@@ -3,8 +3,8 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
 
 export class FirebaseService {
-  private db: any;
-  private auth: any;
+  private readonly db: any;
+  private readonly auth: any;
 
   constructor() {
     try {

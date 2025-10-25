@@ -39,7 +39,7 @@ export type DnevniPutnik = z.infer<typeof DnevniPutnikSchema>;
 export type GpsLokacija = z.infer<typeof GpsLokacijaSchema>;
 
 export class FirebaseService {
-  private db: admin.firestore.Firestore;
+  private readonly db: admin.firestore.Firestore;
 
   constructor() {
     // Initialize Firebase Admin (you'll need to set up service account)

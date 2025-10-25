@@ -244,7 +244,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   try {
     switch (name) {
       // Putnici operations
-      case "get_putnici":
+      case "get_putnici": {
         const putnici = await firebaseService.getPutnici();
         return {
           content: [
@@ -254,20 +254,22 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             },
           ],
         };
+      }
 
-      case "add_putnik":
-        const newPutnikId = await firebaseService.addPutnik(args as any);
+      case "add_putnik": {
+        const newPutnikId = await firebaseService.addPutnik(args);
         return {
           content: [
             {
               type: "text",
-              text: `Successfully added passenger with ID: ${newPutnikId}`,
+              text: `Putnik added with ID: ${newPutnikId}`,
             },
           ],
         };
+      }
 
-      case "update_putnik":
-        const updateResult = await firebaseService.updatePutnik(args.id, args.updates);
+      case "update_putnik": {
+        const updateResult = await firebaseService.updatePutnik(args.id as string, args.updates);
         return {
           content: [
             {
@@ -276,9 +278,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             },
           ],
         };
+      }
 
-      case "delete_putnik":
-        const deleteResult = await firebaseService.deletePutnik(args.id);
+      case "delete_putnik": {
+        const deleteResult = await firebaseService.deletePutnik(args.id as string);
         return {
           content: [
             {
@@ -287,10 +290,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             },
           ],
         };
+      }
 
       // Dnevni Putnici operations
-      case "get_dnevni_putnici":
-        const dnevniPutnici = await firebaseService.getDnevniPutnici(args.datum);
+      case "get_dnevni_putnici": {
+        const dnevniPutnici = await firebaseService.getDnevniPutnici(args.datum as string);
         return {
           content: [
             {
@@ -299,9 +303,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             },
           ],
         };
+      }
 
-      case "add_dnevni_putnik":
-        const newDnevniPutnikId = await firebaseService.addDnevniPutnik(args as any);
+      case "add_dnevni_putnik": {
+        const newDnevniPutnikId = await firebaseService.addDnevniPutnik(args);
         return {
           content: [
             {
@@ -310,9 +315,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             },
           ],
         };
+      }
 
-      case "update_dnevni_putnik":
-        const updateDnevniResult = await firebaseService.updateDnevniPutnik(args.id, args.updates);
+      case "update_dnevni_putnik": {
+        const updateDnevniResult = await firebaseService.updateDnevniPutnik(args.id as string, args.updates);
         return {
           content: [
             {
@@ -321,9 +327,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             },
           ],
         };
+      }
 
-      case "delete_dnevni_putnik":
-        const deleteDnevniResult = await firebaseService.deleteDnevniPutnik(args.id);
+      case "delete_dnevni_putnik": {
+        const deleteDnevniResult = await firebaseService.deleteDnevniPutnik(args.id as string);
         return {
           content: [
             {
@@ -332,10 +339,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             },
           ],
         };
+      }
 
       // GPS Lokacije operations
-      case "get_gps_lokacije":
-        const gpsLokacije = await firebaseService.getGpsLokacije(args.start_date, args.end_date, args.vozac_id);
+      case "get_gps_lokacije": {
+        const gpsLokacije = await firebaseService.getGpsLokacije(args.start_date as string, args.end_date as string, args.vozac_id as string);
         return {
           content: [
             {
@@ -344,9 +352,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             },
           ],
         };
+      }
 
-      case "add_gps_lokacija":
-        const newGpsId = await firebaseService.addGpsLokacija(args as any);
+      case "add_gps_lokacija": {
+        const newGpsId = await firebaseService.addGpsLokacija(args);
         return {
           content: [
             {
@@ -355,10 +364,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             },
           ],
         };
+      }
 
       // Statistics operations
-      case "get_daily_statistics":
-        const dailyStats = await firebaseService.getDailyStatistics(args.datum, args.vozac_id);
+      case "get_daily_statistics": {
+        const dailyStats = await firebaseService.getDailyStatistics(args.datum as string, args.vozac_id as string);
         return {
           content: [
             {
@@ -367,9 +377,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             },
           ],
         };
+      }
 
-      case "get_monthly_statistics":
-        const monthlyStats = await firebaseService.getMonthlyStatistics(args.year, args.month, args.vozac_id);
+      case "get_monthly_statistics": {
+        const monthlyStats = await firebaseService.getMonthlyStatistics(args.year as number, args.month as number, args.vozac_id as string);
         return {
           content: [
             {
@@ -378,9 +389,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             },
           ],
         };
+      }
 
       // Real-time streaming (returns snapshots)
-      case "stream_putnici":
+      case "stream_putnici": {
         const putniciSnapshot = await firebaseService.getPutnici();
         return {
           content: [
@@ -390,9 +402,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             },
           ],
         };
+      }
 
-      case "stream_dnevni_putnici":
-        const dnevniSnapshot = await firebaseService.getDnevniPutnici(args.datum);
+      case "stream_dnevni_putnici": {
+        const dnevniSnapshot = await firebaseService.getDnevniPutnici(args.datum as string);
         return {
           content: [
             {
@@ -401,6 +414,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             },
           ],
         };
+      }
 
       default:
         throw new Error(`Unknown tool: ${name}`);

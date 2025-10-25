@@ -2,9 +2,9 @@ import { initializeApp, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 
 export class SecureFirebaseService {
-  private db: any;
-  private allowedCollections: string[];
-  private readOnlyMode: boolean;
+  private readonly db: any;
+  private readonly allowedCollections: string[];
+  private readonly readOnlyMode: boolean;
 
   constructor(readOnlyMode = false) {
     try {

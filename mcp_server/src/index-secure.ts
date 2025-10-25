@@ -70,7 +70,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   try {
     switch (name) {
-      case 'firestore_get_document':
+      case 'firestore_get_document': {
         const doc = await firebaseService.getDocument(args?.collection as string, args?.documentId as string);
         return {
           content: [
@@ -80,8 +80,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             },
           ],
         };
+      }
 
-      case 'get_dnevni_putnici':
+      case 'get_dnevni_putnici': {
         const dnevniPutnici = await firebaseService.getDnevniPutnici(args?.datum as string);
         return {
           content: [
@@ -91,8 +92,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             },
           ],
         };
+      }
 
-      case 'get_basic_statistics':
+      case 'get_basic_statistics': {
         const putnici = await firebaseService.getDnevniPutnici(args?.datum as string);
         const stats = {
           datum: args?.datum,
@@ -108,6 +110,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             },
           ],
         };
+      }
 
       default:
         throw new Error(`🚫 Unknown or disabled tool: ${name}`);
