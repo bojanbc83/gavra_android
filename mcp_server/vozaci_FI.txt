@@ -1,0 +1,11 @@
+id
+aktivan
+kusur
+created_at
+updated_at
+search_terms
+ime
+putnici_count
+putovanja_count
+total_earnings
+last_optimized

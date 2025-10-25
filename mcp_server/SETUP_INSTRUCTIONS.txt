@@ -1,0 +1,7 @@
+IMPORTANT SETUP INSTRUCTIONS:
+
+1. Rename serviceAccountKey.template.json to serviceAccountKey.json
+2. Replace all REPLACE_WITH_YOUR_* values with actual values from Firebase Console
+3. Never commit the actual serviceAccountKey.json file to version control
+4. Get your actual service account key from:
+   - Firebase Console > Project Settings > Service accounts > Generate new private key

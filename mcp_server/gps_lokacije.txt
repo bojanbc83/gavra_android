@@ -1,0 +1,9 @@
+id
+vozac_id
+vozilo_id
+latitude
+longitude
+brzina
+pravac
+tacnost
+vreme

@@ -1,0 +1,73 @@
+# POREĐENJE MESEČNI PUTNICI
+**Supabase vs Firebase/Firestore**
+
+## KOLONE POREĐENJE
+
+| SUPABASE | FIREBASE/FIRESTORE |
+|----------|-------------------|
+| id | id |
+| putnik_ime | putnik_ime |
+| tip | tip |
+| tip_skole | tip_skole |
+| broj_telefona | broj_telefona |
+| broj_telefona_oca | - |
+| broj_telefona_majke | broj_telefona_majke |
+| polasci_po_danu | polasci_po_danu |
+| adresa_bela_crkva | adresa_bela_crkva |
+| adresa_vrsac | adresa_vrsac |
+| tip_prikazivanja | tip_prikazivanja |
+| radni_dani | radni_dani |
+| aktivan | aktivan |
+| status | status |
+| datum_pocetka_meseca | datum_pocetka_meseca |
+| datum_kraja_meseca | datum_kraja_meseca |
+| ukupna_cena_meseca | ukupna_cena_meseca |
+| cena | cena |
+| broj_putovanja | broj_putovanja |
+| broj_otkazivanja | broj_otkazivanja |
+| poslednje_putovanje | - |
+| vreme_placanja | vreme_placanja |
+| placeni_mesec | placeni_mesec |
+| placena_godina | placena_godina |
+| vozac_id | vozac_id |
+| pokupljen | pokupljen |
+| vreme_pokupljenja | - |
+| statistics | statistics |
+| obrisan | obrisan |
+| created_at | created_at |
+| updated_at | updated_at |
+| ruta_id | - |
+| vozilo_id | - |
+| adresa_polaska_id | - |
+| adresa_dolaska_id | - |
+| ime | - |
+| prezime | - |
+| datum_pocetka | - |
+| datum_kraja | - |
+| - | search_terms |
+| - | vozac_ime |
+| - | last_optimized |
+
+## RAZLIKE
+
+### FIREBASE DODATNO IMA:
+- search_terms (za pretragu)
+- vozac_ime (denormalizovano ime vozača)
+- last_optimized (timestamp optimizacije)
+
+### SUPABASE DODATNO IMA:
+- broj_telefona_oca
+- poslednje_putovanje
+- vreme_pokupljenja
+- ruta_id (foreign key)
+- vozilo_id (foreign key)
+- adresa_polaska_id (foreign key)
+- adresa_dolaska_id (foreign key)
+- ime (dodatno ime polje)
+- prezime (dodatno prezime polje)
+- datum_pocetka (dodatni datum)
+- datum_kraja (dodatni datum)
+
+### UKUPNO KOLONA:
+- **Supabase**: 39 kolona
+- **Firebase**: 31 kolona

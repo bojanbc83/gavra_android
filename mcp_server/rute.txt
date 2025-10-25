@@ -1,0 +1,13 @@
+id
+naziv
+opis
+polaziste
+odrediste
+vreme_polaska
+vreme_dolaska
+cena
+aktivan
+vozac_id
+vozilo_id
+created_at
+updated_at

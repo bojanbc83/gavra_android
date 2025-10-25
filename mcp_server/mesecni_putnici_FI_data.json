@@ -1,0 +1,7383 @@
+[
+  {
+    "id": "001a34e6-e97b-41c1-a83b-b75eaa3a90d5",
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "broj_telefona_majke": "63428464",
+    "obrisan": false,
+    "polasci_po_danu": {},
+    "tip_prikazivanja": "standard",
+    "pokupljen": false,
+    "broj_telefona": "637339995",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "updated_at": {
+      "_seconds": 1761089254,
+      "_nanoseconds": 171000000
+    },
+    "putnik_ime": "Mila Nikolic",
+    "created_at": {
+      "_seconds": 1761089227,
+      "_nanoseconds": 521000000
+    },
+    "aktivan": true,
+    "ukupna_cena_meseca": 25000,
+    "adresa_vrsac": "Dis",
+    "broj_otkazivanja": 0,
+    "status": "aktivan",
+    "cena": 25000,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "tip_skole": "Hemijska",
+    "placena_godina": 2025,
+    "placeni_mesec": 10,
+    "search_terms": [
+      "mila",
+      "m",
+      "mi",
+      "mil",
+      "nikolic",
+      "n",
+      "ni",
+      "nik",
+      "niko",
+      "nikol",
+      "nikoli"
+    ],
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "adresa_bela_crkva": "Jovana Popovica",
+    "tip": "ucenik",
+    "vreme_placanja": {
+      "_seconds": 1761089254,
+      "_nanoseconds": 171000000
+    },
+    "broj_putovanja": 0,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394312,
+      "_nanoseconds": 513478000
+    }
+  },
+  {
+    "id": "05358026-6097-428f-a322-a2c31c0f31f0",
+    "search_terms": [
+      "dr",
+      "d",
+      "perisic",
+      "p",
+      "pe",
+      "per",
+      "peri",
+      "peris",
+      "perisi",
+      "ljiljana",
+      "l",
+      "lj",
+      "lji",
+      "ljil",
+      "ljilj",
+      "ljilja",
+      "ljiljan"
+    ],
+    "cena": 12000,
+    "pokupljen": false,
+    "obrisan": false,
+    "adresa_vrsac": "Jasenovo ambulanta",
+    "tip": "radnik",
+    "broj_putovanja": 0,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "tip_skole": "Jasenovo ambulanta",
+    "placeni_mesec": 10,
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "ukupna_cena_meseca": 12000,
+    "created_at": {
+      "_seconds": 1761088033,
+      "_nanoseconds": 23000000
+    },
+    "aktivan": true,
+    "putnik_ime": "Dr Perisic Ljiljana",
+    "placena_godina": 2025,
+    "broj_otkazivanja": 0,
+    "vreme_placanja": {
+      "_seconds": 1761088067,
+      "_nanoseconds": 493000000
+    },
+    "tip_prikazivanja": "standard",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "polasci_po_danu": {
+      "pon": {
+        "vs": "06:00",
+        "bc": "13:00"
+      },
+      "sre": {
+        "vs": "06:00",
+        "bc": "13:00"
+      },
+      "uto": {
+        "vs": "06:00",
+        "bc": "13:00"
+      },
+      "pet": {
+        "bc": "13:00",
+        "vs": "06:00"
+      },
+      "cet": {
+        "vs": "06:00",
+        "bc": "13:00"
+      }
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "updated_at": {
+      "_seconds": 1761088067,
+      "_nanoseconds": 493000000
+    },
+    "adresa_bela_crkva": "Karpatska",
+    "status": "aktivan",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394313,
+      "_nanoseconds": 32548000
+    }
+  },
+  {
+    "id": "0d7e0eb2-aaef-4837-935b-8bb095ffc9f1",
+    "search_terms": [
+      "maja",
+      "m",
+      "ma",
+      "maj",
+      "stojanovic",
+      "s",
+      "st",
+      "sto",
+      "stoj",
+      "stoja",
+      "stojan",
+      "stojano",
+      "stojanov",
+      "stojanovi"
+    ],
+    "ukupna_cena_meseca": 0,
+    "created_at": {
+      "_seconds": 1761053846,
+      "_nanoseconds": 706000000
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "aktivan": true,
+    "tip_prikazivanja": "standard",
+    "polasci_po_danu": {
+      "pon": {
+        "vs": "07:00",
+        "bc": "15:30"
+      },
+      "uto": {
+        "vs": "07:00",
+        "bc": "15:30"
+      },
+      "cet": {
+        "vs": "07:00",
+        "bc": "15:30"
+      },
+      "sre": {
+        "vs": "07:00",
+        "bc": "15:30"
+      },
+      "pet": {
+        "vs": "07:00",
+        "bc": "15:30"
+      }
+    },
+    "placeni_mesec": 9,
+    "vreme_placanja": {
+      "_seconds": 1761089415,
+      "_nanoseconds": 925000000
+    },
+    "broj_telefona": "63430612",
+    "updated_at": {
+      "_seconds": 1761094081,
+      "_nanoseconds": 202000000
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "broj_putovanja": 0,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "pokupljen": false,
+    "putnik_ime": "Maja Stojanovic",
+    "tip_skole": "Hladnjaca",
+    "placena_godina": 2025,
+    "broj_otkazivanja": 0,
+    "cena": 0,
+    "obrisan": false,
+    "tip": "radnik",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "status": "aktivan",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394313,
+      "_nanoseconds": 346016000
+    }
+  },
+  {
+    "id": "0fc501ea-ae6c-48be-96dc-67070651e0c7",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "broj_putovanja": 0,
+    "polasci_po_danu": {},
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "status": "aktivan",
+    "adresa_vrsac": "Dis",
+    "cena": 12000,
+    "putnik_ime": "Lara Miler",
+    "placena_godina": 2025,
+    "tip": "ucenik",
+    "pokupljen": false,
+    "aktivan": true,
+    "created_at": {
+      "_seconds": 1761007838,
+      "_nanoseconds": 310000000
+    },
+    "broj_telefona": "655725977",
+    "broj_otkazivanja": 0,
+    "ukupna_cena_meseca": 12000,
+    "placeni_mesec": 10,
+    "updated_at": {
+      "_seconds": 1761007862,
+      "_nanoseconds": 162000000
+    },
+    "vreme_placanja": {
+      "_seconds": 1761007862,
+      "_nanoseconds": 162000000
+    },
+    "adresa_bela_crkva": "Jasenovo pumpa",
+    "tip_skole": "Hemijska",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "search_terms": [
+      "lara",
+      "l",
+      "la",
+      "lar",
+      "miler",
+      "m",
+      "mi",
+      "mil",
+      "mile"
+    ],
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "obrisan": false,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "tip_prikazivanja": "standard",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394313,
+      "_nanoseconds": 680654000
+    }
+  },
+  {
+    "id": "10b96323-1e53-4917-b1df-4752088a5544",
+    "tip_prikazivanja": "standard",
+    "tip_skole": "Hemijska",
+    "created_at": {
+      "_seconds": 1761075703,
+      "_nanoseconds": 939000000
+    },
+    "adresa_bela_crkva": "Sangaj",
+    "status": "aktivan",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "adresa_vrsac": "Dis",
+    "pokupljen": false,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "tip": "ucenik",
+    "broj_putovanja": 0,
+    "placeni_mesec": 10,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "placena_godina": 2025,
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "updated_at": {
+      "_seconds": 1761075716,
+      "_nanoseconds": 36000000
+    },
+    "search_terms": [
+      "irena",
+      "i",
+      "ir",
+      "ire",
+      "iren",
+      "kerculj",
+      "k",
+      "ke",
+      "ker",
+      "kerc",
+      "kercu",
+      "kercul"
+    ],
+    "broj_telefona": "614738917",
+    "broj_otkazivanja": 0,
+    "polasci_po_danu": {},
+    "putnik_ime": "Irena Kerculj",
+    "cena": 12000,
+    "vreme_placanja": {
+      "_seconds": 1761075716,
+      "_nanoseconds": 36000000
+    },
+    "aktivan": true,
+    "obrisan": false,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "ukupna_cena_meseca": 12000,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394314,
+      "_nanoseconds": 33780000
+    }
+  },
+  {
+    "id": "12c2540f-ede0-4ed9-8c23-dbb896230c24",
+    "status": "aktivan",
+    "aktivan": true,
+    "polasci_po_danu": {},
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "putnik_ime": "Basaraba Dusica",
+    "adresa_vrsac": "Dis",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "placeni_mesec": 10,
+    "adresa_bela_crkva": "Jasenovo fruti",
+    "tip": "ucenik",
+    "pokupljen": false,
+    "vreme_placanja": {
+      "_seconds": 1761088390,
+      "_nanoseconds": 691000000
+    },
+    "broj_telefona": "642269568",
+    "obrisan": false,
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "tip_prikazivanja": "standard",
+    "search_terms": [
+      "basaraba",
+      "b",
+      "ba",
+      "bas",
+      "basa",
+      "basar",
+      "basara",
+      "basarab",
+      "dusica",
+      "d",
+      "du",
+      "dus",
+      "dusi",
+      "dusic"
+    ],
+    "tip_skole": "Hemijska",
+    "broj_putovanja": 0,
+    "cena": 12000,
+    "created_at": {
+      "_seconds": 1761088371,
+      "_nanoseconds": 924000000
+    },
+    "updated_at": {
+      "_seconds": 1761088390,
+      "_nanoseconds": 691000000
+    },
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "placena_godina": 2025,
+    "ukupna_cena_meseca": 12000,
+    "broj_otkazivanja": 0,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394314,
+      "_nanoseconds": 364713000
+    }
+  },
+  {
+    "id": "17340650-e249-423d-94bc-869fa1baf295",
+    "pokupljen": false,
+    "adresa_bela_crkva": "Rasadnik",
+    "status": "aktivan",
+    "placeni_mesec": 10,
+    "obrisan": false,
+    "putnik_ime": "Milosevic Mihajlo",
+    "aktivan": true,
+    "tip_prikazivanja": "standard",
+    "ukupna_cena_meseca": 12000,
+    "tip_skole": "Hemijska",
+    "polasci_po_danu": {},
+    "search_terms": [
+      "milosevic",
+      "m",
+      "mi",
+      "mil",
+      "milo",
+      "milos",
+      "milose",
+      "milosev",
+      "milosevi",
+      "mihajlo",
+      "mih",
+      "miha",
+      "mihaj",
+      "mihajl"
+    ],
+    "placena_godina": 2025,
+    "adresa_vrsac": "Dis",
+    "broj_telefona_majke": "615055108",
+    "broj_otkazivanja": 0,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "broj_telefona": "611691790",
+    "cena": 12000,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "tip": "ucenik",
+    "broj_putovanja": 0,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "vreme_placanja": {
+      "_seconds": 1761006086,
+      "_nanoseconds": 214000000
+    },
+    "broj_telefona_oca": "615055107",
+    "created_at": {
+      "_seconds": 1761006072,
+      "_nanoseconds": 374000000
+    },
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "updated_at": {
+      "_seconds": 1761006086,
+      "_nanoseconds": 214000000
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394314,
+      "_nanoseconds": 712902000
+    }
+  },
+  {
+    "id": "173f7149-67cf-40f8-82d9-6e41c5b214ab",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "updated_at": {
+      "_seconds": 1761090087,
+      "_nanoseconds": 205000000
+    },
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "vreme_placanja": {
+      "_seconds": 1761090087,
+      "_nanoseconds": 205000000
+    },
+    "pokupljen": false,
+    "broj_telefona": "644236735",
+    "tip_prikazivanja": "standard",
+    "adresa_bela_crkva": "Vg",
+    "ukupna_cena_meseca": 0,
+    "obrisan": false,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "search_terms": [
+      "boba",
+      "b",
+      "bo",
+      "bob",
+      "borislava",
+      "bor",
+      "bori",
+      "boris",
+      "borisl",
+      "borisla",
+      "borislav"
+    ],
+    "cena": 0,
+    "placena_godina": 2025,
+    "tip": "radnik",
+    "adresa_vrsac": "Psihijatrija",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "placeni_mesec": 9,
+    "polasci_po_danu": {
+      "pon": {
+        "bc": "06:00",
+        "vs": "14:00"
+      },
+      "cet": {
+        "bc": "06:00",
+        "vs": "14:00"
+      },
+      "pet": {
+        "vs": "14:00",
+        "bc": "06:00"
+      },
+      "uto": {
+        "vs": "14:00",
+        "bc": "06:00"
+      },
+      "sre": {
+        "bc": "06:00",
+        "vs": "14:00"
+      }
+    },
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "broj_putovanja": 0,
+    "broj_otkazivanja": 0,
+    "created_at": {
+      "_seconds": 1761089948,
+      "_nanoseconds": 389000000
+    },
+    "status": "aktivan",
+    "putnik_ime": "Boba Borislava",
+    "aktivan": true,
+    "tip_skole": "Psihijatrija",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394315,
+      "_nanoseconds": 34628000
+    }
+  },
+  {
+    "id": "1a4233ca-681e-4bc6-8223-aac57553a7d5",
+    "broj_telefona": "638755575",
+    "placeni_mesec": 9,
+    "broj_putovanja": 0,
+    "status": "aktivan",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "pokupljen": false,
+    "ukupna_cena_meseca": 0,
+    "adresa_bela_crkva": "Jasenovo",
+    "tip": "ucenik",
+    "search_terms": [
+      "simon",
+      "s",
+      "si",
+      "sim",
+      "simo"
+    ],
+    "cena": 0,
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "obrisan": false,
+    "created_at": {
+      "_seconds": 1761005360,
+      "_nanoseconds": 950000000
+    },
+    "tip_prikazivanja": "standard",
+    "placena_godina": 2025,
+    "broj_otkazivanja": 0,
+    "aktivan": true,
+    "updated_at": {
+      "_seconds": 1761074954,
+      "_nanoseconds": 573000000
+    },
+    "polasci_po_danu": {},
+    "putnik_ime": "Simon",
+    "vreme_placanja": {
+      "_seconds": 1761074954,
+      "_nanoseconds": 573000000
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394315,
+      "_nanoseconds": 353187000
+    }
+  },
+  {
+    "id": "1fd04dc2-864d-4243-9f05-26723e1d9837",
+    "status": "aktivan",
+    "obrisan": false,
+    "search_terms": [
+      "menicanin",
+      "m",
+      "me",
+      "men",
+      "meni",
+      "menic",
+      "menica",
+      "menican",
+      "menicani",
+      "nikola",
+      "n",
+      "ni",
+      "nik",
+      "niko",
+      "nikol"
+    ],
+    "broj_putovanja": 0,
+    "updated_at": {
+      "_seconds": 1761091124,
+      "_nanoseconds": 968000000
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "pokupljen": false,
+    "tip_skole": "Hemijska",
+    "broj_otkazivanja": 0,
+    "created_at": {
+      "_seconds": 1761091124,
+      "_nanoseconds": 968000000
+    },
+    "tip_prikazivanja": "standard",
+    "aktivan": true,
+    "adresa_bela_crkva": "Jasenovo",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "tip": "ucenik",
+    "polasci_po_danu": {},
+    "adresa_vrsac": "Dis",
+    "broj_telefona": "640628874",
+    "ukupna_cena_meseca": 0,
+    "putnik_ime": "Menicanin Nikola",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394315,
+      "_nanoseconds": 670007000
+    }
+  },
+  {
+    "id": "227db660-2076-45df-974f-a4af7f060559",
+    "obrisan": false,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "tip": "radnik",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "aktivan": true,
+    "vreme_placanja": {
+      "_seconds": 1761075080,
+      "_nanoseconds": 747000000
+    },
+    "broj_putovanja": 0,
+    "updated_at": {
+      "_seconds": 1761075080,
+      "_nanoseconds": 747000000
+    },
+    "adresa_bela_crkva": "Straza",
+    "placena_godina": 2025,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "status": "aktivan",
+    "created_at": {
+      "_seconds": 1761075062,
+      "_nanoseconds": 648000000
+    },
+    "putnik_ime": "Ana Cortan",
+    "ukupna_cena_meseca": 15000,
+    "tip_prikazivanja": "standard",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "adresa_vrsac": "Fresenius",
+    "pokupljen": false,
+    "broj_otkazivanja": 0,
+    "cena": 15000,
+    "polasci_po_danu": {
+      "pon": {
+        "vs": "14:00",
+        "bc": "05:00"
+      },
+      "uto": {
+        "bc": "05:00",
+        "vs": "14:00"
+      },
+      "pet": {
+        "bc": "05:00",
+        "vs": "14:00"
+      },
+      "cet": {
+        "bc": "05:00",
+        "vs": "14:00"
+      },
+      "sre": {
+        "bc": "05:00",
+        "vs": "14:00"
+      }
+    },
+    "broj_telefona": "631893413",
+    "tip_skole": "Fresenius",
+    "placeni_mesec": 10,
+    "search_terms": [
+      "ana",
+      "a",
+      "an",
+      "cortan",
+      "c",
+      "co",
+      "cor",
+      "cort",
+      "corta"
+    ],
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394315,
+      "_nanoseconds": 944032000
+    }
+  },
+  {
+    "id": "234f1074-9c0a-469f-bba4-38ca99f5e843",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "adresa_bela_crkva": "Jasenovo",
+    "broj_putovanja": 0,
+    "cena": 0,
+    "placena_godina": 2025,
+    "created_at": {
+      "_seconds": 1761053398,
+      "_nanoseconds": 786000000
+    },
+    "tip_skole": "Tesla",
+    "status": "aktivan",
+    "ukupna_cena_meseca": 0,
+    "broj_otkazivanja": 0,
+    "aktivan": true,
+    "putnik_ime": "Rogac Mateja",
+    "adresa_vrsac": "Sud",
+    "vreme_placanja": {
+      "_seconds": 1761090123,
+      "_nanoseconds": 556000000
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "broj_telefona": "631627896",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "obrisan": false,
+    "search_terms": [
+      "rogac",
+      "r",
+      "ro",
+      "rog",
+      "roga",
+      "mateja",
+      "m",
+      "ma",
+      "mat",
+      "mate",
+      "matej"
+    ],
+    "placeni_mesec": 9,
+    "tip": "ucenik",
+    "tip_prikazivanja": "standard",
+    "pokupljen": false,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "polasci_po_danu": {
+      "cet": {
+        "bc": "07:00"
+      },
+      "sre": {
+        "bc": "07:00"
+      },
+      "uto": {
+        "bc": "07:00"
+      },
+      "pon": {
+        "bc": "07:00"
+      },
+      "pet": {
+        "bc": "07:00"
+      }
+    },
+    "updated_at": {
+      "_seconds": 1761090123,
+      "_nanoseconds": 556000000
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394316,
+      "_nanoseconds": 268299000
+    }
+  },
+  {
+    "id": "271acb6c-a850-407a-99ff-33f13aaf5f50",
+    "pokupljen": false,
+    "adresa_bela_crkva": "Dele",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "broj_putovanja": 0,
+    "status": "aktivan",
+    "broj_telefona": "631094989",
+    "tip_prikazivanja": "standard",
+    "tip": "ucenik",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "ukupna_cena_meseca": 0,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "broj_otkazivanja": 0,
+    "updated_at": {
+      "_seconds": 1761090808,
+      "_nanoseconds": 2000000
+    },
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "putnik_ime": "Obradovic Marko",
+    "created_at": {
+      "_seconds": 1761090808,
+      "_nanoseconds": 2000000
+    },
+    "search_terms": [
+      "obradovic",
+      "o",
+      "ob",
+      "obr",
+      "obra",
+      "obrad",
+      "obrado",
+      "obradov",
+      "obradovi",
+      "marko",
+      "m",
+      "ma",
+      "mar",
+      "mark"
+    ],
+    "aktivan": true,
+    "obrisan": false,
+    "polasci_po_danu": {},
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394316,
+      "_nanoseconds": 566013000
+    }
+  },
+  {
+    "id": "27dd8cf6-3c8b-4b8e-b7bf-416feb4b7cfb",
+    "status": "aktivan",
+    "placena_godina": 2025,
+    "updated_at": {
+      "_seconds": 1761090137,
+      "_nanoseconds": 109000000
+    },
+    "pokupljen": false,
+    "broj_telefona": "601411606",
+    "aktivan": true,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "ukupna_cena_meseca": 0,
+    "broj_putovanja": 0,
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "tip_skole": "Hemijska",
+    "search_terms": [
+      "tara",
+      "t",
+      "ta",
+      "tar",
+      "bogosavljevic",
+      "b",
+      "bo",
+      "bog",
+      "bogo",
+      "bogos",
+      "bogosa",
+      "bogosav",
+      "bogosavl",
+      "bogosavlj",
+      "bogosavlje",
+      "bogosavljev",
+      "bogosavljevi"
+    ],
+    "adresa_bela_crkva": "Jasenovo pumpa",
+    "obrisan": false,
+    "polasci_po_danu": {},
+    "broj_otkazivanja": 0,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "created_at": {
+      "_seconds": 1761007164,
+      "_nanoseconds": 889000000
+    },
+    "adresa_vrsac": "Dis",
+    "putnik_ime": "Tara Bogosavljevic",
+    "cena": 0,
+    "vreme_placanja": {
+      "_seconds": 1761090137,
+      "_nanoseconds": 109000000
+    },
+    "tip_prikazivanja": "standard",
+    "tip": "ucenik",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "placeni_mesec": 9,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394316,
+      "_nanoseconds": 914926000
+    }
+  },
+  {
+    "id": "2827c2bc-aa3d-46d2-a68f-f027ca52eb02",
+    "tip_skole": "Hemijska",
+    "created_at": {
+      "_seconds": 1761089767,
+      "_nanoseconds": 713000000
+    },
+    "vreme_placanja": {
+      "_seconds": 1761089810,
+      "_nanoseconds": 154000000
+    },
+    "broj_otkazivanja": 0,
+    "pokupljen": false,
+    "putnik_ime": "Mia Gojkovic",
+    "adresa_bela_crkva": "Katolicka crkva",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "cena": 9000,
+    "adresa_vrsac": "Dis",
+    "broj_telefona": "616491911",
+    "tip": "ucenik",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "status": "aktivan",
+    "polasci_po_danu": {},
+    "search_terms": [
+      "mia",
+      "m",
+      "mi",
+      "gojkovic",
+      "g",
+      "go",
+      "goj",
+      "gojk",
+      "gojko",
+      "gojkov",
+      "gojkovi"
+    ],
+    "tip_prikazivanja": "standard",
+    "placeni_mesec": 10,
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "updated_at": {
+      "_seconds": 1761089810,
+      "_nanoseconds": 154000000
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "aktivan": true,
+    "broj_putovanja": 0,
+    "placena_godina": 2025,
+    "ukupna_cena_meseca": 9000,
+    "broj_telefona_majke": "692343812",
+    "obrisan": false,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394317,
+      "_nanoseconds": 245277000
+    }
+  },
+  {
+    "id": "295db8f8-2bd9-46b3-9bec-63d37ece95aa",
+    "vreme_placanja": {
+      "_seconds": 1761089468,
+      "_nanoseconds": 990000000
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "broj_otkazivanja": 0,
+    "tip": "ucenik",
+    "tip_prikazivanja": "standard",
+    "cena": 0,
+    "placeni_mesec": 9,
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "tip_skole": "Hemijska",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "created_at": {
+      "_seconds": 1761006715,
+      "_nanoseconds": 679000000
+    },
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "placena_godina": 2025,
+    "search_terms": [
+      "bar",
+      "b",
+      "ba",
+      "andjela",
+      "a",
+      "an",
+      "and",
+      "andj",
+      "andje",
+      "andjel"
+    ],
+    "obrisan": false,
+    "broj_telefona": "642351663",
+    "adresa_bela_crkva": "Vojske Jugoslavije",
+    "pokupljen": false,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "updated_at": {
+      "_seconds": 1761089468,
+      "_nanoseconds": 990000000
+    },
+    "broj_telefona_majke": "642717071",
+    "broj_putovanja": 0,
+    "ukupna_cena_meseca": 0,
+    "polasci_po_danu": {},
+    "putnik_ime": "Bar Andjela",
+    "adresa_vrsac": "Dis",
+    "status": "aktivan",
+    "aktivan": true,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394317,
+      "_nanoseconds": 596349000
+    }
+  },
+  {
+    "id": "2aca338b-3178-4f2b-80c3-026e970ce26e",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "tip_skole": "Gradic Pejton",
+    "broj_telefona": "607140492",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "broj_otkazivanja": 0,
+    "search_terms": [
+      "marina",
+      "m",
+      "ma",
+      "mar",
+      "mari",
+      "marin",
+      "bihler",
+      "b",
+      "bi",
+      "bih",
+      "bihl",
+      "bihle"
+    ],
+    "tip_prikazivanja": "standard",
+    "tip": "radnik",
+    "pokupljen": false,
+    "placeni_mesec": 9,
+    "updated_at": {
+      "_seconds": 1761088123,
+      "_nanoseconds": 294000000
+    },
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "broj_putovanja": 0,
+    "status": "aktivan",
+    "vreme_placanja": {
+      "_seconds": 1761088123,
+      "_nanoseconds": 294000000
+    },
+    "putnik_ime": "Marina Bihler",
+    "placena_godina": 2025,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "ukupna_cena_meseca": 0,
+    "created_at": {
+      "_seconds": 1760970093,
+      "_nanoseconds": 116000000
+    },
+    "cena": 0,
+    "aktivan": true,
+    "polasci_po_danu": {},
+    "obrisan": false,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394317,
+      "_nanoseconds": 866780000
+    }
+  },
+  {
+    "id": "2ed30fc0-181f-4cb5-a7ac-b9646807967e",
+    "created_at": {
+      "_seconds": 1761006970,
+      "_nanoseconds": 584000000
+    },
+    "adresa_vrsac": "Bolnica",
+    "adresa_bela_crkva": "Dejana Brankova",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "placena_godina": 2025,
+    "vreme_placanja": {
+      "_seconds": 1761087958,
+      "_nanoseconds": 989000000
+    },
+    "broj_telefona": "628279567",
+    "putnik_ime": "Viktor Nisavic",
+    "placeni_mesec": 9,
+    "polasci_po_danu": {
+      "uto": {
+        "vs": "14:00",
+        "bc": "06:00"
+      },
+      "sre": {
+        "vs": "14:00",
+        "bc": "06:00"
+      },
+      "pon": {
+        "bc": "06:00",
+        "vs": "14:00"
+      },
+      "pet": {
+        "bc": "06:00",
+        "vs": "14:00"
+      },
+      "cet": {
+        "vs": "14:00",
+        "bc": "06:00"
+      }
+    },
+    "ukupna_cena_meseca": 0,
+    "cena": 0,
+    "tip": "radnik",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "broj_otkazivanja": 0,
+    "broj_putovanja": 0,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "status": "aktivan",
+    "search_terms": [
+      "viktor",
+      "v",
+      "vi",
+      "vik",
+      "vikt",
+      "vikto",
+      "nisavic",
+      "n",
+      "ni",
+      "nis",
+      "nisa",
+      "nisav",
+      "nisavi"
+    ],
+    "tip_prikazivanja": "standard",
+    "obrisan": false,
+    "updated_at": {
+      "_seconds": 1761087958,
+      "_nanoseconds": 989000000
+    },
+    "pokupljen": false,
+    "aktivan": true,
+    "tip_skole": "Bolnica",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394318,
+      "_nanoseconds": 201509000
+    }
+  },
+  {
+    "id": "31cb9c28-d90b-4791-9c72-6e4faf381578",
+    "placena_godina": 2025,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "tip": "ucenik",
+    "pokupljen": false,
+    "adresa_vrsac": "Dis",
+    "aktivan": true,
+    "ukupna_cena_meseca": 0,
+    "updated_at": {
+      "_seconds": 1761090178,
+      "_nanoseconds": 768000000
+    },
+    "broj_telefona_oca": "645489059",
+    "search_terms": [
+      "ostojic",
+      "o",
+      "os",
+      "ost",
+      "osto",
+      "ostoj",
+      "ostoji",
+      "aleksandra",
+      "a",
+      "al",
+      "ale",
+      "alek",
+      "aleks",
+      "aleksa",
+      "aleksan",
+      "aleksand",
+      "aleksandr"
+    ],
+    "putnik_ime": "Ostojic Aleksandra",
+    "created_at": {
+      "_seconds": 1761075916,
+      "_nanoseconds": 54000000
+    },
+    "status": "aktivan",
+    "broj_otkazivanja": 0,
+    "broj_putovanja": 0,
+    "tip_prikazivanja": "standard",
+    "cena": 0,
+    "broj_telefona_majke": "691595402",
+    "polasci_po_danu": {},
+    "tip_skole": "Hemijska",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "adresa_bela_crkva": "Rasadnik",
+    "obrisan": false,
+    "placeni_mesec": 8,
+    "vreme_placanja": {
+      "_seconds": 1761090178,
+      "_nanoseconds": 768000000
+    },
+    "broj_telefona": "628577338",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394318,
+      "_nanoseconds": 516039000
+    }
+  },
+  {
+    "id": "31cbadbc-dbe6-484d-8ad2-2945c91245b4",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "tip_prikazivanja": "standard",
+    "adresa_bela_crkva": "Dugme V.K.",
+    "tip": "ucenik",
+    "search_terms": [
+      "jana",
+      "j",
+      "ja",
+      "jan",
+      "nikolajev",
+      "n",
+      "ni",
+      "nik",
+      "niko",
+      "nikol",
+      "nikola",
+      "nikolaj",
+      "nikolaje"
+    ],
+    "pokupljen": false,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "obrisan": false,
+    "broj_otkazivanja": 0,
+    "putnik_ime": "Jana Nikolajev",
+    "cena": 0,
+    "created_at": {
+      "_seconds": 1761008567,
+      "_nanoseconds": 285000000
+    },
+    "adresa_vrsac": "Dis",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "status": "aktivan",
+    "broj_putovanja": 0,
+    "vreme_placanja": {
+      "_seconds": 1761052328,
+      "_nanoseconds": 19000000
+    },
+    "tip_skole": "Hemijska",
+    "aktivan": true,
+    "broj_telefona_majke": "601550603",
+    "updated_at": {
+      "_seconds": 1761052328,
+      "_nanoseconds": 19000000
+    },
+    "ukupna_cena_meseca": 0,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "placeni_mesec": 9,
+    "broj_telefona": "616862737",
+    "polasci_po_danu": {},
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "placena_godina": 2025,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394318,
+      "_nanoseconds": 832743000
+    }
+  },
+  {
+    "id": "369583d3-ef4a-40fc-b73a-a92873bee59d",
+    "tip": "ucenik",
+    "broj_otkazivanja": 0,
+    "putnik_ime": "Denis Steger",
+    "search_terms": [
+      "denis",
+      "d",
+      "de",
+      "den",
+      "deni",
+      "steger",
+      "s",
+      "st",
+      "ste",
+      "steg",
+      "stege"
+    ],
+    "placeni_mesec": 9,
+    "status": "aktivan",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "broj_telefona": "621480800",
+    "cena": 0,
+    "polasci_po_danu": {},
+    "obrisan": false,
+    "updated_at": {
+      "_seconds": 1761074976,
+      "_nanoseconds": 630000000
+    },
+    "tip_prikazivanja": "standard",
+    "aktivan": true,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "created_at": {
+      "_seconds": 1760970251,
+      "_nanoseconds": 805000000
+    },
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "ukupna_cena_meseca": 0,
+    "placena_godina": 2025,
+    "tip_skole": "Hemijska",
+    "broj_putovanja": 0,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "pokupljen": false,
+    "vreme_placanja": {
+      "_seconds": 1761074976,
+      "_nanoseconds": 630000000
+    },
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394319,
+      "_nanoseconds": 166181000
+    }
+  },
+  {
+    "id": "387019d9-b593-4bc7-9539-a50c9b9e6ed1",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "tip": "ucenik",
+    "pokupljen": false,
+    "broj_putovanja": 0,
+    "adresa_bela_crkva": "Vajfert",
+    "search_terms": [
+      "vujicic",
+      "v",
+      "vu",
+      "vuj",
+      "vuji",
+      "vujic",
+      "vujici",
+      "luka",
+      "l",
+      "lu",
+      "luk"
+    ],
+    "tip_skole": "Hemijska",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "status": "aktivan",
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "cena": 4200,
+    "ukupna_cena_meseca": 4200,
+    "created_at": {
+      "_seconds": 1761054121,
+      "_nanoseconds": 229000000
+    },
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "tip_prikazivanja": "standard",
+    "obrisan": false,
+    "broj_otkazivanja": 0,
+    "adresa_vrsac": "Dis",
+    "vreme_placanja": {
+      "_seconds": 1761054135,
+      "_nanoseconds": 737000000
+    },
+    "updated_at": {
+      "_seconds": 1761054135,
+      "_nanoseconds": 737000000
+    },
+    "polasci_po_danu": {},
+    "placeni_mesec": 10,
+    "placena_godina": 2025,
+    "putnik_ime": "Vujicic Luka",
+    "aktivan": true,
+    "broj_telefona": "62611073",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394319,
+      "_nanoseconds": 468617000
+    }
+  },
+  {
+    "id": "3ac025d3-64d5-4b6d-8729-c63d8cded0db",
+    "tip_prikazivanja": "standard",
+    "putnik_ime": "Tijana Milutinovic",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "status": "aktivan",
+    "obrisan": false,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "adresa_bela_crkva": "Cc",
+    "broj_telefona": "628490423",
+    "adresa_vrsac": "Gimnazija pekara",
+    "search_terms": [
+      "tijana",
+      "t",
+      "ti",
+      "tij",
+      "tija",
+      "tijan",
+      "milutinovic",
+      "m",
+      "mi",
+      "mil",
+      "milu",
+      "milut",
+      "miluti",
+      "milutin",
+      "milutino",
+      "milutinov",
+      "milutinovi"
+    ],
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "polasci_po_danu": {},
+    "pokupljen": false,
+    "broj_otkazivanja": 0,
+    "updated_at": {
+      "_seconds": 1761091415,
+      "_nanoseconds": 935000000
+    },
+    "ukupna_cena_meseca": 0,
+    "created_at": {
+      "_seconds": 1761091415,
+      "_nanoseconds": 935000000
+    },
+    "tip": "ucenik",
+    "broj_putovanja": 0,
+    "tip_skole": "Gimnazija",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "aktivan": true,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394319,
+      "_nanoseconds": 777604000
+    }
+  },
+  {
+    "id": "3d5db1c4-7da1-4329-ac6d-66175e065b1f",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "broj_otkazivanja": 0,
+    "adresa_bela_crkva": "Jasenovo ciglana",
+    "aktivan": true,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "putnik_ime": "Vincilov Ivana",
+    "tip_prikazivanja": "standard",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "obrisan": false,
+    "placeni_mesec": 10,
+    "vreme_placanja": {
+      "_seconds": 1761090519,
+      "_nanoseconds": 155000000
+    },
+    "broj_telefona": "642464638",
+    "search_terms": [
+      "vincilov",
+      "v",
+      "vi",
+      "vin",
+      "vinc",
+      "vinci",
+      "vincil",
+      "vincilo",
+      "ivana",
+      "i",
+      "iv",
+      "iva",
+      "ivan"
+    ],
+    "adresa_vrsac": "Gimnazija pekara",
+    "placena_godina": 2025,
+    "cena": 12000,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "pokupljen": false,
+    "ukupna_cena_meseca": 12000,
+    "tip_skole": "Gimnazija",
+    "status": "aktivan",
+    "broj_putovanja": 0,
+    "updated_at": {
+      "_seconds": 1761090519,
+      "_nanoseconds": 155000000
+    },
+    "polasci_po_danu": {
+      "pon": {
+        "bc": "07:00"
+      },
+      "pet": {
+        "bc": "07:00"
+      },
+      "sre": {
+        "bc": "07:00"
+      },
+      "uto": {
+        "bc": "07:00"
+      },
+      "cet": {
+        "bc": "07:00"
+      }
+    },
+    "created_at": {
+      "_seconds": 1761090502,
+      "_nanoseconds": 47000000
+    },
+    "tip": "ucenik",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394320,
+      "_nanoseconds": 110016000
+    }
+  },
+  {
+    "id": "3d7f6d5a-8ea6-41df-a1f9-03038e5d0823",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "placeni_mesec": 9,
+    "broj_telefona_oca": "695403078",
+    "placena_godina": 2025,
+    "putnik_ime": "Zivic Andjela",
+    "broj_putovanja": 0,
+    "created_at": {
+      "_seconds": 1761006206,
+      "_nanoseconds": 905000000
+    },
+    "updated_at": {
+      "_seconds": 1761088142,
+      "_nanoseconds": 677000000
+    },
+    "pokupljen": false,
+    "aktivan": true,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "search_terms": [
+      "zivic",
+      "z",
+      "zi",
+      "ziv",
+      "zivi",
+      "andjela",
+      "a",
+      "an",
+      "and",
+      "andj",
+      "andje",
+      "andjel"
+    ],
+    "polasci_po_danu": {},
+    "tip_skole": "Hemijska",
+    "broj_otkazivanja": 0,
+    "obrisan": false,
+    "vreme_placanja": {
+      "_seconds": 1761088142,
+      "_nanoseconds": 677000000
+    },
+    "cena": 0,
+    "ukupna_cena_meseca": 0,
+    "status": "aktivan",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "tip": "ucenik",
+    "adresa_vrsac": "Dis",
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "adresa_bela_crkva": "Musa Farbara",
+    "broj_telefona": "638416443",
+    "tip_prikazivanja": "standard",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394320,
+      "_nanoseconds": 413887000
+    }
+  },
+  {
+    "id": "3e909864-e359-47d8-8205-f636deef3442",
+    "created_at": {
+      "_seconds": 1761006615,
+      "_nanoseconds": 40000000
+    },
+    "tip": "ucenik",
+    "ukupna_cena_meseca": 12000,
+    "tip_skole": "Hemijska",
+    "broj_telefona_majke": "621950907",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "broj_otkazivanja": 0,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "search_terms": [
+      "klaudija",
+      "k",
+      "kl",
+      "kla",
+      "klau",
+      "klaud",
+      "klaudi",
+      "klaudij",
+      "glaubitz",
+      "g",
+      "gl",
+      "gla",
+      "glau",
+      "glaub",
+      "glaubi",
+      "glaubit"
+    ],
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "updated_at": {
+      "_seconds": 1761006637,
+      "_nanoseconds": 854000000
+    },
+    "putnik_ime": "Klaudija Glaubitz",
+    "broj_putovanja": 0,
+    "status": "aktivan",
+    "cena": 12000,
+    "tip_prikazivanja": "standard",
+    "placeni_mesec": 10,
+    "vreme_placanja": {
+      "_seconds": 1761006637,
+      "_nanoseconds": 854000000
+    },
+    "placena_godina": 2025,
+    "broj_telefona_oca": "631896034",
+    "polasci_po_danu": {},
+    "pokupljen": false,
+    "aktivan": true,
+    "broj_telefona": "621172349",
+    "obrisan": false,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394320,
+      "_nanoseconds": 716981000
+    }
+  },
+  {
+    "id": "3f9a2d3a-1264-4a84-ba74-b32fdb984298",
+    "pokupljen": false,
+    "aktivan": true,
+    "putnik_ime": "Zoran stalan",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "obrisan": false,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "ukupna_cena_meseca": 0,
+    "tip": "radnik",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "status": "aktivan",
+    "updated_at": {
+      "_seconds": 1761091549,
+      "_nanoseconds": 15000000
+    },
+    "search_terms": [
+      "zoran",
+      "z",
+      "zo",
+      "zor",
+      "zora",
+      "stalan",
+      "s",
+      "st",
+      "sta",
+      "stal",
+      "stala"
+    ],
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "adresa_bela_crkva": "Karadjordjeva 52",
+    "broj_putovanja": 0,
+    "created_at": {
+      "_seconds": 1761091549,
+      "_nanoseconds": 15000000
+    },
+    "tip_prikazivanja": "standard",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "polasci_po_danu": {
+      "sre": {
+        "bc": "06:00",
+        "vs": "15:00"
+      },
+      "cet": {
+        "bc": "06:00",
+        "vs": "15:00"
+      },
+      "pet": {
+        "vs": "15:00",
+        "bc": "06:00"
+      },
+      "pon": {
+        "bc": "06:00",
+        "vs": "15:00"
+      },
+      "uto": {
+        "vs": "15:00",
+        "bc": "06:00"
+      }
+    },
+    "adresa_vrsac": "Posta",
+    "broj_telefona": "611391181",
+    "broj_otkazivanja": 0,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394321,
+      "_nanoseconds": 39000000
+    }
+  },
+  {
+    "id": "403cdf48-b7e3-427c-9425-c5f708d8af3d",
+    "adresa_bela_crkva": "Vuka Karadzica",
+    "created_at": {
+      "_seconds": 1761053090,
+      "_nanoseconds": 535000000
+    },
+    "tip": "ucenik",
+    "search_terms": [
+      "todorovic",
+      "t",
+      "to",
+      "tod",
+      "todo",
+      "todor",
+      "todoro",
+      "todorov",
+      "todorovi",
+      "teodora",
+      "te",
+      "teo",
+      "teod",
+      "teodo",
+      "teodor"
+    ],
+    "putnik_ime": "Todorovic Teodora",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "tip_prikazivanja": "standard",
+    "adresa_vrsac": "Dis",
+    "placena_godina": 2025,
+    "broj_putovanja": 0,
+    "cena": 0,
+    "broj_otkazivanja": 0,
+    "aktivan": true,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "ukupna_cena_meseca": 0,
+    "tip_skole": "Hemijska",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "polasci_po_danu": {},
+    "broj_telefona": "611965533",
+    "updated_at": {
+      "_seconds": 1761053150,
+      "_nanoseconds": 28000000
+    },
+    "placeni_mesec": 9,
+    "obrisan": false,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "vreme_placanja": {
+      "_seconds": 1761053150,
+      "_nanoseconds": 28000000
+    },
+    "pokupljen": false,
+    "status": "aktivan",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394321,
+      "_nanoseconds": 364323000
+    }
+  },
+  {
+    "id": "4119574f-8118-451f-bbcd-1283e5a7ed62",
+    "created_at": {
+      "_seconds": 1761006501,
+      "_nanoseconds": 83000000
+    },
+    "broj_otkazivanja": 0,
+    "putnik_ime": "Postin Stefan",
+    "placena_godina": 2025,
+    "broj_putovanja": 0,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "aktivan": true,
+    "placeni_mesec": 10,
+    "ukupna_cena_meseca": 5000,
+    "tip": "ucenik",
+    "status": "aktivan",
+    "polasci_po_danu": {},
+    "pokupljen": false,
+    "updated_at": {
+      "_seconds": 1761006522,
+      "_nanoseconds": 279000000
+    },
+    "adresa_vrsac": "Dis",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "obrisan": false,
+    "vreme_placanja": {
+      "_seconds": 1761006522,
+      "_nanoseconds": 279000000
+    },
+    "tip_skole": "Poljoprivredna",
+    "tip_prikazivanja": "standard",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "cena": 5000,
+    "search_terms": [
+      "postin",
+      "p",
+      "po",
+      "pos",
+      "post",
+      "posti",
+      "stefan",
+      "s",
+      "st",
+      "ste",
+      "stef",
+      "stefa"
+    ],
+    "broj_telefona": "643699704",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394321,
+      "_nanoseconds": 714999000
+    }
+  },
+  {
+    "id": "4437f9a3-a2d8-467b-a7e5-1a7ddd10828f",
+    "adresa_bela_crkva": "Masarikova",
+    "tip": "ucenik",
+    "tip_prikazivanja": "standard",
+    "broj_otkazivanja": 0,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "adresa_vrsac": "Dis",
+    "placeni_mesec": 10,
+    "updated_at": {
+      "_seconds": 1761088240,
+      "_nanoseconds": 981000000
+    },
+    "putnik_ime": "Elena Grujic",
+    "obrisan": false,
+    "placena_godina": 2025,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "created_at": {
+      "_seconds": 1761088226,
+      "_nanoseconds": 149000000
+    },
+    "cena": 12000,
+    "aktivan": true,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "search_terms": [
+      "elena",
+      "e",
+      "el",
+      "ele",
+      "elen",
+      "grujic",
+      "g",
+      "gr",
+      "gru",
+      "gruj",
+      "gruji"
+    ],
+    "ukupna_cena_meseca": 12000,
+    "tip_skole": "Hemijska",
+    "polasci_po_danu": {},
+    "pokupljen": false,
+    "vreme_placanja": {
+      "_seconds": 1761088240,
+      "_nanoseconds": 981000000
+    },
+    "broj_putovanja": 0,
+    "broj_telefona": "604465366",
+    "status": "aktivan",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394322,
+      "_nanoseconds": 45052000
+    }
+  },
+  {
+    "id": "458bfe20-4790-49a6-8517-738fb463f5c1",
+    "cena": 4800,
+    "placeni_mesec": 10,
+    "ukupna_cena_meseca": 4800,
+    "tip": "radnik",
+    "placena_godina": 2025,
+    "updated_at": {
+      "_seconds": 1761074893,
+      "_nanoseconds": 654000000
+    },
+    "aktivan": true,
+    "broj_otkazivanja": 0,
+    "radni_dani": [
+      "pon"
+    ],
+    "tip_prikazivanja": "standard",
+    "tip_skole": "Psihijatrija",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "pokupljen": false,
+    "broj_telefona": "601690134",
+    "adresa_bela_crkva": "Tri cesme",
+    "putnik_ime": "Zeljko",
+    "polasci_po_danu": {
+      "pon": {
+        "bc": "09:00",
+        "vs": "11:00"
+      }
+    },
+    "broj_putovanja": 0,
+    "vreme_placanja": {
+      "_seconds": 1761074893,
+      "_nanoseconds": 654000000
+    },
+    "created_at": {
+      "_seconds": 1761074875,
+      "_nanoseconds": 319000000
+    },
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "search_terms": [
+      "zeljko",
+      "z",
+      "ze",
+      "zel",
+      "zelj",
+      "zeljk"
+    ],
+    "status": "aktivan",
+    "obrisan": false,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394322,
+      "_nanoseconds": 348846000
+    }
+  },
+  {
+    "id": "45a90bca-6f7d-4c09-95de-413f1989fe0a",
+    "adresa_bela_crkva": "Kusic",
+    "created_at": {
+      "_seconds": 1761006875,
+      "_nanoseconds": 323000000
+    },
+    "ukupna_cena_meseca": 0,
+    "putnik_ime": "Ivan kusic",
+    "status": "aktivan",
+    "broj_otkazivanja": 0,
+    "tip_prikazivanja": "standard",
+    "tip_skole": "Psihijatrija",
+    "vreme_placanja": {
+      "_seconds": 1761089389,
+      "_nanoseconds": 156000000
+    },
+    "broj_telefona": "637456227",
+    "obrisan": false,
+    "adresa_vrsac": "Psihijatrija",
+    "polasci_po_danu": {},
+    "broj_putovanja": 0,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "placena_godina": 2025,
+    "pokupljen": false,
+    "cena": 0,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "aktivan": true,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "updated_at": {
+      "_seconds": 1761089389,
+      "_nanoseconds": 156000000
+    },
+    "search_terms": [
+      "ivan",
+      "i",
+      "iv",
+      "iva",
+      "kusic",
+      "k",
+      "ku",
+      "kus",
+      "kusi"
+    ],
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "tip": "radnik",
+    "placeni_mesec": 9,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394322,
+      "_nanoseconds": 665668000
+    }
+  },
+  {
+    "id": "45c6398b-1b94-4f1c-bd1d-13949d1a53b2",
+    "placena_godina": 2025,
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "obrisan": false,
+    "broj_otkazivanja": 0,
+    "tip": "radnik",
+    "putnik_ime": "Svetlana",
+    "vreme_placanja": {
+      "_seconds": 1760754101,
+      "_nanoseconds": 166000000
+    },
+    "cena": 10000,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "polasci_po_danu": {},
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "broj_putovanja": 0,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "adresa_vrsac": "Yu auto",
+    "search_terms": [
+      "svetlana",
+      "s",
+      "sv",
+      "sve",
+      "svet",
+      "svetl",
+      "svetla",
+      "svetlan"
+    ],
+    "placeni_mesec": 10,
+    "adresa_bela_crkva": "Mihajla Pupina 74",
+    "broj_telefona": "658464160",
+    "ukupna_cena_meseca": 10000,
+    "tip_prikazivanja": "standard",
+    "updated_at": {
+      "_seconds": 1760754101,
+      "_nanoseconds": 167000000
+    },
+    "created_at": {
+      "_seconds": 1760754069,
+      "_nanoseconds": 932000000
+    },
+    "pokupljen": false,
+    "aktivan": true,
+    "status": "aktivan",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394322,
+      "_nanoseconds": 951425000
+    }
+  },
+  {
+    "id": "4984b528-f1d7-4df4-98fe-6974d3374bd1",
+    "tip": "ucenik",
+    "updated_at": {
+      "_seconds": 1761054346,
+      "_nanoseconds": 15000000
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "search_terms": [
+      "andjela",
+      "a",
+      "an",
+      "and",
+      "andj",
+      "andje",
+      "andjel",
+      "malusev",
+      "m",
+      "ma",
+      "mal",
+      "malu",
+      "malus",
+      "maluse"
+    ],
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "vreme_placanja": {
+      "_seconds": 1761054346,
+      "_nanoseconds": 15000000
+    },
+    "placeni_mesec": 10,
+    "polasci_po_danu": {
+      "uto": {
+        "bc": "07:00"
+      },
+      "sre": {
+        "bc": "07:00"
+      },
+      "pet": {
+        "bc": "07:00"
+      },
+      "cet": {
+        "bc": "07:00"
+      },
+      "pon": {
+        "bc": "07:00"
+      }
+    },
+    "broj_telefona": "621116707",
+    "pokupljen": false,
+    "created_at": {
+      "_seconds": 1761054330,
+      "_nanoseconds": 486000000
+    },
+    "broj_putovanja": 0,
+    "broj_otkazivanja": 0,
+    "status": "aktivan",
+    "placena_godina": 2025,
+    "putnik_ime": "Andjela Malusev",
+    "adresa_bela_crkva": "Jasenovo malusev",
+    "cena": 12000,
+    "tip_prikazivanja": "standard",
+    "tip_skole": "Tesla",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "obrisan": false,
+    "adresa_vrsac": "Sud",
+    "aktivan": true,
+    "ukupna_cena_meseca": 12000,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394323,
+      "_nanoseconds": 235693000
+    }
+  },
+  {
+    "id": "4b2de29c-7d52-4d78-8259-ebb60996caf4",
+    "broj_telefona": "665007748",
+    "status": "aktivan",
+    "updated_at": {
+      "_seconds": 1761005288,
+      "_nanoseconds": 991000000
+    },
+    "ukupna_cena_meseca": 12000,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "broj_otkazivanja": 0,
+    "tip_skole": "Hemijska",
+    "broj_putovanja": 0,
+    "polasci_po_danu": {},
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "search_terms": [
+      "sajic",
+      "s",
+      "sa",
+      "saj",
+      "saji",
+      "dusan",
+      "d",
+      "du",
+      "dus",
+      "dusa"
+    ],
+    "broj_telefona_oca": "641376856",
+    "placena_godina": 2025,
+    "cena": 12000,
+    "created_at": {
+      "_seconds": 1761005272,
+      "_nanoseconds": 582000000
+    },
+    "adresa_vrsac": "Dis",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "tip_prikazivanja": "standard",
+    "placeni_mesec": 10,
+    "adresa_bela_crkva": "Apolo",
+    "vreme_placanja": {
+      "_seconds": 1761005288,
+      "_nanoseconds": 991000000
+    },
+    "tip": "ucenik",
+    "obrisan": false,
+    "aktivan": true,
+    "putnik_ime": "Sajic Dusan",
+    "pokupljen": false,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394323,
+      "_nanoseconds": 563516000
+    }
+  },
+  {
+    "id": "4f17e684-1058-42dc-9fd9-eb5997b85018",
+    "vreme_placanja": {
+      "_seconds": 1761074680,
+      "_nanoseconds": 338000000
+    },
+    "broj_telefona": "611955982",
+    "obrisan": false,
+    "ukupna_cena_meseca": 12000,
+    "broj_otkazivanja": 0,
+    "putnik_ime": "Milan Kerculj",
+    "placeni_mesec": 10,
+    "polasci_po_danu": {
+      "pon": {
+        "bc": "07:00"
+      },
+      "cet": {
+        "bc": "07:00"
+      },
+      "pet": {
+        "bc": "07:00"
+      },
+      "uto": {
+        "bc": "07:00"
+      },
+      "sre": {
+        "bc": "07:00"
+      }
+    },
+    "status": "aktivan",
+    "cena": 12000,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "tip_skole": "Tesla",
+    "updated_at": {
+      "_seconds": 1761074680,
+      "_nanoseconds": 338000000
+    },
+    "created_at": {
+      "_seconds": 1761074651,
+      "_nanoseconds": 255000000
+    },
+    "adresa_bela_crkva": "Jasenovo fruti",
+    "adresa_vrsac": "Sud",
+    "placena_godina": 2025,
+    "pokupljen": false,
+    "tip_prikazivanja": "standard",
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "search_terms": [
+      "milan",
+      "m",
+      "mi",
+      "mil",
+      "mila",
+      "kerculj",
+      "k",
+      "ke",
+      "ker",
+      "kerc",
+      "kercu",
+      "kercul"
+    ],
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "broj_putovanja": 0,
+    "tip": "ucenik",
+    "broj_telefona_majke": "638994387",
+    "aktivan": true,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394323,
+      "_nanoseconds": 880872000
+    }
+  },
+  {
+    "id": "52e445e4-8e97-4d48-b46f-099b0a2a40a7",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "adresa_vrsac": "Hemofarm",
+    "broj_telefona": "600483995",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "status": "godisnji",
+    "created_at": {
+      "_seconds": 1761088638,
+      "_nanoseconds": 576000000
+    },
+    "obrisan": false,
+    "updated_at": {
+      "_seconds": 1761094037,
+      "_nanoseconds": 576000000
+    },
+    "putnik_ime": "Djordje",
+    "aktivan": true,
+    "cena": 14000,
+    "broj_putovanja": 0,
+    "tip_skole": "Hemofarm",
+    "tip_prikazivanja": "standard",
+    "tip": "radnik",
+    "placena_godina": 2025,
+    "adresa_bela_crkva": "Vg",
+    "polasci_po_danu": {
+      "sre": {
+        "bc": "05:00",
+        "vs": "14:00"
+      },
+      "uto": {
+        "bc": "05:00",
+        "vs": "14:00"
+      },
+      "cet": {
+        "bc": "05:00",
+        "vs": "14:00"
+      },
+      "pon": {
+        "vs": "14:00",
+        "bc": "05:00"
+      },
+      "pet": {
+        "vs": "14:00",
+        "bc": "05:00"
+      }
+    },
+    "search_terms": [
+      "djordje",
+      "d",
+      "dj",
+      "djo",
+      "djor",
+      "djord",
+      "djordj"
+    ],
+    "broj_otkazivanja": 0,
+    "vreme_placanja": {
+      "_seconds": 1761088657,
+      "_nanoseconds": 542000000
+    },
+    "placeni_mesec": 10,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "pokupljen": false,
+    "ukupna_cena_meseca": 14000,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394324,
+      "_nanoseconds": 195946000
+    }
+  },
+  {
+    "id": "53089f5e-9fa2-428a-8038-bd38bf2ae2e3",
+    "tip_skole": "Psihijatrija",
+    "putnik_ime": "Ivan Kusic",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "pokupljen": false,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "broj_putovanja": 0,
+    "adresa_bela_crkva": "Kusic",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "created_at": {
+      "_seconds": 1761089347,
+      "_nanoseconds": 941000000
+    },
+    "status": "aktivan",
+    "broj_otkazivanja": 0,
+    "aktivan": true,
+    "broj_telefona": "637456227",
+    "ukupna_cena_meseca": 0,
+    "obrisan": true,
+    "polasci_po_danu": {},
+    "tip": "radnik",
+    "adresa_vrsac": "Psihijatrija",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "updated_at": {
+      "_seconds": 1761089368,
+      "_nanoseconds": 514000000
+    },
+    "tip_prikazivanja": "standard",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "search_terms": [
+      "ivan",
+      "i",
+      "iv",
+      "iva",
+      "kusic",
+      "k",
+      "ku",
+      "kus",
+      "kusi"
+    ],
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394324,
+      "_nanoseconds": 492862000
+    }
+  },
+  {
+    "id": "559543fc-1039-4b87-88c2-85b2ff2b0af4",
+    "placena_godina": 2025,
+    "status": "aktivan",
+    "placeni_mesec": 10,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "obrisan": false,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "vreme_placanja": {
+      "_seconds": 1761074784,
+      "_nanoseconds": 499000000
+    },
+    "broj_putovanja": 0,
+    "putnik_ime": "Petka Kerculj",
+    "adresa_vrsac": "Dis",
+    "polasci_po_danu": {},
+    "cena": 12000,
+    "ukupna_cena_meseca": 12000,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "created_at": {
+      "_seconds": 1761074768,
+      "_nanoseconds": 437000000
+    },
+    "adresa_bela_crkva": "Jasenovo fruti",
+    "tip_prikazivanja": "standard",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "updated_at": {
+      "_seconds": 1761074784,
+      "_nanoseconds": 499000000
+    },
+    "aktivan": true,
+    "broj_otkazivanja": 0,
+    "pokupljen": false,
+    "broj_telefona_majke": "638994387",
+    "tip": "ucenik",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "search_terms": [
+      "petka",
+      "p",
+      "pe",
+      "pet",
+      "petk",
+      "kerculj",
+      "k",
+      "ke",
+      "ker",
+      "kerc",
+      "kercu",
+      "kercul"
+    ],
+    "tip_skole": "Hemijska",
+    "broj_telefona": "628606036",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394324,
+      "_nanoseconds": 795580000
+    }
+  },
+  {
+    "id": "5884f0c1-2d42-4e4a-8a13-1e5a42d2b417",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "polasci_po_danu": {
+      "cet": {
+        "vs": "06:00",
+        "bc": "11:00"
+      },
+      "pon": {
+        "bc": "13:00",
+        "vs": "06:00"
+      },
+      "sre": {
+        "vs": "06:00",
+        "bc": "13:00"
+      }
+    },
+    "placena_godina": 2025,
+    "cena": 6000,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "updated_at": {
+      "_seconds": 1761057010,
+      "_nanoseconds": 778000000
+    },
+    "aktivan": true,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "placeni_mesec": 10,
+    "ukupna_cena_meseca": 6000,
+    "tip": "radnik",
+    "pokupljen": false,
+    "adresa_bela_crkva": "Jasenovo skola",
+    "broj_telefona": "692561976",
+    "obrisan": false,
+    "broj_otkazivanja": 0,
+    "created_at": {
+      "_seconds": 1761056991,
+      "_nanoseconds": 437000000
+    },
+    "broj_putovanja": 0,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "vreme_placanja": {
+      "_seconds": 1761057010,
+      "_nanoseconds": 778000000
+    },
+    "status": "aktivan",
+    "tip_prikazivanja": "standard",
+    "putnik_ime": "Sokolovic Maja",
+    "tip_skole": "Jasenovo skola",
+    "adresa_vrsac": "Zive Jovanovica",
+    "search_terms": [
+      "sokolovic",
+      "s",
+      "so",
+      "sok",
+      "soko",
+      "sokol",
+      "sokolo",
+      "sokolov",
+      "sokolovi",
+      "maja",
+      "m",
+      "ma",
+      "maj"
+    ],
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394325,
+      "_nanoseconds": 71820000
+    }
+  },
+  {
+    "id": "59264e17-1aa1-421e-9f51-154e44503acb",
+    "aktivan": true,
+    "pokupljen": false,
+    "putnik_ime": "Mihaj Anastasija",
+    "status": "aktivan",
+    "broj_telefona": "601909059",
+    "polasci_po_danu": {},
+    "placeni_mesec": 10,
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "placena_godina": 2025,
+    "cena": 12000,
+    "tip_prikazivanja": "standard",
+    "vreme_placanja": {
+      "_seconds": 1761076163,
+      "_nanoseconds": 309000000
+    },
+    "broj_putovanja": 0,
+    "adresa_bela_crkva": "Jasenovo fruti",
+    "adresa_vrsac": "Dis",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "tip": "ucenik",
+    "tip_skole": "Hemijska",
+    "obrisan": false,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "broj_otkazivanja": 0,
+    "updated_at": {
+      "_seconds": 1761076163,
+      "_nanoseconds": 309000000
+    },
+    "created_at": {
+      "_seconds": 1761076133,
+      "_nanoseconds": 753000000
+    },
+    "ukupna_cena_meseca": 12000,
+    "search_terms": [
+      "mihaj",
+      "m",
+      "mi",
+      "mih",
+      "miha",
+      "anastasija",
+      "a",
+      "an",
+      "ana",
+      "anas",
+      "anast",
+      "anasta",
+      "anastas",
+      "anastasi",
+      "anastasij"
+    ],
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394325,
+      "_nanoseconds": 397078000
+    }
+  },
+  {
+    "id": "5a439938-dc4d-4533-8104-44b757be6039",
+    "vreme_placanja": {
+      "_seconds": 1761089453,
+      "_nanoseconds": 590000000
+    },
+    "pokupljen": false,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "putnik_ime": "Bogdan",
+    "status": "aktivan",
+    "broj_putovanja": 0,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "tip_skole": "Zoka namestaj",
+    "placena_godina": 2025,
+    "tip": "radnik",
+    "tip_prikazivanja": "standard",
+    "aktivan": true,
+    "ukupna_cena_meseca": 0,
+    "polasci_po_danu": {},
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "broj_telefona": "621903139",
+    "updated_at": {
+      "_seconds": 1761089453,
+      "_nanoseconds": 591000000
+    },
+    "adresa_bela_crkva": "Jasenovo fruti",
+    "placeni_mesec": 9,
+    "broj_otkazivanja": 0,
+    "adresa_vrsac": "Zoka namestaj",
+    "search_terms": [
+      "bogdan",
+      "b",
+      "bo",
+      "bog",
+      "bogd",
+      "bogda"
+    ],
+    "obrisan": false,
+    "created_at": {
+      "_seconds": 1761006797,
+      "_nanoseconds": 684000000
+    },
+    "cena": 0,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394325,
+      "_nanoseconds": 705015000
+    }
+  },
+  {
+    "id": "609d3544-7ce8-414a-99e6-427541176e4f",
+    "pokupljen": false,
+    "obrisan": false,
+    "tip": "radnik",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "broj_telefona": "63366434",
+    "putnik_ime": "David Veljkovic",
+    "updated_at": {
+      "_seconds": 1761092485,
+      "_nanoseconds": 145000000
+    },
+    "ukupna_cena_meseca": 0,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "vreme_placanja": {
+      "_seconds": 1761092485,
+      "_nanoseconds": 145000000
+    },
+    "tip_prikazivanja": "standard",
+    "created_at": {
+      "_seconds": 1761092431,
+      "_nanoseconds": 949000000
+    },
+    "status": "aktivan",
+    "placeni_mesec": 8,
+    "adresa_vrsac": "Kopter Shop",
+    "tip_skole": "Kopter Shop",
+    "placena_godina": 2025,
+    "polasci_po_danu": {
+      "cet": {
+        "vs": "07:00",
+        "bc": "15:30"
+      },
+      "uto": {
+        "vs": "07:00",
+        "bc": "15:30"
+      },
+      "pet": {
+        "bc": "15:30",
+        "vs": "07:00"
+      },
+      "pon": {
+        "bc": "15:30",
+        "vs": "07:00"
+      },
+      "sre": {
+        "bc": "15:30",
+        "vs": "07:00"
+      }
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "search_terms": [
+      "david",
+      "d",
+      "da",
+      "dav",
+      "davi",
+      "veljkovic",
+      "v",
+      "ve",
+      "vel",
+      "velj",
+      "veljk",
+      "veljko",
+      "veljkov",
+      "veljkovi"
+    ],
+    "cena": 0,
+    "aktivan": true,
+    "adresa_bela_crkva": "Mesara Srpko",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "broj_otkazivanja": 0,
+    "broj_putovanja": 0,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394326,
+      "_nanoseconds": 31706000
+    }
+  },
+  {
+    "id": "675f2c6c-6a43-4e2e-824e-70bbba62bacc",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "status": "aktivan",
+    "broj_otkazivanja": 0,
+    "broj_telefona": "645353079",
+    "created_at": {
+      "_seconds": 1761054030,
+      "_nanoseconds": 423000000
+    },
+    "obrisan": false,
+    "cena": 0,
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "search_terms": [
+      "dragana",
+      "d",
+      "dr",
+      "dra",
+      "drag",
+      "draga",
+      "dragan",
+      "mitrovic",
+      "m",
+      "mi",
+      "mit",
+      "mitr",
+      "mitro",
+      "mitrov",
+      "mitrovi"
+    ],
+    "tip_skole": "Bolnica",
+    "adresa_bela_crkva": "Bum",
+    "pokupljen": false,
+    "vreme_placanja": {
+      "_seconds": 1761090217,
+      "_nanoseconds": 885000000
+    },
+    "updated_at": {
+      "_seconds": 1761090217,
+      "_nanoseconds": 885000000
+    },
+    "placena_godina": 2025,
+    "broj_putovanja": 0,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "tip": "radnik",
+    "ukupna_cena_meseca": 0,
+    "tip_prikazivanja": "standard",
+    "placeni_mesec": 8,
+    "polasci_po_danu": {
+      "pon": {
+        "bc": "06:00",
+        "vs": "14:00"
+      },
+      "cet": {
+        "bc": "06:00",
+        "vs": "14:00"
+      },
+      "sre": {
+        "bc": "06:00",
+        "vs": "14:00"
+      },
+      "uto": {
+        "bc": "06:00",
+        "vs": "14:00"
+      },
+      "pet": {
+        "bc": "06:00",
+        "vs": "14:00"
+      }
+    },
+    "putnik_ime": "Dragana Mitrovic",
+    "aktivan": true,
+    "adresa_vrsac": "Bolnica",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394326,
+      "_nanoseconds": 270690000
+    }
+  },
+  {
+    "id": "6d50df49-9a5a-448c-b66c-f0efb210b586",
+    "aktivan": true,
+    "broj_otkazivanja": 0,
+    "placeni_mesec": 10,
+    "broj_putovanja": 0,
+    "tip_skole": "Hemijska",
+    "putnik_ime": "Savatovic Mihajlo",
+    "updated_at": {
+      "_seconds": 1761006309,
+      "_nanoseconds": 960000000
+    },
+    "adresa_vrsac": "Dis",
+    "polasci_po_danu": {},
+    "created_at": {
+      "_seconds": 1761006297,
+      "_nanoseconds": 814000000
+    },
+    "search_terms": [
+      "savatovic",
+      "s",
+      "sa",
+      "sav",
+      "sava",
+      "savat",
+      "savato",
+      "savatov",
+      "savatovi",
+      "mihajlo",
+      "m",
+      "mi",
+      "mih",
+      "miha",
+      "mihaj",
+      "mihajl"
+    ],
+    "broj_telefona": "605300444",
+    "pokupljen": false,
+    "status": "aktivan",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "obrisan": false,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "tip_prikazivanja": "standard",
+    "placena_godina": 2025,
+    "tip": "ucenik",
+    "adresa_bela_crkva": "Apolo",
+    "cena": 6000,
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "vreme_placanja": {
+      "_seconds": 1761006309,
+      "_nanoseconds": 960000000
+    },
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "ukupna_cena_meseca": 6000,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394326,
+      "_nanoseconds": 585841000
+    }
+  },
+  {
+    "id": "71e80dc3-6c72-4979-9e9a-413406d74f51",
+    "tip_prikazivanja": "standard",
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "placena_godina": 2025,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "vreme_placanja": {
+      "_seconds": 1761008451,
+      "_nanoseconds": 772000000
+    },
+    "obrisan": false,
+    "broj_otkazivanja": 0,
+    "created_at": {
+      "_seconds": 1761008416,
+      "_nanoseconds": 247000000
+    },
+    "aktivan": true,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "adresa_bela_crkva": "Jasenovo malusev",
+    "putnik_ime": "Mija Malusev",
+    "cena": 8500,
+    "polasci_po_danu": {
+      "cet": {
+        "bc": "07:00"
+      },
+      "uto": {
+        "bc": "07:00"
+      },
+      "pet": {
+        "bc": "07:00"
+      },
+      "pon": {
+        "bc": "07:00"
+      },
+      "sre": {
+        "bc": "07:00"
+      }
+    },
+    "tip": "ucenik",
+    "status": "aktivan",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "pokupljen": false,
+    "broj_putovanja": 0,
+    "search_terms": [
+      "mija",
+      "m",
+      "mi",
+      "mij",
+      "malusev",
+      "ma",
+      "mal",
+      "malu",
+      "malus",
+      "maluse"
+    ],
+    "updated_at": {
+      "_seconds": 1761008451,
+      "_nanoseconds": 772000000
+    },
+    "placeni_mesec": 10,
+    "adresa_vrsac": "Dis",
+    "broj_telefona": "637154037",
+    "ukupna_cena_meseca": 8500,
+    "tip_skole": "Poljoprivredna",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394326,
+      "_nanoseconds": 953678000
+    }
+  },
+  {
+    "id": "731669a7-8962-41e9-aba2-40a11ca45d99",
+    "adresa_vrsac": "Dis",
+    "pokupljen": false,
+    "adresa_bela_crkva": "Vg",
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "broj_telefona": "601653746",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "tip_skole": "Poljoprivredna",
+    "broj_otkazivanja": 0,
+    "search_terms": [
+      "andrijana",
+      "a",
+      "an",
+      "and",
+      "andr",
+      "andri",
+      "andrij",
+      "andrija",
+      "andrijan"
+    ],
+    "aktivan": true,
+    "vreme_placanja": {
+      "_seconds": 1761075359,
+      "_nanoseconds": 209000000
+    },
+    "created_at": {
+      "_seconds": 1761075341,
+      "_nanoseconds": 165000000
+    },
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "status": "aktivan",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "updated_at": {
+      "_seconds": 1761075359,
+      "_nanoseconds": 209000000
+    },
+    "tip": "ucenik",
+    "ukupna_cena_meseca": 12000,
+    "tip_prikazivanja": "standard",
+    "obrisan": false,
+    "polasci_po_danu": {
+      "pet": {
+        "bc": "07:00"
+      },
+      "sre": {
+        "bc": "07:00"
+      },
+      "pon": {
+        "bc": "07:00"
+      },
+      "uto": {
+        "bc": "07:00"
+      },
+      "cet": {
+        "bc": "07:00"
+      }
+    },
+    "placena_godina": 2025,
+    "putnik_ime": "Andrijana",
+    "broj_putovanja": 0,
+    "cena": 12000,
+    "placeni_mesec": 10,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394327,
+      "_nanoseconds": 199575000
+    }
+  },
+  {
+    "id": "73345ab5-3c42-4306-a0e6-2fb7f0d8a01c",
+    "adresa_bela_crkva": "Visnjic",
+    "putnik_ime": "Beker Dragana",
+    "polasci_po_danu": {},
+    "search_terms": [
+      "beker",
+      "b",
+      "be",
+      "bek",
+      "beke",
+      "dragana",
+      "d",
+      "dr",
+      "dra",
+      "drag",
+      "draga",
+      "dragan"
+    ],
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "adresa_vrsac": "Bolnica",
+    "ukupna_cena_meseca": 13300,
+    "pokupljen": false,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "updated_at": {
+      "_seconds": 1761054851,
+      "_nanoseconds": 628000000
+    },
+    "tip_skole": "Bolnica",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "broj_telefona": "638468890",
+    "aktivan": true,
+    "vreme_placanja": {
+      "_seconds": 1761054851,
+      "_nanoseconds": 628000000
+    },
+    "placena_godina": 2025,
+    "broj_otkazivanja": 0,
+    "placeni_mesec": 10,
+    "obrisan": false,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "status": "aktivan",
+    "broj_putovanja": 0,
+    "tip_prikazivanja": "standard",
+    "cena": 13300,
+    "tip": "radnik",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "created_at": {
+      "_seconds": 1761054825,
+      "_nanoseconds": 555000000
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394327,
+      "_nanoseconds": 471834000
+    }
+  },
+  {
+    "id": "74dac049-8887-41c9-8f9a-5aaace508be5",
+    "putnik_ime": "Uros Mali",
+    "tip_prikazivanja": "standard",
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "placeni_mesec": 10,
+    "tip_skole": "Tesla",
+    "obrisan": false,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "vreme_placanja": {
+      "_seconds": 1761053534,
+      "_nanoseconds": 427000000
+    },
+    "polasci_po_danu": {
+      "pet": {
+        "bc": "07:00"
+      },
+      "sre": {
+        "bc": "07:00"
+      },
+      "uto": {
+        "bc": "07:00"
+      },
+      "cet": {
+        "bc": "07:00"
+      },
+      "pon": {
+        "bc": "07:00"
+      }
+    },
+    "cena": 12000,
+    "search_terms": [
+      "uros",
+      "u",
+      "ur",
+      "uro",
+      "mali",
+      "m",
+      "ma",
+      "mal"
+    ],
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "status": "aktivan",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "created_at": {
+      "_seconds": 1761053516,
+      "_nanoseconds": 450000000
+    },
+    "pokupljen": false,
+    "adresa_vrsac": "Sud",
+    "tip": "ucenik",
+    "broj_telefona": "628389062",
+    "broj_putovanja": 0,
+    "placena_godina": 2025,
+    "ukupna_cena_meseca": 12000,
+    "updated_at": {
+      "_seconds": 1761053534,
+      "_nanoseconds": 427000000
+    },
+    "adresa_bela_crkva": "Jasenovo malusev",
+    "broj_otkazivanja": 0,
+    "aktivan": true,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394327,
+      "_nanoseconds": 796492000
+    }
+  },
+  {
+    "id": "76d69a83-aa5b-49a8-a9da-8e1b76304e68",
+    "ukupna_cena_meseca": 0,
+    "vreme_placanja": {
+      "_seconds": 1761090237,
+      "_nanoseconds": 13000000
+    },
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "broj_telefona": "643090496",
+    "aktivan": true,
+    "broj_otkazivanja": 0,
+    "putnik_ime": "Josipa",
+    "tip_skole": "Bolnica",
+    "placeni_mesec": 9,
+    "obrisan": false,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "search_terms": [
+      "josipa",
+      "j",
+      "jo",
+      "jos",
+      "josi",
+      "josip"
+    ],
+    "cena": 0,
+    "status": "aktivan",
+    "pokupljen": false,
+    "tip": "radnik",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "tip_prikazivanja": "standard",
+    "broj_putovanja": 0,
+    "polasci_po_danu": {},
+    "created_at": {
+      "_seconds": 1761054471,
+      "_nanoseconds": 357000000
+    },
+    "updated_at": {
+      "_seconds": 1761090237,
+      "_nanoseconds": 13000000
+    },
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "placena_godina": 2025,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394328,
+      "_nanoseconds": 70168000
+    }
+  },
+  {
+    "id": "78e26eee-3d7b-41ff-83bf-8fc0966b75e3",
+    "search_terms": [
+      "stefana",
+      "s",
+      "st",
+      "ste",
+      "stef",
+      "stefa",
+      "stefan",
+      "mezimka",
+      "m",
+      "me",
+      "mez",
+      "mezi",
+      "mezim",
+      "mezimk"
+    ],
+    "pokupljen": false,
+    "broj_otkazivanja": 0,
+    "ukupna_cena_meseca": 0,
+    "status": "aktivan",
+    "tip_prikazivanja": "standard",
+    "obrisan": false,
+    "updated_at": {
+      "_seconds": 1761091312,
+      "_nanoseconds": 31000000
+    },
+    "putnik_ime": "Stefana Mezimka",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "broj_telefona": "611110956",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "created_at": {
+      "_seconds": 1761091312,
+      "_nanoseconds": 31000000
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "broj_putovanja": 0,
+    "polasci_po_danu": {},
+    "tip": "ucenik",
+    "aktivan": true,
+    "adresa_bela_crkva": "Tri cesme",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394328,
+      "_nanoseconds": 350922000
+    }
+  },
+  {
+    "id": "7bebe61e-1cb7-4e5e-a1de-6ca4ee58f103",
+    "obrisan": false,
+    "created_at": {
+      "_seconds": 1761007067,
+      "_nanoseconds": 421000000
+    },
+    "broj_telefona": "613099249",
+    "status": "aktivan",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "updated_at": {
+      "_seconds": 1761007089,
+      "_nanoseconds": 804000000
+    },
+    "tip": "ucenik",
+    "broj_telefona_oca": "603641190",
+    "adresa_bela_crkva": "Tri cesme",
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "search_terms": [
+      "rufa",
+      "r",
+      "ru",
+      "ruf",
+      "teodora",
+      "t",
+      "te",
+      "teo",
+      "teod",
+      "teodo",
+      "teodor"
+    ],
+    "vreme_placanja": {
+      "_seconds": 1761007089,
+      "_nanoseconds": 804000000
+    },
+    "ukupna_cena_meseca": 8000,
+    "pokupljen": false,
+    "broj_otkazivanja": 0,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "cena": 8000,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "aktivan": true,
+    "tip_skole": "Hemijska",
+    "placena_godina": 2025,
+    "broj_putovanja": 0,
+    "polasci_po_danu": {},
+    "putnik_ime": "Rufa Teodora",
+    "adresa_vrsac": "Dis",
+    "placeni_mesec": 10,
+    "tip_prikazivanja": "standard",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394328,
+      "_nanoseconds": 677627000
+    }
+  },
+  {
+    "id": "7eab3403-e2a2-4dd6-94c8-ae83302c26a4",
+    "broj_putovanja": 0,
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "ukupna_cena_meseca": 0,
+    "broj_telefona_oca": "613086273",
+    "adresa_bela_crkva": "Dositejeva 67",
+    "broj_telefona": "612651636",
+    "aktivan": true,
+    "polasci_po_danu": {},
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "created_at": {
+      "_seconds": 1761088504,
+      "_nanoseconds": 330000000
+    },
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "broj_otkazivanja": 0,
+    "cena": 0,
+    "tip_prikazivanja": "standard",
+    "placena_godina": 2025,
+    "adresa_vrsac": "Sud",
+    "placeni_mesec": 9,
+    "vreme_placanja": {
+      "_seconds": 1761088523,
+      "_nanoseconds": 887000000
+    },
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "putnik_ime": "Draga Dija",
+    "pokupljen": false,
+    "obrisan": false,
+    "search_terms": [
+      "draga",
+      "d",
+      "dr",
+      "dra",
+      "drag",
+      "dija",
+      "di",
+      "dij"
+    ],
+    "updated_at": {
+      "_seconds": 1761088523,
+      "_nanoseconds": 887000000
+    },
+    "tip": "ucenik",
+    "status": "aktivan",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394328,
+      "_nanoseconds": 948052000
+    }
+  },
+  {
+    "id": "8bf8eaaf-f9b9-4068-8bef-e29c3206e035",
+    "broj_telefona": "649172794",
+    "vreme_placanja": {
+      "_seconds": 1761088680,
+      "_nanoseconds": 759000000
+    },
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "tip_skole": "Hemofarm",
+    "search_terms": [
+      "nesa",
+      "n",
+      "ne",
+      "nes",
+      "carea",
+      "c",
+      "ca",
+      "car",
+      "care"
+    ],
+    "created_at": {
+      "_seconds": 1761005830,
+      "_nanoseconds": 760000000
+    },
+    "pokupljen": false,
+    "adresa_bela_crkva": "Mihajla Pupina 68",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "ukupna_cena_meseca": 0,
+    "adresa_vrsac": "Hemofarm",
+    "tip": "radnik",
+    "cena": 0,
+    "obrisan": false,
+    "broj_otkazivanja": 0,
+    "placeni_mesec": 9,
+    "broj_putovanja": 0,
+    "tip_prikazivanja": "standard",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "placena_godina": 2025,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "status": "aktivan",
+    "updated_at": {
+      "_seconds": 1761088680,
+      "_nanoseconds": 759000000
+    },
+    "putnik_ime": "Nesa Carea",
+    "polasci_po_danu": {
+      "pet": {
+        "vs": "15:30",
+        "bc": "06:00"
+      },
+      "cet": {
+        "bc": "06:00",
+        "vs": "15:30"
+      },
+      "pon": {
+        "bc": "06:00",
+        "vs": "15:30"
+      },
+      "sre": {
+        "vs": "15:30",
+        "bc": "06:00"
+      },
+      "uto": {
+        "vs": "15:30",
+        "bc": "06:00"
+      }
+    },
+    "aktivan": true,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394329,
+      "_nanoseconds": 244188000
+    }
+  },
+  {
+    "id": "8c902401-3b7e-4e32-9058-e1a108691505",
+    "status": "aktivan",
+    "vreme_placanja": {
+      "_seconds": 1761056893,
+      "_nanoseconds": 236000000
+    },
+    "aktivan": true,
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "putnik_ime": "Mercak Ivana",
+    "created_at": {
+      "_seconds": 1761056874,
+      "_nanoseconds": 895000000
+    },
+    "broj_otkazivanja": 0,
+    "broj_putovanja": 0,
+    "placena_godina": 2025,
+    "search_terms": [
+      "mercak",
+      "m",
+      "me",
+      "mer",
+      "merc",
+      "merca",
+      "ivana",
+      "i",
+      "iv",
+      "iva",
+      "ivan"
+    ],
+    "adresa_vrsac": "Dis",
+    "updated_at": {
+      "_seconds": 1761056893,
+      "_nanoseconds": 236000000
+    },
+    "placeni_mesec": 10,
+    "obrisan": false,
+    "pokupljen": false,
+    "broj_telefona_majke": "612128062",
+    "polasci_po_danu": {},
+    "tip_skole": "Hemijska",
+    "adresa_bela_crkva": "Dugme VJ",
+    "tip_prikazivanja": "standard",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "ukupna_cena_meseca": 12000,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "broj_telefona": "631722974",
+    "tip": "ucenik",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "cena": 12000,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394329,
+      "_nanoseconds": 516282000
+    }
+  },
+  {
+    "id": "8fb325b5-2c85-4320-80c4-339527c617a0",
+    "placena_godina": 2025,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "placeni_mesec": 10,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "vreme_placanja": {
+      "_seconds": 1761088944,
+      "_nanoseconds": 600000000
+    },
+    "created_at": {
+      "_seconds": 1761088904,
+      "_nanoseconds": 988000000
+    },
+    "search_terms": [
+      "popa",
+      "p",
+      "po",
+      "pop",
+      "jelena",
+      "j",
+      "je",
+      "jel",
+      "jele",
+      "jelen"
+    ],
+    "pokupljen": false,
+    "broj_telefona": "638519750",
+    "broj_putovanja": 0,
+    "adresa_bela_crkva": "Jasenovo",
+    "polasci_po_danu": {
+      "pet": {
+        "bc": "07:00"
+      },
+      "cet": {
+        "bc": "07:00"
+      },
+      "pon": {
+        "bc": "07:00"
+      },
+      "uto": {
+        "bc": "07:00"
+      },
+      "sre": {
+        "bc": "07:00"
+      }
+    },
+    "broj_otkazivanja": 0,
+    "putnik_ime": "Popa Jelena",
+    "cena": 12000,
+    "tip_prikazivanja": "standard",
+    "tip_skole": "Tesla",
+    "obrisan": false,
+    "updated_at": {
+      "_seconds": 1761088944,
+      "_nanoseconds": 600000000
+    },
+    "tip": "ucenik",
+    "status": "aktivan",
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "adresa_vrsac": "Sud",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "ukupna_cena_meseca": 12000,
+    "aktivan": true,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394329,
+      "_nanoseconds": 796236000
+    }
+  },
+  {
+    "id": "91e25fba-ec41-426a-ba9e-90a315074bbb",
+    "putnik_ime": "Aleksandra",
+    "broj_putovanja": 0,
+    "aktivan": true,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "ukupna_cena_meseca": 0,
+    "obrisan": false,
+    "tip_skole": "Hemijska",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "tip": "ucenik",
+    "cena": 0,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "adresa_vrsac": "Dis",
+    "polasci_po_danu": {},
+    "tip_prikazivanja": "standard",
+    "placena_godina": 2025,
+    "adresa_bela_crkva": "Apolo",
+    "broj_telefona": "655200114",
+    "status": "aktivan",
+    "vreme_placanja": {
+      "_seconds": 1761089278,
+      "_nanoseconds": 560000000
+    },
+    "updated_at": {
+      "_seconds": 1761089278,
+      "_nanoseconds": 561000000
+    },
+    "created_at": {
+      "_seconds": 1761007474,
+      "_nanoseconds": 110000000
+    },
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "placeni_mesec": 9,
+    "pokupljen": false,
+    "search_terms": [
+      "aleksandra",
+      "a",
+      "al",
+      "ale",
+      "alek",
+      "aleks",
+      "aleksa",
+      "aleksan",
+      "aleksand",
+      "aleksandr"
+    ],
+    "broj_otkazivanja": 0,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394330,
+      "_nanoseconds": 113056000
+    }
+  },
+  {
+    "id": "998eb6ef-043a-4d72-bf0c-11509cdb809a",
+    "broj_telefona_majke": "641337045",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "broj_telefona": "641288421",
+    "tip": "ucenik",
+    "ukupna_cena_meseca": 0,
+    "adresa_bela_crkva": "Sangaj",
+    "search_terms": [
+      "vilijam",
+      "v",
+      "vi",
+      "vil",
+      "vili",
+      "vilij",
+      "vilija"
+    ],
+    "polasci_po_danu": {},
+    "placeni_mesec": 9,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "updated_at": {
+      "_seconds": 1761087901,
+      "_nanoseconds": 931000000
+    },
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "obrisan": false,
+    "tip_prikazivanja": "standard",
+    "cena": 0,
+    "status": "aktivan",
+    "pokupljen": false,
+    "broj_otkazivanja": 0,
+    "tip_skole": "Hemijska",
+    "created_at": {
+      "_seconds": 1761076237,
+      "_nanoseconds": 249000000
+    },
+    "putnik_ime": "Vilijam",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "aktivan": true,
+    "broj_putovanja": 0,
+    "vreme_placanja": {
+      "_seconds": 1761087901,
+      "_nanoseconds": 931000000
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "adresa_vrsac": "Dis",
+    "placena_godina": 2025,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394330,
+      "_nanoseconds": 432814000
+    }
+  },
+  {
+    "id": "9dcfb7ae-6e12-4736-b5d6-138b29996e64",
+    "adresa_vrsac": "Vatrogasna",
+    "placeni_mesec": 9,
+    "obrisan": false,
+    "pokupljen": false,
+    "tip_skole": "Maza lens",
+    "created_at": {
+      "_seconds": 1761091952,
+      "_nanoseconds": 438000000
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "putnik_ime": "Rudi",
+    "vreme_placanja": {
+      "_seconds": 1761091975,
+      "_nanoseconds": 726000000
+    },
+    "placena_godina": 2025,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "polasci_po_danu": {
+      "pon": {
+        "vs": "08:00",
+        "bc": "13:00"
+      },
+      "cet": {
+        "vs": "08:00",
+        "bc": "13:00"
+      },
+      "sre": {
+        "vs": "08:00",
+        "bc": "13:00"
+      },
+      "uto": {
+        "bc": "13:00",
+        "vs": "08:00"
+      },
+      "pet": {
+        "vs": "08:00",
+        "bc": "13:00"
+      }
+    },
+    "broj_otkazivanja": 0,
+    "ukupna_cena_meseca": 0,
+    "adresa_bela_crkva": "Maza lens",
+    "broj_putovanja": 0,
+    "updated_at": {
+      "_seconds": 1761091975,
+      "_nanoseconds": 726000000
+    },
+    "search_terms": [
+      "rudi",
+      "r",
+      "ru",
+      "rud"
+    ],
+    "status": "aktivan",
+    "broj_telefona": "641340578",
+    "cena": 0,
+    "tip_prikazivanja": "standard",
+    "aktivan": true,
+    "tip": "radnik",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394330,
+      "_nanoseconds": 765742000
+    }
+  },
+  {
+    "id": "a055fca5-e0be-4497-b378-9a6a4d8c400b",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "tip": "ucenik",
+    "broj_putovanja": 0,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "aktivan": true,
+    "ukupna_cena_meseca": 10000,
+    "tip_skole": "Hemijska",
+    "cena": 10000,
+    "adresa_bela_crkva": "Cc ulaz",
+    "created_at": {
+      "_seconds": 1761007585,
+      "_nanoseconds": 508000000
+    },
+    "adresa_vrsac": "Dis",
+    "polasci_po_danu": {},
+    "placena_godina": 2025,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "status": "aktivan",
+    "pokupljen": false,
+    "broj_telefona": "665032438",
+    "tip_prikazivanja": "standard",
+    "putnik_ime": "Vrabac Jelena",
+    "obrisan": false,
+    "broj_otkazivanja": 0,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "updated_at": {
+      "_seconds": 1761007604,
+      "_nanoseconds": 203000000
+    },
+    "placeni_mesec": 10,
+    "vreme_placanja": {
+      "_seconds": 1761007604,
+      "_nanoseconds": 203000000
+    },
+    "search_terms": [
+      "vrabac",
+      "v",
+      "vr",
+      "vra",
+      "vrab",
+      "vraba",
+      "jelena",
+      "j",
+      "je",
+      "jel",
+      "jele",
+      "jelen"
+    ],
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394331,
+      "_nanoseconds": 151494000
+    }
+  },
+  {
+    "id": "a1058036-22de-4e6c-bc7b-efcad25352dc",
+    "tip_prikazivanja": "standard",
+    "placeni_mesec": 9,
+    "placena_godina": 2025,
+    "search_terms": [
+      "david",
+      "d",
+      "da",
+      "dav",
+      "davi",
+      "matic",
+      "m",
+      "ma",
+      "mat",
+      "mati"
+    ],
+    "tip_skole": "Poljoprivredna",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "ukupna_cena_meseca": 0,
+    "vreme_placanja": {
+      "_seconds": 1761089293,
+      "_nanoseconds": 836000000
+    },
+    "updated_at": {
+      "_seconds": 1761089293,
+      "_nanoseconds": 836000000
+    },
+    "broj_putovanja": 0,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "status": "aktivan",
+    "broj_telefona": "645942070",
+    "tip": "ucenik",
+    "broj_otkazivanja": 0,
+    "polasci_po_danu": {
+      "uto": {
+        "bc": "07:00"
+      },
+      "sre": {
+        "bc": "07:00"
+      },
+      "cet": {
+        "bc": "07:00"
+      },
+      "pet": {
+        "bc": "07:00"
+      },
+      "pon": {
+        "bc": "07:00"
+      }
+    },
+    "aktivan": true,
+    "cena": 0,
+    "adresa_vrsac": "Dis",
+    "putnik_ime": "David Matic",
+    "pokupljen": false,
+    "adresa_bela_crkva": "Izvidjacki",
+    "created_at": {
+      "_seconds": 1760925759,
+      "_nanoseconds": 283000000
+    },
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "obrisan": false,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394331,
+      "_nanoseconds": 433489000
+    }
+  },
+  {
+    "id": "a33f67fb-f668-429b-a636-00f0ac3dde8e",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "tip_prikazivanja": "standard",
+    "tip_skole": "Hemijska",
+    "search_terms": [
+      "aleksandra",
+      "a",
+      "al",
+      "ale",
+      "alek",
+      "aleks",
+      "aleksa",
+      "aleksan",
+      "aleksand",
+      "aleksandr"
+    ],
+    "broj_telefona": "655200114",
+    "created_at": {
+      "_seconds": 1761007474,
+      "_nanoseconds": 502000000
+    },
+    "polasci_po_danu": {},
+    "pokupljen": false,
+    "obrisan": true,
+    "ukupna_cena_meseca": 0,
+    "adresa_bela_crkva": "Apolo",
+    "broj_putovanja": 0,
+    "putnik_ime": "Aleksandra",
+    "tip": "ucenik",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "updated_at": {
+      "_seconds": 1761052215,
+      "_nanoseconds": 752000000
+    },
+    "aktivan": true,
+    "adresa_vrsac": "Dis",
+    "status": "aktivan",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "broj_otkazivanja": 0,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394331,
+      "_nanoseconds": 754439000
+    }
+  },
+  {
+    "id": "a499c876-7c18-45b7-8647-c6711ea624b9",
+    "broj_telefona": "631736121",
+    "adresa_vrsac": "Sud",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "polasci_po_danu": {
+      "sre": {
+        "bc": "07:00"
+      },
+      "uto": {
+        "bc": "07:00"
+      },
+      "cet": {
+        "bc": "07:00"
+      },
+      "pet": {
+        "bc": "07:00"
+      },
+      "pon": {
+        "bc": "07:00"
+      }
+    },
+    "obrisan": false,
+    "status": "aktivan",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "adresa_bela_crkva": "Vg",
+    "broj_otkazivanja": 0,
+    "tip_prikazivanja": "standard",
+    "vreme_placanja": {
+      "_seconds": 1761090157,
+      "_nanoseconds": 407000000
+    },
+    "ukupna_cena_meseca": 0,
+    "created_at": {
+      "_seconds": 1761053300,
+      "_nanoseconds": 120000000
+    },
+    "tip_skole": "Tesla",
+    "search_terms": [
+      "trajkov",
+      "t",
+      "tr",
+      "tra",
+      "traj",
+      "trajk",
+      "trajko",
+      "ivan",
+      "i",
+      "iv",
+      "iva"
+    ],
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "placeni_mesec": 8,
+    "putnik_ime": "Trajkov Ivan",
+    "broj_putovanja": 0,
+    "pokupljen": false,
+    "cena": 0,
+    "aktivan": true,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "updated_at": {
+      "_seconds": 1761090157,
+      "_nanoseconds": 407000000
+    },
+    "tip": "ucenik",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "placena_godina": 2025,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394332,
+      "_nanoseconds": 68188000
+    }
+  },
+  {
+    "id": "a69c6306-3e92-46cb-a086-f25aaeb4324e",
+    "broj_telefona": "601336341",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "polasci_po_danu": {
+      "pon": {
+        "bc": "06:00"
+      },
+      "cet": {
+        "bc": "06:00"
+      },
+      "sre": {
+        "bc": "06:00"
+      },
+      "uto": {
+        "bc": "06:00"
+      },
+      "pet": {
+        "bc": "06:00"
+      }
+    },
+    "tip_prikazivanja": "standard",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "pokupljen": false,
+    "aktivan": true,
+    "ukupna_cena_meseca": 0,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "adresa_bela_crkva": "Karadjordjeva 52",
+    "broj_putovanja": 0,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "updated_at": {
+      "_seconds": 1761091755,
+      "_nanoseconds": 348000000
+    },
+    "broj_otkazivanja": 0,
+    "created_at": {
+      "_seconds": 1761091755,
+      "_nanoseconds": 348000000
+    },
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "tip": "radnik",
+    "status": "aktivan",
+    "search_terms": [
+      "antonija",
+      "a",
+      "an",
+      "ant",
+      "anto",
+      "anton",
+      "antoni",
+      "antonij"
+    ],
+    "putnik_ime": "Antonija",
+    "obrisan": false,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394332,
+      "_nanoseconds": 350173000
+    }
+  },
+  {
+    "id": "a79e009a-c44a-4747-abf0-7b6044a16bb6",
+    "tip_skole": "Hemijska",
+    "tip_prikazivanja": "standard",
+    "adresa_vrsac": "Dis",
+    "status": "aktivan",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "placeni_mesec": 10,
+    "broj_otkazivanja": 0,
+    "putnik_ime": "Stefanovic Milos",
+    "tip": "ucenik",
+    "broj_putovanja": 0,
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "polasci_po_danu": {},
+    "aktivan": true,
+    "created_at": {
+      "_seconds": 1761054218,
+      "_nanoseconds": 991000000
+    },
+    "adresa_bela_crkva": "Elektro As",
+    "placena_godina": 2025,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "obrisan": false,
+    "ukupna_cena_meseca": 9000,
+    "broj_telefona": "645849957",
+    "cena": 9000,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "updated_at": {
+      "_seconds": 1761054236,
+      "_nanoseconds": 913000000
+    },
+    "pokupljen": false,
+    "search_terms": [
+      "stefanovic",
+      "s",
+      "st",
+      "ste",
+      "stef",
+      "stefa",
+      "stefan",
+      "stefano",
+      "stefanov",
+      "stefanovi",
+      "milos",
+      "m",
+      "mi",
+      "mil",
+      "milo"
+    ],
+    "vreme_placanja": {
+      "_seconds": 1761054236,
+      "_nanoseconds": 913000000
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394332,
+      "_nanoseconds": 672025000
+    }
+  },
+  {
+    "id": "a90ef856-6ec5-448f-987b-9830b43918b1",
+    "aktivan": true,
+    "tip": "ucenik",
+    "updated_at": {
+      "_seconds": 1761090910,
+      "_nanoseconds": 493000000
+    },
+    "putnik_ime": "Milana Nikolic",
+    "created_at": {
+      "_seconds": 1761090910,
+      "_nanoseconds": 493000000
+    },
+    "ukupna_cena_meseca": 0,
+    "broj_putovanja": 0,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "obrisan": false,
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "search_terms": [
+      "milana",
+      "m",
+      "mi",
+      "mil",
+      "mila",
+      "milan",
+      "nikolic",
+      "n",
+      "ni",
+      "nik",
+      "niko",
+      "nikol",
+      "nikoli"
+    ],
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "adresa_bela_crkva": "Dejana Brankova",
+    "status": "aktivan",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "broj_telefona": "600993275",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "pokupljen": false,
+    "tip_prikazivanja": "standard",
+    "adresa_vrsac": "Dis",
+    "polasci_po_danu": {},
+    "broj_otkazivanja": 0,
+    "tip_skole": "Hemijska",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394333,
+      "_nanoseconds": 30721000
+    }
+  },
+  {
+    "id": "b854e184-8f4e-46f8-bf1f-db192fe84ff0",
+    "placeni_mesec": 10,
+    "cena": 7000,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "putnik_ime": "Dragisa",
+    "broj_otkazivanja": 0,
+    "tip_prikazivanja": "standard",
+    "placena_godina": 2025,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "pokupljen": false,
+    "broj_telefona": "615767694",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "vreme_placanja": {
+      "_seconds": 1761054707,
+      "_nanoseconds": 565000000
+    },
+    "obrisan": false,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "aktivan": true,
+    "status": "aktivan",
+    "broj_putovanja": 0,
+    "tip": "radnik",
+    "created_at": {
+      "_seconds": 1761054551,
+      "_nanoseconds": 408000000
+    },
+    "updated_at": {
+      "_seconds": 1761054707,
+      "_nanoseconds": 565000000
+    },
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "polasci_po_danu": {
+      "pet": {
+        "vs": "17:00",
+        "bc": "06:00"
+      },
+      "uto": {
+        "vs": "17:00",
+        "bc": "06:00"
+      },
+      "cet": {
+        "vs": "17:00",
+        "bc": "06:00"
+      },
+      "sre": {
+        "vs": "17:00",
+        "bc": "06:00"
+      },
+      "pon": {
+        "vs": "17:00",
+        "bc": "06:00"
+      }
+    },
+    "search_terms": [
+      "dragisa",
+      "d",
+      "dr",
+      "dra",
+      "drag",
+      "dragi",
+      "dragis"
+    ],
+    "ukupna_cena_meseca": 7000,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394333,
+      "_nanoseconds": 363598000
+    }
+  },
+  {
+    "id": "b8b3327a-2bc8-4945-99c3-138a571ca37b",
+    "aktivan": true,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "tip": "ucenik",
+    "pokupljen": false,
+    "tip_prikazivanja": "standard",
+    "updated_at": {
+      "_seconds": 1761157127,
+      "_nanoseconds": 683000000
+    },
+    "obrisan": false,
+    "tip_skole": "Hemijska",
+    "search_terms": [
+      "aleksandra",
+      "a",
+      "al",
+      "ale",
+      "alek",
+      "aleks",
+      "aleksa",
+      "aleksan",
+      "aleksand",
+      "aleksandr",
+      "rajcanin",
+      "r",
+      "ra",
+      "raj",
+      "rajc",
+      "rajca",
+      "rajcan",
+      "rajcani"
+    ],
+    "broj_otkazivanja": 0,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "broj_putovanja": 0,
+    "status": "aktivan",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "putnik_ime": "Aleksandra Rajcanin",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "polasci_po_danu": {},
+    "broj_telefona": "612278736",
+    "created_at": {
+      "_seconds": 1761091860,
+      "_nanoseconds": 741000000
+    },
+    "ukupna_cena_meseca": 0,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394333,
+      "_nanoseconds": 705422000
+    }
+  },
+  {
+    "id": "b95002a7-6e22-4e39-bb5e-55ea897701f4",
+    "vreme_placanja": {
+      "_seconds": 1761089849,
+      "_nanoseconds": 26000000
+    },
+    "cena": 0,
+    "obrisan": false,
+    "placeni_mesec": 9,
+    "pokupljen": false,
+    "polasci_po_danu": {},
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "aktivan": true,
+    "updated_at": {
+      "_seconds": 1761089849,
+      "_nanoseconds": 27000000
+    },
+    "tip_prikazivanja": "standard",
+    "adresa_vrsac": "Dis",
+    "created_at": {
+      "_seconds": 1761007293,
+      "_nanoseconds": 270000000
+    },
+    "tip_skole": "Hemijska",
+    "search_terms": [
+      "milica",
+      "m",
+      "mi",
+      "mil",
+      "mili",
+      "milic",
+      "dragan",
+      "d",
+      "dr",
+      "dra",
+      "drag",
+      "draga"
+    ],
+    "broj_otkazivanja": 0,
+    "adresa_bela_crkva": "Jasenovo ambulanta",
+    "putnik_ime": "Milica Dragan",
+    "ukupna_cena_meseca": 0,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "status": "aktivan",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "placena_godina": 2025,
+    "broj_putovanja": 0,
+    "broj_telefona": "63318688",
+    "tip": "ucenik",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394333,
+      "_nanoseconds": 996182000
+    }
+  },
+  {
+    "id": "bab56627-5b4b-42d9-9f73-e73cca4378b0",
+    "broj_putovanja": 0,
+    "created_at": {
+      "_seconds": 1761054915,
+      "_nanoseconds": 322000000
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "obrisan": false,
+    "putnik_ime": "Tanja Pejcic",
+    "adresa_vrsac": "Bolnica",
+    "status": "aktivan",
+    "placena_godina": 2025,
+    "polasci_po_danu": {
+      "pon": {
+        "bc": "06:00",
+        "vs": "14:00"
+      },
+      "uto": {
+        "bc": "06:00",
+        "vs": "14:00"
+      },
+      "sre": {
+        "vs": "14:00",
+        "bc": "06:00"
+      },
+      "cet": {
+        "bc": "06:00",
+        "vs": "14:00"
+      },
+      "pet": {
+        "vs": "14:00",
+        "bc": "06:00"
+      }
+    },
+    "search_terms": [
+      "tanja",
+      "t",
+      "ta",
+      "tan",
+      "tanj",
+      "pejcic",
+      "p",
+      "pe",
+      "pej",
+      "pejc",
+      "pejci"
+    ],
+    "updated_at": {
+      "_seconds": 1761090283,
+      "_nanoseconds": 95000000
+    },
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "broj_otkazivanja": 0,
+    "tip_prikazivanja": "standard",
+    "ukupna_cena_meseca": 0,
+    "aktivan": true,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "cena": 0,
+    "vreme_placanja": {
+      "_seconds": 1761090283,
+      "_nanoseconds": 95000000
+    },
+    "tip": "radnik",
+    "tip_skole": "Bolnica",
+    "adresa_bela_crkva": "Tri cesme",
+    "placeni_mesec": 9,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "broj_telefona": "692273563",
+    "pokupljen": false,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394334,
+      "_nanoseconds": 328712000
+    }
+  },
+  {
+    "id": "bb33972a-676a-4d6d-a0dd-898eec1eaa32",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "broj_otkazivanja": 0,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "adresa_bela_crkva": "Kusic",
+    "status": "aktivan",
+    "broj_telefona": "616589367",
+    "vreme_placanja": {
+      "_seconds": 1761088282,
+      "_nanoseconds": 274000000
+    },
+    "adresa_vrsac": "Sud",
+    "tip_skole": "Tesla",
+    "pokupljen": false,
+    "updated_at": {
+      "_seconds": 1761088282,
+      "_nanoseconds": 274000000
+    },
+    "aktivan": true,
+    "created_at": {
+      "_seconds": 1760396485,
+      "_nanoseconds": 650000000
+    },
+    "broj_putovanja": 0,
+    "search_terms": [
+      "jovan",
+      "j",
+      "jo",
+      "jov",
+      "jova",
+      "todorovic",
+      "t",
+      "to",
+      "tod",
+      "todo",
+      "todor",
+      "todoro",
+      "todorov",
+      "todorovi"
+    ],
+    "polasci_po_danu": {
+      "pet": {
+        "bc": "07:00"
+      },
+      "cet": {
+        "bc": "07:00"
+      },
+      "sre": {
+        "bc": "07:00"
+      },
+      "pon": {
+        "bc": "07:00"
+      },
+      "uto": {
+        "bc": "07:00"
+      }
+    },
+    "placena_godina": 2025,
+    "cena": 0,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "obrisan": false,
+    "tip_prikazivanja": "standard",
+    "placeni_mesec": 9,
+    "putnik_ime": "Jovan Todorovic",
+    "ukupna_cena_meseca": 0,
+    "tip": "ucenik",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394334,
+      "_nanoseconds": 632701000
+    }
+  },
+  {
+    "id": "bbebc179-4b15-412e-ad20-a4b7cdc32cdb",
+    "aktivan": true,
+    "adresa_vrsac": "Psihijatrija",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "pokupljen": false,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "created_at": {
+      "_seconds": 1761054408,
+      "_nanoseconds": 818000000
+    },
+    "tip": "radnik",
+    "broj_otkazivanja": 0,
+    "polasci_po_danu": {},
+    "putnik_ime": "Milos Velja",
+    "broj_putovanja": 0,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "placena_godina": 2025,
+    "obrisan": false,
+    "tip_skole": "Psihijatrija",
+    "ukupna_cena_meseca": 7000,
+    "broj_telefona": "668825955",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "adresa_bela_crkva": "Visnjic",
+    "vreme_placanja": {
+      "_seconds": 1761054422,
+      "_nanoseconds": 105000000
+    },
+    "cena": 7000,
+    "tip_prikazivanja": "standard",
+    "search_terms": [
+      "milos",
+      "m",
+      "mi",
+      "mil",
+      "milo",
+      "velja",
+      "v",
+      "ve",
+      "vel",
+      "velj"
+    ],
+    "status": "aktivan",
+    "updated_at": {
+      "_seconds": 1761054422,
+      "_nanoseconds": 105000000
+    },
+    "placeni_mesec": 10,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394334,
+      "_nanoseconds": 963622000
+    }
+  },
+  {
+    "id": "c048e395-5491-44a6-855b-694a640a3a76",
+    "created_at": {
+      "_seconds": 1760744114,
+      "_nanoseconds": 191000000
+    },
+    "polasci_po_danu": {},
+    "placena_godina": 2025,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "obrisan": false,
+    "placeni_mesec": 9,
+    "cena": 0,
+    "broj_telefona": "611584329",
+    "broj_otkazivanja": 0,
+    "tip": "ucenik",
+    "ukupna_cena_meseca": 0,
+    "pokupljen": false,
+    "broj_putovanja": 0,
+    "aktivan": true,
+    "tip_prikazivanja": "standard",
+    "status": "aktivan",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "updated_at": {
+      "_seconds": 1761088259,
+      "_nanoseconds": 144000000
+    },
+    "putnik_ime": "Ogi",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "search_terms": [
+      "ogi",
+      "o",
+      "og"
+    ],
+    "vreme_placanja": {
+      "_seconds": 1761088259,
+      "_nanoseconds": 144000000
+    },
+    "tip_skole": "Hemijska",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394335,
+      "_nanoseconds": 244031000
+    }
+  },
+  {
+    "id": "c2312d96-0c7b-4894-9485-059cc5fd62bd",
+    "broj_otkazivanja": 0,
+    "placena_godina": 2025,
+    "aktivan": true,
+    "status": "aktivan",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "tip_prikazivanja": "standard",
+    "broj_telefona": "628923700",
+    "ukupna_cena_meseca": 5500,
+    "adresa_vrsac": "Milenijum",
+    "vreme_placanja": {
+      "_seconds": 1761053666,
+      "_nanoseconds": 571000000
+    },
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "tip": "radnik",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "placeni_mesec": 10,
+    "broj_putovanja": 0,
+    "cena": 5500,
+    "pokupljen": false,
+    "updated_at": {
+      "_seconds": 1761053666,
+      "_nanoseconds": 571000000
+    },
+    "putnik_ime": "Radosevic Dragan",
+    "obrisan": false,
+    "adresa_bela_crkva": "Postanska stedionica",
+    "polasci_po_danu": {
+      "sre": {
+        "vs": "06:00",
+        "bc": "15:30"
+      },
+      "pon": {
+        "bc": "15:30",
+        "vs": "06:00"
+      },
+      "uto": {
+        "vs": "06:00",
+        "bc": "15:30"
+      },
+      "cet": {
+        "bc": "15:30",
+        "vs": "06:00"
+      },
+      "pet": {
+        "vs": "06:00",
+        "bc": "15:30"
+      }
+    },
+    "search_terms": [
+      "radosevic",
+      "r",
+      "ra",
+      "rad",
+      "rado",
+      "rados",
+      "radose",
+      "radosev",
+      "radosevi",
+      "dragan",
+      "d",
+      "dr",
+      "dra",
+      "drag",
+      "draga"
+    ],
+    "created_at": {
+      "_seconds": 1761053647,
+      "_nanoseconds": 647000000
+    },
+    "tip_skole": "Postanska stedionica",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394335,
+      "_nanoseconds": 446389000
+    }
+  },
+  {
+    "id": "c2630b45-fa8a-4a54-ae7e-21cc02ce7c30",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "aktivan": true,
+    "broj_putovanja": 0,
+    "status": "aktivan",
+    "search_terms": [
+      "maja",
+      "m",
+      "ma",
+      "maj",
+      "pesic",
+      "p",
+      "pe",
+      "pes",
+      "pesi"
+    ],
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "updated_at": {
+      "_seconds": 1761005575,
+      "_nanoseconds": 675000000
+    },
+    "vreme_placanja": {
+      "_seconds": 1761005575,
+      "_nanoseconds": 675000000
+    },
+    "putnik_ime": "Maja Pesic",
+    "obrisan": false,
+    "adresa_vrsac": "Sud",
+    "adresa_bela_crkva": "Dejana Brankova 99",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "polasci_po_danu": {},
+    "tip": "radnik",
+    "ukupna_cena_meseca": 7000,
+    "cena": 7000,
+    "created_at": {
+      "_seconds": 1761005558,
+      "_nanoseconds": 69000000
+    },
+    "broj_telefona": "600570133",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "broj_otkazivanja": 0,
+    "placena_godina": 2025,
+    "tip_prikazivanja": "standard",
+    "pokupljen": false,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "placeni_mesec": 10,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394335,
+      "_nanoseconds": 733171000
+    }
+  },
+  {
+    "id": "c6e9a7aa-ea97-4f1d-9eb7-fe18969d6433",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "adresa_bela_crkva": "Katolicka crkva",
+    "aktivan": true,
+    "broj_otkazivanja": 0,
+    "status": "aktivan",
+    "broj_telefona": "616491911",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "search_terms": [
+      "mia",
+      "m",
+      "mi",
+      "gojkovic",
+      "g",
+      "go",
+      "goj",
+      "gojk",
+      "gojko",
+      "gojkov",
+      "gojkovi"
+    ],
+    "polasci_po_danu": {},
+    "pokupljen": false,
+    "adresa_vrsac": "Dis",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "broj_telefona_majke": "692343812",
+    "broj_putovanja": 0,
+    "obrisan": false,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "ukupna_cena_meseca": 0,
+    "putnik_ime": "Mia Gojkovic",
+    "updated_at": {
+      "_seconds": 1761089767,
+      "_nanoseconds": 494000000
+    },
+    "tip_skole": "Hemijska",
+    "created_at": {
+      "_seconds": 1761089767,
+      "_nanoseconds": 494000000
+    },
+    "tip": "ucenik",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "tip_prikazivanja": "standard",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394336,
+      "_nanoseconds": 14533000
+    }
+  },
+  {
+    "id": "ca147cb4-ceef-456f-bd95-caf64ff0d986",
+    "tip_prikazivanja": "standard",
+    "updated_at": {
+      "_seconds": 1761089104,
+      "_nanoseconds": 875000000
+    },
+    "placeni_mesec": 10,
+    "vreme_placanja": {
+      "_seconds": 1761089104,
+      "_nanoseconds": 875000000
+    },
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "pokupljen": false,
+    "aktivan": true,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "tip_skole": "Zitobanat",
+    "tip": "radnik",
+    "placena_godina": 2025,
+    "adresa_bela_crkva": "Proleterska 35",
+    "cena": 14000,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "search_terms": [
+      "marinkovic",
+      "m",
+      "ma",
+      "mar",
+      "mari",
+      "marin",
+      "marink",
+      "marinko",
+      "marinkov",
+      "marinkovi",
+      "jasmina",
+      "j",
+      "ja",
+      "jas",
+      "jasm",
+      "jasmi",
+      "jasmin"
+    ],
+    "obrisan": false,
+    "created_at": {
+      "_seconds": 1761089079,
+      "_nanoseconds": 964000000
+    },
+    "broj_otkazivanja": 0,
+    "putnik_ime": "Marinkovic Jasmina",
+    "broj_putovanja": 0,
+    "adresa_vrsac": "Zitobanat",
+    "status": "aktivan",
+    "broj_telefona": "694275912",
+    "polasci_po_danu": {
+      "pet": {
+        "bc": "06:00",
+        "vs": "15:30"
+      },
+      "sre": {
+        "bc": "06:00",
+        "vs": "15:30"
+      },
+      "pon": {
+        "vs": "15:30",
+        "bc": "06:00"
+      },
+      "cet": {
+        "vs": "15:30",
+        "bc": "06:00"
+      },
+      "uto": {
+        "bc": "06:00",
+        "vs": "15:30"
+      }
+    },
+    "ukupna_cena_meseca": 14000,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394336,
+      "_nanoseconds": 317519000
+    }
+  },
+  {
+    "id": "ccc40e32-ba04-49ff-90c8-34a1f09aad18",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "status": "aktivan",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "polasci_po_danu": {},
+    "aktivan": true,
+    "obrisan": false,
+    "putnik_ime": "Dr Rodika Cizmas",
+    "cena": 0,
+    "adresa_bela_crkva": "Posta",
+    "created_at": {
+      "_seconds": 1761052900,
+      "_nanoseconds": 831000000
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "ukupna_cena_meseca": 0,
+    "broj_otkazivanja": 0,
+    "tip": "radnik",
+    "tip_skole": "Dom zdravlja",
+    "tip_prikazivanja": "standard",
+    "broj_telefona": "612346260",
+    "adresa_vrsac": "Dis",
+    "vreme_placanja": {
+      "_seconds": 1761090110,
+      "_nanoseconds": 134000000
+    },
+    "placena_godina": 2025,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "pokupljen": false,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "search_terms": [
+      "dr",
+      "d",
+      "rodika",
+      "r",
+      "ro",
+      "rod",
+      "rodi",
+      "rodik",
+      "cizmas",
+      "c",
+      "ci",
+      "ciz",
+      "cizm",
+      "cizma"
+    ],
+    "placeni_mesec": 9,
+    "broj_putovanja": 0,
+    "updated_at": {
+      "_seconds": 1761090110,
+      "_nanoseconds": 135000000
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394336,
+      "_nanoseconds": 632834000
+    }
+  },
+  {
+    "id": "cef8b340-1a3a-4fb0-85c7-3c7f83d197c7",
+    "tip_skole": "Hemijska",
+    "status": "aktivan",
+    "created_at": {
+      "_seconds": 1761075218,
+      "_nanoseconds": 107000000
+    },
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "tip": "ucenik",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "placena_godina": 2025,
+    "ukupna_cena_meseca": 12000,
+    "search_terms": [
+      "ilic",
+      "i",
+      "il",
+      "ili",
+      "teodora",
+      "t",
+      "te",
+      "teo",
+      "teod",
+      "teodo",
+      "teodor"
+    ],
+    "broj_telefona": "616591520",
+    "obrisan": false,
+    "pokupljen": false,
+    "aktivan": true,
+    "polasci_po_danu": {},
+    "placeni_mesec": 10,
+    "adresa_bela_crkva": "Jasenovo",
+    "tip_prikazivanja": "standard",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "broj_otkazivanja": 0,
+    "vreme_placanja": {
+      "_seconds": 1761075233,
+      "_nanoseconds": 551000000
+    },
+    "adresa_vrsac": "Dis",
+    "broj_putovanja": 0,
+    "cena": 12000,
+    "updated_at": {
+      "_seconds": 1761075233,
+      "_nanoseconds": 551000000
+    },
+    "putnik_ime": "Ilic Teodora",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394336,
+      "_nanoseconds": 920374000
+    }
+  },
+  {
+    "id": "d08e76d4-8bf5-4dbb-91e4-b35611a969d0",
+    "tip_skole": "Jat akademija",
+    "polasci_po_danu": {
+      "uto": {
+        "vs": "17:00",
+        "bc": "07:00"
+      },
+      "pon": {
+        "vs": "17:00",
+        "bc": "07:00"
+      },
+      "pet": {
+        "vs": "17:00",
+        "bc": "07:00"
+      },
+      "sre": {
+        "vs": "17:00",
+        "bc": "07:00"
+      },
+      "cet": {
+        "bc": "07:00",
+        "vs": "17:00"
+      }
+    },
+    "obrisan": false,
+    "created_at": {
+      "_seconds": 1761007949,
+      "_nanoseconds": 150000000
+    },
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "adresa_vrsac": "Posta",
+    "broj_otkazivanja": 0,
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "updated_at": {
+      "_seconds": 1761090195,
+      "_nanoseconds": 335000000
+    },
+    "broj_telefona": "677301193",
+    "placena_godina": 2025,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "aktivan": true,
+    "putnik_ime": "Ljilja",
+    "broj_putovanja": 0,
+    "vreme_placanja": {
+      "_seconds": 1761090195,
+      "_nanoseconds": 334000000
+    },
+    "status": "aktivan",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "ukupna_cena_meseca": 0,
+    "pokupljen": false,
+    "tip_prikazivanja": "standard",
+    "search_terms": [
+      "ljilja",
+      "l",
+      "lj",
+      "lji",
+      "ljil",
+      "ljilj"
+    ],
+    "tip": "radnik",
+    "placeni_mesec": 9,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "adresa_bela_crkva": "Socijalno",
+    "cena": 0,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394337,
+      "_nanoseconds": 196980000
+    }
+  },
+  {
+    "id": "d144dfb4-5b26-4df4-b335-ed2a02044c3d",
+    "polasci_po_danu": {
+      "sre": {
+        "bc": "09:00",
+        "vs": "11:00"
+      }
+    },
+    "vreme_placanja": {
+      "_seconds": 1761088797,
+      "_nanoseconds": 604000000
+    },
+    "tip_prikazivanja": "standard",
+    "search_terms": [
+      "jasmina",
+      "j",
+      "ja",
+      "jas",
+      "jasm",
+      "jasmi",
+      "jasmin"
+    ],
+    "adresa_bela_crkva": "Kosovska",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "obrisan": false,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "status": "aktivan",
+    "broj_otkazivanja": 0,
+    "cena": 0,
+    "broj_telefona": "616227036",
+    "broj_putovanja": 0,
+    "pokupljen": false,
+    "putnik_ime": "Jasmina",
+    "placeni_mesec": 9,
+    "created_at": {
+      "_seconds": 1761088761,
+      "_nanoseconds": 2000000
+    },
+    "radni_dani": [
+      "sre"
+    ],
+    "tip": "radnik",
+    "ukupna_cena_meseca": 0,
+    "placena_godina": 2025,
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "aktivan": true,
+    "updated_at": {
+      "_seconds": 1761088797,
+      "_nanoseconds": 604000000
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394337,
+      "_nanoseconds": 475054000
+    }
+  },
+  {
+    "id": "d18154c4-38c2-4563-a872-915231e0ab34",
+    "adresa_vrsac": "Vrtic",
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "placena_godina": 2025,
+    "vreme_placanja": {
+      "_seconds": 1761089429,
+      "_nanoseconds": 386000000
+    },
+    "pokupljen": false,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "aktivan": true,
+    "placeni_mesec": 9,
+    "tip_skole": "Zabaviste",
+    "adresa_bela_crkva": "Kusic",
+    "broj_telefona": "69751454",
+    "status": "aktivan",
+    "polasci_po_danu": {},
+    "updated_at": {
+      "_seconds": 1761089429,
+      "_nanoseconds": 386000000
+    },
+    "cena": 0,
+    "broj_otkazivanja": 0,
+    "broj_putovanja": 0,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "obrisan": false,
+    "search_terms": [
+      "sneza",
+      "s",
+      "sn",
+      "sne",
+      "snez"
+    ],
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "ukupna_cena_meseca": 0,
+    "tip_prikazivanja": "standard",
+    "created_at": {
+      "_seconds": 1761008278,
+      "_nanoseconds": 172000000
+    },
+    "tip": "radnik",
+    "putnik_ime": "Sneza",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394337,
+      "_nanoseconds": 749611000
+    }
+  },
+  {
+    "id": "d4d4b2fe-004c-410b-b804-d69b3ebd3f3b",
+    "tip_skole": "Poljoprivredna",
+    "tip_prikazivanja": "standard",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "pokupljen": false,
+    "aktivan": true,
+    "broj_putovanja": 0,
+    "search_terms": [
+      "jungic",
+      "j",
+      "ju",
+      "jun",
+      "jung",
+      "jungi",
+      "branko",
+      "b",
+      "br",
+      "bra",
+      "bran",
+      "brank"
+    ],
+    "placeni_mesec": 10,
+    "placena_godina": 2025,
+    "adresa_bela_crkva": "Vg",
+    "tip": "ucenik",
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "ukupna_cena_meseca": 12000,
+    "obrisan": false,
+    "created_at": {
+      "_seconds": 1761007383,
+      "_nanoseconds": 523000000
+    },
+    "putnik_ime": "Jungic Branko",
+    "adresa_vrsac": "Dis",
+    "vreme_placanja": {
+      "_seconds": 1761007399,
+      "_nanoseconds": 718000000
+    },
+    "status": "aktivan",
+    "cena": 12000,
+    "broj_telefona": "693410350",
+    "updated_at": {
+      "_seconds": 1761007399,
+      "_nanoseconds": 718000000
+    },
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "broj_otkazivanja": 0,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "polasci_po_danu": {
+      "sre": {
+        "bc": "07:00"
+      },
+      "pet": {
+        "bc": "07:00"
+      },
+      "uto": {
+        "bc": "07:00"
+      },
+      "pon": {
+        "bc": "07:00"
+      },
+      "cet": {
+        "bc": "07:00"
+      }
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394338,
+      "_nanoseconds": 67041000
+    }
+  },
+  {
+    "id": "dacf21cd-1042-4882-93f8-c63b37f38f08",
+    "broj_otkazivanja": 0,
+    "polasci_po_danu": {},
+    "vreme_placanja": {
+      "_seconds": 1761005475,
+      "_nanoseconds": 51000000
+    },
+    "aktivan": true,
+    "updated_at": {
+      "_seconds": 1761005475,
+      "_nanoseconds": 51000000
+    },
+    "broj_putovanja": 0,
+    "tip_prikazivanja": "standard",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "placena_godina": 2025,
+    "status": "aktivan",
+    "ukupna_cena_meseca": 9600,
+    "putnik_ime": "Rumun",
+    "tip_skole": "Dositej Obradovic",
+    "created_at": {
+      "_seconds": 1761005464,
+      "_nanoseconds": 94000000
+    },
+    "search_terms": [
+      "rumun",
+      "r",
+      "ru",
+      "rum",
+      "rumu"
+    ],
+    "obrisan": false,
+    "cena": 9600,
+    "pokupljen": false,
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "placeni_mesec": 10,
+    "broj_telefona_oca": "62582808",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "tip": "ucenik",
+    "broj_telefona_majke": "691115154",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394338,
+      "_nanoseconds": 348052000
+    }
+  },
+  {
+    "id": "e0f97b70-157f-447c-ab83-0521b2fc338f",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "vreme_placanja": {
+      "_seconds": 1761089884,
+      "_nanoseconds": 19000000
+    },
+    "putnik_ime": "Violeta Lazic",
+    "polasci_po_danu": {},
+    "updated_at": {
+      "_seconds": 1761089884,
+      "_nanoseconds": 19000000
+    },
+    "broj_otkazivanja": 0,
+    "placena_godina": 2025,
+    "obrisan": false,
+    "search_terms": [
+      "violeta",
+      "v",
+      "vi",
+      "vio",
+      "viol",
+      "viole",
+      "violet",
+      "lazic",
+      "l",
+      "la",
+      "laz",
+      "lazi"
+    ],
+    "broj_telefona": "642013264",
+    "placeni_mesec": 9,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "broj_putovanja": 0,
+    "cena": 0,
+    "pokupljen": false,
+    "tip_skole": "Psihijatrija",
+    "adresa_vrsac": "Psihijatrija",
+    "created_at": {
+      "_seconds": 1761008187,
+      "_nanoseconds": 159000000
+    },
+    "adresa_bela_crkva": "Dupljaja",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "tip": "radnik",
+    "ukupna_cena_meseca": 0,
+    "status": "aktivan",
+    "tip_prikazivanja": "standard",
+    "aktivan": true,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394338,
+      "_nanoseconds": 631238000
+    }
+  },
+  {
+    "id": "e7c63573-888e-48f1-8bcf-c72bc904c91a",
+    "pokupljen": false,
+    "polasci_po_danu": {},
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "tip": "ucenik",
+    "status": "aktivan",
+    "obrisan": false,
+    "updated_at": {
+      "_seconds": 1761090999,
+      "_nanoseconds": 165000000
+    },
+    "broj_putovanja": 0,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "broj_otkazivanja": 0,
+    "tip_prikazivanja": "standard",
+    "aktivan": true,
+    "putnik_ime": "Milica Malusev",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "search_terms": [
+      "milica",
+      "m",
+      "mi",
+      "mil",
+      "mili",
+      "milic",
+      "malusev",
+      "ma",
+      "mal",
+      "malu",
+      "malus",
+      "maluse"
+    ],
+    "adresa_bela_crkva": "Jasenovo Malusev",
+    "broj_telefona": "638445147",
+    "ukupna_cena_meseca": 0,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "created_at": {
+      "_seconds": 1761090999,
+      "_nanoseconds": 165000000
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394338,
+      "_nanoseconds": 962279000
+    }
+  },
+  {
+    "id": "e9751286-9491-47a8-8996-b38c866d23b5",
+    "cena": 2500,
+    "vreme_placanja": {
+      "_seconds": 1761006401,
+      "_nanoseconds": 238000000
+    },
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "aktivan": true,
+    "tip_skole": "Psihijatrija",
+    "obrisan": false,
+    "created_at": {
+      "_seconds": 1760970420,
+      "_nanoseconds": 842000000
+    },
+    "broj_telefona": "600522588",
+    "broj_putovanja": 0,
+    "placena_godina": 2025,
+    "ukupna_cena_meseca": 2500,
+    "polasci_po_danu": {
+      "pet": {
+        "vs": "13:00",
+        "bc": "05:00"
+      },
+      "pon": {
+        "vs": "13:00",
+        "bc": "05:00"
+      },
+      "uto": {
+        "vs": "13:00",
+        "bc": "05:00"
+      },
+      "sre": {
+        "bc": "05:00",
+        "vs": "13:00"
+      },
+      "cet": {
+        "bc": "05:00",
+        "vs": "13:00"
+      }
+    },
+    "search_terms": [
+      "marin",
+      "m",
+      "ma",
+      "mar",
+      "mari"
+    ],
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "broj_otkazivanja": 0,
+    "updated_at": {
+      "_seconds": 1761094167,
+      "_nanoseconds": 807000000
+    },
+    "putnik_ime": "Marin",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "status": "bolovanje",
+    "placeni_mesec": 10,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "tip_prikazivanja": "standard",
+    "pokupljen": false,
+    "tip": "radnik",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394339,
+      "_nanoseconds": 279570000
+    }
+  },
+  {
+    "id": "eba19437-a7ee-48c7-b4d3-54efd1229533",
+    "putnik_ime": "Dusica",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "ukupna_cena_meseca": 0,
+    "broj_putovanja": 0,
+    "pokupljen": false,
+    "placeni_mesec": 9,
+    "tip_prikazivanja": "standard",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "polasci_po_danu": {
+      "sre": {
+        "vs": "14:00",
+        "bc": "05:00"
+      },
+      "pet": {
+        "bc": "05:00",
+        "vs": "14:00"
+      },
+      "pon": {
+        "bc": "05:00",
+        "vs": "14:00"
+      },
+      "cet": {
+        "vs": "14:00",
+        "bc": "05:00"
+      },
+      "uto": {
+        "bc": "05:00",
+        "vs": "14:00"
+      }
+    },
+    "adresa_vrsac": "Helvecija",
+    "updated_at": {
+      "_seconds": 1761090255,
+      "_nanoseconds": 133000000
+    },
+    "vreme_placanja": {
+      "_seconds": 1761090255,
+      "_nanoseconds": 133000000
+    },
+    "adresa_bela_crkva": "Cc",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "status": "aktivan",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "cena": 0,
+    "placena_godina": 2025,
+    "search_terms": [
+      "dusica",
+      "d",
+      "du",
+      "dus",
+      "dusi",
+      "dusic"
+    ],
+    "aktivan": true,
+    "broj_otkazivanja": 0,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "obrisan": false,
+    "created_at": {
+      "_seconds": 1761053201,
+      "_nanoseconds": 594000000
+    },
+    "tip": "radnik",
+    "tip_skole": "Helvecija",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394339,
+      "_nanoseconds": 600857000
+    }
+  },
+  {
+    "id": "ee1f303b-04c5-4d80-bbcc-66b91cc80437",
+    "broj_telefona": "645203557",
+    "pokupljen": false,
+    "tip_prikazivanja": "standard",
+    "broj_putovanja": 0,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "aktivan": true,
+    "updated_at": {
+      "_seconds": 1761089610,
+      "_nanoseconds": 270000000
+    },
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "broj_otkazivanja": 0,
+    "created_at": {
+      "_seconds": 1761008042,
+      "_nanoseconds": 780000000
+    },
+    "search_terms": [
+      "sofija",
+      "s",
+      "so",
+      "sof",
+      "sofi",
+      "sofij"
+    ],
+    "tip": "ucenik",
+    "placena_godina": 2025,
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "putnik_ime": "Sofija",
+    "tip_skole": "Poljoprivredna",
+    "ukupna_cena_meseca": 0,
+    "cena": 0,
+    "polasci_po_danu": {
+      "uto": {
+        "bc": "07:00"
+      },
+      "cet": {
+        "bc": "07:00"
+      },
+      "pet": {
+        "bc": "07:00"
+      },
+      "pon": {
+        "bc": "07:00"
+      },
+      "sre": {
+        "bc": "07:00"
+      }
+    },
+    "obrisan": false,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "vreme_placanja": {
+      "_seconds": 1761089610,
+      "_nanoseconds": 270000000
+    },
+    "placeni_mesec": 9,
+    "status": "aktivan",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394339,
+      "_nanoseconds": 886614000
+    }
+  },
+  {
+    "id": "f00af571-28fd-4088-8180-c481aaf37374",
+    "tip_prikazivanja": "standard",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "placeni_mesec": 10,
+    "adresa_bela_crkva": "Kablovska",
+    "tip": "ucenik",
+    "vreme_placanja": {
+      "_seconds": 1761053029,
+      "_nanoseconds": 196000000
+    },
+    "status": "aktivan",
+    "tip_skole": "Hemijska",
+    "created_at": {
+      "_seconds": 1761053010,
+      "_nanoseconds": 197000000
+    },
+    "broj_telefona": "652229624",
+    "broj_telefona_majke": "621532034",
+    "updated_at": {
+      "_seconds": 1761053029,
+      "_nanoseconds": 196000000
+    },
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "cena": 12000,
+    "ukupna_cena_meseca": 12000,
+    "polasci_po_danu": {},
+    "broj_putovanja": 0,
+    "adresa_vrsac": "Dis",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "search_terms": [
+      "jovana",
+      "j",
+      "jo",
+      "jov",
+      "jova",
+      "jovan",
+      "jovanovic",
+      "jovano",
+      "jovanov",
+      "jovanovi"
+    ],
+    "putnik_ime": "Jovana Jovanovic",
+    "obrisan": false,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "pokupljen": false,
+    "placena_godina": 2025,
+    "broj_otkazivanja": 0,
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "aktivan": true,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394340,
+      "_nanoseconds": 218849000
+    }
+  },
+  {
+    "id": "f0527318-2048-4cf2-8bf8-7b850751db9d",
+    "broj_telefona": "637428083",
+    "polasci_po_danu": {
+      "uto": {
+        "bc": "07:00"
+      },
+      "pon": {
+        "bc": "07:00"
+      },
+      "pet": {
+        "bc": "07:00"
+      },
+      "cet": {
+        "bc": "07:00"
+      },
+      "sre": {
+        "bc": "07:00"
+      }
+    },
+    "placeni_mesec": 9,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "broj_otkazivanja": 0,
+    "obrisan": false,
+    "created_at": {
+      "_seconds": 1761005687,
+      "_nanoseconds": 545000000
+    },
+    "aktivan": true,
+    "tip": "ucenik",
+    "search_terms": [
+      "milovan",
+      "m",
+      "mi",
+      "mil",
+      "milo",
+      "milov",
+      "milova",
+      "dragan",
+      "d",
+      "dr",
+      "dra",
+      "drag",
+      "draga"
+    ],
+    "tip_skole": "Tesla",
+    "broj_putovanja": 0,
+    "vreme_placanja": {
+      "_seconds": 1761088984,
+      "_nanoseconds": 858000000
+    },
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "adresa_vrsac": "Sud",
+    "putnik_ime": "Milovan Dragan",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "status": "aktivan",
+    "ukupna_cena_meseca": 0,
+    "pokupljen": false,
+    "tip_prikazivanja": "standard",
+    "placena_godina": 2025,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "adresa_bela_crkva": "Jasenovo Malusev",
+    "cena": 0,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "updated_at": {
+      "_seconds": 1761088984,
+      "_nanoseconds": 858000000
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394340,
+      "_nanoseconds": 554451000
+    }
+  },
+  {
+    "id": "f4955091-9234-48a4-9c67-8c4c4a521bf8",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "adresa_bela_crkva": "Cara Dusana",
+    "broj_otkazivanja": 0,
+    "created_at": {
+      "_seconds": 1761091655,
+      "_nanoseconds": 246000000
+    },
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "putnik_ime": "Predic Djordje",
+    "adresa_vrsac": "Bolnica",
+    "ukupna_cena_meseca": 0,
+    "search_terms": [
+      "predic",
+      "p",
+      "pr",
+      "pre",
+      "pred",
+      "predi",
+      "djordje",
+      "d",
+      "dj",
+      "djo",
+      "djor",
+      "djord",
+      "djordj"
+    ],
+    "broj_telefona": "628601196",
+    "pokupljen": false,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "status": "aktivan",
+    "obrisan": false,
+    "tip_prikazivanja": "standard",
+    "tip": "radnik",
+    "broj_putovanja": 0,
+    "tip_skole": "Bolnica",
+    "aktivan": true,
+    "polasci_po_danu": {
+      "pet": {
+        "bc": "06:00",
+        "vs": "13:00"
+      },
+      "uto": {
+        "vs": "13:00",
+        "bc": "06:00"
+      },
+      "sre": {
+        "vs": "13:00",
+        "bc": "06:00"
+      },
+      "pon": {
+        "vs": "13:00",
+        "bc": "06:00"
+      },
+      "cet": {
+        "vs": "13:00",
+        "bc": "06:00"
+      }
+    },
+    "updated_at": {
+      "_seconds": 1761091655,
+      "_nanoseconds": 246000000
+    },
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394340,
+      "_nanoseconds": 869063000
+    }
+  },
+  {
+    "id": "f8c99606-2e72-4271-a109-b438677c22cf",
+    "tip_prikazivanja": "standard",
+    "broj_telefona": "655684243",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "adresa_vrsac": "Dis",
+    "status": "aktivan",
+    "putnik_ime": "Radmanovac Ana",
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "polasci_po_danu": {},
+    "ukupna_cena_meseca": 12000,
+    "vreme_placanja": {
+      "_seconds": 1761005961,
+      "_nanoseconds": 759000000
+    },
+    "placeni_mesec": 10,
+    "broj_otkazivanja": 0,
+    "obrisan": false,
+    "updated_at": {
+      "_seconds": 1761005961,
+      "_nanoseconds": 759000000
+    },
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "broj_putovanja": 0,
+    "tip_skole": "Hemijska",
+    "aktivan": true,
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "placena_godina": 2025,
+    "cena": 12000,
+    "adresa_bela_crkva": "Bum",
+    "search_terms": [
+      "radmanovac",
+      "r",
+      "ra",
+      "rad",
+      "radm",
+      "radma",
+      "radman",
+      "radmano",
+      "radmanov",
+      "radmanova",
+      "ana",
+      "a",
+      "an"
+    ],
+    "created_at": {
+      "_seconds": 1761005932,
+      "_nanoseconds": 784000000
+    },
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "pokupljen": false,
+    "tip": "ucenik",
+    "broj_telefona_oca": "652092316",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394341,
+      "_nanoseconds": 147494000
+    }
+  },
+  {
+    "id": "f9a62879-52ba-41a9-97f5-2a224be9869b",
+    "tip_skole": "Bolnica",
+    "vreme_placanja": {
+      "_seconds": 1761090304,
+      "_nanoseconds": 74000000
+    },
+    "polasci_po_danu": {},
+    "status": "aktivan",
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "putnik_ime": "Daca Novotni",
+    "placeni_mesec": 8,
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "updated_at": {
+      "_seconds": 1761090304,
+      "_nanoseconds": 74000000
+    },
+    "search_terms": [
+      "daca",
+      "d",
+      "da",
+      "dac",
+      "novotni",
+      "n",
+      "no",
+      "nov",
+      "novo",
+      "novot",
+      "novotn"
+    ],
+    "adresa_bela_crkva": "Lepa Brena",
+    "created_at": {
+      "_seconds": 1761089566,
+      "_nanoseconds": 874000000
+    },
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "broj_otkazivanja": 0,
+    "aktivan": true,
+    "ukupna_cena_meseca": 0,
+    "placena_godina": 2025,
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "broj_telefona": "642367079",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "tip_prikazivanja": "standard",
+    "broj_putovanja": 0,
+    "cena": 0,
+    "adresa_vrsac": "Bolnica",
+    "tip": "radnik",
+    "pokupljen": false,
+    "obrisan": false,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394341,
+      "_nanoseconds": 469583000
+    }
+  },
+  {
+    "id": "fc03f1f9-30f5-4d9c-8d68-8e0afb53684f",
+    "tip": "ucenik",
+    "placeni_mesec": 10,
+    "pokupljen": false,
+    "broj_putovanja": 0,
+    "status": "aktivan",
+    "obrisan": false,
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "statistics": {
+      "trips_total": 0,
+      "cancellations_total": 0
+    },
+    "updated_at": {
+      "_seconds": 1761075510,
+      "_nanoseconds": 730000000
+    },
+    "tip_skole": "Hemijska",
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "placena_godina": 2025,
+    "adresa_bela_crkva": "Vuka Karadzica 74",
+    "broj_telefona": "677705682",
+    "adresa_vrsac": "Dis",
+    "polasci_po_danu": {},
+    "vreme_placanja": {
+      "_seconds": 1761075510,
+      "_nanoseconds": 730000000
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "ukupna_cena_meseca": 12000,
+    "broj_telefona_oca": "604102088",
+    "broj_otkazivanja": 0,
+    "cena": 12000,
+    "search_terms": [
+      "suncica",
+      "s",
+      "su",
+      "sun",
+      "sunc",
+      "sunci",
+      "suncic"
+    ],
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "created_at": {
+      "_seconds": 1761075492,
+      "_nanoseconds": 557000000
+    },
+    "tip_prikazivanja": "standard",
+    "aktivan": true,
+    "putnik_ime": "Suncica",
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394341,
+      "_nanoseconds": 750382000
+    }
+  },
+  {
+    "id": "fcb8cc8b-6faf-4b11-ace5-a602b6ae5557",
+    "vreme_placanja": {
+      "_seconds": 1761075631,
+      "_nanoseconds": 996000000
+    },
+    "status": "aktivan",
+    "adresa_vrsac": "Sud",
+    "search_terms": [
+      "trkalan",
+      "t",
+      "tr",
+      "trk",
+      "trka",
+      "trkal",
+      "trkala",
+      "mihajlo",
+      "m",
+      "mi",
+      "mih",
+      "miha",
+      "mihaj",
+      "mihajl"
+    ],
+    "radni_dani": [
+      "pon",
+      "uto",
+      "sre",
+      "cet",
+      "pet"
+    ],
+    "updated_at": {
+      "_seconds": 1761075631,
+      "_nanoseconds": 996000000
+    },
+    "polasci_po_danu": {
+      "pon": {
+        "bc": "07:00"
+      },
+      "cet": {
+        "bc": "07:00"
+      },
+      "pet": {
+        "bc": "07:00"
+      },
+      "uto": {
+        "bc": "07:00"
+      },
+      "sre": {
+        "bc": "07:00"
+      }
+    },
+    "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "cena": 14000,
+    "placeni_mesec": 10,
+    "ukupna_cena_meseca": 14000,
+    "obrisan": false,
+    "statistics": {
+      "cancellations_total": 0,
+      "trips_total": 0
+    },
+    "placena_godina": 2025,
+    "adresa_bela_crkva": "Kusic",
+    "broj_otkazivanja": 0,
+    "tip_prikazivanja": "standard",
+    "broj_putovanja": 0,
+    "aktivan": true,
+    "broj_telefona_majke": "62755092",
+    "putnik_ime": "Trkalan Mihajlo",
+    "tip_skole": "Tesla",
+    "broj_telefona": "62755179",
+    "tip": "ucenik",
+    "datum_kraja_meseca": {
+      "_seconds": 1761868800,
+      "_nanoseconds": 0
+    },
+    "created_at": {
+      "_seconds": 1761075615,
+      "_nanoseconds": 960000000
+    },
+    "datum_pocetka_meseca": {
+      "_seconds": 1759276800,
+      "_nanoseconds": 0
+    },
+    "pokupljen": false,
+    "vozac_ime": "Bojan",
+    "last_optimized": {
+      "_seconds": 1761394341,
+      "_nanoseconds": 995716000
+    }
+  }
+]

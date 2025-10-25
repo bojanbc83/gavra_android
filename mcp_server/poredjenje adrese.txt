@@ -1,0 +1,40 @@
+# POREĐENJE ADRESE
+**Supabase vs Firebase/Firestore**
+
+## KOLONE POREĐENJE
+
+| SUPABASE | FIREBASE/FIRESTORE |
+|----------|-------------------|
+| id | id |
+| naziv | naziv |
+| ulica | ulica |
+| broj | broj |
+| grad | grad |
+| postanski_broj | postanski_broj |
+| koordinate | koordinate |
+| aktivan | aktivan |
+| created_at | created_at |
+| updated_at | updated_at |
+| - | latitude |
+| - | longitude |
+| - | search_terms |
+| - | last_optimized |
+| - | putnici_count |
+| - | putovanja_count |
+
+## RAZLIKE
+
+### FIREBASE DODATNO IMA:
+- latitude (GPS širina)
+- longitude (GPS dužina)
+- search_terms (za pretragu)
+- last_optimized (timestamp optimizacije)
+- putnici_count (broj putnika)
+- putovanja_count (broj putovanja)
+
+### SUPABASE DODATNO IMA:
+- (nema dodatnih kolona)
+
+### UKUPNO KOLONA:
+- **Supabase**: 10 kolona
+- **Firebase**: 16 kolona

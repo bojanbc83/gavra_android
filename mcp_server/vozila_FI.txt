@@ -1,0 +1,15 @@
+id
+naziv
+registracija
+model
+godina
+kapacitet
+aktivan
+vozac_id
+vozac_ime
+created_at
+updated_at
+search_terms
+last_optimized
+putnici_count
+putovanja_count

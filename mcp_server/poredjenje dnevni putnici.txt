@@ -1,0 +1,41 @@
+# POREĐENJE DNEVNI PUTNICI
+**Supabase vs Firebase/Firestore**
+
+## KOLONE POREĐENJE
+
+| SUPABASE | FIREBASE/FIRESTORE |
+|----------|-------------------|
+| id | id |
+| putnik_ime | putnik_ime |
+| tip | tip |
+| telefon | telefon |
+| adresa_polaska | adresa_polaska |
+| adresa_dolaska | adresa_dolaska |
+| cena | cena |
+| status | status |
+| datum_putovanja | datum_putovanja |
+| vreme_polaska | vreme_polaska |
+| vozac_id | vozac_id |
+| pokupljen | pokupljen |
+| vreme_pokupljenja | vreme_pokupljenja |
+| napomene | napomene |
+| obrisan | obrisan |
+| created_at | created_at |
+| updated_at | updated_at |
+| - | vozac_ime |
+| - | search_terms |
+| - | last_optimized |
+
+## RAZLIKE
+
+### FIREBASE DODATNO IMA:
+- vozac_ime (denormalizovano ime vozača)
+- search_terms (za pretragu)
+- last_optimized (timestamp optimizacije)
+
+### SUPABASE DODATNO IMA:
+- (nema dodatnih kolona)
+
+### UKUPNO KOLONA:
+- **Supabase**: 17 kolona
+- **Firebase**: 20 kolona

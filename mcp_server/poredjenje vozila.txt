@@ -1,0 +1,38 @@
+# POREĐENJE VOZILA
+**Supabase vs Firebase/Firestore**
+
+## KOLONE POREĐENJE
+
+| SUPABASE | FIREBASE/FIRESTORE |
+|----------|-------------------|
+| id | id |
+| naziv | naziv |
+| registracija | registracija |
+| model | model |
+| godina | godina |
+| kapacitet | kapacitet |
+| aktivan | aktivan |
+| vozac_id | vozac_id |
+| created_at | created_at |
+| updated_at | updated_at |
+| - | vozac_ime |
+| - | search_terms |
+| - | last_optimized |
+| - | putnici_count |
+| - | putovanja_count |
+
+## RAZLIKE
+
+### FIREBASE DODATNO IMA:
+- vozac_ime (denormalizovano ime vozača)
+- search_terms (za pretragu)
+- last_optimized (timestamp optimizacije)
+- putnici_count (broj putnika)
+- putovanja_count (broj putovanja)
+
+### SUPABASE DODATNO IMA:
+- (nema dodatnih kolona)
+
+### UKUPNO KOLONA:
+- **Supabase**: 10 kolona
+- **Firebase**: 15 kolona

@@ -1,0 +1,45 @@
+# POREĐENJE RUTE
+**Supabase vs Firebase/Firestore**
+
+## KOLONE POREĐENJE
+
+| SUPABASE | FIREBASE/FIRESTORE |
+|----------|-------------------|
+| id | id |
+| naziv | naziv |
+| opis | opis |
+| polaziste | polaziste |
+| odrediste | odrediste |
+| vreme_polaska | vreme_polaska |
+| vreme_dolaska | vreme_dolaska |
+| cena | cena |
+| aktivan | aktivan |
+| vozac_id | vozac_id |
+| vozilo_id | vozilo_id |
+| created_at | created_at |
+| updated_at | updated_at |
+| - | vozac_ime |
+| - | vozilo_naziv |
+| - | search_terms |
+| - | last_optimized |
+| - | putnici_count |
+| - | putovanja_count |
+| - | total_earnings |
+
+## RAZLIKE
+
+### FIREBASE DODATNO IMA:
+- vozac_ime (denormalizovano ime vozača)
+- vozilo_naziv (denormalizovano naziv vozila)
+- search_terms (za pretragu)
+- last_optimized (timestamp optimizacije)
+- putnici_count (broj putnika)
+- putovanja_count (broj putovanja)
+- total_earnings (ukupna zarada)
+
+### SUPABASE DODATNO IMA:
+- (nema dodatnih kolona)
+
+### UKUPNO KOLONA:
+- **Supabase**: 13 kolona
+- **Firebase**: 20 kolona

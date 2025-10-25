@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "gavra-firestore": {
+      "command": "node",
+      "args": ["c:\\Users\\Bojan\\gavra_android\\mcp_server\\dist\\index.js"],
+      "env": {
+        "GOOGLE_APPLICATION_CREDENTIALS": "c:\\Users\\Bojan\\gavra_android\\mcp_server\\src\\serviceAccountKey.json"
+      }
+    }
+  }
+}

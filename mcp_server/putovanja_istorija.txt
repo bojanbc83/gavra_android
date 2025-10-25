@@ -1,0 +1,16 @@
+id
+mesecni_putnik_id
+datum_putovanja
+vreme_polaska
+status
+vozac_id
+napomene
+obrisan
+created_at
+updated_at
+ruta_id
+vozilo_id
+adresa_id
+cena
+tip_putnika
+putnik_ime

@@ -1,0 +1,10 @@
+id
+naziv
+registracija
+model
+godina
+kapacitet
+aktivan
+vozac_id
+created_at
+updated_at

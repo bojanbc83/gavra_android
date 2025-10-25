@@ -1,0 +1,37 @@
+# POREĐENJE GPS LOKACIJE
+**Supabase vs Firebase/Firestore**
+
+## KOLONE POREĐENJE
+
+| SUPABASE | FIREBASE/FIRESTORE |
+|----------|-------------------|
+| id | id |
+| vozac_id | vozac_id |
+| vozilo_id | vozilo_id |
+| latitude | latitude |
+| longitude | longitude |
+| brzina | brzina |
+| pravac | pravac |
+| tacnost | tacnost |
+| vreme | vreme |
+| - | vozac_ime |
+| - | vozilo_naziv |
+| - | created_at |
+| - | search_terms |
+| - | last_optimized |
+
+## RAZLIKE
+
+### FIREBASE DODATNO IMA:
+- vozac_ime (denormalizovano ime vozača)
+- vozilo_naziv (denormalizovano naziv vozila)
+- created_at (timestamp kreiranja)
+- search_terms (za pretragu)
+- last_optimized (timestamp optimizacije)
+
+### SUPABASE DODATNO IMA:
+- (nema dodatnih kolona)
+
+### UKUPNO KOLONA:
+- **Supabase**: 9 kolona
+- **Firebase**: 14 kolona

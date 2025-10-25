@@ -1,0 +1,10 @@
+id
+naziv
+ulica
+broj
+grad
+postanski_broj
+koordinate
+aktivan
+created_at
+updated_at

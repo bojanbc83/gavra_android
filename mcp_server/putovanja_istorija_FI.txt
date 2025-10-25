@@ -1,0 +1,17 @@
+id
+last_optimized
+vreme_polaska
+cena
+search_terms
+mesecni_putnik_id
+tip_putnika
+created_at
+datum_putovanja
+vozac_ime
+status
+vozac_id
+napomene
+putnik_ime
+obrisan
+updated_at
+mesec
