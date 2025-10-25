@@ -384,8 +384,3 @@ extension TrafficLevelExtension on TrafficLevel {
     }
   }
 }
-
-
-
-
-

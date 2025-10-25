@@ -225,8 +225,3 @@ class PerformanceCacheService {
     await preloadPopularAddresses(uniqueAddresses);
   }
 }
-
-
-
-
-

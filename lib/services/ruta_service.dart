@@ -13,7 +13,8 @@ class RutaService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   /// Referenca na kolekciju ruta
-  CollectionReference<Map<String, dynamic>> get _collection => _firestore.collection(_collectionName);
+  CollectionReference<Map<String, dynamic>> get _collection =>
+      _firestore.collection(_collectionName);
 
   // CRUD Operacije
 
@@ -26,7 +27,8 @@ class RutaService {
 
       return querySnapshot.docs.map((doc) => Ruta.fromMap(doc.data())).toList();
     } catch (e) {
-      developer.log('Error getting all rute: $e', name: 'RutaService', level: 1000);
+      developer.log('Error getting all rute: $e',
+          name: 'RutaService', level: 1000);
       throw Exception('Failed to get all rute: $e');
     }
   }
@@ -36,11 +38,15 @@ class RutaService {
     try {
       developer.log('Getting active rute', name: 'RutaService');
 
-      final querySnapshot = await _collection.where('aktivan', isEqualTo: true).orderBy('naziv').get();
+      final querySnapshot = await _collection
+          .where('aktivan', isEqualTo: true)
+          .orderBy('naziv')
+          .get();
 
       return querySnapshot.docs.map((doc) => Ruta.fromMap(doc.data())).toList();
     } catch (e) {
-      developer.log('Error getting active rute: $e', name: 'RutaService', level: 1000);
+      developer.log('Error getting active rute: $e',
+          name: 'RutaService', level: 1000);
       throw Exception('Failed to get active rute: $e');
     }
   }
@@ -57,7 +63,8 @@ class RutaService {
 
       return Ruta.fromMap(doc.data()!);
     } catch (e) {
-      developer.log('Error getting ruta by ID: $e', name: 'RutaService', level: 1000);
+      developer.log('Error getting ruta by ID: $e',
+          name: 'RutaService', level: 1000);
       throw Exception('Failed to get ruta by ID: $e');
     }
   }
@@ -101,7 +108,9 @@ class RutaService {
         dolazak: updates['dolazak'] as String?,
         opis: updates['opis'] as String?,
         udaljenostKm: (updates['udaljenost_km'] as num?)?.toDouble(),
-        prosecnoVreme: updates['prosecno_vreme'] != null ? Duration(seconds: updates['prosecno_vreme'] as int) : null,
+        prosecnoVreme: updates['prosecno_vreme'] != null
+            ? Duration(seconds: updates['prosecno_vreme'] as int)
+            : null,
         aktivan: updates['aktivan'] as bool?,
         updatedAt: DateTime.now(),
       );
@@ -117,7 +126,8 @@ class RutaService {
       developer.log('Successfully updated ruta: $id', name: 'RutaService');
       return updatedRuta;
     } catch (e) {
-      developer.log('Error updating ruta: $e', name: 'RutaService', level: 1000);
+      developer.log('Error updating ruta: $e',
+          name: 'RutaService', level: 1000);
       throw Exception('Failed to update ruta: $e');
     }
   }
@@ -134,7 +144,8 @@ class RutaService {
 
       developer.log('Successfully deleted ruta: $id', name: 'RutaService');
     } catch (e) {
-      developer.log('Error deleting ruta: $e', name: 'RutaService', level: 1000);
+      developer.log('Error deleting ruta: $e',
+          name: 'RutaService', level: 1000);
       throw Exception('Failed to delete ruta: $e');
     }
   }
@@ -151,7 +162,8 @@ class RutaService {
 
       developer.log('Successfully activated ruta: $id', name: 'RutaService');
     } catch (e) {
-      developer.log('Error activating ruta: $e', name: 'RutaService', level: 1000);
+      developer.log('Error activating ruta: $e',
+          name: 'RutaService', level: 1000);
       throw Exception('Failed to activate ruta: $e');
     }
   }
@@ -168,7 +180,8 @@ class RutaService {
 
       developer.log('Successfully deactivated ruta: $id', name: 'RutaService');
     } catch (e) {
-      developer.log('Error deactivating ruta: $e', name: 'RutaService', level: 1000);
+      developer.log('Error deactivating ruta: $e',
+          name: 'RutaService', level: 1000);
       throw Exception('Failed to deactivate ruta: $e');
     }
   }
@@ -180,14 +193,19 @@ class RutaService {
     try {
       developer.log('Searching rute with query: $query', name: 'RutaService');
 
-      final querySnapshot = await _collection.where('aktivan', isEqualTo: true).orderBy('naziv').get();
+      final querySnapshot = await _collection
+          .where('aktivan', isEqualTo: true)
+          .orderBy('naziv')
+          .get();
 
-      final allRute = querySnapshot.docs.map((doc) => Ruta.fromMap(doc.data())).toList();
+      final allRute =
+          querySnapshot.docs.map((doc) => Ruta.fromMap(doc.data())).toList();
 
       // Filter client-side zbog ograničenja Firestore složenih upita
       return allRute.where((ruta) => ruta.containsQuery(query)).toList();
     } catch (e) {
-      developer.log('Error searching rute: $e', name: 'RutaService', level: 1000);
+      developer.log('Error searching rute: $e',
+          name: 'RutaService', level: 1000);
       throw Exception('Failed to search rute: $e');
     }
   }
@@ -195,15 +213,21 @@ class RutaService {
   /// Pronalazi rute koje povezuju određena mesta
   Future<List<Ruta>> findRuteByDestinations(String grad1, String grad2) async {
     try {
-      developer.log('Finding rute between: $grad1 and $grad2', name: 'RutaService');
+      developer.log('Finding rute between: $grad1 and $grad2',
+          name: 'RutaService');
 
-      final querySnapshot = await _collection.where('aktivan', isEqualTo: true).get();
+      final querySnapshot =
+          await _collection.where('aktivan', isEqualTo: true).get();
 
-      final allRute = querySnapshot.docs.map((doc) => Ruta.fromMap(doc.data())).toList();
+      final allRute =
+          querySnapshot.docs.map((doc) => Ruta.fromMap(doc.data())).toList();
 
-      return allRute.where((ruta) => ruta.connectsCities(grad1, grad2)).toList();
+      return allRute
+          .where((ruta) => ruta.connectsCities(grad1, grad2))
+          .toList();
     } catch (e) {
-      developer.log('Error finding rute by destinations: $e', name: 'RutaService', level: 1000);
+      developer.log('Error finding rute by destinations: $e',
+          name: 'RutaService', level: 1000);
       throw Exception('Failed to find rute by destinations: $e');
     }
   }
@@ -219,7 +243,8 @@ class RutaService {
         return snapshot.docs.map((doc) => Ruta.fromMap(doc.data())).toList();
       });
     } catch (e) {
-      developer.log('Error in watch all rute stream: $e', name: 'RutaService', level: 1000);
+      developer.log('Error in watch all rute stream: $e',
+          name: 'RutaService', level: 1000);
       throw Exception('Failed to watch all rute: $e');
     }
   }
@@ -229,11 +254,16 @@ class RutaService {
     try {
       developer.log('Starting watch active rute stream', name: 'RutaService');
 
-      return _collection.where('aktivan', isEqualTo: true).orderBy('naziv').snapshots().map((snapshot) {
+      return _collection
+          .where('aktivan', isEqualTo: true)
+          .orderBy('naziv')
+          .snapshots()
+          .map((snapshot) {
         return snapshot.docs.map((doc) => Ruta.fromMap(doc.data())).toList();
       });
     } catch (e) {
-      developer.log('Error in watch active rute stream: $e', name: 'RutaService', level: 1000);
+      developer.log('Error in watch active rute stream: $e',
+          name: 'RutaService', level: 1000);
       throw Exception('Failed to watch active rute: $e');
     }
   }
@@ -250,7 +280,8 @@ class RutaService {
         return Ruta.fromMap(snapshot.data()!);
       });
     } catch (e) {
-      developer.log('Error in watch ruta stream: $e', name: 'RutaService', level: 1000);
+      developer.log('Error in watch ruta stream: $e',
+          name: 'RutaService', level: 1000);
       throw Exception('Failed to watch ruta: $e');
     }
   }
@@ -284,7 +315,8 @@ class RutaService {
         'inactive': inactive,
       };
     } catch (e) {
-      developer.log('Error getting route statistics: $e', name: 'RutaService', level: 1000);
+      developer.log('Error getting route statistics: $e',
+          name: 'RutaService', level: 1000);
       throw Exception('Failed to get route statistics: $e');
     }
   }
@@ -294,16 +326,20 @@ class RutaService {
     try {
       developer.log('Getting longest routes', name: 'RutaService');
 
-      final querySnapshot = await _collection.where('aktivan', isEqualTo: true).get();
+      final querySnapshot =
+          await _collection.where('aktivan', isEqualTo: true).get();
 
-      final rute =
-          querySnapshot.docs.map((doc) => Ruta.fromMap(doc.data())).where((ruta) => ruta.udaljenostKm != null).toList();
+      final rute = querySnapshot.docs
+          .map((doc) => Ruta.fromMap(doc.data()))
+          .where((ruta) => ruta.udaljenostKm != null)
+          .toList();
 
       rute.sort((a, b) => (b.udaljenostKm ?? 0).compareTo(a.udaljenostKm ?? 0));
 
       return rute.take(limit).toList();
     } catch (e) {
-      developer.log('Error getting longest routes: $e', name: 'RutaService', level: 1000);
+      developer.log('Error getting longest routes: $e',
+          name: 'RutaService', level: 1000);
       throw Exception('Failed to get longest routes: $e');
     }
   }
@@ -313,18 +349,21 @@ class RutaService {
     try {
       developer.log('Getting fastest routes', name: 'RutaService');
 
-      final querySnapshot = await _collection.where('aktivan', isEqualTo: true).get();
+      final querySnapshot =
+          await _collection.where('aktivan', isEqualTo: true).get();
 
       final rute = querySnapshot.docs
           .map((doc) => Ruta.fromMap(doc.data()))
           .where((ruta) => ruta.prosecnoVreme != null)
           .toList();
 
-      rute.sort((a, b) => (a.prosecnoVreme ?? Duration.zero).compareTo(b.prosecnoVreme ?? Duration.zero));
+      rute.sort((a, b) => (a.prosecnoVreme ?? Duration.zero)
+          .compareTo(b.prosecnoVreme ?? Duration.zero));
 
       return rute.take(limit).toList();
     } catch (e) {
-      developer.log('Error getting fastest routes: $e', name: 'RutaService', level: 1000);
+      developer.log('Error getting fastest routes: $e',
+          name: 'RutaService', level: 1000);
       throw Exception('Failed to get fastest routes: $e');
     }
   }
@@ -340,7 +379,8 @@ class RutaService {
       for (final ruta in rute) {
         if (!ruta.isValidForDatabase) {
           final errors = ruta.validateFull();
-          throw Exception('Validation failed for ruta ${ruta.naziv}: ${errors.values.join(', ')}');
+          throw Exception(
+              'Validation failed for ruta ${ruta.naziv}: ${errors.values.join(', ')}');
         }
       }
 
@@ -355,10 +395,12 @@ class RutaService {
 
       await batch.commit();
 
-      developer.log('Successfully created batch rute: ${ids.length}', name: 'RutaService');
+      developer.log('Successfully created batch rute: ${ids.length}',
+          name: 'RutaService');
       return ids;
     } catch (e) {
-      developer.log('Error creating batch rute: $e', name: 'RutaService', level: 1000);
+      developer.log('Error creating batch rute: $e',
+          name: 'RutaService', level: 1000);
       throw Exception('Failed to create batch rute: $e');
     }
   }
@@ -372,7 +414,8 @@ class RutaService {
       for (final ruta in rute) {
         if (!ruta.isValidForDatabase) {
           final errors = ruta.validateFull();
-          throw Exception('Validation failed for ruta ${ruta.naziv}: ${errors.values.join(', ')}');
+          throw Exception(
+              'Validation failed for ruta ${ruta.naziv}: ${errors.values.join(', ')}');
         }
       }
 
@@ -386,9 +429,11 @@ class RutaService {
 
       await batch.commit();
 
-      developer.log('Successfully updated batch rute: ${rute.length}', name: 'RutaService');
+      developer.log('Successfully updated batch rute: ${rute.length}',
+          name: 'RutaService');
     } catch (e) {
-      developer.log('Error updating batch rute: $e', name: 'RutaService', level: 1000);
+      developer.log('Error updating batch rute: $e',
+          name: 'RutaService', level: 1000);
       throw Exception('Failed to update batch rute: $e');
     }
   }
@@ -396,7 +441,8 @@ class RutaService {
   /// Deaktivira više ruta odjednom
   Future<void> deactivateBatchRute(List<String> ids) async {
     try {
-      developer.log('Deactivating batch rute: ${ids.length}', name: 'RutaService');
+      developer.log('Deactivating batch rute: ${ids.length}',
+          name: 'RutaService');
 
       final batch = _firestore.batch();
 
@@ -410,9 +456,11 @@ class RutaService {
 
       await batch.commit();
 
-      developer.log('Successfully deactivated batch rute: ${ids.length}', name: 'RutaService');
+      developer.log('Successfully deactivated batch rute: ${ids.length}',
+          name: 'RutaService');
     } catch (e) {
-      developer.log('Error deactivating batch rute: $e', name: 'RutaService', level: 1000);
+      developer.log('Error deactivating batch rute: $e',
+          name: 'RutaService', level: 1000);
       throw Exception('Failed to deactivate batch rute: $e');
     }
   }

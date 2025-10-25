@@ -25,11 +25,13 @@ class FirebaseAuthService {
     try {
       // 🔒 VALIDACIJA: Email mora biti dozvoljen za vozača
       if (!VozacBoja.isEmailDozvoljenForVozac(email, vozacName)) {
-        return AuthResult.failure('Email $email nije dozvoljen za vozača $vozacName');
+        return AuthResult.failure(
+            'Email $email nije dozvoljen za vozača $vozacName');
       }
 
       // Kreiranje korisnika
-      final UserCredential credential = await _auth.createUserWithEmailAndPassword(
+      final UserCredential credential =
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );

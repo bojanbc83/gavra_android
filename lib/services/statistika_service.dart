@@ -1,1 +1,20 @@
-class StatistikaService { static final StatistikaService instance = StatistikaService._(); StatistikaService._(); static Stream<Map<String, double>> streamPazarSvihVozaca(DateTime startDate, DateTime endDate) async* { throw UnimplementedError("Firebase migration pending"); } Future<Map<String, dynamic>> detaljneStatistikePoVozacima(DateTime start, DateTime end) async { throw UnimplementedError("Firebase migration pending"); } Future<double> getKilometrazu(String vozac, DateTime start, DateTime end) async { throw UnimplementedError("Firebase migration pending"); } }
+class StatistikaService {
+  StatistikaService._();
+
+  static final StatistikaService instance = StatistikaService._();
+
+  static Stream<Map<String, double>> streamPazarSvihVozaca(
+      DateTime startDate, DateTime endDate) async* {
+    throw UnimplementedError('Firebase migration pending');
+  }
+
+  Future<Map<String, dynamic>> detaljneStatistikePoVozacima(
+      DateTime start, DateTime end) async {
+    throw UnimplementedError('Firebase migration pending');
+  }
+
+  Future<double> getKilometrazu(
+      String vozac, DateTime start, DateTime end) async {
+    throw UnimplementedError('Firebase migration pending');
+  }
+}

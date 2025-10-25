@@ -334,8 +334,3 @@ class PutovanjaIstorija {
   @override
   int get hashCode => id.hashCode;
 }
-
-
-
-
-

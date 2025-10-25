@@ -35,7 +35,8 @@ class KusurService {
   }
 
   /// Ažuriraj kusur za određenog vozača u bazi
-  static Future<bool> updateKusurForVozac(String vozacIme, double noviKusur) async {
+  static Future<bool> updateKusurForVozac(
+      String vozacIme, double noviKusur) async {
     try {
       // Mapiranje ime -> UUID
       final vozacUuid = await VozacMappingService.getVozacUuid(vozacIme);

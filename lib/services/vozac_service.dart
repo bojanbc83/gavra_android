@@ -14,10 +14,15 @@ class VozacService {
   /// 📋 Dohvata sve aktivne vozače
   Future<List<Vozac>> getAllVozaci() async {
     try {
-      final querySnapshot =
-          await _firestore.collection(_collectionName).where('aktivan', isEqualTo: true).orderBy('ime').get();
+      final querySnapshot = await _firestore
+          .collection(_collectionName)
+          .where('aktivan', isEqualTo: true)
+          .orderBy('ime')
+          .get();
 
-      return querySnapshot.docs.map((doc) => Vozac.fromMap(doc.data())).toList();
+      return querySnapshot.docs
+          .map((doc) => Vozac.fromMap(doc.data()))
+          .toList();
     } catch (e) {
       throw Exception('Greška pri dohvatanju vozača: $e');
     }
@@ -26,7 +31,8 @@ class VozacService {
   /// 👤 Dohvata vozača po ID-u
   Future<Vozac?> getVozacById(String id) async {
     try {
-      final docSnapshot = await _firestore.collection(_collectionName).doc(id).get();
+      final docSnapshot =
+          await _firestore.collection(_collectionName).doc(id).get();
 
       if (!docSnapshot.exists) return null;
 
@@ -116,15 +122,23 @@ class VozacService {
   Future<List<Vozac>> searchVozaci(String searchTerm) async {
     try {
       // Pretraži po imenu i email-u
-      final querySnapshot = await _firestore.collection(_collectionName).where('aktivan', isEqualTo: true).get();
+      final querySnapshot = await _firestore
+          .collection(_collectionName)
+          .where('aktivan', isEqualTo: true)
+          .get();
 
       // Client-side filtering (Firestore ne podržava složenu pretragu)
       final results = querySnapshot.docs
           .map((doc) => Vozac.fromMap(doc.data()))
           .where(
             (vozac) =>
-                vozac.punoIme.toLowerCase().contains(searchTerm.toLowerCase()) ||
-                (vozac.email?.toLowerCase().contains(searchTerm.toLowerCase()) ?? false) ||
+                vozac.punoIme
+                    .toLowerCase()
+                    .contains(searchTerm.toLowerCase()) ||
+                (vozac.email
+                        ?.toLowerCase()
+                        .contains(searchTerm.toLowerCase()) ??
+                    false) ||
                 (vozac.brojTelefona?.contains(searchTerm) ?? false),
           )
           .toList();
@@ -148,8 +162,14 @@ class VozacService {
 
   /// 📊 Real-time stream aktivnih vozača
   Stream<List<Vozac>> getActiveVozaciStream() {
-    return _firestore.collection(_collectionName).where('aktivan', isEqualTo: true).orderBy('ime').snapshots().map(
-          (snapshot) => snapshot.docs.map((doc) => Vozac.fromMap(doc.data())).toList(),
+    return _firestore
+        .collection(_collectionName)
+        .where('aktivan', isEqualTo: true)
+        .orderBy('ime')
+        .snapshots()
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) => Vozac.fromMap(doc.data())).toList(),
         );
   }
 

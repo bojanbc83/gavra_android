@@ -12,21 +12,25 @@ class DnevniPutnikService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   /// Referenca na kolekciju dnevnih putnika
-  CollectionReference<Map<String, dynamic>> get _collection => _firestore.collection(_collectionName);
+  CollectionReference<Map<String, dynamic>> get _collection =>
+      _firestore.collection(_collectionName);
 
   // CRUD Operacije
 
   /// Kreira novog dnevnog putnika
   Future<String> createDnevniPutnik(DnevniPutnik putnik) async {
     try {
-      developer.log('Creating dnevni putnik: ${putnik.id}', name: 'DnevniPutnikService');
+      developer.log('Creating dnevni putnik: ${putnik.id}',
+          name: 'DnevniPutnikService');
 
       await _collection.doc(putnik.id).set(putnik.toMap());
 
-      developer.log('Successfully created dnevni putnik: ${putnik.id}', name: 'DnevniPutnikService');
+      developer.log('Successfully created dnevni putnik: ${putnik.id}',
+          name: 'DnevniPutnikService');
       return putnik.id;
     } catch (e) {
-      developer.log('Error creating dnevni putnik: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error creating dnevni putnik: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to create dnevni putnik: $e');
     }
   }
@@ -43,7 +47,8 @@ class DnevniPutnikService {
 
       return DnevniPutnik.fromMap(doc.data()!);
     } catch (e) {
-      developer.log('Error getting dnevni putnik: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error getting dnevni putnik: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to get dnevni putnik: $e');
     }
   }
@@ -53,12 +58,17 @@ class DnevniPutnikService {
     try {
       developer.log('Getting all dnevni putnici', name: 'DnevniPutnikService');
 
-      final querySnapshot =
-          await _collection.where('obrisan', isEqualTo: false).orderBy('createdAt', descending: true).get();
+      final querySnapshot = await _collection
+          .where('obrisan', isEqualTo: false)
+          .orderBy('createdAt', descending: true)
+          .get();
 
-      return querySnapshot.docs.map((doc) => DnevniPutnik.fromMap(doc.data())).toList();
+      return querySnapshot.docs
+          .map((doc) => DnevniPutnik.fromMap(doc.data()))
+          .toList();
     } catch (e) {
-      developer.log('Error getting all dnevni putnici: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error getting all dnevni putnici: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to get all dnevni putnici: $e');
     }
   }
@@ -66,7 +76,8 @@ class DnevniPutnikService {
   /// Dobija dnevne putnike po ruti
   Future<List<DnevniPutnik>> getDnevniPutniciByRuta(String rutaId) async {
     try {
-      developer.log('Getting dnevni putnici by ruta: $rutaId', name: 'DnevniPutnikService');
+      developer.log('Getting dnevni putnici by ruta: $rutaId',
+          name: 'DnevniPutnikService');
 
       final querySnapshot = await _collection
           .where('ruta_id', isEqualTo: rutaId)
@@ -74,9 +85,12 @@ class DnevniPutnikService {
           .orderBy('vremePolaska')
           .get();
 
-      return querySnapshot.docs.map((doc) => DnevniPutnik.fromMap(doc.data())).toList();
+      return querySnapshot.docs
+          .map((doc) => DnevniPutnik.fromMap(doc.data()))
+          .toList();
     } catch (e) {
-      developer.log('Error getting dnevni putnici by ruta: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error getting dnevni putnici by ruta: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to get dnevni putnici by ruta: $e');
     }
   }
@@ -84,29 +98,38 @@ class DnevniPutnikService {
   /// Dobija dnevne putnike po datumu
   Future<List<DnevniPutnik>> getDnevniPutniciByDatum(DateTime datum) async {
     try {
-      developer.log('Getting dnevni putnici by datum: $datum', name: 'DnevniPutnikService');
+      developer.log('Getting dnevni putnici by datum: $datum',
+          name: 'DnevniPutnikService');
 
       final startOfDay = DateTime(datum.year, datum.month, datum.day);
       final endOfDay = DateTime(datum.year, datum.month, datum.day, 23, 59, 59);
 
       final querySnapshot = await _collection
-          .where('datum', isGreaterThanOrEqualTo: startOfDay.toIso8601String().split('T')[0])
-          .where('datum', isLessThanOrEqualTo: endOfDay.toIso8601String().split('T')[0])
+          .where('datum',
+              isGreaterThanOrEqualTo:
+                  startOfDay.toIso8601String().split('T')[0])
+          .where('datum',
+              isLessThanOrEqualTo: endOfDay.toIso8601String().split('T')[0])
           .where('obrisan', isEqualTo: false)
           .orderBy('vremePolaska')
           .get();
 
-      return querySnapshot.docs.map((doc) => DnevniPutnik.fromMap(doc.data())).toList();
+      return querySnapshot.docs
+          .map((doc) => DnevniPutnik.fromMap(doc.data()))
+          .toList();
     } catch (e) {
-      developer.log('Error getting dnevni putnici by datum: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error getting dnevni putnici by datum: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to get dnevni putnici by datum: $e');
     }
   }
 
   /// Dobija dnevne putnike po statusu
-  Future<List<DnevniPutnik>> getDnevniPutniciByStatus(DnevniPutnikStatus status) async {
+  Future<List<DnevniPutnik>> getDnevniPutniciByStatus(
+      DnevniPutnikStatus status) async {
     try {
-      developer.log('Getting dnevni putnici by status: ${status.value}', name: 'DnevniPutnikService');
+      developer.log('Getting dnevni putnici by status: ${status.value}',
+          name: 'DnevniPutnikService');
 
       final querySnapshot = await _collection
           .where('status', isEqualTo: status.value)
@@ -114,9 +137,12 @@ class DnevniPutnikService {
           .orderBy('createdAt', descending: true)
           .get();
 
-      return querySnapshot.docs.map((doc) => DnevniPutnik.fromMap(doc.data())).toList();
+      return querySnapshot.docs
+          .map((doc) => DnevniPutnik.fromMap(doc.data()))
+          .toList();
     } catch (e) {
-      developer.log('Error getting dnevni putnici by status: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error getting dnevni putnici by status: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to get dnevni putnici by status: $e');
     }
   }
@@ -124,7 +150,8 @@ class DnevniPutnikService {
   /// Dobija dnevne putnike po vozaču
   Future<List<DnevniPutnik>> getDnevniPutniciByVozac(String vozacId) async {
     try {
-      developer.log('Getting dnevni putnici by vozac: $vozacId', name: 'DnevniPutnikService');
+      developer.log('Getting dnevni putnici by vozac: $vozacId',
+          name: 'DnevniPutnikService');
 
       final querySnapshot = await _collection
           .where('dodao_vozac_id', isEqualTo: vozacId)
@@ -132,9 +159,12 @@ class DnevniPutnikService {
           .orderBy('createdAt', descending: true)
           .get();
 
-      return querySnapshot.docs.map((doc) => DnevniPutnik.fromMap(doc.data())).toList();
+      return querySnapshot.docs
+          .map((doc) => DnevniPutnik.fromMap(doc.data()))
+          .toList();
     } catch (e) {
-      developer.log('Error getting dnevni putnici by vozac: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error getting dnevni putnici by vozac: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to get dnevni putnici by vozac: $e');
     }
   }
@@ -142,7 +172,8 @@ class DnevniPutnikService {
   /// Ažurira dnevnog putnika
   Future<void> updateDnevniPutnik(DnevniPutnik putnik) async {
     try {
-      developer.log('Updating dnevni putnik: ${putnik.id}', name: 'DnevniPutnikService');
+      developer.log('Updating dnevni putnik: ${putnik.id}',
+          name: 'DnevniPutnikService');
 
       final updatedPutnik = DnevniPutnik(
         id: putnik.id,
@@ -168,9 +199,11 @@ class DnevniPutnikService {
 
       await _collection.doc(putnik.id).update(updatedPutnik.toMap());
 
-      developer.log('Successfully updated dnevni putnik: ${putnik.id}', name: 'DnevniPutnikService');
+      developer.log('Successfully updated dnevni putnik: ${putnik.id}',
+          name: 'DnevniPutnikService');
     } catch (e) {
-      developer.log('Error updating dnevni putnik: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error updating dnevni putnik: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to update dnevni putnik: $e');
     }
   }
@@ -185,9 +218,11 @@ class DnevniPutnikService {
         'updated_at': DateTime.now().toIso8601String(),
       });
 
-      developer.log('Successfully deleted dnevni putnik: $id', name: 'DnevniPutnikService');
+      developer.log('Successfully deleted dnevni putnik: $id',
+          name: 'DnevniPutnikService');
     } catch (e) {
-      developer.log('Error deleting dnevni putnik: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error deleting dnevni putnik: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to delete dnevni putnik: $e');
     }
   }
@@ -195,7 +230,8 @@ class DnevniPutnikService {
   /// Pokuplja putnika (označava kao pokupljen)
   Future<void> pokupljajPutnika(String putnikId, String vozacId) async {
     try {
-      developer.log('Pokupljanje putnika: $putnikId by vozac: $vozacId', name: 'DnevniPutnikService');
+      developer.log('Pokupljanje putnika: $putnikId by vozac: $vozacId',
+          name: 'DnevniPutnikService');
 
       await _collection.doc(putnikId).update({
         'status': DnevniPutnikStatus.pokupljen.value,
@@ -204,9 +240,11 @@ class DnevniPutnikService {
         'updated_at': DateTime.now().toIso8601String(),
       });
 
-      developer.log('Successfully pokupljen putnik: $putnikId', name: 'DnevniPutnikService');
+      developer.log('Successfully pokupljen putnik: $putnikId',
+          name: 'DnevniPutnikService');
     } catch (e) {
-      developer.log('Error pokupljanje putnika: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error pokupljanje putnika: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to pokupiti putnika: $e');
     }
   }
@@ -214,7 +252,8 @@ class DnevniPutnikService {
   /// Naplaćuje putovanje (označava kao pokupljen sa plaćanjem)
   Future<void> naplataPutovanja(String putnikId, String vozacId) async {
     try {
-      developer.log('Naplata putovanja: $putnikId by vozac: $vozacId', name: 'DnevniPutnikService');
+      developer.log('Naplata putovanja: $putnikId by vozac: $vozacId',
+          name: 'DnevniPutnikService');
 
       await _collection.doc(putnikId).update({
         'status': DnevniPutnikStatus.pokupljen.value,
@@ -223,9 +262,11 @@ class DnevniPutnikService {
         'updated_at': DateTime.now().toIso8601String(),
       });
 
-      developer.log('Successfully naplaceno putovanje: $putnikId', name: 'DnevniPutnikService');
+      developer.log('Successfully naplaceno putovanje: $putnikId',
+          name: 'DnevniPutnikService');
     } catch (e) {
-      developer.log('Error naplata putovanja: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error naplata putovanja: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to naplatiti putovanje: $e');
     }
   }
@@ -233,16 +274,19 @@ class DnevniPutnikService {
   /// Otkazuje rezervaciju
   Future<void> otkaziRezervaciju(String putnikId) async {
     try {
-      developer.log('Otkazivanje rezervacije: $putnikId', name: 'DnevniPutnikService');
+      developer.log('Otkazivanje rezervacije: $putnikId',
+          name: 'DnevniPutnikService');
 
       await _collection.doc(putnikId).update({
         'status': DnevniPutnikStatus.otkazan.value,
         'updated_at': DateTime.now().toIso8601String(),
       });
 
-      developer.log('Successfully otkazana rezervacija: $putnikId', name: 'DnevniPutnikService');
+      developer.log('Successfully otkazana rezervacija: $putnikId',
+          name: 'DnevniPutnikService');
     } catch (e) {
-      developer.log('Error otkazivanje rezervacije: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error otkazivanje rezervacije: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to otkazati rezervaciju: $e');
     }
   }
@@ -252,17 +296,21 @@ class DnevniPutnikService {
   /// Stream za praćenje svih dnevnih putnika
   Stream<List<DnevniPutnik>> watchAllDnevniPutnici() {
     try {
-      developer.log('Starting watch all dnevni putnici stream', name: 'DnevniPutnikService');
+      developer.log('Starting watch all dnevni putnici stream',
+          name: 'DnevniPutnikService');
 
       return _collection
           .where('obrisan', isEqualTo: false)
           .orderBy('createdAt', descending: true)
           .snapshots()
           .map((snapshot) {
-        return snapshot.docs.map((doc) => DnevniPutnik.fromMap(doc.data())).toList();
+        return snapshot.docs
+            .map((doc) => DnevniPutnik.fromMap(doc.data()))
+            .toList();
       });
     } catch (e) {
-      developer.log('Error in watch all dnevni putnici stream: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error in watch all dnevni putnici stream: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to watch all dnevni putnici: $e');
     }
   }
@@ -270,7 +318,8 @@ class DnevniPutnikService {
   /// Stream za praćenje dnevnih putnika po ruti
   Stream<List<DnevniPutnik>> watchDnevniPutniciByRuta(String rutaId) {
     try {
-      developer.log('Starting watch dnevni putnici by ruta stream: $rutaId', name: 'DnevniPutnikService');
+      developer.log('Starting watch dnevni putnici by ruta stream: $rutaId',
+          name: 'DnevniPutnikService');
 
       return _collection
           .where('ruta_id', isEqualTo: rutaId)
@@ -278,10 +327,13 @@ class DnevniPutnikService {
           .orderBy('vremePolaska')
           .snapshots()
           .map((snapshot) {
-        return snapshot.docs.map((doc) => DnevniPutnik.fromMap(doc.data())).toList();
+        return snapshot.docs
+            .map((doc) => DnevniPutnik.fromMap(doc.data()))
+            .toList();
       });
     } catch (e) {
-      developer.log('Error in watch dnevni putnici by ruta stream: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error in watch dnevni putnici by ruta stream: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to watch dnevni putnici by ruta: $e');
     }
   }
@@ -289,30 +341,40 @@ class DnevniPutnikService {
   /// Stream za praćenje dnevnih putnika po datumu
   Stream<List<DnevniPutnik>> watchDnevniPutniciByDatum(DateTime datum) {
     try {
-      developer.log('Starting watch dnevni putnici by datum stream: $datum', name: 'DnevniPutnikService');
+      developer.log('Starting watch dnevni putnici by datum stream: $datum',
+          name: 'DnevniPutnikService');
 
       final startOfDay = DateTime(datum.year, datum.month, datum.day);
       final endOfDay = DateTime(datum.year, datum.month, datum.day, 23, 59, 59);
 
       return _collection
-          .where('datum', isGreaterThanOrEqualTo: startOfDay.toIso8601String().split('T')[0])
-          .where('datum', isLessThanOrEqualTo: endOfDay.toIso8601String().split('T')[0])
+          .where('datum',
+              isGreaterThanOrEqualTo:
+                  startOfDay.toIso8601String().split('T')[0])
+          .where('datum',
+              isLessThanOrEqualTo: endOfDay.toIso8601String().split('T')[0])
           .where('obrisan', isEqualTo: false)
           .orderBy('vremePolaska')
           .snapshots()
           .map((snapshot) {
-        return snapshot.docs.map((doc) => DnevniPutnik.fromMap(doc.data())).toList();
+        return snapshot.docs
+            .map((doc) => DnevniPutnik.fromMap(doc.data()))
+            .toList();
       });
     } catch (e) {
-      developer.log('Error in watch dnevni putnici by datum stream: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error in watch dnevni putnici by datum stream: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to watch dnevni putnici by datum: $e');
     }
   }
 
   /// Stream za praćenje dnevnih putnika po statusu
-  Stream<List<DnevniPutnik>> watchDnevniPutniciByStatus(DnevniPutnikStatus status) {
+  Stream<List<DnevniPutnik>> watchDnevniPutniciByStatus(
+      DnevniPutnikStatus status) {
     try {
-      developer.log('Starting watch dnevni putnici by status stream: ${status.value}', name: 'DnevniPutnikService');
+      developer.log(
+          'Starting watch dnevni putnici by status stream: ${status.value}',
+          name: 'DnevniPutnikService');
 
       return _collection
           .where('status', isEqualTo: status.value)
@@ -320,10 +382,13 @@ class DnevniPutnikService {
           .orderBy('createdAt', descending: true)
           .snapshots()
           .map((snapshot) {
-        return snapshot.docs.map((doc) => DnevniPutnik.fromMap(doc.data())).toList();
+        return snapshot.docs
+            .map((doc) => DnevniPutnik.fromMap(doc.data()))
+            .toList();
       });
     } catch (e) {
-      developer.log('Error in watch dnevni putnici by status stream: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error in watch dnevni putnici by status stream: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to watch dnevni putnici by status: $e');
     }
   }
@@ -331,7 +396,8 @@ class DnevniPutnikService {
   /// Stream za praćenje jednog dnevnog putnika
   Stream<DnevniPutnik?> watchDnevniPutnik(String id) {
     try {
-      developer.log('Starting watch dnevni putnik stream: $id', name: 'DnevniPutnikService');
+      developer.log('Starting watch dnevni putnik stream: $id',
+          name: 'DnevniPutnikService');
 
       return _collection.doc(id).snapshots().map((snapshot) {
         if (!snapshot.exists || snapshot.data() == null) {
@@ -340,7 +406,8 @@ class DnevniPutnikService {
         return DnevniPutnik.fromMap(snapshot.data()!);
       });
     } catch (e) {
-      developer.log('Error in watch dnevni putnik stream: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error in watch dnevni putnik stream: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to watch dnevni putnik: $e');
     }
   }
@@ -352,7 +419,8 @@ class DnevniPutnikService {
     try {
       developer.log('Getting count by status', name: 'DnevniPutnikService');
 
-      final querySnapshot = await _collection.where('obrisan', isEqualTo: false).get();
+      final querySnapshot =
+          await _collection.where('obrisan', isEqualTo: false).get();
 
       final counts = <DnevniPutnikStatus, int>{};
       for (final status in DnevniPutnikStatus.values) {
@@ -369,7 +437,8 @@ class DnevniPutnikService {
 
       return counts;
     } catch (e) {
-      developer.log('Error getting count by status: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error getting count by status: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to get count by status: $e');
     }
   }
@@ -379,7 +448,8 @@ class DnevniPutnikService {
     try {
       developer.log('Getting total earnings', name: 'DnevniPutnikService');
 
-      final querySnapshot = await _collection.where('obrisan', isEqualTo: false).get();
+      final querySnapshot =
+          await _collection.where('obrisan', isEqualTo: false).get();
 
       double total = 0.0;
       for (final doc in querySnapshot.docs) {
@@ -394,7 +464,8 @@ class DnevniPutnikService {
 
       return total;
     } catch (e) {
-      developer.log('Error getting total earnings: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error getting total earnings: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to get total earnings: $e');
     }
   }
@@ -402,14 +473,18 @@ class DnevniPutnikService {
   /// Dobija zaradu po datumu
   Future<double> getEarningsByDate(DateTime datum) async {
     try {
-      developer.log('Getting earnings by date: $datum', name: 'DnevniPutnikService');
+      developer.log('Getting earnings by date: $datum',
+          name: 'DnevniPutnikService');
 
       final startOfDay = DateTime(datum.year, datum.month, datum.day);
       final endOfDay = DateTime(datum.year, datum.month, datum.day, 23, 59, 59);
 
       final querySnapshot = await _collection
-          .where('datum', isGreaterThanOrEqualTo: startOfDay.toIso8601String().split('T')[0])
-          .where('datum', isLessThanOrEqualTo: endOfDay.toIso8601String().split('T')[0])
+          .where('datum',
+              isGreaterThanOrEqualTo:
+                  startOfDay.toIso8601String().split('T')[0])
+          .where('datum',
+              isLessThanOrEqualTo: endOfDay.toIso8601String().split('T')[0])
           .where('obrisan', isEqualTo: false)
           .get();
 
@@ -426,7 +501,8 @@ class DnevniPutnikService {
 
       return total;
     } catch (e) {
-      developer.log('Error getting earnings by date: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error getting earnings by date: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to get earnings by date: $e');
     }
   }
@@ -434,9 +510,11 @@ class DnevniPutnikService {
   // Batch operacije
 
   /// Kreira više dnevnih putnika odjednom
-  Future<List<String>> createBatchDnevniPutnici(List<DnevniPutnik> putnici) async {
+  Future<List<String>> createBatchDnevniPutnici(
+      List<DnevniPutnik> putnici) async {
     try {
-      developer.log('Creating batch dnevni putnici: ${putnici.length}', name: 'DnevniPutnikService');
+      developer.log('Creating batch dnevni putnici: ${putnici.length}',
+          name: 'DnevniPutnikService');
 
       final batch = _firestore.batch();
       final ids = <String>[];
@@ -449,10 +527,12 @@ class DnevniPutnikService {
 
       await batch.commit();
 
-      developer.log('Successfully created batch dnevni putnici: ${ids.length}', name: 'DnevniPutnikService');
+      developer.log('Successfully created batch dnevni putnici: ${ids.length}',
+          name: 'DnevniPutnikService');
       return ids;
     } catch (e) {
-      developer.log('Error creating batch dnevni putnici: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error creating batch dnevni putnici: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to create batch dnevni putnici: $e');
     }
   }
@@ -460,7 +540,8 @@ class DnevniPutnikService {
   /// Ažurira više dnevnih putnika odjednom
   Future<void> updateBatchDnevniPutnici(List<DnevniPutnik> putnici) async {
     try {
-      developer.log('Updating batch dnevni putnici: ${putnici.length}', name: 'DnevniPutnikService');
+      developer.log('Updating batch dnevni putnici: ${putnici.length}',
+          name: 'DnevniPutnikService');
 
       final batch = _firestore.batch();
 
@@ -493,9 +574,12 @@ class DnevniPutnikService {
 
       await batch.commit();
 
-      developer.log('Successfully updated batch dnevni putnici: ${putnici.length}', name: 'DnevniPutnikService');
+      developer.log(
+          'Successfully updated batch dnevni putnici: ${putnici.length}',
+          name: 'DnevniPutnikService');
     } catch (e) {
-      developer.log('Error updating batch dnevni putnici: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error updating batch dnevni putnici: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to update batch dnevni putnici: $e');
     }
   }
@@ -503,7 +587,8 @@ class DnevniPutnikService {
   /// Briše više dnevnih putnika odjednom (logički)
   Future<void> deleteBatchDnevniPutnici(List<String> ids) async {
     try {
-      developer.log('Deleting batch dnevni putnici: ${ids.length}', name: 'DnevniPutnikService');
+      developer.log('Deleting batch dnevni putnici: ${ids.length}',
+          name: 'DnevniPutnikService');
 
       final batch = _firestore.batch();
 
@@ -517,9 +602,11 @@ class DnevniPutnikService {
 
       await batch.commit();
 
-      developer.log('Successfully deleted batch dnevni putnici: ${ids.length}', name: 'DnevniPutnikService');
+      developer.log('Successfully deleted batch dnevni putnici: ${ids.length}',
+          name: 'DnevniPutnikService');
     } catch (e) {
-      developer.log('Error deleting batch dnevni putnici: $e', name: 'DnevniPutnikService', level: 1000);
+      developer.log('Error deleting batch dnevni putnici: $e',
+          name: 'DnevniPutnikService', level: 1000);
       throw Exception('Failed to delete batch dnevni putnici: $e');
     }
   }

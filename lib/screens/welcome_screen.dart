@@ -12,6 +12,7 @@ import '../services/realtime_notification_service.dart';
 import '../services/simplified_daily_checkin.dart';
 import '../theme.dart';
 import '../utils/vozac_boja.dart';
+// Firebase validator import removed - not currently used in this screen
 import 'daily_checkin_screen.dart';
 import 'email_login_screen.dart';
 import 'home_screen.dart';
@@ -23,7 +24,8 @@ class WelcomeScreen extends StatefulWidget {
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateMixin {
+class _WelcomeScreenState extends State<WelcomeScreen>
+    with TickerProviderStateMixin {
   final AudioPlayer _audioPlayer = AudioPlayer();
   late AnimationController _fadeController;
   late AnimationController _slideController;
@@ -112,13 +114,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
     final savedDriver = await AuthManager.getCurrentDriver();
 
     // Ako je neko ulogovan u Firebase ALI nema saved driver, sinhronizuj
-    if (currentUser != null && (savedDriver == null || savedDriver != currentUser.email)) {
+    if (currentUser != null &&
+        (savedDriver == null ||
+            savedDriver != VozacBoja.getVozacForEmail(currentUser.email))) {
       // Debug logging removed for production
-      await AuthManager.setCurrentDriver(currentUser.email!);
+      final driverName = VozacBoja.getVozacForEmail(currentUser.email);
+      if (driverName != null) {
+        await AuthManager.setCurrentDriver(driverName);
+      }
     }
 
     // Koristi driver iz Firebase ako postoji, inače iz local storage
-    final activeDriver = currentUser?.email ?? savedDriver;
+    final activeDriver =
+        VozacBoja.getVozacForEmail(currentUser?.email) ?? savedDriver;
 
     if (activeDriver != null && activeDriver.isNotEmpty) {
       // Vozač je već logovan - PROVERI DAILY CHECK-IN
@@ -130,7 +138,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
       await PermissionService.requestAllPermissionsOnFirstLaunch(context);
 
       // 📅 PROVERI DA LI JE VOZAČ URADIO DAILY CHECK-IN
-      final hasCheckedIn = await SimplifiedDailyCheckInService.hasCheckedInToday(activeDriver);
+      final hasCheckedIn =
+          await SimplifiedDailyCheckInService.hasCheckedInToday(activeDriver);
 
       if (!mounted) return;
 
@@ -180,7 +189,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
       CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut),
     );
 
-    _slideAnimation = Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(
       CurvedAnimation(parent: _slideController, curve: Curves.elasticOut),
     );
 
@@ -251,7 +261,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
           ),
           title: Column(
             children: [
-              Icon(Icons.error, color: Theme.of(context).colorScheme.error, size: 40),
+              Icon(Icons.error,
+                  color: Theme.of(context).colorScheme.error, size: 40),
               const SizedBox(height: 12),
               Text(
                 title,
@@ -385,7 +396,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                               final driver = _drivers[index];
                               return Padding(
                                 padding: const EdgeInsets.symmetric(
-                                  vertical: 4.0, // Increased slightly for better visibility
+                                  vertical:
+                                      4.0, // Increased slightly for better visibility
                                 ),
                                 child: _buildDriverButton(
                                   driver['name'] as String,
@@ -596,7 +608,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                             fontSize: 13, // Further reduced to prevent overflow
                             fontWeight: FontWeight.bold,
                             color: color,
-                            letterSpacing: 1.0, // Further reduced to prevent overflow
+                            letterSpacing:
+                                1.0, // Further reduced to prevent overflow
                             shadows: [
                               Shadow(
                                 color: Colors.white.withOpacity(0.5),

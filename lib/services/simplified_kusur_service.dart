@@ -1,1 +1,20 @@
-import "dart:async"; class SimplifiedKusurService { static Future<double> getKusurForVozac(String vozacIme) async { return 0.0; } static Future<bool> updateKusurForVozac(String vozacIme, double noviKusur) async { return true; } static Stream<double> streamKusurForVozac(String vozacIme) async* { yield 0.0; } static Future<Map<String, double>> getKusurSvihVozaca() async { return {}; } }
+import 'dart:async';
+
+class SimplifiedKusurService {
+  static Future<double> getKusurForVozac(String vozacIme) async {
+    return 0.0;
+  }
+
+  static Future<bool> updateKusurForVozac(
+      String vozacIme, double noviKusur) async {
+    return true;
+  }
+
+  static Stream<double> streamKusurForVozac(String vozacIme) async* {
+    yield 0.0;
+  }
+
+  static Future<Map<String, double>> getKusurSvihVozaca() async {
+    return {};
+  }
+}

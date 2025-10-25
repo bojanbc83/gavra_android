@@ -12,7 +12,8 @@ class PutovanjaIstorijaScreen extends StatefulWidget {
   const PutovanjaIstorijaScreen({Key? key}) : super(key: key);
 
   @override
-  State<PutovanjaIstorijaScreen> createState() => _PutovanjaIstorijaScreenState();
+  State<PutovanjaIstorijaScreen> createState() =>
+      _PutovanjaIstorijaScreenState();
 }
 
 class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
@@ -35,8 +36,10 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
   final Map<String, DateTime> _streamHeartbeats = {};
 
   // 🔍 DEBOUNCED SEARCH & FILTERING
-  final BehaviorSubject<String> _searchSubject = BehaviorSubject<String>.seeded('');
-  final BehaviorSubject<String> _filterSubject = BehaviorSubject<String>.seeded('svi');
+  final BehaviorSubject<String> _searchSubject =
+      BehaviorSubject<String>.seeded('');
+  final BehaviorSubject<String> _filterSubject =
+      BehaviorSubject<String>.seeded('svi');
   late Stream<String> _debouncedSearchStream;
   final TextEditingController _searchController = TextEditingController();
 
@@ -172,7 +175,9 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
 
   // 🔍 DEBOUNCED SEARCH SETUP
   void _setupDebouncedSearch() {
-    _debouncedSearchStream = _searchSubject.debounceTime(const Duration(milliseconds: 300)).distinct();
+    _debouncedSearchStream = _searchSubject
+        .debounceTime(const Duration(milliseconds: 300))
+        .distinct();
 
     _debouncedSearchStream.listen((query) {
       _performSearch(query);
@@ -224,14 +229,18 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
       );
     }
 
-    if (errorString.contains('network') || errorString.contains('socket') || errorString.contains('connection')) {
+    if (errorString.contains('network') ||
+        errorString.contains('socket') ||
+        errorString.contains('connection')) {
       return NetworkErrorWidget(
         message: 'Problem sa mrežom u $streamName',
         onRetry: onRetry ?? _initializeRealtimeStream,
       );
     }
 
-    if (errorString.contains('data') || errorString.contains('parse') || errorString.contains('format')) {
+    if (errorString.contains('data') ||
+        errorString.contains('parse') ||
+        errorString.contains('format')) {
       return DataErrorWidget(
         dataType: streamName,
         reason: error.toString(),
@@ -303,14 +312,18 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.calendar_today, color: Theme.of(context).colorScheme.onPrimary),
+                    icon: Icon(Icons.calendar_today,
+                        color: Theme.of(context).colorScheme.onPrimary),
                     onPressed: () => _selectDate(),
                     tooltip: 'Izaberi datum',
                   ),
                   PopupMenuButton<String>(
-                    icon: Icon(Icons.filter_list, color: Theme.of(context).colorScheme.onPrimary),
+                    icon: Icon(Icons.filter_list,
+                        color: Theme.of(context).colorScheme.onPrimary),
                     tooltip: 'Filter tip putnika',
-                    color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF111111) : Colors.white,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? const Color(0xFF111111)
+                        : Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                       side: BorderSide(
@@ -366,7 +379,10 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
                           isHealthy ? Icons.refresh : Icons.refresh_rounded,
                           color: isHealthy
                               ? Theme.of(context).colorScheme.onPrimary
-                              : Theme.of(context).colorScheme.onPrimary.withOpacity(0.7),
+                              : Theme.of(context)
+                                  .colorScheme
+                                  .onPrimary
+                                  .withOpacity(0.7),
                         );
                       },
                     ),
@@ -411,7 +427,8 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
                         : null,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary),
                     ),
                     filled: true,
                     fillColor: Theme.of(context).colorScheme.surface,
@@ -432,7 +449,11 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.3)),
+                          border: Border.all(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.3)),
                         ),
                         child: Row(
                           children: [
@@ -464,9 +485,10 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
                         horizontal: 12,
                         vertical: 4,
                       ),
-                      decoration: Theme.of(context).brightness == Brightness.dark
-                          ? DarkThemeStyles.dropdownDecoration
-                          : TripleBlueFashionStyles.dropdownDecoration,
+                      decoration:
+                          Theme.of(context).brightness == Brightness.dark
+                              ? DarkThemeStyles.dropdownDecoration
+                              : TripleBlueFashionStyles.dropdownDecoration,
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           value: _selectedFilter,
@@ -493,7 +515,8 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
                               child: Text(
                                 'Svi',
                                 style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onSurface,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
                                 ),
                               ),
                             ),
@@ -502,7 +525,8 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
                               child: Text(
                                 'Mesečni',
                                 style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onSurface,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
                                 ),
                               ),
                             ),
@@ -511,7 +535,8 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
                               child: Text(
                                 'Dnevni',
                                 style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onSurface,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
                                 ),
                               ),
                             ),
@@ -526,7 +551,11 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.3)),
+                        border: Border.all(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.3)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -579,11 +608,14 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
                         final totalCount = _cachedPutovanja.length;
 
                         return Text(
-                          isHealthy ? 'Prikazano: $filteredCount od $totalCount putovanja' : 'Podaci se učitavaju...',
+                          isHealthy
+                              ? 'Prikazano: $filteredCount od $totalCount putovanja'
+                              : 'Podaci se učitavaju...',
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.indigo.shade600,
-                            fontStyle: isHealthy ? FontStyle.normal : FontStyle.italic,
+                            fontStyle:
+                                isHealthy ? FontStyle.normal : FontStyle.italic,
                           ),
                         );
                       },
@@ -635,7 +667,8 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
         return Card(
           margin: const EdgeInsets.only(bottom: 16),
           elevation: 2,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Container(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -745,7 +778,8 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
       putovanja = putovanja.where((putovanje) {
         return putovanje.putnikIme.toLowerCase().contains(searchQuery) ||
             putovanje.adresaPolaska.toLowerCase().contains(searchQuery) ||
-            (putovanje.brojTelefona?.toLowerCase().contains(searchQuery) ?? false);
+            (putovanje.brojTelefona?.toLowerCase().contains(searchQuery) ??
+                false);
       }).toList();
     }
 
@@ -810,7 +844,8 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
                 ),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.indigo.shade100,
                     borderRadius: BorderRadius.circular(12),
@@ -1173,7 +1208,8 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
       setState(() {
         switch (sortBy) {
           case 'vreme':
-            _cachedPutovanja.sort((a, b) => a.vremePolaska.compareTo(b.vremePolaska));
+            _cachedPutovanja
+                .sort((a, b) => a.vremePolaska.compareTo(b.vremePolaska));
             break;
           case 'ime':
             _cachedPutovanja.sort((a, b) => a.putnikIme.compareTo(b.putnikIme));

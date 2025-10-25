@@ -57,7 +57,8 @@ class MesecniPutnikService {
   }
 
   /// 💰 Ažurira plaćanje za mesec
-  Future<bool> azurirajPlacanjeZaMesec(String ime, String mesec, double iznos) async {
+  Future<bool> azurirajPlacanjeZaMesec(
+      String ime, String mesec, double iznos) async {
     try {
       final putnik = await getMesecniPutnikByIme(ime);
       if (putnik == null) return false;
@@ -87,10 +88,15 @@ class MesecniPutnikService {
   /// 📋 Dohvata sve aktivne mesečne putnike
   static Future<List<MesecniPutnik>> getAllActiveMesecniPutnici() async {
     try {
-      final querySnapshot =
-          await _firestore.collection(_collectionName).where('aktivan', isEqualTo: true).orderBy('putnik_ime').get();
+      final querySnapshot = await _firestore
+          .collection(_collectionName)
+          .where('aktivan', isEqualTo: true)
+          .orderBy('putnik_ime')
+          .get();
 
-      return querySnapshot.docs.map((doc) => MesecniPutnik.fromMap(doc.data())).toList();
+      return querySnapshot.docs
+          .map((doc) => MesecniPutnik.fromMap(doc.data()))
+          .toList();
     } catch (e) {
       throw Exception('Greška pri dohvatanju mesečnih putnika: $e');
     }
@@ -122,7 +128,8 @@ class MesecniPutnikService {
   }
 
   /// ✏️ Ažuriraj mesečnog putnika
-  static Future<MesecniPutnik> updateMesecniPutnik(String id, Map<String, dynamic> updates) async {
+  static Future<MesecniPutnik> updateMesecniPutnik(
+      String id, Map<String, dynamic> updates) async {
     try {
       updates['updated_at'] = FieldValue.serverTimestamp();
 
@@ -155,20 +162,36 @@ class MesecniPutnikService {
 
   /// 📊 Real-time stream svih aktivnih mesečnih putnika
   static Stream<List<MesecniPutnik>> getMesecniPutniciStream() {
-    return _firestore
-        .collection(_collectionName)
-        .where('aktivan', isEqualTo: true)
-        .orderBy('putnik_ime')
-        .snapshots()
-        .map(
-          (snapshot) => snapshot.docs.map((doc) => MesecniPutnik.fromMap(doc.data())).toList(),
-        );
+    return _firestore.collection(_collectionName).snapshots().map(
+      (snapshot) {
+        final putnici = <MesecniPutnik>[];
+        for (final doc in snapshot.docs) {
+          try {
+            final data = doc.data();
+            final putnik = MesecniPutnik.fromMap(data);
+
+            // Filtriranje aktivnih putnika
+            if (putnik.aktivan) {
+              putnici.add(putnik);
+            }
+          } catch (e) {
+            // Ignoriši pogrešne dokumente
+            continue;
+          }
+        }
+
+        // Sortiraj po imenu
+        putnici.sort((a, b) => a.putnikIme.compareTo(b.putnikIme));
+        return putnici;
+      },
+    );
   }
 
   /// 💰 Dohvata podatke o plaćanju za putnika (iz njegovog dokumenta)
   static Future<Map<String, dynamic>?> getPlacanja(String putnikId) async {
     try {
-      final docSnapshot = await _firestore.collection(_collectionName).doc(putnikId).get();
+      final docSnapshot =
+          await _firestore.collection(_collectionName).doc(putnikId).get();
 
       if (!docSnapshot.exists) return null;
 

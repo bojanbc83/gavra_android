@@ -7,6 +7,7 @@ import '../services/permission_service.dart';
 // import '../main.dart' show globalThemeRefresher; // Removed in simple version
 import '../services/simplified_daily_checkin.dart';
 import '../theme.dart'; // 🎨 Import za prelepe gradijente
+import '../utils/vozac_boja.dart'; // 🎨 Import za boje vozača
 import 'daily_checkin_screen.dart';
 import 'email_registration_screen.dart';
 import 'home_screen_light.dart';
@@ -18,7 +19,8 @@ class EmailLoginScreen extends StatefulWidget {
   State<EmailLoginScreen> createState() => _EmailLoginScreenState();
 }
 
-class _EmailLoginScreenState extends State<EmailLoginScreen> with TickerProviderStateMixin {
+class _EmailLoginScreenState extends State<EmailLoginScreen>
+    with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -28,6 +30,27 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> with TickerProvider
 
   // STATIC GLOBAL AUDIO PLAYER - za pesme u pozadini
   static AudioPlayer? _globalAudioPlayer;
+
+  // 🎨 DINAMIČKA BOJA VOZAČA NA OSNOVU EMAIL-A
+  Color get _currentDriverColor {
+    final email = _emailController.text.trim();
+    final vozac = VozacBoja.getVozacForEmail(email);
+    return VozacBoja.get(vozac);
+  }
+
+  // 🎨 GRADIJENT SA BOJOM VOZAČA
+  LinearGradient get _driverGradient {
+    final driverColor = _currentDriverColor;
+    return LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        driverColor,
+        driverColor.withOpacity(0.8),
+        driverColor.withOpacity(0.6),
+      ],
+    );
+  }
 
   // PUSTI SPECIJALNE PESME ZA VOZAČE - CELA PESMA U POZADINI
   static Future<void> _playDriverWelcomeSong(String driverName) async {
@@ -121,7 +144,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> with TickerProvider
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: tripleBlueFashionGradient, // 🎨 Koristi prelepi predefinisani gradijent
+          gradient:
+              tripleBlueFashionGradient, // 🎨 Koristi prelepi predefinisani gradijent
         ),
         child: SafeArea(
           child: FadeTransition(
@@ -243,10 +267,13 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> with TickerProvider
       style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
       decoration: InputDecoration(
         labelText: 'Email Adresa',
-        labelStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8)),
+        labelStyle: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8)),
         hintText: 'vas.email@primjer.com',
-        hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
-        prefixIcon: Icon(Icons.email, color: Theme.of(context).colorScheme.primary),
+        hintStyle: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
+        prefixIcon:
+            Icon(Icons.email, color: Theme.of(context).colorScheme.primary),
         filled: true,
         fillColor: Theme.of(context).colorScheme.surface.withOpacity(0.1),
         border: OutlineInputBorder(
@@ -255,15 +282,18 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> with TickerProvider
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary.withOpacity(0.3)),
+          borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.3)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+          borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
+          borderSide:
+              BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
         ),
       ),
       validator: (value) {
@@ -285,10 +315,13 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> with TickerProvider
       style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
       decoration: InputDecoration(
         labelText: 'Šifra',
-        labelStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8)),
+        labelStyle: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8)),
         hintText: 'Unesite šifru',
-        hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
-        prefixIcon: Icon(Icons.lock, color: Theme.of(context).colorScheme.primary),
+        hintStyle: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
+        prefixIcon:
+            Icon(Icons.lock, color: Theme.of(context).colorScheme.primary),
         suffixIcon: IconButton(
           icon: Icon(
             _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
@@ -309,15 +342,18 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> with TickerProvider
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary.withOpacity(0.3)),
+          borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.3)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+          borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
+          borderSide:
+              BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
         ),
       ),
       validator: (value) {
@@ -333,34 +369,51 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> with TickerProvider
   }
 
   Widget _buildLoginButton() {
-    return ElevatedButton(
-      onPressed: _isLoading ? null : _handleLogin,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        elevation: 8,
-        shadowColor: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+    final driverColor = _currentDriverColor;
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: _isLoading ? null : _driverGradient,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: _isLoading
+            ? null
+            : [
+                BoxShadow(
+                  color: driverColor.withOpacity(0.4),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
-      child: _isLoading
-          ? SizedBox(
-              height: 24,
-              width: 24,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onPrimary),
+      child: ElevatedButton(
+        onPressed: _isLoading ? null : _handleLogin,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: _isLoading ? Colors.grey[300] : Colors.transparent,
+          foregroundColor: _isLoading ? Colors.grey[600] : Colors.white,
+          shadowColor: Colors.transparent,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 0,
+        ),
+        child: _isLoading
+            ? const SizedBox(
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+            : const Text(
+                'Prijavi se',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            )
-          : const Text(
-              'Prijavi se',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+      ),
     );
   }
 
@@ -429,7 +482,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> with TickerProvider
 
         // Dobij ime vozača iz trenutne auth session
         final user = AuthManager.getCurrentUser();
-        final driverName = user?.email?.split('@')[0] ?? 'Vozač';
+        final email = user?.email;
+        final driverName = VozacBoja.getVozacForEmail(email) ?? 'Vozač';
 
         // Debug logging removed for production
 
@@ -444,7 +498,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> with TickerProvider
         await _EmailLoginScreenState._playDriverWelcomeSong(driverName);
 
         // Provjeri daily check-in
-        final needsCheckIn = !await SimplifiedDailyCheckInService.hasCheckedInToday(driverName);
+        final needsCheckIn =
+            !await SimplifiedDailyCheckInService.hasCheckedInToday(driverName);
 
         if (needsCheckIn) {
           // Idi na daily check-in
@@ -546,7 +601,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> with TickerProvider
         ),
         content: Text(
           message,
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8)),
+          style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8)),
         ),
         actions: [
           TextButton(
@@ -579,7 +635,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> with TickerProvider
         ),
         content: Text(
           message,
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8)),
+          style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8)),
         ),
         actions: [
           TextButton(

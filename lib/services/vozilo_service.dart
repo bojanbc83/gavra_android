@@ -13,7 +13,8 @@ class VoziloService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   /// Referenca na kolekciju vozila
-  CollectionReference<Map<String, dynamic>> get _collection => _firestore.collection(_collectionName);
+  CollectionReference<Map<String, dynamic>> get _collection =>
+      _firestore.collection(_collectionName);
 
   // CRUD Operacije
 
@@ -24,9 +25,12 @@ class VoziloService {
 
       final querySnapshot = await _collection.orderBy('registracija').get();
 
-      return querySnapshot.docs.map((doc) => Vozilo.fromMap(doc.data())).toList();
+      return querySnapshot.docs
+          .map((doc) => Vozilo.fromMap(doc.data()))
+          .toList();
     } catch (e) {
-      developer.log('Error getting all vozila: $e', name: 'VoziloService', level: 1000);
+      developer.log('Error getting all vozila: $e',
+          name: 'VoziloService', level: 1000);
       throw Exception('Failed to get all vozila: $e');
     }
   }
@@ -43,7 +47,8 @@ class VoziloService {
 
       return Vozilo.fromMap(doc.data()!);
     } catch (e) {
-      developer.log('Error getting vozilo by ID: $e', name: 'VoziloService', level: 1000);
+      developer.log('Error getting vozilo by ID: $e',
+          name: 'VoziloService', level: 1000);
       throw Exception('Failed to get vozilo by ID: $e');
     }
   }
@@ -55,10 +60,12 @@ class VoziloService {
 
       await _collection.doc(vozilo.id).set(vozilo.toMap());
 
-      developer.log('Successfully added vozilo: ${vozilo.id}', name: 'VoziloService');
+      developer.log('Successfully added vozilo: ${vozilo.id}',
+          name: 'VoziloService');
       return vozilo;
     } catch (e) {
-      developer.log('Error adding vozilo: $e', name: 'VoziloService', level: 1000);
+      developer.log('Error adding vozilo: $e',
+          name: 'VoziloService', level: 1000);
       throw Exception('Failed to add vozilo: $e');
     }
   }
@@ -77,11 +84,14 @@ class VoziloService {
       // Kreiraj novo vozilo sa ažuriranim podacima
       final updatedVozilo = Vozilo(
         id: existingVozilo.id,
-        registracija: updates['registracija'] as String? ?? existingVozilo.registracija,
+        registracija:
+            updates['registracija'] as String? ?? existingVozilo.registracija,
         marka: updates['marka'] as String? ?? existingVozilo.marka,
         model: updates['model'] as String? ?? existingVozilo.model,
-        godinaProizvodnje: updates['godina_proizvodnje'] as int? ?? existingVozilo.godinaProizvodnje,
-        brojSedista: updates['broj_sedista'] as int? ?? existingVozilo.brojSedista,
+        godinaProizvodnje: updates['godina_proizvodnje'] as int? ??
+            existingVozilo.godinaProizvodnje,
+        brojSedista:
+            updates['broj_sedista'] as int? ?? existingVozilo.brojSedista,
         aktivan: updates['aktivan'] as bool? ?? existingVozilo.aktivan,
         createdAt: existingVozilo.createdAt,
         updatedAt: DateTime.now(),
@@ -92,7 +102,8 @@ class VoziloService {
       developer.log('Successfully updated vozilo: $id', name: 'VoziloService');
       return updatedVozilo;
     } catch (e) {
-      developer.log('Error updating vozilo: $e', name: 'VoziloService', level: 1000);
+      developer.log('Error updating vozilo: $e',
+          name: 'VoziloService', level: 1000);
       throw Exception('Failed to update vozilo: $e');
     }
   }
@@ -109,7 +120,8 @@ class VoziloService {
 
       developer.log('Successfully deleted vozilo: $id', name: 'VoziloService');
     } catch (e) {
-      developer.log('Error deleting vozilo: $e', name: 'VoziloService', level: 1000);
+      developer.log('Error deleting vozilo: $e',
+          name: 'VoziloService', level: 1000);
       throw Exception('Failed to delete vozilo: $e');
     }
   }
@@ -119,11 +131,17 @@ class VoziloService {
     try {
       developer.log('Getting active vozila', name: 'VoziloService');
 
-      final querySnapshot = await _collection.where('aktivan', isEqualTo: true).orderBy('registracija').get();
+      final querySnapshot = await _collection
+          .where('aktivan', isEqualTo: true)
+          .orderBy('registracija')
+          .get();
 
-      return querySnapshot.docs.map((doc) => Vozilo.fromMap(doc.data())).toList();
+      return querySnapshot.docs
+          .map((doc) => Vozilo.fromMap(doc.data()))
+          .toList();
     } catch (e) {
-      developer.log('Error getting active vozila: $e', name: 'VoziloService', level: 1000);
+      developer.log('Error getting active vozila: $e',
+          name: 'VoziloService', level: 1000);
       throw Exception('Failed to get active vozila: $e');
     }
   }
@@ -131,11 +149,16 @@ class VoziloService {
   /// Pretražuje vozila po registraciji, marki ili modelu
   Future<List<Vozilo>> searchVozila(String query) async {
     try {
-      developer.log('Searching vozila with query: $query', name: 'VoziloService');
+      developer.log('Searching vozila with query: $query',
+          name: 'VoziloService');
 
-      final querySnapshot = await _collection.where('aktivan', isEqualTo: true).orderBy('registracija').get();
+      final querySnapshot = await _collection
+          .where('aktivan', isEqualTo: true)
+          .orderBy('registracija')
+          .get();
 
-      final allVozila = querySnapshot.docs.map((doc) => Vozilo.fromMap(doc.data())).toList();
+      final allVozila =
+          querySnapshot.docs.map((doc) => Vozilo.fromMap(doc.data())).toList();
 
       // Filter client-side zbog ograničenja Firestore složenih upita
       final lowerQuery = query.toLowerCase();
@@ -148,7 +171,8 @@ class VoziloService {
           )
           .toList();
     } catch (e) {
-      developer.log('Error searching vozila: $e', name: 'VoziloService', level: 1000);
+      developer.log('Error searching vozila: $e',
+          name: 'VoziloService', level: 1000);
       throw Exception('Failed to search vozila: $e');
     }
   }
@@ -164,7 +188,8 @@ class VoziloService {
         return snapshot.docs.map((doc) => Vozilo.fromMap(doc.data())).toList();
       });
     } catch (e) {
-      developer.log('Error in watch all vozila stream: $e', name: 'VoziloService', level: 1000);
+      developer.log('Error in watch all vozila stream: $e',
+          name: 'VoziloService', level: 1000);
       throw Exception('Failed to watch all vozila: $e');
     }
   }
@@ -172,13 +197,19 @@ class VoziloService {
   /// Stream za praćenje aktivnih vozila
   Stream<List<Vozilo>> watchActiveVozila() {
     try {
-      developer.log('Starting watch active vozila stream', name: 'VoziloService');
+      developer.log('Starting watch active vozila stream',
+          name: 'VoziloService');
 
-      return _collection.where('aktivan', isEqualTo: true).orderBy('registracija').snapshots().map((snapshot) {
+      return _collection
+          .where('aktivan', isEqualTo: true)
+          .orderBy('registracija')
+          .snapshots()
+          .map((snapshot) {
         return snapshot.docs.map((doc) => Vozilo.fromMap(doc.data())).toList();
       });
     } catch (e) {
-      developer.log('Error in watch active vozila stream: $e', name: 'VoziloService', level: 1000);
+      developer.log('Error in watch active vozila stream: $e',
+          name: 'VoziloService', level: 1000);
       throw Exception('Failed to watch active vozila: $e');
     }
   }
@@ -195,7 +226,8 @@ class VoziloService {
         return Vozilo.fromMap(snapshot.data()!);
       });
     } catch (e) {
-      developer.log('Error in watch vozilo stream: $e', name: 'VoziloService', level: 1000);
+      developer.log('Error in watch vozilo stream: $e',
+          name: 'VoziloService', level: 1000);
       throw Exception('Failed to watch vozilo: $e');
     }
   }
@@ -229,7 +261,8 @@ class VoziloService {
         'inactive': inactive,
       };
     } catch (e) {
-      developer.log('Error getting vozila statistics: $e', name: 'VoziloService', level: 1000);
+      developer.log('Error getting vozila statistics: $e',
+          name: 'VoziloService', level: 1000);
       throw Exception('Failed to get vozila statistics: $e');
     }
   }
@@ -239,7 +272,8 @@ class VoziloService {
   /// Kreira više vozila odjednom
   Future<List<String>> createBatchVozila(List<Vozilo> vozila) async {
     try {
-      developer.log('Creating batch vozila: ${vozila.length}', name: 'VoziloService');
+      developer.log('Creating batch vozila: ${vozila.length}',
+          name: 'VoziloService');
 
       final batch = _firestore.batch();
       final ids = <String>[];
@@ -252,10 +286,12 @@ class VoziloService {
 
       await batch.commit();
 
-      developer.log('Successfully created batch vozila: ${ids.length}', name: 'VoziloService');
+      developer.log('Successfully created batch vozila: ${ids.length}',
+          name: 'VoziloService');
       return ids;
     } catch (e) {
-      developer.log('Error creating batch vozila: $e', name: 'VoziloService', level: 1000);
+      developer.log('Error creating batch vozila: $e',
+          name: 'VoziloService', level: 1000);
       throw Exception('Failed to create batch vozila: $e');
     }
   }
@@ -263,7 +299,8 @@ class VoziloService {
   /// Deaktivira više vozila odjednom
   Future<void> deactivateBatchVozila(List<String> ids) async {
     try {
-      developer.log('Deactivating batch vozila: ${ids.length}', name: 'VoziloService');
+      developer.log('Deactivating batch vozila: ${ids.length}',
+          name: 'VoziloService');
 
       final batch = _firestore.batch();
 
@@ -277,9 +314,11 @@ class VoziloService {
 
       await batch.commit();
 
-      developer.log('Successfully deactivated batch vozila: ${ids.length}', name: 'VoziloService');
+      developer.log('Successfully deactivated batch vozila: ${ids.length}',
+          name: 'VoziloService');
     } catch (e) {
-      developer.log('Error deactivating batch vozila: $e', name: 'VoziloService', level: 1000);
+      developer.log('Error deactivating batch vozila: $e',
+          name: 'VoziloService', level: 1000);
       throw Exception('Failed to deactivate batch vozila: $e');
     }
   }

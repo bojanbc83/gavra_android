@@ -9,26 +9,32 @@ class GpsLokacijaService {
   static const String _collectionName = 'gps_lokacije';
 
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  static CollectionReference<Map<String, dynamic>> get _collection => _firestore.collection(_collectionName);
+  static CollectionReference<Map<String, dynamic>> get _collection =>
+      _firestore.collection(_collectionName);
 
   /// Čuva GPS lokaciju
   static Future<void> saveGpsLokacija(GPSLokacija lokacija) async {
     try {
-      developer.log('Saving GPS lokacija: ${lokacija.id}', name: 'GpsLokacijaService');
+      developer.log('Saving GPS lokacija: ${lokacija.id}',
+          name: 'GpsLokacijaService');
 
       await _collection.doc(lokacija.id).set(lokacija.toMap());
 
-      developer.log('Successfully saved GPS lokacija: ${lokacija.id}', name: 'GpsLokacijaService');
+      developer.log('Successfully saved GPS lokacija: ${lokacija.id}',
+          name: 'GpsLokacijaService');
     } catch (e) {
-      developer.log('Error saving GPS lokacija: $e', name: 'GpsLokacijaService', level: 1000);
+      developer.log('Error saving GPS lokacija: $e',
+          name: 'GpsLokacijaService', level: 1000);
       throw Exception('Failed to save GPS lokacija: $e');
     }
   }
 
   /// Dobija GPS lokacije vozača u određenom vremenskom periodu
-  static Future<List<GPSLokacija>> getGpsLokacije(String vozac, DateTime from, DateTime to) async {
+  static Future<List<GPSLokacija>> getGpsLokacije(
+      String vozac, DateTime from, DateTime to) async {
     try {
-      developer.log('Getting GPS lokacije for vozac: $vozac from $from to $to', name: 'GpsLokacijaService');
+      developer.log('Getting GPS lokacije for vozac: $vozac from $from to $to',
+          name: 'GpsLokacijaService');
 
       final querySnapshot = await _collection
           .where('vozac_id', isEqualTo: vozac)
@@ -38,9 +44,12 @@ class GpsLokacijaService {
           .orderBy('vreme', descending: true)
           .get();
 
-      return querySnapshot.docs.map((doc) => GPSLokacija.fromMap(doc.data())).toList();
+      return querySnapshot.docs
+          .map((doc) => GPSLokacija.fromMap(doc.data()))
+          .toList();
     } catch (e) {
-      developer.log('Error getting GPS lokacije: $e', name: 'GpsLokacijaService', level: 1000);
+      developer.log('Error getting GPS lokacije: $e',
+          name: 'GpsLokacijaService', level: 1000);
       throw Exception('Failed to get GPS lokacije: $e');
     }
   }
@@ -48,7 +57,8 @@ class GpsLokacijaService {
   /// Dobija poslednju GPS lokaciju vozača
   static Future<GPSLokacija?> getLastGpsLokacija(String vozac) async {
     try {
-      developer.log('Getting last GPS lokacija for vozac: $vozac', name: 'GpsLokacijaService');
+      developer.log('Getting last GPS lokacija for vozac: $vozac',
+          name: 'GpsLokacijaService');
 
       final querySnapshot = await _collection
           .where('vozac_id', isEqualTo: vozac)
@@ -63,7 +73,8 @@ class GpsLokacijaService {
 
       return GPSLokacija.fromMap(querySnapshot.docs.first.data());
     } catch (e) {
-      developer.log('Error getting last GPS lokacija: $e', name: 'GpsLokacijaService', level: 1000);
+      developer.log('Error getting last GPS lokacija: $e',
+          name: 'GpsLokacijaService', level: 1000);
       throw Exception('Failed to get last GPS lokacija: $e');
     }
   }
@@ -71,11 +82,14 @@ class GpsLokacijaService {
   /// Briše stare lokacije (starije od određenog broja dana)
   static Future<void> clearOldLocations(int daysToKeep) async {
     try {
-      developer.log('Clearing old locations older than $daysToKeep days', name: 'GpsLokacijaService');
+      developer.log('Clearing old locations older than $daysToKeep days',
+          name: 'GpsLokacijaService');
 
       final cutoffDate = DateTime.now().subtract(Duration(days: daysToKeep));
 
-      final querySnapshot = await _collection.where('vreme', isLessThan: cutoffDate.toIso8601String()).get();
+      final querySnapshot = await _collection
+          .where('vreme', isLessThan: cutoffDate.toIso8601String())
+          .get();
 
       final batch = _firestore.batch();
 
@@ -85,17 +99,23 @@ class GpsLokacijaService {
 
       await batch.commit();
 
-      developer.log('Successfully cleared ${querySnapshot.docs.length} old locations', name: 'GpsLokacijaService');
+      developer.log(
+          'Successfully cleared ${querySnapshot.docs.length} old locations',
+          name: 'GpsLokacijaService');
     } catch (e) {
-      developer.log('Error clearing old locations: $e', name: 'GpsLokacijaService', level: 1000);
+      developer.log('Error clearing old locations: $e',
+          name: 'GpsLokacijaService', level: 1000);
       throw Exception('Failed to clear old locations: $e');
     }
   }
 
   /// Dobija GPS lokacije po vozilu
-  static Future<List<GPSLokacija>> getGpsLokacijeByVozilo(String voziloId, DateTime from, DateTime to) async {
+  static Future<List<GPSLokacija>> getGpsLokacijeByVozilo(
+      String voziloId, DateTime from, DateTime to) async {
     try {
-      developer.log('Getting GPS lokacije for vozilo: $voziloId from $from to $to', name: 'GpsLokacijaService');
+      developer.log(
+          'Getting GPS lokacije for vozilo: $voziloId from $from to $to',
+          name: 'GpsLokacijaService');
 
       final querySnapshot = await _collection
           .where('vozilo_id', isEqualTo: voziloId)
@@ -105,9 +125,12 @@ class GpsLokacijaService {
           .orderBy('vreme', descending: true)
           .get();
 
-      return querySnapshot.docs.map((doc) => GPSLokacija.fromMap(doc.data())).toList();
+      return querySnapshot.docs
+          .map((doc) => GPSLokacija.fromMap(doc.data()))
+          .toList();
     } catch (e) {
-      developer.log('Error getting GPS lokacije by vozilo: $e', name: 'GpsLokacijaService', level: 1000);
+      developer.log('Error getting GPS lokacije by vozilo: $e',
+          name: 'GpsLokacijaService', level: 1000);
       throw Exception('Failed to get GPS lokacije by vozilo: $e');
     }
   }
@@ -115,14 +138,20 @@ class GpsLokacijaService {
   /// Dobija sve aktivne GPS lokacije
   static Future<List<GPSLokacija>> getAllActiveGpsLokacije() async {
     try {
-      developer.log('Getting all active GPS lokacije', name: 'GpsLokacijaService');
+      developer.log('Getting all active GPS lokacije',
+          name: 'GpsLokacijaService');
 
-      final querySnapshot =
-          await _collection.where('aktivan', isEqualTo: true).orderBy('vreme', descending: true).get();
+      final querySnapshot = await _collection
+          .where('aktivan', isEqualTo: true)
+          .orderBy('vreme', descending: true)
+          .get();
 
-      return querySnapshot.docs.map((doc) => GPSLokacija.fromMap(doc.data())).toList();
+      return querySnapshot.docs
+          .map((doc) => GPSLokacija.fromMap(doc.data()))
+          .toList();
     } catch (e) {
-      developer.log('Error getting all active GPS lokacije: $e', name: 'GpsLokacijaService', level: 1000);
+      developer.log('Error getting all active GPS lokacije: $e',
+          name: 'GpsLokacijaService', level: 1000);
       throw Exception('Failed to get all active GPS lokacije: $e');
     }
   }
@@ -130,13 +159,16 @@ class GpsLokacijaService {
   /// Ažurira GPS lokaciju
   static Future<void> updateGpsLokacija(GPSLokacija lokacija) async {
     try {
-      developer.log('Updating GPS lokacija: ${lokacija.id}', name: 'GpsLokacijaService');
+      developer.log('Updating GPS lokacija: ${lokacija.id}',
+          name: 'GpsLokacijaService');
 
       await _collection.doc(lokacija.id).update(lokacija.toMap());
 
-      developer.log('Successfully updated GPS lokacija: ${lokacija.id}', name: 'GpsLokacijaService');
+      developer.log('Successfully updated GPS lokacija: ${lokacija.id}',
+          name: 'GpsLokacijaService');
     } catch (e) {
-      developer.log('Error updating GPS lokacija: $e', name: 'GpsLokacijaService', level: 1000);
+      developer.log('Error updating GPS lokacija: $e',
+          name: 'GpsLokacijaService', level: 1000);
       throw Exception('Failed to update GPS lokacija: $e');
     }
   }
@@ -144,13 +176,16 @@ class GpsLokacijaService {
   /// Označava GPS lokaciju kao neaktivnu
   static Future<void> markGpsLokacijaInactive(String id) async {
     try {
-      developer.log('Marking GPS lokacija inactive: $id', name: 'GpsLokacijaService');
+      developer.log('Marking GPS lokacija inactive: $id',
+          name: 'GpsLokacijaService');
 
       await _collection.doc(id).update({'aktivan': false});
 
-      developer.log('Successfully marked GPS lokacija inactive: $id', name: 'GpsLokacijaService');
+      developer.log('Successfully marked GPS lokacija inactive: $id',
+          name: 'GpsLokacijaService');
     } catch (e) {
-      developer.log('Error marking GPS lokacija inactive: $e', name: 'GpsLokacijaService', level: 1000);
+      developer.log('Error marking GPS lokacija inactive: $e',
+          name: 'GpsLokacijaService', level: 1000);
       throw Exception('Failed to mark GPS lokacija inactive: $e');
     }
   }
@@ -160,7 +195,8 @@ class GpsLokacijaService {
   /// Stream za praćenje GPS lokacija vozača
   static Stream<List<GPSLokacija>> watchGpsLokacijeByVozac(String vozac) {
     try {
-      developer.log('Starting GPS lokacije watch stream for vozac: $vozac', name: 'GpsLokacijaService');
+      developer.log('Starting GPS lokacije watch stream for vozac: $vozac',
+          name: 'GpsLokacijaService');
 
       return _collection
           .where('vozac_id', isEqualTo: vozac)
@@ -168,10 +204,13 @@ class GpsLokacijaService {
           .orderBy('vreme', descending: true)
           .snapshots()
           .map((snapshot) {
-        return snapshot.docs.map((doc) => GPSLokacija.fromMap(doc.data())).toList();
+        return snapshot.docs
+            .map((doc) => GPSLokacija.fromMap(doc.data()))
+            .toList();
       });
     } catch (e) {
-      developer.log('Error in GPS lokacije watch stream: $e', name: 'GpsLokacijaService', level: 1000);
+      developer.log('Error in GPS lokacije watch stream: $e',
+          name: 'GpsLokacijaService', level: 1000);
       throw Exception('Failed to watch GPS lokacije: $e');
     }
   }
@@ -179,7 +218,8 @@ class GpsLokacijaService {
   /// Stream za praćenje poslednje GPS lokacije vozača
   static Stream<GPSLokacija?> watchLastGpsLokacija(String vozac) {
     try {
-      developer.log('Starting last GPS lokacija watch stream for vozac: $vozac', name: 'GpsLokacijaService');
+      developer.log('Starting last GPS lokacija watch stream for vozac: $vozac',
+          name: 'GpsLokacijaService');
 
       return _collection
           .where('vozac_id', isEqualTo: vozac)
@@ -194,7 +234,8 @@ class GpsLokacijaService {
         return GPSLokacija.fromMap(snapshot.docs.first.data());
       });
     } catch (e) {
-      developer.log('Error in last GPS lokacija watch stream: $e', name: 'GpsLokacijaService', level: 1000);
+      developer.log('Error in last GPS lokacija watch stream: $e',
+          name: 'GpsLokacijaService', level: 1000);
       throw Exception('Failed to watch last GPS lokacija: $e');
     }
   }
@@ -202,17 +243,21 @@ class GpsLokacijaService {
   /// Stream za praćenje svih aktivnih GPS lokacija
   static Stream<List<GPSLokacija>> watchAllActiveGpsLokacije() {
     try {
-      developer.log('Starting all active GPS lokacije watch stream', name: 'GpsLokacijaService');
+      developer.log('Starting all active GPS lokacije watch stream',
+          name: 'GpsLokacijaService');
 
       return _collection
           .where('aktivan', isEqualTo: true)
           .orderBy('vreme', descending: true)
           .snapshots()
           .map((snapshot) {
-        return snapshot.docs.map((doc) => GPSLokacija.fromMap(doc.data())).toList();
+        return snapshot.docs
+            .map((doc) => GPSLokacija.fromMap(doc.data()))
+            .toList();
       });
     } catch (e) {
-      developer.log('Error in all active GPS lokacije watch stream: $e', name: 'GpsLokacijaService', level: 1000);
+      developer.log('Error in all active GPS lokacije watch stream: $e',
+          name: 'GpsLokacijaService', level: 1000);
       throw Exception('Failed to watch all active GPS lokacije: $e');
     }
   }
@@ -220,9 +265,11 @@ class GpsLokacijaService {
   // Batch operacije
 
   /// Kreira više GPS lokacija odjednom
-  static Future<List<String>> createBatchGpsLokacije(List<GPSLokacija> lokacije) async {
+  static Future<List<String>> createBatchGpsLokacije(
+      List<GPSLokacija> lokacije) async {
     try {
-      developer.log('Creating batch GPS lokacije: ${lokacije.length}', name: 'GpsLokacijaService');
+      developer.log('Creating batch GPS lokacije: ${lokacije.length}',
+          name: 'GpsLokacijaService');
 
       final batch = _firestore.batch();
       final ids = <String>[];
@@ -235,10 +282,12 @@ class GpsLokacijaService {
 
       await batch.commit();
 
-      developer.log('Successfully created batch GPS lokacije: ${ids.length}', name: 'GpsLokacijaService');
+      developer.log('Successfully created batch GPS lokacije: ${ids.length}',
+          name: 'GpsLokacijaService');
       return ids;
     } catch (e) {
-      developer.log('Error creating batch GPS lokacije: $e', name: 'GpsLokacijaService', level: 1000);
+      developer.log('Error creating batch GPS lokacije: $e',
+          name: 'GpsLokacijaService', level: 1000);
       throw Exception('Failed to create batch GPS lokacije: $e');
     }
   }
@@ -246,7 +295,8 @@ class GpsLokacijaService {
   /// Označava više GPS lokacija kao neaktivne
   static Future<void> markBatchGpsLokacijeInactive(List<String> ids) async {
     try {
-      developer.log('Marking batch GPS lokacije inactive: ${ids.length}', name: 'GpsLokacijaService');
+      developer.log('Marking batch GPS lokacije inactive: ${ids.length}',
+          name: 'GpsLokacijaService');
 
       final batch = _firestore.batch();
 
@@ -257,9 +307,12 @@ class GpsLokacijaService {
 
       await batch.commit();
 
-      developer.log('Successfully marked batch GPS lokacije inactive: ${ids.length}', name: 'GpsLokacijaService');
+      developer.log(
+          'Successfully marked batch GPS lokacije inactive: ${ids.length}',
+          name: 'GpsLokacijaService');
     } catch (e) {
-      developer.log('Error marking batch GPS lokacije inactive: $e', name: 'GpsLokacijaService', level: 1000);
+      developer.log('Error marking batch GPS lokacije inactive: $e',
+          name: 'GpsLokacijaService', level: 1000);
       throw Exception('Failed to mark batch GPS lokacije inactive: $e');
     }
   }
@@ -267,9 +320,12 @@ class GpsLokacijaService {
   // Statistike i analitika
 
   /// Dobija ukupnu distancu koju je vozač prešao u određenom periodu
-  static Future<double> getTotalDistanceByVozac(String vozac, DateTime from, DateTime to) async {
+  static Future<double> getTotalDistanceByVozac(
+      String vozac, DateTime from, DateTime to) async {
     try {
-      developer.log('Getting total distance for vozac: $vozac from $from to $to', name: 'GpsLokacijaService');
+      developer.log(
+          'Getting total distance for vozac: $vozac from $from to $to',
+          name: 'GpsLokacijaService');
 
       final lokacije = await getGpsLokacije(vozac, from, to);
 
@@ -284,15 +340,18 @@ class GpsLokacijaService {
 
       return totalDistance;
     } catch (e) {
-      developer.log('Error getting total distance: $e', name: 'GpsLokacijaService', level: 1000);
+      developer.log('Error getting total distance: $e',
+          name: 'GpsLokacijaService', level: 1000);
       throw Exception('Failed to get total distance: $e');
     }
   }
 
   /// Dobija prosečnu brzinu vozača u određenom periodu
-  static Future<double> getAverageSpeedByVozac(String vozac, DateTime from, DateTime to) async {
+  static Future<double> getAverageSpeedByVozac(
+      String vozac, DateTime from, DateTime to) async {
     try {
-      developer.log('Getting average speed for vozac: $vozac from $from to $to', name: 'GpsLokacijaService');
+      developer.log('Getting average speed for vozac: $vozac from $from to $to',
+          name: 'GpsLokacijaService');
 
       final lokacije = await getGpsLokacije(vozac, from, to);
 
@@ -300,7 +359,10 @@ class GpsLokacijaService {
         return 0.0;
       }
 
-      final validSpeeds = lokacije.where((l) => l.brzina != null && l.brzina! > 0).map((l) => l.brzina!).toList();
+      final validSpeeds = lokacije
+          .where((l) => l.brzina != null && l.brzina! > 0)
+          .map((l) => l.brzina!)
+          .toList();
 
       if (validSpeeds.isEmpty) {
         return 0.0;
@@ -308,7 +370,8 @@ class GpsLokacijaService {
 
       return validSpeeds.reduce((a, b) => a + b) / validSpeeds.length;
     } catch (e) {
-      developer.log('Error getting average speed: $e', name: 'GpsLokacijaService', level: 1000);
+      developer.log('Error getting average speed: $e',
+          name: 'GpsLokacijaService', level: 1000);
       throw Exception('Failed to get average speed: $e');
     }
   }

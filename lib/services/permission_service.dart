@@ -29,7 +29,30 @@ class PermissionService {
     return await _checkExistingPermissions();
   }
 
-  /// 📱 DIALOG ZA POČETNO PODEŠAVANJE DOZVOLA
+  /// 🔧 HELPER WIDGET ZA PERMISSION ROW
+  static Widget _buildPermissionRow(
+      BuildContext context, IconData icon, Color accentColor, String text) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: accentColor, size: 16),
+        const SizedBox(width: 6),
+        Flexible(
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 17,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// �📱 DIALOG ZA POČETNO PODEŠAVANJE DOZVOLA
   static Future<bool> _showPermissionSetupDialog(BuildContext context) async {
     if (!context.mounted) return false;
 
@@ -38,72 +61,79 @@ class PermissionService {
           barrierDismissible: false,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Row(
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              title: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.security, color: Colors.blue),
-                  SizedBox(width: 8),
-                  Text('Podešavanje aplikacije'),
+                  Icon(Icons.security,
+                      color: Theme.of(context).colorScheme.primary, size: 20),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      'Podešavanje',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 ],
               ),
-              content: const Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Za potpunu funkcionalnost aplikacije potrebne su sledeće dozvole:',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Icon(Icons.location_on, color: Colors.green, size: 20),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          '📍 GPS lokacija - za navigaciju do putnika',
-                        ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Potrebne dozvole:',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 20,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Icon(Icons.phone, color: Colors.blue, size: 20),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: Text('📞 Pozivi - za kontaktiranje putnika'),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildPermissionRow(context, Icons.location_on,
+                        Colors.green, 'GPS lokacija - za navigaciju'),
+                    const SizedBox(height: 6),
+                    _buildPermissionRow(context, Icons.phone, Colors.blue,
+                        'Pozivi - za kontakt'),
+                    const SizedBox(height: 6),
+                    _buildPermissionRow(context, Icons.message, Colors.orange,
+                        'SMS poruke - za obaveštenja'),
+                    const SizedBox(height: 6),
+                    _buildPermissionRow(context, Icons.notifications,
+                        Colors.purple, 'Notifikacije - za putovanja'),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Dozvole se zahtevaju samo jednom.',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.6),
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Icon(Icons.message, color: Colors.orange, size: 20),
-                      SizedBox(width: 8),
-                      Expanded(child: Text('📱 SMS poruke - za obaveštenja')),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Icon(Icons.notifications, color: Colors.purple, size: 20),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: Text('🔔 Notifikacije - za nova putovanja'),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Dozvole se zahtevaju samo jednom. Možete ih kasnije promeniti u podešavanjima telefona.',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text('PRESKOČI'),
+                  child: Text(
+                    'PRESKOČI',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.6),
+                    ),
+                  ),
                 ),
                 ElevatedButton.icon(
                   onPressed: () async {
@@ -113,8 +143,14 @@ class PermissionService {
                       Navigator.of(context).pop(success);
                     }
                   },
-                  icon: const Icon(Icons.check),
-                  label: const Text('ODOBRI DOZVOLE'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                  icon: const Icon(Icons.check, size: 18),
+                  label: const Text('ODOBRI',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ),
               ],
             );
@@ -186,7 +222,9 @@ class PermissionService {
       final phone = await Permission.phone.status;
       final sms = await Permission.sms.status;
 
-      return location && (phone.isGranted || phone.isLimited) && (sms.isGranted || sms.isLimited);
+      return location &&
+          (phone.isGranted || phone.isLimited) &&
+          (sms.isGranted || sms.isLimited);
     } catch (e) {
       return false;
     }
@@ -317,7 +355,8 @@ class PermissionService {
   static Future<void> openPermissionSettings() async {
     // Otvori system settings za dozvole aplikacije
     try {
-      await Permission.phone.request(); // Ovo će otvoriti settings ako je potrebno
+      await Permission.phone
+          .request(); // Ovo će otvoriti settings ako je potrebno
     } catch (e) {}
   }
 

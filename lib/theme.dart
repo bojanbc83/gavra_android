@@ -510,7 +510,8 @@ class ThemeSelector {
 
   /// Provera da li je dark tema
   static bool isDarkTheme(String? driverName) {
-    return driverName?.toLowerCase() == 'dark' || driverName?.toLowerCase() == 'midnight';
+    return driverName?.toLowerCase() == 'dark' ||
+        driverName?.toLowerCase() == 'midnight';
   }
 
   /// Provera da li je Triple Blue tema
@@ -528,8 +529,3 @@ class ThemeSelector {
     return driverName?.toLowerCase() == 'svetlana';
   }
 }
-
-
-
-
-

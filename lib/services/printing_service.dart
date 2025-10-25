@@ -13,7 +13,8 @@ class PrintingService {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('🚧 Štampanje je privremeno nedostupno tokom testiranja Firebase migracije'),
+            content: Text(
+                '🚧 Štampanje je privremeno nedostupno tokom testiranja Firebase migracije'),
             backgroundColor: Colors.orange,
             duration: Duration(seconds: 3),
           ),

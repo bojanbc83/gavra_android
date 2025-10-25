@@ -274,8 +274,3 @@ class _PolazakRow extends StatelessWidget {
     );
   }
 }
-
-
-
-
-

@@ -104,7 +104,8 @@ class _CleanStatistikaWidgetState extends State<CleanStatistikaWidget> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  if (_statistike!['no_duplicates'] == true) const Icon(Icons.check_circle, color: Colors.green),
+                  if (_statistike!['no_duplicates'] == true)
+                    const Icon(Icons.check_circle, color: Colors.green),
                 ],
               ),
             ),
@@ -124,7 +125,8 @@ class _CleanStatistikaWidgetState extends State<CleanStatistikaWidget> {
             // Mesečni putnici
             _buildStatistikaCard(
               'Mesečni putnici',
-              '${_statistike!['ukupno_mesecni']} RSD ' + '(${_statistike!['broj_mesecnih']} zapisa)',
+              '${_statistike!['ukupno_mesecni']} RSD ' +
+                  '(${_statistike!['broj_mesecnih']} zapisa)',
               Icons.people,
               Colors.orange,
             ),
@@ -134,7 +136,8 @@ class _CleanStatistikaWidgetState extends State<CleanStatistikaWidget> {
             // Standalone putovanja
             _buildStatistikaCard(
               'Dnevna putovanja',
-              '${_statistike!['ukupno_standalone']} RSD ' + '(${_statistike!['broj_standalone']} zapisa)',
+              '${_statistike!['ukupno_standalone']} RSD ' +
+                  '(${_statistike!['broj_standalone']} zapisa)',
               Icons.directions_car,
               Colors.purple,
             ),

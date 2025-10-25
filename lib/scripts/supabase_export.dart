@@ -12,7 +12,8 @@ import 'package:path/path.dart' as path;
 class SupabaseExporter {
   // 🔑 SUPABASE CREDENTIALS
   static const String supabaseUrl = 'https://gjtabtwudbrmfeyjiicu.supabase.co';
-  static const String supabaseKey = 'YOUR_SUPABASE_ANON_KEY_HERE'; // ⚠️ DODAJ ANON KEY!
+  static const String supabaseKey =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdqdGFidHd1ZGJybWZleWppaWN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc0MzYyOTIsImV4cCI6MjA2MzAxMjI5Mn0.TwAfvlyLIpnVf-WOixvApaQr6NpK9u-VHpRkmbkAKYk';
 
   static const Map<String, String> headers = {
     'apikey': supabaseKey,
@@ -52,7 +53,8 @@ class SupabaseExporter {
       const int limit = 1000;
 
       while (true) {
-        final url = '$supabaseUrl/rest/v1/$tableName?select=*&offset=$offset&limit=$limit';
+        final url =
+            '$supabaseUrl/rest/v1/$tableName?select=*&offset=$offset&limit=$limit';
         final response = await http.get(Uri.parse(url), headers: headers);
 
         if (response.statusCode != 200) {
@@ -66,7 +68,8 @@ class SupabaseExporter {
         allData.addAll(pageData.cast<Map<String, dynamic>>());
         offset += limit;
 
-        print('  📋 Učitao ${pageData.length} zapisa (ukupno: ${allData.length})');
+        print(
+            '  📋 Učitao ${pageData.length} zapisa (ukupno: ${allData.length})');
       }
 
       // 💾 Sačuvaj u JSON file

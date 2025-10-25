@@ -15,7 +15,8 @@ class PutnikService {
   Future<void> oznaciPokupljen(String putnikId, String vozacId) async {
     try {
       // Pokušaj u mesečnim putnicima
-      final mesecniDoc = await _firestore.collection('mesecni_putnici').doc(putnikId).get();
+      final mesecniDoc =
+          await _firestore.collection('mesecni_putnici').doc(putnikId).get();
 
       if (mesecniDoc.exists) {
         await mesecniDoc.reference.update({
@@ -27,7 +28,8 @@ class PutnikService {
       }
 
       // Pokušaj u dnevnim putnicima
-      final dnevniDoc = await _firestore.collection('dnevni_putnici').doc(putnikId).get();
+      final dnevniDoc =
+          await _firestore.collection('dnevni_putnici').doc(putnikId).get();
 
       if (dnevniDoc.exists) {
         await dnevniDoc.reference.update({
@@ -48,14 +50,16 @@ class PutnikService {
   Future<dynamic> getPutnikFromAnyTable(String putnikId) async {
     try {
       // Pokušaj u mesečnim putnicima
-      final mesecniDoc = await _firestore.collection('mesecni_putnici').doc(putnikId).get();
+      final mesecniDoc =
+          await _firestore.collection('mesecni_putnici').doc(putnikId).get();
 
       if (mesecniDoc.exists) {
         return MesecniPutnik.fromMap(mesecniDoc.data()!);
       }
 
       // Pokušaj u dnevnim putnicima
-      final dnevniDoc = await _firestore.collection('dnevni_putnici').doc(putnikId).get();
+      final dnevniDoc =
+          await _firestore.collection('dnevni_putnici').doc(putnikId).get();
 
       if (dnevniDoc.exists) {
         return DnevniPutnik.fromMap(dnevniDoc.data()!);
@@ -120,8 +124,11 @@ class PutnikService {
       }
 
       // Pokušaj u dnevnim putnicima
-      final dnevniQuery =
-          await _firestore.collection('dnevni_putnici').where('ime_prezime', isEqualTo: ime).limit(1).get();
+      final dnevniQuery = await _firestore
+          .collection('dnevni_putnici')
+          .where('ime_prezime', isEqualTo: ime)
+          .limit(1)
+          .get();
 
       if (dnevniQuery.docs.isNotEmpty) {
         return DnevniPutnik.fromMap(dnevniQuery.docs.first.data());
@@ -134,7 +141,8 @@ class PutnikService {
   }
 
   /// 💰 Označi putnika kao plaćenog
-  Future<void> oznaciPlaceno(String putnikId, String vozacId, double iznos) async {
+  Future<void> oznaciPlaceno(
+      String putnikId, String vozacId, double iznos) async {
     try {
       final putnik = await getPutnikFromAnyTable(putnikId);
       if (putnik == null) {
@@ -142,7 +150,8 @@ class PutnikService {
       }
 
       // Određi kolekciju na osnovu tipa putnika
-      final kolekcija = putnik is MesecniPutnik ? 'mesecni_putnici' : 'dnevni_putnici';
+      final kolekcija =
+          putnik is MesecniPutnik ? 'mesecni_putnici' : 'dnevni_putnici';
 
       await _firestore.collection(kolekcija).doc(putnikId).update({
         'placeno': true,
@@ -156,14 +165,16 @@ class PutnikService {
   }
 
   /// 🏥 Označi bolovanje/godišnji
-  Future<void> oznaciBolovanjeGodisnji(String putnikId, String status, String vozacId) async {
+  Future<void> oznaciBolovanjeGodisnji(
+      String putnikId, String status, String vozacId) async {
     try {
       final putnik = await getPutnikFromAnyTable(putnikId);
       if (putnik == null) {
         throw Exception('Putnik sa ID $putnikId nije pronađen');
       }
 
-      final kolekcija = putnik is MesecniPutnik ? 'mesecni_putnici' : 'dnevni_putnici';
+      final kolekcija =
+          putnik is MesecniPutnik ? 'mesecni_putnici' : 'dnevni_putnici';
 
       await _firestore.collection(kolekcija).doc(putnikId).update({
         'status': status, // 'bolovanje' ili 'godisnji'
@@ -183,7 +194,8 @@ class PutnikService {
         throw Exception('Putnik sa ID $putnikId nije pronađen');
       }
 
-      final kolekcija = putnik is MesecniPutnik ? 'mesecni_putnici' : 'dnevni_putnici';
+      final kolekcija =
+          putnik is MesecniPutnik ? 'mesecni_putnici' : 'dnevni_putnici';
 
       await _firestore.collection(kolekcija).doc(putnikId).update({
         'otkazan': true,
@@ -204,7 +216,8 @@ class PutnikService {
         throw Exception('Putnik sa ID $putnikId nije pronađen');
       }
 
-      final kolekcija = putnik is MesecniPutnik ? 'mesecni_putnici' : 'dnevni_putnici';
+      final kolekcija =
+          putnik is MesecniPutnik ? 'mesecni_putnici' : 'dnevni_putnici';
 
       await _firestore.collection(kolekcija).doc(putnikId).update({
         'aktivan': false,
@@ -227,7 +240,9 @@ class PutnikService {
           .where('aktivan', isEqualTo: true)
           .get();
 
-      final mesecniPutnici = mesecniQuery.docs.map((doc) => MesecniPutnik.fromMap(doc.data())).toList();
+      final mesecniPutnici = mesecniQuery.docs
+          .map((doc) => MesecniPutnik.fromMap(doc.data()))
+          .toList();
 
       // Dohvati dnevne putnike (za danas)
       final danas = DateTime.now();
@@ -237,11 +252,14 @@ class PutnikService {
       final dnevniQuery = await _firestore
           .collection('dnevni_putnici')
           .where('vozac_id', isEqualTo: vozacId)
-          .where('datum_polaska', isGreaterThanOrEqualTo: Timestamp.fromDate(pocetakDana))
+          .where('datum_polaska',
+              isGreaterThanOrEqualTo: Timestamp.fromDate(pocetakDana))
           .where('datum_polaska', isLessThan: Timestamp.fromDate(krajDana))
           .get();
 
-      final dnevniPutnici = dnevniQuery.docs.map((doc) => DnevniPutnik.fromMap(doc.data())).toList();
+      final dnevniPutnici = dnevniQuery.docs
+          .map((doc) => DnevniPutnik.fromMap(doc.data()))
+          .toList();
 
       return {
         'mesecni': mesecniPutnici,

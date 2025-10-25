@@ -12,8 +12,10 @@ class FirestoreService {
 
   // Collection references
   static CollectionReference get _putnici => _firestore.collection('putnici');
-  static CollectionReference get _dnevniPutnici => _firestore.collection('dnevni_putnici');
-  static CollectionReference get _gpsLokacije => _firestore.collection('gps_lokacije');
+  static CollectionReference get _dnevniPutnici =>
+      _firestore.collection('dnevni_putnici');
+  static CollectionReference get _gpsLokacije =>
+      _firestore.collection('gps_lokacije');
 
   /// 👥 PUTNICI OPERATIONS
 
@@ -21,7 +23,10 @@ class FirestoreService {
   static Future<List<Putnik>> getPutnici() async {
     try {
       final snapshot = await _putnici.where('obrisan', isEqualTo: false).get();
-      return snapshot.docs.map((doc) => Putnik.fromMap({...doc.data() as Map<String, dynamic>, 'id': doc.id})).toList();
+      return snapshot.docs
+          .map((doc) => Putnik.fromMap(
+              {...doc.data() as Map<String, dynamic>, 'id': doc.id}))
+          .toList();
     } catch (e) {
       return [];
     }
@@ -31,7 +36,8 @@ class FirestoreService {
   static Stream<List<Putnik>> putniciStream() {
     return _putnici.where('obrisan', isEqualTo: false).snapshots().map(
           (snapshot) => snapshot.docs
-              .map((doc) => Putnik.fromMap({...doc.data() as Map<String, dynamic>, 'id': doc.id}))
+              .map((doc) => Putnik.fromMap(
+                  {...doc.data() as Map<String, dynamic>, 'id': doc.id}))
               .toList(),
         );
   }
@@ -48,7 +54,8 @@ class FirestoreService {
   }
 
   /// Update putnika
-  static Future<bool> updatePutnik(String id, Map<String, dynamic> updates) async {
+  static Future<bool> updatePutnik(
+      String id, Map<String, dynamic> updates) async {
     try {
       await _putnici.doc(id).update(updates);
       return true;
@@ -72,7 +79,8 @@ class FirestoreService {
   /// 📅 DNEVNI PUTNICI OPERATIONS
 
   /// Dobij dnevne putnike za datum
-  static Future<List<DnevniPutnik>> getDnevniPutniciZaDatum(DateTime datum) async {
+  static Future<List<DnevniPutnik>> getDnevniPutniciZaDatum(
+      DateTime datum) async {
     try {
       final datumString = datum.toIso8601String().split('T')[0];
       final snapshot = await _dnevniPutnici
@@ -82,7 +90,8 @@ class FirestoreService {
           .get();
 
       return snapshot.docs
-          .map((doc) => DnevniPutnik.fromMap({...doc.data() as Map<String, dynamic>, 'id': doc.id}))
+          .map((doc) => DnevniPutnik.fromMap(
+              {...doc.data() as Map<String, dynamic>, 'id': doc.id}))
           .toList();
     } catch (e) {
       // Debug removed
@@ -100,7 +109,8 @@ class FirestoreService {
         .snapshots()
         .map(
           (snapshot) => snapshot.docs
-              .map((doc) => DnevniPutnik.fromMap({...doc.data() as Map<String, dynamic>, 'id': doc.id}))
+              .map((doc) => DnevniPutnik.fromMap(
+                  {...doc.data() as Map<String, dynamic>, 'id': doc.id}))
               .toList(),
         );
   }
@@ -117,7 +127,8 @@ class FirestoreService {
   }
 
   /// Update dnevnog putnika
-  static Future<bool> updateDnevniPutnik(String id, Map<String, dynamic> updates) async {
+  static Future<bool> updateDnevniPutnik(
+      String id, Map<String, dynamic> updates) async {
     try {
       await _dnevniPutnici.doc(id).update(updates);
       return true;
@@ -148,7 +159,8 @@ class FirestoreService {
         .snapshots()
         .map(
           (snapshot) => snapshot.docs
-              .map((doc) => GPSLokacija.fromMap({...doc.data() as Map<String, dynamic>, 'id': doc.id}))
+              .map((doc) => GPSLokacija.fromMap(
+                  {...doc.data() as Map<String, dynamic>, 'id': doc.id}))
               .toList(),
         );
   }
@@ -206,7 +218,8 @@ class FirestoreService {
 
     try {
       // Proveri putnici
-      final putniciSnapshot = await _putnici.where('obrisan', isEqualTo: false).get();
+      final putniciSnapshot =
+          await _putnici.where('obrisan', isEqualTo: false).get();
       for (var doc in putniciSnapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
         final vozac = data['vozac'] as String?;
@@ -216,7 +229,8 @@ class FirestoreService {
       }
 
       // Proveri dnevni_putnici
-      final dnevniSnapshot = await _dnevniPutnici.where('obrisan', isEqualTo: false).get();
+      final dnevniSnapshot =
+          await _dnevniPutnici.where('obrisan', isEqualTo: false).get();
       for (var doc in dnevniSnapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
         final vozac = data['vozac'] as String?;
@@ -235,8 +249,11 @@ class FirestoreService {
   /// Dohvati GPS lokacije (async)
   static Future<List<GPSLokacija>> getGpsLokacije({int limit = 10}) async {
     try {
-      final snapshot =
-          await _firestore.collection('gps_lokacije').orderBy('timestamp', descending: true).limit(limit).get();
+      final snapshot = await _firestore
+          .collection('gps_lokacije')
+          .orderBy('timestamp', descending: true)
+          .limit(limit)
+          .get();
 
       return snapshot.docs.map((doc) {
         final data = doc.data();

@@ -17,8 +17,11 @@ class DataTransformer {
       throw Exception('Backup direktorij ne postoji! Pokreni export prvo.');
     }
 
-    final backupDirs =
-        await backupRoot.list().where((entity) => entity is Directory).map((entity) => entity as Directory).toList();
+    final backupDirs = await backupRoot
+        .list()
+        .where((entity) => entity is Directory)
+        .map((entity) => entity as Directory)
+        .toList();
 
     if (backupDirs.isEmpty) {
       throw Exception('Nema backup direktorija! Pokreni export prvo.');
@@ -33,7 +36,8 @@ class DataTransformer {
   }
 
   /// 🗂️ Učitaj exportovane podatke
-  static Future<Map<String, dynamic>> loadExportedData(Directory backupDir, String tableName) async {
+  static Future<Map<String, dynamic>> loadExportedData(
+      Directory backupDir, String tableName) async {
     final file = File(path.join(backupDir.path, '$tableName.json'));
     if (!await file.exists()) {
       throw Exception('Fajl $tableName.json ne postoji u backup-u!');
@@ -87,7 +91,8 @@ class DataTransformer {
   }
 
   /// 👤 TRANSFORM: vozaci tabela
-  static Map<String, dynamic> transformVozac(Map<String, dynamic> supabaseData) {
+  static Map<String, dynamic> transformVozac(
+      Map<String, dynamic> supabaseData) {
     return {
       'id': supabaseData['id'],
       'ime_prezime': supabaseData['ime_prezime'] ?? '',
@@ -98,18 +103,21 @@ class DataTransformer {
       'adresa_polaska_id': supabaseData['adresa_polaska_id'],
       'adresa_dolaska_id': supabaseData['adresa_dolaska_id'],
       'ruta_id': supabaseData['ruta_id'],
-      'poslednja_aktivnost': transformTimestamp(supabaseData['poslednja_aktivnost']),
+      'poslednja_aktivnost':
+          transformTimestamp(supabaseData['poslednja_aktivnost']),
       'created_at': transformTimestamp(supabaseData['created_at']),
       'updated_at': transformTimestamp(supabaseData['updated_at']),
 
       // Firebase specifični podaci
-      'last_seen': transformTimestamp(supabaseData['poslednja_aktivnost']) ?? FieldValue.serverTimestamp(),
+      'last_seen': transformTimestamp(supabaseData['poslednja_aktivnost']) ??
+          FieldValue.serverTimestamp(),
       'device_token': null, // Dodaće se kada se user prijavi
     };
   }
 
   /// 👥 TRANSFORM: mesecni_putnici tabela
-  static Map<String, dynamic> transformMesecniPutnik(Map<String, dynamic> supabaseData) {
+  static Map<String, dynamic> transformMesecniPutnik(
+      Map<String, dynamic> supabaseData) {
     return {
       'id': supabaseData['id'],
       'vozac_id': supabaseData['vozac_id'],
@@ -123,12 +131,14 @@ class DataTransformer {
       'updated_at': transformTimestamp(supabaseData['updated_at']),
 
       // Firebase specifični podaci
-      'search_terms': _createSearchTerms((supabaseData['ime_prezime'] ?? '') as String),
+      'search_terms':
+          _createSearchTerms((supabaseData['ime_prezime'] ?? '') as String),
     };
   }
 
   /// 🎫 TRANSFORM: dnevni_putnici tabela
-  static Map<String, dynamic> transformDnevniPutnik(Map<String, dynamic> supabaseData) {
+  static Map<String, dynamic> transformDnevniPutnik(
+      Map<String, dynamic> supabaseData) {
     return {
       'id': supabaseData['id'],
       'vozac_id': supabaseData['vozac_id'],
@@ -141,13 +151,15 @@ class DataTransformer {
       'created_at': transformTimestamp(supabaseData['created_at']),
 
       // Firebase specifični podaci
-      'search_terms': _createSearchTerms((supabaseData['ime_prezime'] ?? '') as String),
+      'search_terms':
+          _createSearchTerms((supabaseData['ime_prezime'] ?? '') as String),
       'status': 'active', // Default status
     };
   }
 
   /// 🛣️ TRANSFORM: putovanja_istorija tabela
-  static Map<String, dynamic> transformPutovanjeIstorija(Map<String, dynamic> supabaseData) {
+  static Map<String, dynamic> transformPutovanjeIstorija(
+      Map<String, dynamic> supabaseData) {
     return {
       'id': supabaseData['id'],
       'vozac_id': supabaseData['vozac_id'],
@@ -168,7 +180,8 @@ class DataTransformer {
   }
 
   /// 📍 TRANSFORM: adrese tabela
-  static Map<String, dynamic> transformAdresa(Map<String, dynamic> supabaseData) {
+  static Map<String, dynamic> transformAdresa(
+      Map<String, dynamic> supabaseData) {
     return {
       'id': supabaseData['id'],
       'naziv': supabaseData['naziv'] ?? '',
@@ -178,12 +191,14 @@ class DataTransformer {
       'created_at': transformTimestamp(supabaseData['created_at']),
 
       // Firebase specifični podaci za search
-      'search_terms': _createSearchTerms((supabaseData['naziv'] ?? '') as String),
+      'search_terms':
+          _createSearchTerms((supabaseData['naziv'] ?? '') as String),
     };
   }
 
   /// 🚗 TRANSFORM: vozila tabela
-  static Map<String, dynamic> transformVozilo(Map<String, dynamic> supabaseData) {
+  static Map<String, dynamic> transformVozilo(
+      Map<String, dynamic> supabaseData) {
     return {
       'id': supabaseData['id'],
       'registracija': supabaseData['registracija'] ?? '',
@@ -202,7 +217,8 @@ class DataTransformer {
   }
 
   /// 📍 TRANSFORM: gps_lokacije tabela
-  static Map<String, dynamic> transformGpsLokacija(Map<String, dynamic> supabaseData) {
+  static Map<String, dynamic> transformGpsLokacija(
+      Map<String, dynamic> supabaseData) {
     return {
       'id': supabaseData['id'],
       'vozac_id': supabaseData['vozac_id'],
@@ -232,7 +248,8 @@ class DataTransformer {
       'created_at': transformTimestamp(supabaseData['created_at']),
 
       // Firebase specifični podaci
-      'search_terms': _createSearchTerms((supabaseData['naziv'] ?? '') as String),
+      'search_terms':
+          _createSearchTerms((supabaseData['naziv'] ?? '') as String),
     };
   }
 
@@ -260,14 +277,18 @@ class DataTransformer {
 
   /// 📅 Helper: Izdvoji YYYY-MM iz timestamp-a
   static String _getMonthYear(dynamic timestamp) {
-    final dt = timestamp is String ? DateTime.tryParse(timestamp) : timestamp as DateTime?;
+    final dt = timestamp is String
+        ? DateTime.tryParse(timestamp)
+        : timestamp as DateTime?;
     if (dt == null) return DateTime.now().toIso8601String().substring(0, 7);
     return dt.toIso8601String().substring(0, 7); // YYYY-MM
   }
 
   /// 📅 Helper: Izdvoji YYYY-MM-DD iz timestamp-a
   static String _getDateString(dynamic timestamp) {
-    final dt = timestamp is String ? DateTime.tryParse(timestamp) : timestamp as DateTime?;
+    final dt = timestamp is String
+        ? DateTime.tryParse(timestamp)
+        : timestamp as DateTime?;
     if (dt == null) return DateTime.now().toIso8601String().substring(0, 10);
     return dt.toIso8601String().substring(0, 10); // YYYY-MM-DD
   }
@@ -283,7 +304,8 @@ class DataTransformer {
       final backupDir = await findLatestBackup();
 
       // Kreiraj transformed direktorij
-      final transformedDir = Directory(path.join(backupDir.path, 'firebase_ready'));
+      final transformedDir =
+          Directory(path.join(backupDir.path, 'firebase_ready'));
       await transformedDir.create();
       print('📁 Firebase direktorij kreiran: ${transformedDir.path}');
 
@@ -315,7 +337,8 @@ class DataTransformer {
           final transformedRecords = <Map<String, dynamic>>[];
           for (final record in originalRecords) {
             try {
-              final transformed = transformFunction(record as Map<String, dynamic>);
+              final transformed =
+                  transformFunction(record as Map<String, dynamic>);
               transformedRecords.add(transformed);
             } catch (e) {
               print('  ⚠️ Greška u zapisu ${record['id']}: $e');
@@ -323,7 +346,8 @@ class DataTransformer {
           }
 
           // Sačuvaj transformisane podatke
-          final outputFile = File(path.join(transformedDir.path, '$tableName.json'));
+          final outputFile =
+              File(path.join(transformedDir.path, '$tableName.json'));
           await outputFile.writeAsString(
             const JsonEncoder.withIndent('  ').convert({
               'collection': tableName,
@@ -334,7 +358,8 @@ class DataTransformer {
             }),
           );
 
-          print('✅ $tableName: ${transformedRecords.length}/${originalRecords.length} zapisa');
+          print(
+              '✅ $tableName: ${transformedRecords.length}/${originalRecords.length} zapisa');
         } catch (e) {
           print('❌ Greška kod $tableName: $e');
         }

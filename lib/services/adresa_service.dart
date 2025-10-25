@@ -49,7 +49,8 @@ class AdresaService {
     try {
       // Check cache first unless force refresh
       if (!forceRefresh) {
-        final cached = await CacheService.getFromDisk<List<Map<String, dynamic>>>(
+        final cached =
+            await CacheService.getFromDisk<List<Map<String, dynamic>>>(
           _listCacheKey,
         );
         if (cached != null) {
@@ -94,7 +95,8 @@ class AdresaService {
     try {
       // Check cache first
       final cacheKey = '$_cachePrefix$id';
-      final cached = await CacheService.getFromDisk<Map<String, dynamic>>(cacheKey);
+      final cached =
+          await CacheService.getFromDisk<Map<String, dynamic>>(cacheKey);
       if (cached != null) {
         // Logger removed
         _cacheHits++;
@@ -129,7 +131,8 @@ class AdresaService {
 
       // TODO: Implement Firebase adrese insert
       // final normalizedAdresa = adresa.normalize();
-      throw UnimplementedError('AdresaService.createAdresa not implemented for Firebase');
+      throw UnimplementedError(
+          'AdresaService.createAdresa not implemented for Firebase');
     } catch (e) {
       // Logger removed
       rethrow;
@@ -145,7 +148,8 @@ class AdresaService {
       updates['updated_at'] = DateTime.now().toIso8601String();
 
       // TODO: Implement Firebase adrese update
-      throw UnimplementedError('AdresaService.updateAdresa not implemented for Firebase');
+      throw UnimplementedError(
+          'AdresaService.updateAdresa not implemented for Firebase');
     } catch (e) {
       // Logger removed
       rethrow;
@@ -158,7 +162,8 @@ class AdresaService {
 
     try {
       // TODO: Implement Firebase adrese soft delete
-      throw UnimplementedError('AdresaService.deleteAdresa not implemented for Firebase');
+      throw UnimplementedError(
+          'AdresaService.deleteAdresa not implemented for Firebase');
 
       // Logger removed
     } catch (e) {
@@ -200,7 +205,8 @@ class AdresaService {
       }
 
       // TODO: Implement Firebase batch insert
-      throw UnimplementedError('AdresaService.createBatchAdrese not implemented for Firebase');
+      throw UnimplementedError(
+          'AdresaService.createBatchAdrese not implemented for Firebase');
     } catch (e) {
       // Logger removed
       rethrow;
@@ -225,7 +231,8 @@ class AdresaService {
       }
 
       // TODO: Implement Firebase batch updates
-      throw UnimplementedError('AdresaService.updateBatchAdrese not implemented for Firebase');
+      throw UnimplementedError(
+          'AdresaService.updateBatchAdrese not implemented for Firebase');
 
       // Logger removed
     } catch (e) {
@@ -242,7 +249,8 @@ class AdresaService {
       if (ids.isEmpty) return;
 
       // TODO: Implement Firebase batch delete
-      throw UnimplementedError('AdresaService.deleteBatchAdrese not implemented for Firebase');
+      throw UnimplementedError(
+          'AdresaService.deleteBatchAdrese not implemented for Firebase');
 
       // Logger removed
     } catch (e) {
@@ -268,7 +276,8 @@ class AdresaService {
     _incrementOperation();
 
     // TODO: Implement Firebase search functionality
-    throw UnimplementedError('AdresaService.searchAdrese not implemented for Firebase');
+    throw UnimplementedError(
+        'AdresaService.searchAdrese not implemented for Firebase');
   }
 
   /// Get addresses grouped by municipality
@@ -317,8 +326,10 @@ class AdresaService {
 
       // Basic counts
       stats['totalAddresses'] = allAdrese.length;
-      stats['addressesWithCoordinates'] = allAdrese.where((a) => a.hasValidCoordinates).length;
-      stats['validAddresses'] = allAdrese.where((a) => a.isCompletelyValid).length;
+      stats['addressesWithCoordinates'] =
+          allAdrese.where((a) => a.hasValidCoordinates).length;
+      stats['validAddresses'] =
+          allAdrese.where((a) => a.isCompletelyValid).length;
 
       // Municipality breakdown
       final byMunicipality = <String, int>{};
@@ -329,7 +340,8 @@ class AdresaService {
         byMunicipality[municipality] = (byMunicipality[municipality] ?? 0) + 1;
 
         if (adresa.hasValidCoordinates) {
-          coordinatesByMunicipality[municipality] = (coordinatesByMunicipality[municipality] ?? 0) + 1;
+          coordinatesByMunicipality[municipality] =
+              (coordinatesByMunicipality[municipality] ?? 0) + 1;
         }
       }
 
@@ -339,10 +351,13 @@ class AdresaService {
       // Service coverage
       final inServiceArea = allAdrese.where((a) => a.isInServiceArea).length;
       stats['serviceAreaCoverage'] = inServiceArea;
-      stats['serviceAreaPercentage'] = allAdrese.isNotEmpty ? (inServiceArea / allAdrese.length * 100).round() : 0;
+      stats['serviceAreaPercentage'] = allAdrese.isNotEmpty
+          ? (inServiceArea / allAdrese.length * 100).round()
+          : 0;
 
       // Priority locations
-      final priorityLocations = allAdrese.where((a) => a.priorityScore > 0).length;
+      final priorityLocations =
+          allAdrese.where((a) => a.priorityScore > 0).length;
       stats['priorityLocations'] = priorityLocations;
 
       // Cache statistics
@@ -350,7 +365,9 @@ class AdresaService {
         'totalOperations': _totalOperations,
         'cacheHits': _cacheHits,
         'cacheMisses': _cacheMisses,
-        'cacheHitRate': _totalOperations > 0 ? (_cacheHits / _totalOperations * 100).round() : 0,
+        'cacheHitRate': _totalOperations > 0
+            ? (_cacheHits / _totalOperations * 100).round()
+            : 0,
         'lastOperation': _lastOperationTime?.toIso8601String(),
       };
 
@@ -472,7 +489,9 @@ class AdresaService {
     return {
       'isHealthy': true,
       'totalOperations': _totalOperations,
-      'cacheHitRate': _totalOperations > 0 ? (_cacheHits / _totalOperations * 100).round() : 0,
+      'cacheHitRate': _totalOperations > 0
+          ? (_cacheHits / _totalOperations * 100).round()
+          : 0,
       'lastOperation': _lastOperationTime?.toIso8601String(),
       'cacheSize': 'N/A', // Could be implemented with cache size tracking
     };

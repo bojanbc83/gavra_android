@@ -354,8 +354,3 @@ class TrafficAwareOptimizationService {
     return alerts;
   }
 }
-
-
-
-
-

@@ -21,7 +21,8 @@ class AutocompleteAdresaField extends StatefulWidget {
   final void Function(String)? onChanged;
 
   @override
-  State<AutocompleteAdresaField> createState() => _AutocompleteAdresaFieldState();
+  State<AutocompleteAdresaField> createState() =>
+      _AutocompleteAdresaFieldState();
 }
 
 class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
@@ -41,7 +42,8 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
     widget.controller.addListener(_onTextChanged);
 
     // Listen za connectivity changes
-    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((result) {
+    _connectivitySubscription =
+        Connectivity().onConnectivityChanged.listen((result) {
       if (mounted)
         setState(() {
           _isOnline = !result.contains(ConnectivityResult.none);
@@ -61,9 +63,13 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
   IconData _getIconForPlace(String adresa) {
     final adresaLower = adresa.toLowerCase();
 
-    if (adresaLower.contains('bolnica') || adresaLower.contains('dom zdravlja') || adresaLower.contains('ambulanta')) {
+    if (adresaLower.contains('bolnica') ||
+        adresaLower.contains('dom zdravlja') ||
+        adresaLower.contains('ambulanta')) {
       return Icons.local_hospital;
-    } else if (adresaLower.contains('škola') || adresaLower.contains('vrtić') || adresaLower.contains('fakultet')) {
+    } else if (adresaLower.contains('škola') ||
+        adresaLower.contains('vrtić') ||
+        adresaLower.contains('fakultet')) {
       return Icons.school;
     } else if (adresaLower.contains('pošta')) {
       return Icons.local_post_office;
@@ -71,13 +77,15 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
       return Icons.account_balance;
     } else if (adresaLower.contains('crkva')) {
       return Icons.church;
-    } else if (adresaLower.contains('park') || adresaLower.contains('stadion')) {
+    } else if (adresaLower.contains('park') ||
+        adresaLower.contains('stadion')) {
       return Icons.park;
     } else if (adresaLower.contains('market') ||
         adresaLower.contains('prodavnica') ||
         adresaLower.contains('trgovina')) {
       return Icons.shopping_cart;
-    } else if (adresaLower.contains('restoran') || adresaLower.contains('kafić')) {
+    } else if (adresaLower.contains('restoran') ||
+        adresaLower.contains('kafić')) {
       return Icons.restaurant;
     } else if (adresaLower.contains('hotel')) {
       return Icons.hotel;
@@ -92,7 +100,9 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
   Color _getColorForPlace(String adresa) {
     final adresaLower = adresa.toLowerCase();
 
-    if (adresaLower.contains('bolnica') || adresaLower.contains('dom zdravlja') || adresaLower.contains('ambulanta')) {
+    if (adresaLower.contains('bolnica') ||
+        adresaLower.contains('dom zdravlja') ||
+        adresaLower.contains('ambulanta')) {
       return Colors.red[600]!;
     } else if (adresaLower.contains('škola') || adresaLower.contains('vrtić')) {
       return Colors.orange[600]!;
@@ -104,9 +114,11 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
       return Colors.purple[600]!;
     } else if (adresaLower.contains('park')) {
       return Colors.green[700]!;
-    } else if (adresaLower.contains('market') || adresaLower.contains('prodavnica')) {
+    } else if (adresaLower.contains('market') ||
+        adresaLower.contains('prodavnica')) {
       return Colors.blue[600]!;
-    } else if (adresaLower.contains('restoran') || adresaLower.contains('kafić')) {
+    } else if (adresaLower.contains('restoran') ||
+        adresaLower.contains('kafić')) {
       return Colors.brown[600]!;
     } else {
       return Colors.blue[600]!;
@@ -232,7 +244,8 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
                     },
                   ),
                 // Separator ako ima i opciju bez adrese i adrese
-                if (widget.controller.text.isEmpty && _filteredAdrese.isNotEmpty)
+                if (widget.controller.text.isEmpty &&
+                    _filteredAdrese.isNotEmpty)
                   Divider(height: 1, color: Colors.grey[300]),
                 // ListView.builder za adrese
                 Flexible(
@@ -274,7 +287,8 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
                 ),
                 // OpenStreetMap attribution
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: Colors.grey[50],
                     border: Border(top: BorderSide(color: Colors.grey[300]!)),
@@ -323,7 +337,9 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
             hintText: widget.hintText ?? 'Unesite adresu...',
             prefixIcon: Icon(
               Icons.location_on,
-              color: widget.controller.text.trim().isNotEmpty ? Colors.green : Colors.orange,
+              color: widget.controller.text.trim().isNotEmpty
+                  ? Colors.green
+                  : Colors.orange,
             ),
             suffixIcon: Row(
               mainAxisSize: MainAxisSize.min,
@@ -347,7 +363,8 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
                   const Icon(Icons.check_circle, color: Colors.green, size: 20),
                 Container(
                   margin: const EdgeInsets.only(right: 8),
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: widget.grad.toLowerCase() == 'bela crkva'
                         ? Colors.blue.withOpacity(0.1)
@@ -364,7 +381,9 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
-                      color: widget.grad.toLowerCase() == 'bela crkva' ? Colors.blue[700] : Colors.purple[700],
+                      color: widget.grad.toLowerCase() == 'bela crkva'
+                          ? Colors.blue[700]
+                          : Colors.purple[700],
                     ),
                   ),
                 ),
@@ -373,13 +392,17 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: widget.controller.text.trim().isNotEmpty ? Colors.green : Colors.grey,
+                color: widget.controller.text.trim().isNotEmpty
+                    ? Colors.green
+                    : Colors.grey,
               ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: widget.controller.text.trim().isNotEmpty ? Colors.green : Colors.grey.withOpacity(0.5),
+                color: widget.controller.text.trim().isNotEmpty
+                    ? Colors.green
+                    : Colors.grey.withOpacity(0.5),
               ),
             ),
             focusedBorder: OutlineInputBorder(
@@ -387,7 +410,9 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
               borderSide: BorderSide(
                 color: widget.controller.text.trim().isNotEmpty
                     ? Colors.green
-                    : (widget.grad.toLowerCase() == 'bela crkva' ? Colors.blue : Colors.purple),
+                    : (widget.grad.toLowerCase() == 'bela crkva'
+                        ? Colors.blue
+                        : Colors.purple),
                 width: 2,
               ),
             ),
@@ -434,8 +459,12 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
           child: Row(
             children: [
               Icon(
-                widget.controller.text.trim().isNotEmpty ? Icons.location_on : Icons.info_outline,
-                color: widget.grad.toLowerCase() == 'bela crkva' ? Colors.blue[700] : Colors.purple[700],
+                widget.controller.text.trim().isNotEmpty
+                    ? Icons.location_on
+                    : Icons.info_outline,
+                color: widget.grad.toLowerCase() == 'bela crkva'
+                    ? Colors.blue[700]
+                    : Colors.purple[700],
                 size: 16,
               ),
               const SizedBox(width: 8),
@@ -445,7 +474,9 @@ class _AutocompleteAdresaFieldState extends State<AutocompleteAdresaField> {
                       ? '📍 Filtriraju se adrese samo za ${widget.grad}'
                       : '💡 Adresa je opciona - možete ostaviti prazno',
                   style: TextStyle(
-                    color: widget.grad.toLowerCase() == 'bela crkva' ? Colors.blue[700] : Colors.purple[700],
+                    color: widget.grad.toLowerCase() == 'bela crkva'
+                        ? Colors.blue[700]
+                        : Colors.purple[700],
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),

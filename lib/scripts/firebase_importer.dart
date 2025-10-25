@@ -21,18 +21,23 @@ class FirebaseImporter {
     }
 
     // Pronađi najnoviji backup sa firebase_ready podacima
-    final backupDirs =
-        await backupRoot.list().where((entity) => entity is Directory).map((entity) => entity as Directory).toList();
+    final backupDirs = await backupRoot
+        .list()
+        .where((entity) => entity is Directory)
+        .map((entity) => entity as Directory)
+        .toList();
 
     for (final backupDir in backupDirs.reversed) {
-      final firebaseDir = Directory(path.join(backupDir.path, 'firebase_ready'));
+      final firebaseDir =
+          Directory(path.join(backupDir.path, 'firebase_ready'));
       if (await firebaseDir.exists()) {
         print('📁 Koristim transformisane podatke: ${firebaseDir.path}');
         return firebaseDir;
       }
     }
 
-    throw Exception('Nema transformisanih podataka! Pokreni data_transformer.dart prvo.');
+    throw Exception(
+        'Nema transformisanih podataka! Pokreni data_transformer.dart prvo.');
   }
 
   /// 📄 Učitaj transformisane podatke za kolekciju
@@ -54,7 +59,8 @@ class FirebaseImporter {
   }
 
   /// 📤 Import kolekcije u Firestore (batch)
-  static Future<void> importCollection(String collectionName, List<Map<String, dynamic>> records) async {
+  static Future<void> importCollection(
+      String collectionName, List<Map<String, dynamic>> records) async {
     if (records.isEmpty) {
       print('⚠️ Preskačem $collectionName - nema podataka');
       return;
@@ -70,11 +76,13 @@ class FirebaseImporter {
       // Podeli u batch-ove
       for (int i = 0; i < records.length; i += batchSize) {
         final batch = firestore.batch();
-        final endIndex = (i + batchSize < records.length) ? i + batchSize : records.length;
+        final endIndex =
+            (i + batchSize < records.length) ? i + batchSize : records.length;
         final batchRecords = records.sublist(i, endIndex);
 
         for (final record in batchRecords) {
-          final docRef = firestore.collection(collectionName).doc(record['id'] as String);
+          final docRef =
+              firestore.collection(collectionName).doc(record['id'] as String);
           batch.set(docRef, record);
         }
 
@@ -148,7 +156,8 @@ class FirebaseImporter {
 
     for (final collectionName in collections) {
       try {
-        final snapshot = await firestore.collection(collectionName).count().get();
+        final snapshot =
+            await firestore.collection(collectionName).count().get();
         final count = snapshot.count;
         totalDocuments += count ?? 0;
         print('  📋 $collectionName: ${count ?? 0} dokumenata');
@@ -164,13 +173,22 @@ class FirebaseImporter {
       print('\n🔍 TESTIRANJE QUERY-JA...');
 
       // Test vozaci
-      final vozaciSnapshot = await firestore.collection('vozaci').where('aktivan', isEqualTo: true).limit(1).get();
-      print('  ✅ Vozaci query: ${vozaciSnapshot.docs.length > 0 ? 'OK' : 'Nema aktivnih vozača'}');
+      final vozaciSnapshot = await firestore
+          .collection('vozaci')
+          .where('aktivan', isEqualTo: true)
+          .limit(1)
+          .get();
+      print(
+          '  ✅ Vozaci query: ${vozaciSnapshot.docs.length > 0 ? 'OK' : 'Nema aktivnih vozača'}');
 
       // Test mesecni putnici
-      final putniciSnapshot =
-          await firestore.collection('mesecni_putnici').where('aktivan', isEqualTo: true).limit(1).get();
-      print('  ✅ Mesečni putnici query: ${putniciSnapshot.docs.length > 0 ? 'OK' : 'Nema aktivnih putnika'}');
+      final putniciSnapshot = await firestore
+          .collection('mesecni_putnici')
+          .where('aktivan', isEqualTo: true)
+          .limit(1)
+          .get();
+      print(
+          '  ✅ Mesečni putnici query: ${putniciSnapshot.docs.length > 0 ? 'OK' : 'Nema aktivnih putnika'}');
 
       // Test search terms
       if (putniciSnapshot.docs.isNotEmpty) {
@@ -221,7 +239,8 @@ class FirebaseImporter {
           }
 
           // Učitaj transformisane podatke
-          final records = await loadTransformedCollection(dataDir, collectionName);
+          final records =
+              await loadTransformedCollection(dataDir, collectionName);
 
           // Importuj u Firestore
           await importCollection(collectionName, records);

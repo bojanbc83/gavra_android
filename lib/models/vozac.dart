@@ -67,8 +67,3 @@ class Vozac {
     return 'Vozac{id: $id, ime: $ime, prezime: $prezime, aktivan: $aktivan}';
   }
 }
-
-
-
-
-

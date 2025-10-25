@@ -34,27 +34,30 @@ class QueryPerformanceMonitor {
   }
 
   /// Beleži uspešan query
-  static void _recordSuccess(String queryName, int duration, Map<String, dynamic>? metadata) {
+  static void _recordSuccess(
+      String queryName, int duration, Map<String, dynamic>? metadata) {
     final stats = _stats.putIfAbsent(queryName, () => QueryStats(queryName));
     stats.addSuccess(duration);
-      // Debug logging removed for production
-}
+    // Debug logging removed for production
+  }
 
   /// Beleži query sa greškom
-  static void _recordError(String queryName, int duration, dynamic error, Map<String, dynamic>? metadata) {
+  static void _recordError(String queryName, int duration, dynamic error,
+      Map<String, dynamic>? metadata) {
     final stats = _stats.putIfAbsent(queryName, () => QueryStats(queryName));
     stats.addError(duration, error);
-      // Debug logging removed for production
-}
+    // Debug logging removed for production
+  }
 
   /// Upozorava na spore query-jeve
-  static void _alertSlowQuery(String queryName, int duration, Map<String, dynamic>? metadata) {
-      // Debug logging removed for production
+  static void _alertSlowQuery(
+      String queryName, int duration, Map<String, dynamic>? metadata) {
+    // Debug logging removed for production
 // Možda dodati notifikaciju ili log u Supabase
     final stats = _stats[queryName];
     if (stats != null && stats.averageDuration > slowQueryThreshold) {
       // Debug logging removed for production
-}
+    }
   }
 
   /// Dobija statistike za sve query-jeve
@@ -70,8 +73,8 @@ class QueryPerformanceMonitor {
   /// Reset statistike
   static void resetStats() {
     _stats.clear();
-      // Debug logging removed for production
-}
+    // Debug logging removed for production
+  }
 
   /// Dobija top 10 najsporijih query-jeva
   static List<QueryStats> getTopSlowQueries({int limit = 10}) {
@@ -82,7 +85,9 @@ class QueryPerformanceMonitor {
 
   /// Dobija query-jeve sa visokim error rate-om
   static List<QueryStats> getHighErrorQueries({double errorThreshold = 0.1}) {
-    return _stats.values.where((stats) => stats.errorRate > errorThreshold).toList();
+    return _stats.values
+        .where((stats) => stats.errorRate > errorThreshold)
+        .toList();
   }
 
   /// Generiše performance report
@@ -110,23 +115,29 @@ class QueryPerformanceMonitor {
     if (errorQueries.isNotEmpty) {
       buffer.writeln('❌ QUERIES WITH HIGH ERROR RATE:');
       for (final stats in errorQueries) {
-        buffer.writeln('  • ${stats.queryName}: ${(stats.errorRate * 100).toStringAsFixed(1)}% errors');
+        buffer.writeln(
+            '  • ${stats.queryName}: ${(stats.errorRate * 100).toStringAsFixed(1)}% errors');
       }
       buffer.writeln();
     }
 
     // Overall stats
-    final totalQueries = _stats.values.fold<int>(0, (sum, stats) => sum + stats.totalCalls);
-    final totalErrors = _stats.values.fold<int>(0, (sum, stats) => sum + stats.errorCount);
+    final totalQueries =
+        _stats.values.fold<int>(0, (sum, stats) => sum + stats.totalCalls);
+    final totalErrors =
+        _stats.values.fold<int>(0, (sum, stats) => sum + stats.errorCount);
     final avgDuration = _stats.values.isEmpty
         ? 0.0
-        : _stats.values.fold<double>(0, (sum, stats) => sum + stats.averageDuration) / _stats.values.length;
+        : _stats.values
+                .fold<double>(0, (sum, stats) => sum + stats.averageDuration) /
+            _stats.values.length;
 
     buffer.writeln('📈 OVERALL STATISTICS:');
     buffer.writeln('  • Total queries tracked: $totalQueries');
     buffer.writeln('  • Total errors: $totalErrors');
     buffer.writeln('  • Average duration: ${avgDuration.toInt()}ms');
-    buffer.writeln('  • Error rate: ${totalQueries > 0 ? (totalErrors / totalQueries * 100).toStringAsFixed(1) : 0}%');
+    buffer.writeln(
+        '  • Error rate: ${totalQueries > 0 ? (totalErrors / totalQueries * 100).toStringAsFixed(1) : 0}%');
 
     return buffer.toString();
   }
@@ -134,8 +145,8 @@ class QueryPerformanceMonitor {
   /// Enable/disable monitoring
   static void setEnabled(bool enabled) {
     _isEnabled = enabled;
-      // Debug logging removed for production
-}
+    // Debug logging removed for production
+  }
 }
 
 /// 📊 Query statistike za jedan query tip
