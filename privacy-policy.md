@@ -20,7 +20,7 @@ Our app uses background location for the following purposes:
 - **Route history** is maintained for service optimization
 
 ## 📊 Data Storage and Security
-- All location data is stored securely using **Supabase** infrastructure
+- All location data is stored securely using **Firebase** infrastructure
 - Data is encrypted in transit and at rest
 - Access is restricted to authorized personnel only
 - Location data is retained for **90 days** for operational purposes
