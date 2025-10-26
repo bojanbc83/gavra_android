@@ -625,11 +625,6 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
                     onPressed: () => _pokaziDijalogZaDodavanje(),
                     tooltip: 'Dodaj novog putnika',
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.bug_report, color: Colors.yellow),
-                    onPressed: () => _dodajTestPutnika(),
-                    tooltip: 'DODAJ TEST PUTNIKA',
-                  ),
                 ],
               ),
             ),
@@ -3318,46 +3313,6 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
   //     }
   //   }
   // }
-
-  // 🚨 PRIVREMENO: Dodaj test putnika da vidim da li radi Firebase
-  Future<void> _dodajTestPutnika() async {
-    try {
-      final testPutnik = MesecniPutnik(
-        id: '', // Firebase će generisati
-        putnikIme: 'TEST PUTNIK ${DateTime.now().millisecond}',
-        tip: 'radnik',
-        polasciPoDanu: {
-          'pon': ['7:00 BC', '15:30 VS'],
-          'uto': ['7:00 BC', '15:30 VS'],
-        },
-        datumPocetkaMeseca: DateTime(DateTime.now().year, DateTime.now().month),
-        datumKrajaMeseca:
-            DateTime(DateTime.now().year, DateTime.now().month + 1, 0),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-
-      await MesecniPutnikService.addMesecniPutnik(testPutnik);
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('✅ TEST PUTNIK DODAT!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('❌ GREŠKA: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-  }
 
   // Helper funkcija za brojanje kontakata
   int _prebrojKontakte(MesecniPutnik putnik) {
