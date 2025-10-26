@@ -96,7 +96,7 @@ class PutovanjaIstorijaService {
     final startOfYear = DateTime(godina, 1, 1);
     final endOfYear = DateTime(godina, 12, 31);
 
-    return await getStatistikePutnikId(putnikId,
+    return getStatistikePutnikId(putnikId,
         startDate: startOfYear, endDate: endOfYear);
   }
 
