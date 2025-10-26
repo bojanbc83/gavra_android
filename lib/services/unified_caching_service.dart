@@ -49,8 +49,8 @@ class UnifiedCachingService {
       final documentsDir = await getApplicationDocumentsDirectory();
       _level4FileCache = Directory('${documentsDir.path}/unified_cache');
 
-      if (!await _level4FileCache!.exists()) {
-        await _level4FileCache!.create(recursive: true);
+      if (!_level4FileCache!.existsSync()) {
+        _level4FileCache!.createSync(recursive: true);
       }
 
       _isInitialized = true;
@@ -182,8 +182,8 @@ class UnifiedCachingService {
 
     try {
       final file = File('${_level4FileCache!.path}/$hashedKey.cache');
-      if (await file.exists()) {
-        await file.delete();
+      if (file.existsSync()) {
+        file.deleteSync();
       }
     } catch (e) {
       // Ignore error
@@ -205,9 +205,9 @@ class UnifiedCachingService {
     }
 
     try {
-      if (await _level4FileCache!.exists()) {
-        await _level4FileCache!.delete(recursive: true);
-        await _level4FileCache!.create(recursive: true);
+      if (_level4FileCache!.existsSync()) {
+        _level4FileCache!.deleteSync(recursive: true);
+        _level4FileCache!.createSync(recursive: true);
       }
     } catch (e) {
       // Ignore error
@@ -253,8 +253,8 @@ class UnifiedCachingService {
 
     // Cleanup L4 (File Cache)
     try {
-      if (await _level4FileCache!.exists()) {
-        final files = await _level4FileCache!.list().toList();
+      if (_level4FileCache!.existsSync()) {
+        final files = _level4FileCache!.listSync();
         for (final file in files) {
           if (file is File && file.path.endsWith('.cache')) {
             try {
@@ -414,8 +414,8 @@ class UnifiedCachingService {
   static Future<T?> _getFromL4<T>(String key, Duration maxAge) async {
     try {
       final file = File('${_level4FileCache!.path}/$key.cache');
-      if (await file.exists()) {
-        final content = await file.readAsString();
+      if (file.existsSync()) {
+        final content = file.readAsStringSync();
         final entry = CacheEntry.fromJson(content);
         if (!entry.isExpired(DateTime.now())) {
           return entry.value as T?;

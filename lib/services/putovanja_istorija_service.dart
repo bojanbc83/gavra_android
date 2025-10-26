@@ -93,7 +93,7 @@ class PutovanjaIstorijaService {
     String putnikId,
     int godina,
   ) async {
-    final startOfYear = DateTime(godina, 1, 1);
+    final startOfYear = DateTime(godina);
     final endOfYear = DateTime(godina, 12, 31);
 
     return getStatistikePutnikId(
@@ -116,7 +116,7 @@ class PutovanjaIstorijaService {
     int godina,
   ) async {
     try {
-      final startOfMonth = DateTime(godina, mesec, 1);
+      final startOfMonth = DateTime(godina, mesec);
       final endOfMonth = DateTime(godina, mesec + 1)
           .subtract(const Duration(days: 1)); // Poslednji dan meseca
 
