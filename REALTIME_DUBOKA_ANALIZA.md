@@ -13,7 +13,7 @@
 | SERVIS | TIP | FUNKCIONALNOST | STATUS |
 |--------|-----|----------------|---------|
 | **RealtimeService** | Core Firebase Streams | Firestore snapshots za putnici/dnevni_putnici | ✅ AKTIVAN |
-| **RealtimeNotificationService** | Multi-channel Push | Firebase FCM + OneSignal + Local | ✅ AKTIVAN |
+| **RealtimeNotificationService** | Dual-channel Push | Firebase FCM + Local Notifications | ✅ AKTIVAN |
 | **RealtimeRouteTrackingService** | GPS + Google Maps | Live tracking vozača sa rerautovanjem | ✅ AKTIVAN |
 | **RealtimeNetworkStatusService** | Network Monitoring | Praćenje network health i stream stability | ✅ AKTIVAN |
 | **RealtimeGPSService** | Location Streaming | High-precision GPS sa background tracking | ✅ AKTIVAN |
@@ -56,8 +56,8 @@ dnevniPutnikStream(String dnevniPutnikId)  // Pojedinačni dnevni putnik
 ### 2. 📱 **RealtimeNotificationService** - Multi-Channel Push
 
 **Lokacija:** `lib/services/realtime_notification_service.dart`  
-**Kanali:** Firebase FCM + OneSignal + Local Notifications  
-**OneSignal App:** `4fd57af1-568a-45e0-a737-3b3918c4e92a`
+**Kanali:** Firebase FCM + Local Notifications  
+**OneSignal:** Uklonjen zbog bezbednosnih razloga i redundancije
 
 #### 🚀 NOTIFICATION CHANNELS:
 1. **Firebase Cloud Messaging (FCM)**
@@ -65,12 +65,7 @@ dnevniPutnikStream(String dnevniPutnikId)  // Pojedinačni dnevni putnik
    - Foreground/background message handling
    - Custom data payload support
 
-2. **OneSignal REST API**
-   - Direct REST calls sa authentication
-   - Segment targeting ("All")
-   - Custom player ID targeting
-
-3. **Local Notifications**
+2. **Local Notifications**
    - Immediate delivery priority
    - Custom notification channel
    - Payload JSON support
@@ -87,8 +82,7 @@ if ((type == 'dodat' || type == 'novi_putnik' ||
 
 #### 🔔 NOTIFICATION FLOW:
 1. **Immediate Local** (highest priority)
-2. **Firebase FCM** (server-side needed)  
-3. **OneSignal REST** (client-side call)
+2. **Firebase FCM** (server-side implementation recommended)
 
 ---
 

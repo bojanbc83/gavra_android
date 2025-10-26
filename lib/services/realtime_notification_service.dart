@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -9,56 +8,10 @@ import 'local_notification_service.dart';
 import 'notification_navigation_service.dart';
 
 class RealtimeNotificationService {
-  /// IMPORTANT: Do NOT store your OneSignal REST API key in the client app.
-  ///
-  /// OneSignal konfiguracija direktno u aplikaciji
-  /// App ID: 4fd57af1-568a-45e0-a737-3b3918c4e92a
-  /// REST Key: dymepwhpkubkfxhqhc4mlh2x7
+  /// Real-time notification service using Firebase FCM + Local notifications
+  /// OneSignal removed for security and simplicity - Firebase FCM is sufficient
 
-  /// Pošalji OneSignal notifikaciju putem REST API-ja
-  static Future<void> sendOneSignalNotification({
-    required String title,
-    required String body,
-    String? playerId, // Ako želiš da šalješ pojedinačno
-    String? segment, // Ili segment (npr. "All")
-    Map<String, dynamic>? data,
-  }) async {
-    // OneSignal REST API direktan poziv
-    const String appId = '4fd57af1-568a-45e0-a737-3b3918c4e92a';
-    const String restKey = 'dymepwhpkubkfxhqhc4mlh2x7';
-
-    if (appId.isEmpty || restKey.isEmpty) {
-      // Logger removed
-      return;
-    }
-
-    try {
-      final payload = {
-        'app_id': appId,
-        'headings': {'en': title},
-        'contents': {'en': body},
-        if (playerId != null) 'include_player_ids': [playerId],
-        if (segment != null) 'included_segments': [segment],
-        if (data != null) 'data': data,
-      };
-
-      final uri = Uri.parse('https://onesignal.com/api/v1/notifications');
-      final req = await HttpClient().postUrl(uri);
-      req.headers.set('Content-Type', 'application/json');
-      req.headers.set('Authorization', 'Basic $restKey');
-      req.add(utf8.encode(jsonEncode(payload)));
-      final httpResponse = await req.close();
-      await utf8.decoder.bind(httpResponse).join();
-      if (httpResponse.statusCode >= 200 && httpResponse.statusCode < 300) {
-        // Logger removed
-      } else {}
-    } catch (e) {}
-  }
-
-  /// OneSignal direktno konfigurisano sa REST API
-  static void initializeOneSignal() {
-    // Logger removed
-  }
+  /// Firebase FCM configuration - clean and secure
 
   /// Public helper to handle an initial/cold-start RemoteMessage (from getInitialMessage)
   static Future<void> handleInitialMessage(RemoteMessage? message) async {
@@ -70,7 +23,7 @@ class RealtimeNotificationService {
     }
   }
 
-  /// Initialize service with full multi-channel support (Firebase + OneSignal + Local)
+  /// Initialize service with Firebase FCM + Local notifications support
   static Future<void> initialize() async {}
 
   /// Setup foreground Firebase message listeners for real-time notifications
@@ -164,24 +117,17 @@ class RealtimeNotificationService {
 
       // 2. Firebase Cloud Messaging (server-side implementation needed)
       // Note: FCM sending is typically done from server, not client
-      // Logger removed
-
-      // 3. OneSignal notification (REST API poziv iz klijenta)
-      // Slanje svima u segmentu "All" (ili koristi playerId za pojedinačne korisnike)
-      RealtimeNotificationService.sendOneSignalNotification(
-        title: title,
-        body: body,
-        segment: 'All',
-        data: data,
-      );
+      // Local notifications provide immediate delivery for now
+      // OneSignal removed - Firebase FCM + Local notifications are sufficient
     } catch (e) {
       // Logger removed
     }
-  }
+  }
+
   static Future<void> sendTestNotification(String message) async {
     // Show local notification
     await LocalNotificationService.showRealtimeNotification(
-      title: 'Gavra Test - Multi Channel',
+      title: 'Gavra Test - Firebase FCM',
       body: message,
       payload: 'test_notification',
     );
