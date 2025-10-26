@@ -11,6 +11,7 @@ import '../models/mesecni_putnik.dart';
 
 import '../services/mesecni_putnik_service.dart'; // 🔥 FIREBASE MIGRATION COMPLETE
 import '../services/permission_service.dart'; // DODANO za konzistentnu telefon logiku
+import '../services/putovanja_istorija_service.dart'; // 📊 STATISTIKE SERVICE
 import '../services/smart_address_autocomplete_service.dart';
 import '../services/timer_manager.dart'; // 🔄 DODANO: TimerManager za memory leak prevention
 import '../services/vozac_mapping_service.dart';
@@ -251,9 +252,32 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
   // 💰 UČITAJ STVARNA PLAĆANJA iz kombinovanih tabela - OPTIMIZOVANO bez setState loops
   Future<void> _ucitajStvarnaPlacanja(List<MesecniPutnik> putnici) async {
     try {
-      // 📝 FUTURE: Firebase implementacija za plaćanja query
-      // Trenutno koristi prazan placeholder - PlacanjeService.getStvarnaPlacanja() će biti implementiran
-      final placanja = <String, double>{}; // PLACEHOLDER: empty payments map
+      final placanja = <String, double>{};
+
+      // Učitaj plaćanja za sve prosleđene putnike
+      for (final putnik in putnici) {
+        try {
+          // Dohvati podatke o plaćanju za svakog putnika
+          final placanjeInfo =
+              await MesecniPutnikService.getPlacanja(putnik.id);
+
+          if (placanjeInfo != null) {
+            final cena = placanjeInfo['cena'] as double? ?? 0;
+            final vremePlacanja = placanjeInfo['vreme_placanja'];
+
+            // Proveri da li je plaćanje validno (ima cenu i vreme plaćanja)
+            if (cena > 0 && vremePlacanja != null) {
+              placanja[putnik.id] = cena;
+            }
+          }
+        } catch (e) {
+          // Ignoriši greške za pojedinačne putnike i nastavi sa sledećim
+          debugPrint(
+              '⚠️ Greška pri učitavanju plaćanja za ${putnik.putnikIme}: $e');
+          continue;
+        }
+      }
+
       if (mounted) {
         // 🔄 ANTI-REBUILD OPTIMIZATION: Samo update ako su se podaci stvarno promenili
         final existingKeys = _stvarnaPlacanja.keys.toSet();
@@ -274,10 +298,14 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
           _stvarnaPlacanja = placanja;
           // 🚀 SAMO JEDNOM setState() umesto kontinuiranih rebuild-a
           if (mounted) setState(() {});
+
+          // Debug log da vidimo šta smo učitali
+          debugPrint('🔥 Učitano ${placanja.length} plaćanja: $placanja');
         }
       }
     } catch (e) {
-      // Greška u učitavanju stvarnih plaćanja
+      debugPrint('❌ Greška pri učitavanju plaćanja: $e');
+      // U slučaju greške, ostavi postojeća plaćanja
     }
   }
 
@@ -4269,94 +4297,39 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
 
   // 📅 GODIŠNJE STATISTIKE (2025)
   Future<Map<String, dynamic>> _getGodisnjeStatistike(String putnikId) async {
-    // 📝 FUTURE: Firebase implementacija - query putovanja_istorija kolekcije za godinu 2025
-    //     .from('putovanja_istorija')
-    //     .select()
-    //     .eq('putnik_id', putnikId)
-    //     .gte('created_at', startOfYear.toIso8601String())
-    //     .lte('created_at', endOfYear.toIso8601String())
-    //     .order('created_at', ascending: false);
-    final response = <dynamic>[]; // PLACEHOLDER: empty list
-
-    int putovanja = 0;
-    int otkazivanja = 0;
-    String? poslednje;
-    double ukupanPrihod = 0;
-
-    for (final record in response) {
-      final status = record['status'];
-      // Iznos može biti u 'cena' (novi zapisi) ili 'iznos_placanja' (legacy)
-      final double iznos =
-          ((record['cena'] ?? record['iznos_placanja'] ?? 0) as num).toDouble();
-
-      if (status == 'pokupljen' || status == 'placeno') {
-        putovanja++;
-        ukupanPrihod += iznos;
-      } else if (status == 'otkazan') {
-        otkazivanja++;
-      }
-
-      if (poslednje == null && record['created_at'] != null) {
-        final datum = DateTime.parse(record['created_at'] as String);
-        poslednje = '${datum.day}/${datum.month}/${datum.year}';
-      }
+    try {
+      // Pozovi PutovanjaIstorijaService za godišnje statistike
+      return await PutovanjaIstorijaService.getGodisnjeStatistike(
+          putnikId, 2025);
+    } catch (e) {
+      debugPrint('❌ Greška pri učitavanju godišnjih statistika: $e');
+      return {
+        'putovanja': 0,
+        'otkazivanja': 0,
+        'ukupan_prihod': '0 RSD',
+        'poslednje_putovanje': null,
+        'uspesnost': 0,
+        'error': true,
+      };
     }
-
-    final ukupno = putovanja + otkazivanja;
-    final uspesnost = ukupno > 0 ? ((putovanja / ukupno) * 100).round() : 0;
-
-    return {
-      'putovanja': putovanja,
-      'otkazivanja': otkazivanja,
-      'poslednje': poslednje ?? 'Nema podataka',
-      'uspesnost': uspesnost,
-      'ukupan_prihod': '${ukupanPrihod.toStringAsFixed(0)} RSD',
-    };
   }
 
   // 🏆 UKUPNE STATISTIKE (SVI PODACI)
   Future<Map<String, dynamic>> _getUkupneStatistike(String putnikId) async {
-    // 📝 FUTURE: Firebase implementacija - query sve putovanja_istorija podatke za potpune statistike
-    //     .from('putovanja_istorija')
-    //     .select()
-    //     .eq('putnik_id', putnikId)
-    //     .order('created_at', ascending: false);
-    final response = <dynamic>[]; // PLACEHOLDER: empty list
-
-    int putovanja = 0;
-    int otkazivanja = 0;
-    String? poslednje;
-    double ukupanPrihod = 0;
-
-    for (final record in response) {
-      final status = record['status'];
-      // Iznos može biti u 'cena' (novi zapisi) ili 'iznos_placanja' (legacy)
-      final double iznos =
-          ((record['cena'] ?? record['iznos_placanja'] ?? 0) as num).toDouble();
-
-      if (status == 'pokupljen' || status == 'placeno') {
-        putovanja++;
-        ukupanPrihod += iznos;
-      } else if (status == 'otkazan') {
-        otkazivanja++;
-      }
-
-      if (poslednje == null && record['created_at'] != null) {
-        final datum = DateTime.parse(record['created_at'] as String);
-        poslednje = '${datum.day}/${datum.month}/${datum.year}';
-      }
+    try {
+      // Pozovi PutovanjaIstorijaService za ukupne statistike
+      return await PutovanjaIstorijaService.getUkupneStatistike(putnikId);
+    } catch (e) {
+      debugPrint('❌ Greška pri učitavanju ukupnih statistika: $e');
+      return {
+        'putovanja': 0,
+        'otkazivanja': 0,
+        'ukupan_prihod': '0 RSD',
+        'poslednje_putovanje': null,
+        'uspesnost': 0,
+        'error': true,
+      };
     }
-
-    final ukupno = putovanja + otkazivanja;
-    final uspesnost = ukupno > 0 ? ((putovanja / ukupno) * 100).round() : 0;
-
-    return {
-      'putovanja': putovanja,
-      'otkazivanja': otkazivanja,
-      'poslednje': poslednje ?? 'Nema podataka',
-      'uspesnost': uspesnost,
-      'ukupan_prihod': '${ukupanPrihod.toStringAsFixed(0)} RSD',
-    };
   }
 
   // 📊 HELPER METODA ZA KREIRANJE REDA STATISTIKE
@@ -4442,65 +4415,34 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     }
   }
 
-  // � GENERIČKA FUNKCIJA ZA STATISTIKE PO MESECIMA
+  // 📊 GENERIČKA FUNKCIJA ZA STATISTIKE PO MESECIMA
   Future<Map<String, dynamic>> _getStatistikeZaMesec(
     String putnikId,
     int mesec,
     int godina,
   ) async {
     try {
-      // 📝 FUTURE: Kreirati datume za mesečne statistike
-      // Potrebno implementirati kreiranje početnog i završnog datuma za zadati mesec i godinu
-
-      // 📝 FUTURE: Kreirati string datume za Firebase query
-      // Potrebno implementirati konverziju datuma u ISO string format za Firebase
-
-      // 📝 FUTURE: Firebase implementacija za putovanja_istorija query
-      //     .from('putovanja_istorija')
-      //     .select('datum, status, pokupljen, created_at')
-      //     .eq('putnik_id', putnikId)
-      //     .gte('datum', startStr)
-      //     .lte('datum', endStr)
-      //     .order('created_at', ascending: false);
-
-      final putovanja = <dynamic>[]; // PLACEHOLDER: empty list
-
-      List<String> uspesniDatumi = [];
-      List<String> otkazaniDatumi = [];
-      String? poslednjiDatum;
-
-      // Procesuiraj putovanja po datumima
-      for (final putovanje in putovanja) {
-        final datum = putovanje['datum'] as String;
-        final status = putovanje['status'] as String?;
-        final pokupljen = putovanje['pokupljen'] as bool?;
-
-        poslednjiDatum ??= datum;
-
-        if (pokupljen == true) {
-          if (!uspesniDatumi.contains(datum)) {
-            uspesniDatumi.add(datum);
-          }
-        } else if (status == 'otkazan' || status == 'nije_se_pojavio') {
-          if (!otkazaniDatumi.contains(datum) &&
-              !uspesniDatumi.contains(datum)) {
-            otkazaniDatumi.add(datum);
-          }
-        }
-      }
+      // Pozovi PutovanjaIstorijaService za mesečne statistike
+      final uspesniDatumi = await PutovanjaIstorijaService.getPutovanjaZaMesec(
+        putnikId,
+        mesec,
+        godina,
+      );
 
       final int brojPutovanja = uspesniDatumi.length;
-      final int brojOtkazivanja = otkazaniDatumi.length;
+      final int brojOtkazivanja = 0; // Za sada nema otkazivanja iz servisa
       final int ukupno = brojPutovanja + brojOtkazivanja;
       final double uspesnost =
           ukupno > 0 ? ((brojPutovanja / ukupno) * 100).roundToDouble() : 0;
+      final String? poslednjeDatum =
+          uspesniDatumi.isNotEmpty ? uspesniDatumi.last : null;
 
       return {
         'putovanja': brojPutovanja,
         'otkazivanja': brojOtkazivanja,
         'uspesnost': uspesnost.toStringAsFixed(1),
-        'poslednje': poslednjiDatum != null
-            ? _formatDatum(DateTime.parse(poslednjiDatum))
+        'poslednje': poslednjeDatum != null
+            ? _formatDatum(DateTime.parse(poslednjeDatum))
             : null,
       };
     } catch (e) {
@@ -4611,44 +4553,20 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
   // 📊 DOBIJ MESEČNE STATISTIKE ZA SEPTEMBAR 2025
   Future<Map<String, dynamic>> _getMesecneStatistike(String putnikId) async {
     try {
-      // 📝 FUTURE: Kreirati septembar datume za statistike
-      // Potrebno implementirati kreiranje početnog i završnog datuma za mesečne statistike
+      // Pozovi PutovanjaIstorijaService za septembar statistike
+      final uspesniDatumiList =
+          await PutovanjaIstorijaService.getPutovanjaZaMesec(
+        putnikId,
+        9, // septembar
+        2025,
+      );
 
-      // 📝 FUTURE: Kreirati string datume za Firebase query
-      // Potrebno implementirati konverziju datuma u ISO string format
-
-      // 📝 FUTURE: Firebase implementacija za putovanja_istorija query
-      //     .from('putovanja_istorija')
-      //     .select('datum, status, pokupljen, created_at')
-      //     .eq('mesecni_putnik_id', putnikId)
-      //     .gte('datum', startStr)
-      //     .lte('datum', endStr)
-      //     .order('datum', ascending: false);
-      final response = <dynamic>[]; // PLACEHOLDER: empty list
-
-      // Broji jedinstvene datume kada je pokupljen
-      final Set<String> uspesniDatumi = {};
-      final Set<String> otkazaniDatumi = {};
-      String? poslednjiDatum;
-
-      for (final red in response) {
-        final String datum = red['datum'] as String;
-        final bool pokupljen = red['pokupljen'] as bool? ?? false;
-        final String status = red['status'] as String? ?? '';
-
-        poslednjiDatum ??= datum;
-
-        if (pokupljen || status == 'pokupljen') {
-          uspesniDatumi.add(datum);
-        } else if (status == 'otkazan' || status == 'nije_se_pojavio') {
-          otkazaniDatumi.add(datum);
-        }
-      }
-
-      final int putovanja = uspesniDatumi.length;
-      final int otkazivanja = otkazaniDatumi.length;
+      final int putovanja = uspesniDatumiList.length;
+      final int otkazivanja = 0; // Za sada nema otkazivanja iz servisa
       final int ukupno = putovanja + otkazivanja;
       final double uspesnost = ukupno > 0 ? (putovanja / ukupno * 100) : 0.0;
+      final String? poslednjiDatum =
+          uspesniDatumiList.isNotEmpty ? uspesniDatumiList.last : null;
 
       return {
         'putovanja': putovanja,
@@ -5091,9 +5009,8 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
   /// � EXPORT PUTNIKA U CSV
   Future<void> _exportPutnici() async {
     try {
-      // 📝 FUTURE: Firebase implementacija za mesecniPutniciStream
-      // Trenutno koristi prazan placeholder - MesecniPutnikService.mesecniPutniciStream će biti korišćen za export
-      final putnici = <MesecniPutnik>[]; // PLACEHOLDER: empty list
+      // Dohvati sve mesečne putnike za export
+      final putnici = await MesecniPutnikService.getAllActiveMesecniPutnici();
 
       if (putnici.isEmpty) {
         // ignore: use_build_context_synchronously

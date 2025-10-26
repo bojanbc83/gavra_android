@@ -9,7 +9,7 @@
                     "order": "ASCENDING"
                 },
                 {
-                    "fieldPath": "created_at",
+                    "fieldPath": "datum_kreiranja",
                     "order": "DESCENDING"
                 }
             ]
@@ -27,7 +27,7 @@
                     "order": "ASCENDING"
                 },
                 {
-                    "fieldPath": "created_at",
+                    "fieldPath": "datum_kreiranja",
                     "order": "DESCENDING"
                 }
             ]
@@ -69,7 +69,7 @@
                     "order": "ASCENDING"
                 },
                 {
-                    "fieldPath": "vreme",
+                    "fieldPath": "timestamp",
                     "order": "DESCENDING"
                 }
             ]
@@ -87,26 +87,8 @@
                     "order": "ASCENDING"
                 },
                 {
-                    "fieldPath": "vreme",
+                    "fieldPath": "timestamp",
                     "order": "DESCENDING"
-                }
-            ]
-        },
-        {
-            "collectionGroup": "gps_lokacije",
-            "queryScope": "COLLECTION",
-            "fields": [
-                {
-                    "fieldPath": "vozac_id",
-                    "order": "ASCENDING"
-                },
-                {
-                    "fieldPath": "vreme",
-                    "order": "ASCENDING"
-                },
-                {
-                    "fieldPath": "aktivan",
-                    "order": "ASCENDING"
                 }
             ]
         },
@@ -119,7 +101,7 @@
                     "order": "ASCENDING"
                 },
                 {
-                    "fieldPath": "datum_putovanja",
+                    "fieldPath": "datum",
                     "order": "DESCENDING"
                 }
             ]
@@ -137,35 +119,7 @@
                     "order": "ASCENDING"
                 },
                 {
-                    "fieldPath": "datum_putovanja",
-                    "order": "DESCENDING"
-                }
-            ]
-        },
-        {
-            "collectionGroup": "putovanja_istorija",
-            "queryScope": "COLLECTION",
-            "fields": [
-                {
-                    "fieldPath": "mesecni_putnik_id",
-                    "order": "ASCENDING"
-                },
-                {
-                    "fieldPath": "datum_putovanja",
-                    "order": "DESCENDING"
-                }
-            ]
-        },
-        {
-            "collectionGroup": "putovanja_istorija",
-            "queryScope": "COLLECTION",
-            "fields": [
-                {
-                    "fieldPath": "tip_putnika",
-                    "order": "ASCENDING"
-                },
-                {
-                    "fieldPath": "datum_putovanja",
+                    "fieldPath": "datum",
                     "order": "DESCENDING"
                 }
             ]
@@ -193,7 +147,7 @@
                     "order": "ASCENDING"
                 },
                 {
-                    "fieldPath": "created_at",
+                    "fieldPath": "kreiran",
                     "order": "DESCENDING"
                 }
             ]
@@ -215,34 +169,6 @@
                     "order": "DESCENDING"
                 }
             ]
-        },
-        {
-            "collectionGroup": "mesecni_putnici",
-            "queryScope": "COLLECTION",
-            "fields": [
-                {
-                    "fieldPath": "search_terms",
-                    "order": "ASCENDING"
-                },
-                {
-                    "fieldPath": "aktivan",
-                    "order": "ASCENDING"
-                }
-            ]
-        },
-        {
-            "collectionGroup": "dnevni_putnici",
-            "queryScope": "COLLECTION",
-            "fields": [
-                {
-                    "fieldPath": "datum_polaska",
-                    "order": "ASCENDING"
-                },
-                {
-                    "fieldPath": "vozac_id",
-                    "order": "ASCENDING"
-                }
-            ]
         }
     ],
     "fieldOverrides": [
@@ -251,7 +177,6 @@
             "fieldPath": "adrese",
             "indexes": [
                 {
-                    "queryScope": "COLLECTION",
                     "arrayConfig": "CONTAINS"
                 }
             ]
@@ -261,27 +186,6 @@
             "fieldPath": "rute_ids",
             "indexes": [
                 {
-                    "queryScope": "COLLECTION",
-                    "arrayConfig": "CONTAINS"
-                }
-            ]
-        },
-        {
-            "collectionGroup": "mesecni_putnici",
-            "fieldPath": "search_terms",
-            "indexes": [
-                {
-                    "queryScope": "COLLECTION",
-                    "arrayConfig": "CONTAINS"
-                }
-            ]
-        },
-        {
-            "collectionGroup": "putovanja_istorija",
-            "fieldPath": "search_terms",
-            "indexes": [
-                {
-                    "queryScope": "COLLECTION",
                     "arrayConfig": "CONTAINS"
                 }
             ]
