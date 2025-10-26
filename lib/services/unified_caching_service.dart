@@ -463,16 +463,16 @@ class UnifiedCachingService {
 
 /// 📊 CACHE ENTRY CLASS
 class CacheEntry {
-  final dynamic value;
-  final DateTime createdAt;
-  final Duration ttl;
-  DateTime lastAccessed;
-
   CacheEntry({
     required this.value,
     required this.createdAt,
     required this.ttl,
   }) : lastAccessed = DateTime.now();
+
+  final dynamic value;
+  final DateTime createdAt;
+  final Duration ttl;
+  DateTime lastAccessed;
 
   bool isExpired(DateTime now) {
     return now.difference(createdAt) > ttl;

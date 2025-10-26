@@ -96,11 +96,8 @@ class PutovanjaIstorijaService {
     final startOfYear = DateTime(godina, 1, 1);
     final endOfYear = DateTime(godina, 12, 31);
 
-    return await getStatistikePutnikId(
-      putnikId,
-      startDate: startOfYear,
-      endDate: endOfYear,
-    );
+    return await getStatistikePutnikId(putnikId,
+        startDate: startOfYear, endDate: endOfYear);
   }
 
   /// 📊 Dohvata ukupne statistike (sve godine)
@@ -128,13 +125,13 @@ class PutovanjaIstorijaService {
                   startOfMonth.toIso8601String().split('T')[0])
           .where('datum_putovanja',
               isLessThanOrEqualTo: endOfMonth.toIso8601String().split('T')[0])
-          .orderBy('datum_putovanja', descending: false)
+          .orderBy('datum_putovanja')
           .get();
 
       List<String> uspesniDatumi = [];
 
       for (final doc in querySnapshot.docs) {
-        final data = doc.data() as Map<String, dynamic>;
+        final data = doc.data();
         final status = data['status'] as String? ?? '';
         final datum = data['datum_putovanja'] as String?;
 
@@ -163,7 +160,7 @@ class PutovanjaIstorijaService {
 
       return querySnapshot.docs
           .map((doc) => PutovanjaIstorija.fromMap({
-                ...doc.data() as Map<String, dynamic>,
+                ...doc.data(),
                 'id': doc.id,
               }))
           .toList();

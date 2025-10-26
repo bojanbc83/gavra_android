@@ -295,7 +295,6 @@ class _GpsCsvImportScreenState extends State<GpsCsvImportScreen> {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['csv'],
-        allowMultiple: false,
       );
 
       if (result != null && result.files.isNotEmpty) {

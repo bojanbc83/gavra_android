@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/putnik.dart';
 import 'performance_cache_service.dart';
-import 'traffic_aware_optimization_service.dart';
+// import 'traffic_aware_optimization_service.dart'; // ONEMOGUĆENO - plaćeni Google API
 
 /// 🛰️ NAPREDNI GPS OPTIMIZACIJA SERVIS
 /// Implementira state-of-the-art algoritme za optimizaciju ruta
@@ -80,15 +80,13 @@ class AdvancedRouteOptimizationService {
         optimizedRoute = await _hybridOptimization(startPosition, coordinates);
       }
 
-      // 6. Traffic-aware optimizacija
+      // 6. Traffic-aware optimization - ONEMOGUĆENO (plaćeni Google API)
+      // NAPOMENA: TrafficAwareOptimizationService koristi plaćeni Google API
+      // Za besplatnu verziju, koristimo samo geometrijske optimizacije
       if (useTrafficData && departureTime != null) {
-        optimizedRoute =
-            await TrafficAwareOptimizationService.optimizeWithTraffic(
-          optimizedRoute,
-          coordinates,
-          departureTime,
-          startPosition: startPosition,
-        );
+        // Umesto traffic API-ja, koristimo osnovnu time-of-day optimizaciju
+        // koja već postoji u koraku 7 (besplatna)
+        print('🚫 Traffic optimization preskočen - koristi plaćeni Google API');
       }
 
       // 7. Time-of-day fine-tuning

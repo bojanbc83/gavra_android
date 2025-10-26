@@ -356,12 +356,6 @@ class UnifiedGeocodingService {
 
 /// 📍 GEOCODE RESULT CLASS
 class GeocodeResult {
-  final double latitude;
-  final double longitude;
-  final String displayName;
-  final String provider;
-  final double confidence;
-
   const GeocodeResult({
     required this.latitude,
     required this.longitude,
@@ -369,6 +363,12 @@ class GeocodeResult {
     required this.provider,
     required this.confidence,
   });
+
+  final double latitude;
+  final double longitude;
+  final String displayName;
+  final String provider;
+  final double confidence;
 
   /// Convert to coordinate string (legacy compatibility)
   String toCoordinateString() {

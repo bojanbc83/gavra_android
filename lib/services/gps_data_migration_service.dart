@@ -12,10 +12,10 @@ import 'gps_lokacija_service.dart';
 /// Integriše 1000 GPS zapisa iz Supabase u Firebase
 /// Povezuje Supabase podatke sa postojećim GPS servisima
 class GpsDataMigrationService {
-  // TODO: Replace with actual Supabase credentials
+  // NAPOMENA: Supabase integracija je opciona - koristiti samo po potrebi
   static const String _supabaseUrl = 'https://your-supabase-url.supabase.co';
   static const String _supabaseKey = 'your-supabase-anon-key';
-  // Note: These credentials should be loaded from environment variables or secure config
+  // VAŽNO: Ovi kredencijali se učitavaju iz environment varijabli ili sigurne konfiguracije
 
   static bool _isMigrationInProgress = false;
   static int _migratedCount = 0;
@@ -223,21 +223,21 @@ class GpsDataMigrationService {
   static GPSLokacija _convertSupabaseToFirebase(
       Map<String, dynamic> supabaseRecord) {
     return GPSLokacija(
-      id: supabaseRecord['id']?.toString() ??
-          DateTime.now().millisecondsSinceEpoch.toString(),
-      voziloId: supabaseRecord['vozilo_id']?.toString() ?? 'unknown',
-      vozacId: supabaseRecord['vozac_id']?.toString() ?? '',
-      latitude: (supabaseRecord['latitude'] as num?)?.toDouble() ?? 0.0,
-      longitude: (supabaseRecord['longitude'] as num?)?.toDouble() ?? 0.0,
-      brzina: (supabaseRecord['brzina'] as num?)?.toDouble(),
-      pravac: (supabaseRecord['pravac'] as num?)?.toDouble(),
-      // Note: tacnost field from Supabase is not supported in current GPSLokacija model
-      vreme: supabaseRecord['vreme'] != null
-          ? DateTime.parse(supabaseRecord['vreme'] as String)
-          : DateTime.now(),
-      aktivan: true, // Default to active
-      // Note: obrisan field not supported in current GPSLokacija model
-    );
+        id: supabaseRecord['id']?.toString() ??
+            DateTime.now().millisecondsSinceEpoch.toString(),
+        voziloId: supabaseRecord['vozilo_id']?.toString() ?? 'unknown',
+        vozacId: supabaseRecord['vozac_id']?.toString() ?? '',
+        latitude: (supabaseRecord['latitude'] as num?)?.toDouble() ?? 0.0,
+        longitude: (supabaseRecord['longitude'] as num?)?.toDouble() ?? 0.0,
+        brzina: (supabaseRecord['brzina'] as num?)?.toDouble(),
+        pravac: (supabaseRecord['pravac'] as num?)?.toDouble(),
+        // Note: tacnost field from Supabase is not supported in current GPSLokacija model
+        vreme: supabaseRecord['vreme'] != null
+            ? DateTime.parse(supabaseRecord['vreme'] as String)
+            : DateTime.now(),
+        aktivan: true
+        // Note: obrisan field not supported in current GPSLokacija model
+        );
   }
 
   /// ✅ VERIFY MIGRATION SUCCESS

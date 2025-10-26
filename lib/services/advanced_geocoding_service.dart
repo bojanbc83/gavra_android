@@ -15,7 +15,7 @@ class AdvancedGeocodingService {
   static const Map<String, String> _providers = {
     'nominatim': 'https://nominatim.openstreetmap.org/search',
     'photon': 'https://photon.komoot.io/api/',
-    'mapbox_free': 'https://api.mapbox.com/geocoding/v5/mapbox.places',
+    // 'mapbox_free': 'https://api.mapbox.com/geocoding/v5/mapbox.places', // ONEMOGUĆENO - može koštati
   };
 
   // 🎯 SERBIAN CITY ALIASES - samo Bela Crkva i Vršac opštine
@@ -199,8 +199,8 @@ class AdvancedGeocodingService {
         return await _searchNominatim(grad, adresa, enableFuzzyMatching);
       case 'photon':
         return await _searchPhoton(grad, adresa, enableFuzzyMatching);
-      case 'mapbox_free':
-        return await _searchMapboxFree(grad, adresa, enableFuzzyMatching);
+      // case 'mapbox_free': // ONEMOGUĆENO - može koštati
+      //   return await _searchMapboxFree(grad, adresa, enableFuzzyMatching);
       default:
         return null;
     }
@@ -308,7 +308,8 @@ class AdvancedGeocodingService {
     return null;
   }
 
-  /// 🗺️ MAPBOX FREE SEARCH - 100k requests/month besplatno
+  /// 🗺️ MAPBOX FREE SEARCH - ONEMOGUĆENO (može koštati nakon 100k zahteva)
+  /*
   static Future<GeocodeResult?> _searchMapboxFree(
     String grad,
     String adresa,
@@ -359,6 +360,7 @@ class AdvancedGeocodingService {
 
     return null;
   }
+  */
 
   /// 🤖 AUTO-CORRECTION - pokušava sa čestim greškama
   static Future<GeocodeResult?> _tryAutoCorrection(
@@ -418,9 +420,9 @@ class AdvancedGeocodingService {
       case 'photon':
         score += 10;
         break;
-      case 'mapbox':
-        score += 20;
-        break;
+      // case 'mapbox': // ONEMOGUĆENO - može koštati
+      //   score += 20;
+      //   break;
     }
 
     // Address matching
@@ -502,6 +504,7 @@ class AdvancedGeocodingService {
     };
   }
 
+  /*
   static Map<String, String> _parseMapboxComponents(
     Map<String, dynamic> feature,
   ) {
@@ -519,6 +522,7 @@ class AdvancedGeocodingService {
 
     return components;
   }
+  */
 
   /// 💾 CACHE MANAGEMENT
   static Future<GeocodeResult?> _getCachedResult(String key) async {
