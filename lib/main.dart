@@ -12,21 +12,13 @@ import 'services/analytics_service.dart';
 import 'services/cache_service.dart';
 import 'services/firebase_service.dart';
 import 'services/offline_map_service.dart';
-import 'services/simple_usage_monitor.dart';
 import 'services/theme_service.dart';
 import 'services/voice_navigation_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 📊 POKRETANJE MONITORING SERVISA
-  try {
-    await SimpleUsageMonitor.pokreni();
-  } catch (e) {
-    // Ignoriši greške u monitoring-u
-  }
-
-  // 🔥 FIREBASE INICIJALIZACIJA
+  //  FIREBASE INICIJALIZACIJA
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,

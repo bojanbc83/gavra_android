@@ -18,7 +18,6 @@ import 'admin_map_screen.dart'; // OpenStreetMap verzija
 import 'dugovi_screen.dart';
 import 'geocoding_admin_screen.dart'; // DODANO za geocoding admin
 import 'mesecni_putnici_screen.dart'; // DODANO za mesečne putnike
-import 'monitoring_ekran.dart'; // 📊 MONITORING
 import 'putovanja_istorija_screen.dart'; // DODANO za istoriju putovanja
 import 'statistika_detail_screen.dart'; // DODANO za statistike
 
@@ -1265,9 +1264,9 @@ class _AdminScreenState extends State<AdminScreen> {
                             ),
                           ],
                         ),
-                      ),
-                      if (_currentDriver?.toLowerCase() == 'bojan') ...[
-                      ],
+                      ),
+
+                      if (_currentDriver?.toLowerCase() == 'bojan') ...[],
                       // 🎯 SVI ADMIN DUGMIĆI U JEDNOM REDU
                       Container(
                         margin: const EdgeInsets.all(16.0),
@@ -1328,53 +1327,6 @@ class _AdminScreenState extends State<AdminScreen> {
                                 ),
                               ),
                             ),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute<void>(
-                                      builder: (context) =>
-                                          const MonitoringEkran(),
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  height: 50,
-                                  margin:
-                                      const EdgeInsets.symmetric(horizontal: 4),
-                                  decoration: BoxDecoration(
-                                    color: Colors.blue[600],
-                                    borderRadius: BorderRadius.circular(8),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.blue.withOpacity(0.3),
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: const Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.analytics,
-                                        color: Colors.white,
-                                        size: 16,
-                                      ),
-                                      Text(
-                                        'Monitor',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -1388,7 +1340,6 @@ class _AdminScreenState extends State<AdminScreen> {
       ),
     );
   }
-
 
   // (Funkcija za dijalog sa dužnicima je uklonjena - sada se koristi DugoviScreen)
 }
