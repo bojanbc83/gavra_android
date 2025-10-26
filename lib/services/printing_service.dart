@@ -22,7 +22,6 @@ class PrintingService {
       }
       return;
     } catch (e) {
-      debugPrint('Error in printing service: $e');
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

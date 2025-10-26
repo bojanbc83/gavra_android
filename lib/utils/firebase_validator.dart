@@ -71,7 +71,6 @@ class FirebaseValidator {
 
       return true;
     } catch (e) {
-      print('Firestore connection test failed: $e');
       return false;
     }
   }

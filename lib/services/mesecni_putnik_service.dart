@@ -165,6 +165,7 @@ class MesecniPutnikService {
     return _firestore.collection(_collectionName).snapshots().map(
       (snapshot) {
         final putnici = <MesecniPutnik>[];
+
         for (final doc in snapshot.docs) {
           try {
             final data = doc.data();
@@ -175,7 +176,6 @@ class MesecniPutnikService {
               putnici.add(putnik);
             }
           } catch (e) {
-            // Ignoriši pogrešne dokumente
             continue;
           }
         }

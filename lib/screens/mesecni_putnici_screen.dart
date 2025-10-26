@@ -372,15 +372,22 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
   ) {
     var filtered = putnici.where((putnik) {
       // Filter po aktivnosti (samo aktivni i ne obrisani)
-      if (!putnik.aktivan || putnik.obrisan) return false;
+      if (!putnik.aktivan || putnik.obrisan) {
+        return false;
+      }
 
       // Filter po statusu (isključi bolovanje i godišnje ako nije eksplicitno traženo)
-      if (putnik.status == 'bolovanje' || putnik.status == 'godišnje')
+      if (putnik.status == 'bolovanje' || putnik.status == 'godišnje') {
         return false;
+      }
 
       // Filter po tipu
-      if (filterType == 'radnik' && putnik.tip != 'radnik') return false;
-      if (filterType == 'ucenik' && putnik.tip != 'ucenik') return false;
+      if (filterType == 'radnik' && putnik.tip != 'radnik') {
+        return false;
+      }
+      if (filterType == 'ucenik' && putnik.tip != 'ucenik') {
+        return false;
+      }
 
       // Search filter
       if (searchTerm.isNotEmpty) {
@@ -614,6 +621,7 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
                       ),
                     ],
                   ),
+
                   IconButton(
                     icon: const Icon(Icons.add, color: Colors.white),
                     onPressed: () => _pokaziDijalogZaDodavanje(),
