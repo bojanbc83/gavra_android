@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
-// import 'package:supabase_flutter/supabase_flutter.dart'; // REMOVED - migrated to Firebase
 
 /// 🌐 CONNECTION RESILIENCE SERVICE
 /// Automatski reconnect, network monitoring, fallback strategije (FIXED VERSION)
 class ConnectionResilienceService {
-  // static final _supabase = Supabase.instance.client; // REMOVED - migrated to Firebase
 
   // Stream kontroleri
   static final StreamController<bool> _connectionStateController =
@@ -105,9 +103,7 @@ class ConnectionResilienceService {
   static Future<void> _checkSupabaseConnection() async {
     try {
       // MIGRATED TO FIREBASE - Connection check disabled
-      // await _supabase.from('mesecni_putnici').select('id').limit(1).timeout(const Duration(seconds: 10));
 
-      // For now, always consider connected since we migrated to Firebase
       if (!_isSupabaseConnected) {
         _updateSupabaseState(true);
       }

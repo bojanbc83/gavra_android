@@ -38,7 +38,6 @@ class _AdminScreenState extends State<AdminScreen> {
   late ValueNotifier<bool> _putnikDataHealthy;
   // 🕐 TIMER MANAGEMENT - sada koristi TimerManager singleton umesto direktnog Timer-a
 
-  //
   // Statistika pazara
 
   // Filter za dan - odmah postaviti na trenutni dan
@@ -1331,7 +1330,6 @@ class _AdminScreenState extends State<AdminScreen> {
                                 ),
                               ),
                             ),
-                            // 📊 SUPABASE MONITORING
                             Expanded(
                               child: GestureDetector(
                                 onTap: () {
@@ -1393,7 +1391,6 @@ class _AdminScreenState extends State<AdminScreen> {
     );
   }
 
-  // String _getTodayName() { ... } // unused
 
   // (Funkcija za dijalog sa dužnicima je uklonjena - sada se koristi DugoviScreen)
 }

@@ -114,7 +114,6 @@ class FirebaseValidator {
       _initialized = true;
       return true;
     } catch (e) {
-      print('Force initialization failed: $e');
       return false;
     }
   }

@@ -25,7 +25,6 @@ class PutovanjaIstorija {
     this.vremePokupljenja,
   });
 
-  // Factory constructor za kreiranje iz Map-a (Supabase response)
   factory PutovanjaIstorija.fromMap(Map<String, dynamic> map) {
     return PutovanjaIstorija(
       id: map['id'] as String,
@@ -81,7 +80,6 @@ class PutovanjaIstorija {
   final DateTime? vremePlacanja;
   final DateTime? vremePokupljenja;
 
-  // Konvertuje u Map za slanje u Supabase
   Map<String, dynamic> toMap() {
     return {
       'id': id,

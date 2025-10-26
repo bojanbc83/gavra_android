@@ -465,7 +465,6 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen>
         // Debug logging removed for production
 
         // SAMO PRIKAŽI PORUKU - VOZAČ SE REGISTRUJE NAKON EMAIL VERIFIKACIJE
-        // await AuthManager.setCurrentDriver(email);
 
         // Uspešno registrovan
         // Debug logging removed for production

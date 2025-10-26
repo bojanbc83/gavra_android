@@ -66,7 +66,6 @@ class PutniciStatistikaWidget extends StatelessWidget {
               builder: (context) {
                 final ukupno = ukupnoPutnika.toDouble();
                 final brojDuznika = duznici.length.toDouble();
-                // final brojMesecnih = putniciPoDanu.isEmpty
                 //     ? 0.0
                 //     : putniciPoDanu.entries
                 //         .map((e) => e.value)
@@ -106,7 +105,5 @@ class PutniciStatistikaWidget extends StatelessWidget {
     );
   }
 
-  // String _formatDate(DateTime date) {
-  //   return '${date.day}.${date.month}.${date.year}.';
   // }
 }

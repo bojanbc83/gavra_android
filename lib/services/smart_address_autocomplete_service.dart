@@ -525,7 +525,6 @@ class SmartAddressAutocompleteService {
   ) {
     double score = 0.0;
 
-    // String similarity (Levenshtein distance)
     final similarity = _calculateStringSimilarity(
       suggestion.address.toLowerCase(),
       query.toLowerCase(),

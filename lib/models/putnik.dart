@@ -561,7 +561,6 @@ class Putnik {
     final endOfMonth = DateTime(now.year, now.month + 1, 0);
 
     return {
-      // 'id': id, // Uklonjen - Supabase će auto-generirati UUID
       'putnik_ime': ime,
       'tip': 'radnik', // ili 'ucenik' - treba logiku za određivanje
       'tip_skole': null, // ✅ NOVA KOLONA - možda treba logika
@@ -644,7 +643,6 @@ class Putnik {
 
   Map<String, dynamic> toPutovanjaIstorijaMap() {
     return {
-      // 'id': id, // Uklonjen - Supabase će automatski generirati UUID
       'mesecni_putnik_id': mesecnaKarta == true ? id : null,
       'tip_putnika': mesecnaKarta == true ? 'mesecni' : 'dnevni',
       'datum_putovanja':

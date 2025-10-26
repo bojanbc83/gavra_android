@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart'; // 🗺️ DODANO za OpenStreetMap
-// import 'package:supabase_flutter/supabase_flutter.dart'; // REMOVED - migrated to Firebase
 import 'package:url_launcher/url_launcher.dart'; // 🗺️ DODANO za OpenStreetMap
 
 import '../models/mesecni_putnik.dart';
@@ -53,7 +52,6 @@ class DanasScreen extends StatefulWidget {
 }
 
 class _DanasScreenState extends State<DanasScreen> {
-  // final supabase = Supabase.instance.client; // REMOVED - migrated to Firebase
   final Set<String> _resettingSlots = {};
   // 🕐 TIMER MANAGEMENT - sada koristi TimerManager singleton umesto direktnih Timer-a
 
@@ -596,9 +594,6 @@ class _DanasScreenState extends State<DanasScreen> {
 
         // Fetch daily passengers for today
         // 📝 FUTURE: Firebase implementacija za putovanja_istorija query
-        // Trenutno koristi prazan placeholder - Firebase PutovanjaIstorijaService će biti implementiran
-        // final dnevniResponse =
-        //     await supabase.from('putovanja_istorija').select().eq('datum', danas).eq('tip_putnika', 'dnevni');
         final dnevniResponse =
             <Map<String, dynamic>>[]; // PLACEHOLDER: empty list
 
@@ -890,12 +885,10 @@ class _DanasScreenState extends State<DanasScreen> {
       // 2. REALTIME STREAM ZA KOMBINOVANE PUTNIKE - PLACEHOLDER
       // 📝 FUTURE: Firebase implementacija za kombinovane putnike stream
       // Trenutno koristi statičke podatke - FirestoreService.streamKombinovaniPutniciFiltered() će biti implementiran
-      // final stream = FirestoreService.streamKombinovaniPutniciFiltered();
 
       // 3. REALTIME DETALJNE STATISTIKE - PLACEHOLDER
       // 📝 FUTURE: Firebase implementacija za detaljne statistike po vozačima
       // Trenutno koristi prazan placeholder - StatistikaService detaljneStatistikePoVozacima() će biti implementiran
-      // final detaljneStats = await StatistikaService.instance.detaljneStatistikePoVozacima(
       //   dayStart,
       //   dayEnd,
       // );
@@ -2579,14 +2572,12 @@ class _DanasScreenState extends State<DanasScreen> {
                       try {
                         // 📝 FUTURE: Firebase implementacija za reset pokupljenih putnika na polazak
                         // Trenutno nema reset funkcionalnost - FirestoreService.resetPokupljenjaNaPolazak() će biti implementiran
-                        // await _firestoreService.resetPokupljenjaNaPolazak(
                         //   vreme,
                         //   grad,
                         //   _currentDriver ?? 'Unknown',
                         // );
                         // 📝 FUTURE: Firebase implementacija za refresh funkcionalnost
                         // Trenutno nema refresh - RealtimeService.instance.refreshNow() će biti implementiran
-                        // await RealtimeService.instance.refreshNow();
                       } catch (e) {
                         // Debug logging removed for production
                       } finally {
@@ -2620,14 +2611,12 @@ class _DanasScreenState extends State<DanasScreen> {
                       try {
                         // 📝 FUTURE: Firebase implementacija za reset pokupljenih putnika na polazak
                         // Trenutno nema reset funkcionalnost - FirestoreService.resetPokupljenjaNaPolazak() će biti implementiran
-                        // await _firestoreService.resetPokupljenjaNaPolazak(
                         //   vreme,
                         //   grad,
                         //   _currentDriver ?? 'Unknown',
                         // );
                         // 📝 FUTURE: Firebase implementacija za refresh funkcionalnost
                         // Trenutno nema refresh - RealtimeService.instance.refreshNow() će biti implementiran
-                        // await RealtimeService.instance.refreshNow();
                       } catch (e) {
                         // Debug logging removed for production
                       } finally {

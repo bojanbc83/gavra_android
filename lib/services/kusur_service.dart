@@ -1,13 +1,10 @@
 import 'dart:async';
 
-// import 'package:supabase_flutter/supabase_flutter.dart'; // REMOVED - migrated to Firebase
 
 import 'vozac_mapping_service.dart';
 
 /// Servis za upravljanje kusur-om vozača u bazi podataka
 class KusurService {
-  // static final SupabaseClient _supabase = Supabase.instance.client; // REMOVED - migrated to Firebase
-
   /// Stream controller za real-time ažuriranje kusur kocki
   static final StreamController<Map<String, double>> _kusurController =
       StreamController<Map<String, double>>.broadcast();
@@ -21,14 +18,10 @@ class KusurService {
         return 0.0;
       }
 
-      // final response = await _supabase.from('vozaci').select('kusur').eq('id', vozacUuid).maybeSingle(); // Firebase migration
       throw UnimplementedError('Firebase migration pending');
 
-      // if (response != null && response['kusur'] != null) {
-      //   return (response['kusur'] as num).toDouble();
       // }
 
-      // return 0.0;
     } catch (e) {
       return 0.0;
     }
@@ -44,13 +37,11 @@ class KusurService {
         return false;
       }
 
-      // await _supabase.from('vozaci').update({'kusur': noviKusur}).eq('id', vozacUuid); // Firebase migration
       throw UnimplementedError('Firebase migration pending');
 
       // // Emituj ažuriranje preko stream-a
       // _emitKusurUpdate(vozacIme, noviKusur);
 
-      // return true;
     } catch (e) {
       return false;
     }
@@ -73,18 +64,13 @@ class KusurService {
   /// Dobij kusur za sve vozače odjednom
   static Future<Map<String, double>> getKusurSvihVozaca() async {
     try {
-      // final response = await _supabase.from('vozaci').select('id, ime, kusur'); // Firebase migration
       throw UnimplementedError('Firebase migration pending');
 
-      // final Map<String, double> rezultat = {};
 
       // for (final row in response) {
-      //   final ime = row['ime'] as String;
-      //   final kusur = (row['kusur'] as num?)?.toDouble() ?? 0.0;
       //   rezultat[ime] = kusur;
       // }
 
-      // return rezultat;
     } catch (e) {
       return {};
     }
@@ -92,7 +78,6 @@ class KusurService {
 
   /// Privatni helper za emitovanje ažuriranja
   // static void _emitKusurUpdate(String vozacIme, double noviKusur) { // Firebase migration
-  //   if (!_kusurController.isClosed) {
   //     _kusurController.add({vozacIme: noviKusur});
   //   }
   // }

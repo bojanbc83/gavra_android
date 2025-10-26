@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:supabase_flutter/supabase_flutter.dart'; // REMOVED - migrated to Firebase
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/mesecni_putnik.dart';
-import '../services/auth_manager.dart';
+
 import '../services/mesecni_putnik_service.dart'; // 🔥 FIREBASE MIGRATION COMPLETE
 import '../services/permission_service.dart'; // DODANO za konzistentnu telefon logiku
 import '../services/smart_address_autocomplete_service.dart';
@@ -42,9 +41,6 @@ class MesecniPutniciScreen extends StatefulWidget {
 class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _selectedFilter = 'svi'; // 'svi', 'radnik', 'ucenik'
-
-  // Firebase klijent - migrated from Supabase
-  // final SupabaseClient supabase = Supabase.instance.client;
 
   // 🔥 FIREBASE SERVICE - Migration complete
   // MesecniPutnikService is static, no instance needed
@@ -257,7 +253,6 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     try {
       // 📝 FUTURE: Firebase implementacija za plaćanja query
       // Trenutno koristi prazan placeholder - PlacanjeService.getStvarnaPlacanja() će biti implementiran
-      // final placanja = await PlacanjeService.getStvarnaPlacanja(putnici);
       final placanja = <String, double>{}; // PLACEHOLDER: empty payments map
       if (mounted) {
         // 🔄 ANTI-REBUILD OPTIMIZATION: Samo update ako su se podaci stvarno promenili
@@ -415,32 +410,6 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // 🔐 AUTH PROVERA: Proveri da li je korisnik ulogovan
-    if (!AuthManager.isLoggedIn) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Mesečni Putnici')),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.lock, size: 64, color: Colors.red),
-              const SizedBox(height: 16),
-              const Text('NISTE ULOGOVANI!',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
-              const Text(
-                  'Potrebno je da se ulogujete da biste pristupili Firebase bazi.'),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Nazad na Login'),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: PreferredSize(
@@ -1411,8 +1380,6 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
   void _toggleAktivnost(MesecniPutnik putnik) async {
     // 📝 FUTURE: Firebase implementacija za toggle aktivnost
     // Trenutno nema funkcionalnost - MesecniPutnikService.toggleAktivnost() će biti implementiran
-    // final success = await _mesecniPutnikService.toggleAktivnost(putnik.id, !putnik.aktivan);
-    // if (success && mounted) {
     //   ScaffoldMessenger.of(context).showSnackBar(
     //     SnackBar(
     //       content: Text(
@@ -1423,7 +1390,6 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     //   );
     // } else if (mounted) {
     //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(
     //       content: Text('Greška pri promeni statusa'),
     //       backgroundColor: Colors.red,
     //     ),
@@ -2014,9 +1980,6 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
 
     // 📝 FUTURE: Refaktorisanje - koristiti controller vrednosti umesto varijabli
     // Potrebno zameniti hardkodovane varijable sa tekstualnim controller-ima
-    // final ime = _imeController.text.trim();
-    // final tipSkole = _tipSkoleController.text.trim();
-    // final brojTelefona = _brojTelefonaController.text.trim();
 
     try {
       // Pripremi mapu polazaka po danima (JSON)
@@ -2035,7 +1998,6 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
       }
       // 📝 FUTURE: Kreirati editovani putnik objekat
       // Potrebno implementirati copyWith metodu za kreiranje ažuriranog MesecniPutnik objekta
-      // final editovanPutnik = originalPutnik.copyWith(
       //   putnikIme: ime,
       //   tip: _noviTip,
       //   tipSkole: tipSkole.isEmpty ? null : tipSkole,
@@ -2047,13 +2009,11 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
 
       // 📝 FUTURE: Firebase implementacija za ažuriranje mesečnog putnika
       // Trenutno nema update funkcionalnost - MesecniPutnikService.azurirajMesecnogPutnika() će biti implementiran
-      // await _mesecniPutnikService.azurirajMesecnogPutnika(editovanPutnik);
 
       // Kreiraj dnevne putovanja za danas (1 dan unapred) da se odmah pojave u 'Danas' listi
       try {
         // 📝 FUTURE: Firebase implementacija za kreiranje dnevnih putovanja iz mesečnih
         // Trenutno nema kreiranje - MesecniPutnikService.kreirajDnevnaPutovanjaIzMesecnih() će biti implementiran
-        // await _mesecniPutnikService.kreirajDnevnaPutovanjaIzMesecnih(
         //   editovanPutnik,
         //   DateTime.now().add(const Duration(days: 1)),
         // );
@@ -3147,14 +3107,12 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
       // � FUTURE: Firebase implementacija za refresh mehanizam
       // Trenutno nema refresh - potrebno implementirati osvežavanje podataka nakon dodavanja
       // try {
-      //   await RealtimeService.instance.refreshNow();
       // } catch (e) {}
 
       // Kreiraj dnevne putovanja za danas (1 dan unapred) da se odmah pojave u 'Danas' listi
       try {
         // 📝 FUTURE: Firebase implementacija za kreiranje dnevnih putovanja iz mesečnih
         // Trenutno nema kreiranje - MesecniPutnikService.kreirajDnevnaPutovanjaIzMesecnih() će biti implementiran
-        // await _mesecniPutnikService.kreirajDnevnaPutovanjaIzMesecnih(
         //   dodatiPutnik,
         //   DateTime.now().add(const Duration(days: 1)),
         // );
@@ -3363,7 +3321,6 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
   //     //   );
   //     // }
   //   } catch (e) {
-  //     if (mounted) {
   //       ScaffoldMessenger.of(context).showSnackBar(
   //         SnackBar(
   //           content: Text('Greška pri sinhronizaciji: $e'),
@@ -4372,7 +4329,6 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
   // 📅 GODIŠNJE STATISTIKE (2025)
   Future<Map<String, dynamic>> _getGodisnjeStatistike(String putnikId) async {
     // 📝 FUTURE: Firebase implementacija - query putovanja_istorija kolekcije za godinu 2025
-    // final response = await supabase
     //     .from('putovanja_istorija')
     //     .select()
     //     .eq('putnik_id', putnikId)
@@ -4420,7 +4376,6 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
   // 🏆 UKUPNE STATISTIKE (SVI PODACI)
   Future<Map<String, dynamic>> _getUkupneStatistike(String putnikId) async {
     // 📝 FUTURE: Firebase implementacija - query sve putovanja_istorija podatke za potpune statistike
-    // final response = await supabase
     //     .from('putovanja_istorija')
     //     .select()
     //     .eq('putnik_id', putnikId)
@@ -4505,23 +4460,18 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     try {
       // 📝 FUTURE: Učitati trenutnog vozača kao UUID
       // Potrebno implementirati dohvat trenutnog vozača u UUID formatu
-      // final currentDriverUuid = await _getCurrentDriverUuid();
 
       // 📝 FUTURE: Konvertovati string meseca u datume
       // Potrebno implementirati parsiranje meseca u DateTime objekte
-      // final Map<String, dynamic> datumi = _konvertujMesecUDatume(mesec);
 
       // 📝 FUTURE: Firebase implementacija za ažuriranje plaćanja za mesec
       // Trenutno nema update funkcionalnost - MesecniPutnikService.azurirajPlacanjeZaMesec() će biti implementiran
-      // final uspeh = await _mesecniPutnikService.azurirajPlacanjeZaMesec(
       //   putnikId,
       //   iznos,
       //   currentDriverUuid,
       //   datumi['pocetakMeseca'] as DateTime,
       //   datumi['krajMeseca'] as DateTime,
       // );
-      // if (uspeh) {
-      //   if (mounted) {
       //     ScaffoldMessenger.of(context).showSnackBar(
       //       SnackBar(
       //         content: Text(
@@ -4532,9 +4482,7 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
       //     );
       //   }
       // } else {
-      //   if (mounted) {
       //     ScaffoldMessenger.of(context).showSnackBar(
-      //       const SnackBar(
       //         content: Text('❌ Greška pri čuvanju plaćanja'),
       //         backgroundColor: Colors.red,
       //       ),
@@ -4562,17 +4510,11 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     try {
       // 📝 FUTURE: Kreirati datume za mesečne statistike
       // Potrebno implementirati kreiranje početnog i završnog datuma za zadati mesec i godinu
-      // final DateTime mesecStart = DateTime(godina, mesec);
-      // final DateTime mesecEnd = DateTime(godina, mesec + 1, 0, 23, 59, 59);
 
       // 📝 FUTURE: Kreirati string datume za Firebase query
       // Potrebno implementirati konverziju datuma u ISO string format za Firebase
-      // final String startStr = mesecStart.toIso8601String().split('T')[0];
-      // final String endStr = mesecEnd.toIso8601String().split('T')[0];
 
       // 📝 FUTURE: Firebase implementacija za putovanja_istorija query
-      // Trenutno koristi prazan rezultat - Firebase PutovanjaIstorijaService će biti implementiran
-      // final response = await Supabase.instance.client
       //     .from('putovanja_istorija')
       //     .select('datum, status, pokupljen, created_at')
       //     .eq('putnik_id', putnikId)
@@ -4730,17 +4672,11 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     try {
       // 📝 FUTURE: Kreirati septembar datume za statistike
       // Potrebno implementirati kreiranje početnog i završnog datuma za mesečne statistike
-      // final DateTime septembarStart = DateTime(2025, 9);
-      // final DateTime septembarEnd = DateTime(2025, 9, 30, 23, 59, 59);
 
       // 📝 FUTURE: Kreirati string datume za Firebase query
       // Potrebno implementirati konverziju datuma u ISO string format
-      // final String startStr = septembarStart.toIso8601String().split('T')[0];
-      // final String endStr = septembarEnd.toIso8601String().split('T')[0];
 
       // 📝 FUTURE: Firebase implementacija za putovanja_istorija query
-      // Trenutno koristi prazan rezultat - Firebase PutovanjaIstorijaService će biti implementiran
-      // final response = await Supabase.instance.client
       //     .from('putovanja_istorija')
       //     .select('datum, status, pokupljen, created_at')
       //     .eq('mesecni_putnik_id', putnikId)
@@ -4793,28 +4729,19 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
 
   // 📝 FUTURE: Helper funkcija za konvertovanje meseca u datume
   // Potrebno implementirati kada bude potrebno parsiranje meseca u startDate/endDate format
-  // Map<String, dynamic> _konvertujMesecUDatume(String izabranMesec) {
   //   // Parsiraj izabrani mesec (format: "Septembar 2025")
-  //   final parts = izabranMesec.split(' ');
-  //   if (parts.length != 2) {
   //     throw Exception('Neispravno format meseca: $izabranMesec');
   //   }
 
-  //   final monthName = parts[0];
-  //   final year = int.tryParse(parts[1]);
-  //   if (year == null) {
   //     throw Exception('Neispravna godina: ${parts[1]}');
   //   }
 
-  //   final monthNumber = _getMonthNumber(monthName);
-  //   if (monthNumber == 0) {
   //     throw Exception('Neispravno ime meseca: $monthName');
   //   }
 
   //   DateTime pocetakMeseca = DateTime(year, monthNumber);
   //   DateTime krajMeseca = DateTime(year, monthNumber + 1, 0, 23, 59, 59);
 
-  //   return {
   //     'pocetakMeseca': pocetakMeseca,
   //     'krajMeseca': krajMeseca,
   //     'mesecBroj': monthNumber,
@@ -5225,7 +5152,6 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     try {
       // 📝 FUTURE: Firebase implementacija za mesecniPutniciStream
       // Trenutno koristi prazan placeholder - MesecniPutnikService.mesecniPutniciStream će biti korišćen za export
-      // final putnici = await _mesecniPutnikService.mesecniPutniciStream.first;
       final putnici = <MesecniPutnik>[]; // PLACEHOLDER: empty list
 
       if (putnici.isEmpty) {

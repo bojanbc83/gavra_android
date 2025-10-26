@@ -42,7 +42,6 @@ void main() async {
 
   // 🛰️ INITIALIZE BACKGROUND GPS SERVICE (OPTIONAL - Disabled for stability)
   // try {
-  //   await BackgroundGpsService.initialize();
   // } catch (e) {
   //   // Ignoriši greške u background GPS - optional feature
   // }

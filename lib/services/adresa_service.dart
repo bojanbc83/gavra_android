@@ -1,4 +1,3 @@
-// import 'package:supabase_flutter/supabase_flutter.dart'; // REMOVED - migrated to Firebase
 import 'dart:math' as math;
 
 import 'package:cloud_firestore/cloud_firestore.dart';

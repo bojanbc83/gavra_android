@@ -315,11 +315,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       // Koristi globalno čuvane putike
       if (_allPutnici.isNotEmpty) {
         // Smart notifikacije - ISKLJUČENO
-        // await SmartNotifikacijeService.analizirajIposaljiNotifikacije(
         //     _allPutnici);
 
         // Ruta optimizacija - ISKLJUČENO (servis ne postoji)
-        // await RutaOptimizacijaService.analizirajIpredloziRutu(_allPutnici);
       }
 
       // Weather alerts removed

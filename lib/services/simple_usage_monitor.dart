@@ -26,7 +26,6 @@ class SimpleUsageMonitor {
   }
 
   /// Pozovite svaki put kad koristite Supabase
-  /// Primer: SimpleUsageMonitor.brojPoziv(); supabase.from('tabela').select();
   static Future<void> brojPoziv() async {
     try {
       _dnevniPozivi++;

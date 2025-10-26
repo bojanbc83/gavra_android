@@ -85,8 +85,6 @@ class _RealTimeNavigationWidgetState extends State<RealTimeNavigationWidget> {
       }
 
       // Generiši optimizovanu rutu sa turn-by-turn instrukcijama - SERVIS UKLONJEN
-      // final result =
-      //     await OpenRouteMapboxOptimizationService.optimizeToursWithTurnByTurn(
       //   putnici: widget.optimizedRoute,
       //   startPosition: _currentPosition!,
       //   useOpenRoute: true,
@@ -178,8 +176,6 @@ class _RealTimeNavigationWidgetState extends State<RealTimeNavigationWidget> {
 
     try {
       // Proveri da li je potrebno rerautovanje - SERVIS UKLONJEN
-      // final updateResult =
-      //     await OpenRouteMapboxOptimizationService.updateRouteBasedOnGPS(
       //   currentPosition: newPosition,
       //   remainingPassengers: _remainingPassengers,
       //   currentInstructions: _currentInstructions,

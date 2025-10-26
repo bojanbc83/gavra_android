@@ -335,7 +335,6 @@ class LocalNotificationService {
           await MesecniPutnikService.getMesecniPutnikByIme(putnikIme);
       return putnik?.toMap();
     } catch (e) {
-      print('Error fetching putnik data: $e');
       return null;
     }
   }
