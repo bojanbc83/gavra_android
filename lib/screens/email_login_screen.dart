@@ -10,7 +10,7 @@ import '../theme.dart'; // 🎨 Import za prelepe gradijente
 import '../utils/vozac_boja.dart'; // 🎨 Import za boje vozača
 import 'daily_checkin_screen.dart';
 import 'email_registration_screen.dart';
-import 'home_screen_light.dart';
+import 'home_screen.dart';
 
 class EmailLoginScreen extends StatefulWidget {
   const EmailLoginScreen({Key? key}) : super(key: key);
@@ -514,7 +514,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen>
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute<void>(
-                          builder: (context) => const HomeScreenLight(),
+                          builder: (context) => const HomeScreen(),
                         ),
                       );
                     }
@@ -529,7 +529,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen>
             Navigator.pushReplacement(
               context,
               MaterialPageRoute<void>(
-                builder: (context) => const HomeScreenLight(),
+                builder: (context) => const HomeScreen(),
               ),
             );
           }
@@ -679,7 +679,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen>
             Expanded(
               child: Text(
                 'Email verifikacija',
-                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.onSurface),
               ),
             ),
           ],
@@ -732,7 +733,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen>
   Future<void> _resendEmailVerification() async {
     try {
       final result = await AuthManager.resendEmailVerification();
-      
+
       if (result.isSuccess) {
         _showSuccessDialog('Email poslat', result.message);
       } else {
