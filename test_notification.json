@@ -1,0 +1,21 @@
+{
+  "message": {
+    "topic": "gavra_all_drivers",
+    "notification": {
+      "title": "🚌 GAVRA NOTIFIKACIJA RADI!",
+      "body": "Samsung notifikacije omogućene ✅ Vreme: 00:42"
+    },
+    "data": {
+      "type": "dodat",
+      "datum": "2025-10-27",
+      "action": "test_samsung",
+      "timestamp": "2025-10-27T00:42:00"
+    },
+    "android": {
+      "notification": {
+        "sound": "default",
+        "channel_id": "gavra_realtime_channel"
+      }
+    }
+  }
+}

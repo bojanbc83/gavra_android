@@ -95,7 +95,7 @@ class RealtimeNotificationService {
     }
   }
 
-  /// Real-time notifications using Firebase + OneSignal + Local notifications
+  /// Real-time notifications using Firebase FCM + Local notifications
   static void sendRealtimeNotification(
     String title,
     String body,
@@ -122,15 +122,6 @@ class RealtimeNotificationService {
     } catch (e) {
       // Logger removed
     }
-  }
-
-  static Future<void> sendTestNotification(String message) async {
-    // Show local notification
-    await LocalNotificationService.showRealtimeNotification(
-      title: 'Gavra Test - Firebase FCM',
-      body: message,
-      payload: 'test_notification',
-    );
   }
 
   /// Check notification permissions for Firebase
