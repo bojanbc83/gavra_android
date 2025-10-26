@@ -418,22 +418,22 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     // 🔐 AUTH PROVERA: Proveri da li je korisnik ulogovan
     if (!AuthManager.isLoggedIn) {
       return Scaffold(
-        appBar: AppBar(title: Text('Mesečni Putnici')),
+        appBar: AppBar(title: const Text('Mesečni Putnici')),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.lock, size: 64, color: Colors.red),
-              SizedBox(height: 16),
-              Text('NISTE ULOGOVANI!',
+              const Icon(Icons.lock, size: 64, color: Colors.red),
+              const SizedBox(height: 16),
+              const Text('NISTE ULOGOVANI!',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 8),
-              Text(
+              const SizedBox(height: 8),
+              const Text(
                   'Potrebno je da se ulogujete da biste pristupili Firebase bazi.'),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('Nazad na Login'),
+                child: const Text('Nazad na Login'),
               ),
             ],
           ),
