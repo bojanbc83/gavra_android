@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 
 import '../services/unified_gps_service.dart';
-import '../services/gps_data_migration_service.dart';
 
 /// 📊 GPS CSV IMPORT SCREEN
 /// UI za import GPS podataka iz CSV datoteke
@@ -219,7 +218,7 @@ class _GpsCsvImportScreenState extends State<GpsCsvImportScreen> {
               '✅ Importovano:', result['migrated']?.toString() ?? 'N/A'),
           _buildResultRow(
               '📈 Uspešnost:', '${result['success_rate'] ?? 'N/A'}%'),
-          _buildResultRow('📁 Izvor:', result['source'] ?? 'N/A'),
+          _buildResultRow('📁 Izvor:', result['source']?.toString() ?? 'N/A'),
           const SizedBox(height: 15),
           const Text('🔍 Verifikacija:',
               style: TextStyle(fontWeight: FontWeight.bold)),
@@ -227,10 +226,16 @@ class _GpsCsvImportScreenState extends State<GpsCsvImportScreen> {
           if (result['verification'] != null) ...[
             _buildResultRow(
                 'Firebase ukupno:',
-                result['verification']['firebase_total_count']?.toString() ??
+                (result['verification']
+                            as Map<String, dynamic>?)?['firebase_total_count']
+                        ?.toString() ??
                     'N/A'),
-            _buildResultRow('Status migracije:',
-                result['verification']['migration_status'] ?? 'N/A'),
+            _buildResultRow(
+                'Status migracije:',
+                (result['verification']
+                            as Map<String, dynamic>?)?['migration_status']
+                        ?.toString() ??
+                    'N/A'),
           ],
           if (result['updated_system_status'] != null) ...[
             const SizedBox(height: 15),
@@ -239,17 +244,20 @@ class _GpsCsvImportScreenState extends State<GpsCsvImportScreen> {
             const SizedBox(height: 5),
             _buildResultRow(
                 'GPS zapisi u Firebase:',
-                result['updated_system_status']['firebase_gps_count']
+                (result['updated_system_status']
+                            as Map<String, dynamic>?)?['firebase_gps_count']
                         ?.toString() ??
                     'N/A'),
             _buildResultRow(
                 'Sistem inicijalizovan:',
-                result['updated_system_status']['initialized']?.toString() ??
+                (result['updated_system_status']
+                            as Map<String, dynamic>?)?['initialized']
+                        ?.toString() ??
                     'N/A'),
           ],
         ] else ...[
           Text(
-            'Greška: ${result['error'] ?? 'Nepoznata greška'}',
+            'Greška: ${result['error']?.toString() ?? 'Nepoznata greška'}',
             style: const TextStyle(color: Colors.red),
           ),
           if (result['migrated'] != null) ...[
@@ -316,7 +324,7 @@ class _GpsCsvImportScreenState extends State<GpsCsvImportScreen> {
 
     try {
       // Show progress dialog
-      showDialog(
+      showDialog<void>(
         context: context,
         barrierDismissible: false,
         builder: (context) => const AlertDialog(

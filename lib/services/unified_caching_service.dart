@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,7 +21,6 @@ class UnifiedCachingService {
   // ⚙️ CACHE CONFIGURATION
   static const int _maxL1Size = 50; // L1 max entries
   static const int _maxL2Size = 200; // L2 max entries
-  static const int _maxL4FileSizeMB = 100; // L4 max size in MB
 
   // ⏱️ CACHE TTL (Time To Live)
   static const Map<CacheType, Duration> _cacheTTL = {
@@ -144,7 +142,7 @@ class UnifiedCachingService {
     await _ensureInitialized();
 
     final hashedKey = _hashKey(key);
-    final effectiveTTL = ttl ?? _cacheTTL[type] ?? const Duration(hours: 1);
+    // TTL handled by individual cache level methods
 
     _stats.totalSaves++;
 
@@ -497,10 +495,10 @@ class CacheEntry {
     final data = jsonDecode(json) as Map<String, dynamic>;
     return CacheEntry(
       value: data['value'],
-      createdAt: DateTime.parse(data['created_at']),
-      ttl: Duration(seconds: data['ttl_seconds']),
+      createdAt: DateTime.parse(data['created_at'] as String),
+      ttl: Duration(seconds: data['ttl_seconds'] as int),
     )..lastAccessed =
-        DateTime.parse(data['last_accessed'] ?? data['created_at']);
+        DateTime.parse((data['last_accessed'] ?? data['created_at']) as String);
   }
 }
 

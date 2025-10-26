@@ -10,7 +10,6 @@ import 'cache_service.dart';
 /// Enterprise-level geocoding sa cache optimizacijom i multi-provider fallback
 class UnifiedGeocodingService {
   static const String _cachePrefix = 'unified_geocoding_';
-  static const String _statsPrefix = 'geocoding_stats_';
 
   // 🌍 MULTIPLE FREE GEOCODING PROVIDERS - failover sistem
   static const Map<String, String> _providers = {
@@ -120,7 +119,7 @@ class UnifiedGeocodingService {
 
       // Small delay before retry
       if (attempt < maxRetries - 1) {
-        await Future.delayed(Duration(milliseconds: 500 * (attempt + 1)));
+        await Future<void>.delayed(Duration(milliseconds: 500 * (attempt + 1)));
       }
     }
 
@@ -172,8 +171,8 @@ class UnifiedGeocodingService {
 
       if (data.isNotEmpty) {
         final best = data.first as Map<String, dynamic>;
-        final lat = double.parse(best['lat'] as String);
-        final lon = double.parse(best['lon'] as String);
+        final lat = double.parse(best['lat'].toString());
+        final lon = double.parse(best['lon'].toString());
         final displayName = best['display_name'] as String? ?? '';
 
         return GeocodeResult(
@@ -211,8 +210,8 @@ class UnifiedGeocodingService {
         final properties = best['properties'] as Map<String, dynamic>;
 
         return GeocodeResult(
-          latitude: coordinates[1].toDouble(),
-          longitude: coordinates[0].toDouble(),
+          latitude: (coordinates[1] as num).toDouble(),
+          longitude: (coordinates[0] as num).toDouble(),
           displayName: properties['name']?.toString() ?? '',
           provider: 'photon',
           confidence: _calculateConfidence(
@@ -392,11 +391,11 @@ class GeocodeResult {
     try {
       final data = jsonDecode(cached) as Map<String, dynamic>;
       return GeocodeResult(
-        latitude: data['lat'].toDouble(),
-        longitude: data['lon'].toDouble(),
-        displayName: data['name'] ?? '',
-        provider: data['provider'] ?? 'cached',
-        confidence: data['confidence']?.toDouble() ?? 0.5,
+        latitude: (data['lat'] as num).toDouble(),
+        longitude: (data['lon'] as num).toDouble(),
+        displayName: data['name']?.toString() ?? '',
+        provider: data['provider']?.toString() ?? 'cached',
+        confidence: (data['confidence'] as num?)?.toDouble() ?? 0.5,
       );
     } catch (e) {
       return null;
