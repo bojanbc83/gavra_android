@@ -4,8 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/ruta.dart';
 
-/// Service za upravljanje rutama u Firebase Firestore
-/// Migrirano sa Supabase na Firebase Firestore
+/// Service za upravljanje rutama u Firebase Firestore
 class RutaService {
   RutaService();
   static const String _collectionName = 'rute';

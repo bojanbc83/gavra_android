@@ -5,8 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/dnevni_putnik.dart';
 import '../models/putnik.dart';
 
-/// 🔥 FIREBASE REALTIME SERVICE
-/// Zamena za Supabase realtime sa Firebase Firestore streams
+/// 🔥 FIREBASE REALTIME SERVICE
 class RealtimeService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 

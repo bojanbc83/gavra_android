@@ -3307,19 +3307,7 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
   // Potrebno implementirati sinhronizaciju broja putovanja sa istorijom
   // void _sinhronizujStatistike(String putnikId) async {
   //   try {
-  //     // 📝 FUTURE: Firebase implementacija za sinhronizaciju broja putovanja sa istorijom
-  //     // Trenutno nema sinhronizaciju - MesecniPutnikService.sinhronizujBrojPutovanjaSaIstorijom() će biti implementiran
-  //     // final success = await MesecniPutnikService.sinhronizujBrojPutovanjaSaIstorijom(
-  //     //   putnikId,
-  //     // );
-  //     // if (success && mounted) {
-  //     //   ScaffoldMessenger.of(context).showSnackBar(
-  //     //     const SnackBar(
-  //     //       content: Text('Statistike su uspešno sinhronizovane sa istorijom'),
-  //     //       backgroundColor: Colors.green,
-  //     //     ),
-  //     //   );
-  //     // }
+
   //   } catch (e) {
   //       ScaffoldMessenger.of(context).showSnackBar(
   //         SnackBar(
@@ -4278,8 +4266,6 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
     String period,
   ) {
     // 🔄 KORISTI NOVI CENTRALIZOVANI REAL-TIME SERVIS
-    // 📝 FUTURE: Firebase implementacija - koristiti RealTimeStatistikaService.instance.getPutnikStatistikeStream(putnikId) za real-time statistike
-    // return RealTimeStatistikaService.instance.getPutnikStatistikeStream(putnikId).asyncMap((baseStats) async {
     return Stream.value(<String, dynamic>{}).asyncMap((baseStats) async {
       try {
         // Posebni slučajevi

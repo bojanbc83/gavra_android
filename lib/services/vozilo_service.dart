@@ -4,8 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/vozilo.dart';
 
-/// Service za upravljanje vozilima u Firebase Firestore
-/// Migrirano sa Supabase na Firebase Firestore
+/// Service za upravljanje vozilima u Firebase Firestore
 class VoziloService {
   VoziloService();
   static const String _collectionName = 'vozila';

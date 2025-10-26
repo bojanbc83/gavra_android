@@ -3,9 +3,7 @@ import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/adresa.dart';
-import 'cache_service.dart';
-
-/// 📍 MODERNIZED CLOUD SERVICE za upravljanje adresama u Supabase Cloud
+import 'cache_service.dart';
 /// KOMPLETNO MODERNIZOVAN - caching, batch operations, analytics, validation
 ///
 /// FUNKCIONALNOSTI:

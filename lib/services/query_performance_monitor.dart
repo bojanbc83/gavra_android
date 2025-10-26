@@ -50,7 +50,6 @@ class QueryPerformanceMonitor {
   /// Upozorava na spore query-jeve
   static void _alertSlowQuery(
       String queryName, int duration, Map<String, dynamic>? metadata) {
-// Možda dodati notifikaciju ili log u Supabase
     final stats = _stats[queryName];
     if (stats != null && stats.averageDuration > slowQueryThreshold) {
     }

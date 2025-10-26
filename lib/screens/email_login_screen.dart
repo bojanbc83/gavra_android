@@ -3,8 +3,7 @@ import 'package:just_audio/just_audio.dart';
 
 import '../services/auth_manager.dart';
 import '../services/firebase_auth_service.dart';
-import '../services/permission_service.dart';
-// import '../main.dart' show globalThemeRefresher; // Removed in simple version
+import '../services/permission_service.dart';
 import '../services/simplified_daily_checkin.dart';
 import '../theme.dart'; // 🎨 Import za prelepe gradijente
 import '../utils/vozac_boja.dart'; // 🎨 Import za boje vozača
@@ -477,9 +476,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen>
 
         // 🔐 ZAHTEVAJ DOZVOLE PRI PRVOM POKRETANJU
         // ignore: use_build_context_synchronously
-        await PermissionService.requestAllPermissionsOnFirstLaunch(context);
-
-        // 🎨 Theme refresh removed in simple version
+        await PermissionService.requestAllPermissionsOnFirstLaunch(context);
 
         // 🎵 PUSTI PESMU NAKON EMAIL LOGIN-A
         await _EmailLoginScreenState._playDriverWelcomeSong(driverName);

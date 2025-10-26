@@ -2,8 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../utils/vozac_boja.dart';
 
-/// 🔥 FIREBASE AUTHENTICATION SERVICE
-/// Zamena za Supabase EmailAuthService sa istim API-jem
+/// 🔥 FIREBASE AUTHENTICATION SERVICE
 class FirebaseAuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 

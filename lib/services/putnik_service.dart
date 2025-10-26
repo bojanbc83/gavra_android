@@ -4,8 +4,7 @@ import '../models/dnevni_putnik.dart';
 import '../models/mesecni_putnik.dart';
 
 /// 🔥 GAVRA 013 - PUTNIK SERVICE (FIREBASE)
-///
-/// Migrirano sa Supabase na Firebase Firestore
+///
 /// Upravlja mesečnim i dnevnim putnicima
 
 class PutnikService {

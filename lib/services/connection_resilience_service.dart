@@ -81,8 +81,7 @@ class ConnectionResilienceService {
       if (wasOnline != isConnected) {
         _updateConnectionState(isConnected);
 
-        if (isConnected && !_isSupabaseConnected) {
-          // Network je vraćen, pokušaj reconnect na Supabase
+        if (isConnected && !_isSupabaseConnected) {
           await _attemptSupabaseReconnect();
         }
       }
@@ -109,8 +108,7 @@ class ConnectionResilienceService {
     } catch (e) {
       _updateSupabaseState(false);
 
-      if (_isOnline) {
-        // Network je OK ali Supabase ne, pokušaj reconnect
+      if (_isOnline) {
         _scheduleSupabaseReconnect();
       }
     }

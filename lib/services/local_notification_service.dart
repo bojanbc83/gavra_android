@@ -3,14 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:just_audio/just_audio.dart';
-
-// import 'package:supabase_flutter/supabase_flutter.dart'; // Firebase migration
+import 'package:just_audio/just_audio.dart';
 
 import '../globals.dart';
 import 'mesecni_putnik_service.dart';
-import '../screens/danas_screen.dart';
-// import 'supabase_safe.dart'; // Firebase migration
+import '../screens/danas_screen.dart';
 
 class LocalNotificationService {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =

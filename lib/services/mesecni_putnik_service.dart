@@ -3,8 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/mesecni_putnik.dart';
 
 /// 🔥 GAVRA 013 - MESECNI PUTNIK SERVICE (FIREBASE)
-///
-/// Migrirano sa Supabase na Firebase Firestore
+///
 /// Upravlja mesečnim putnicima
 
 class MesecniPutnikService {

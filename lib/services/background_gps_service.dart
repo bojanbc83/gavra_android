@@ -3,8 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:supabase_flutter/supabase_flutter.dart'; // Firebase migration
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/gps_lokacija.dart';
 import 'firebase_auth_service.dart';
@@ -99,9 +98,7 @@ void onStart(ServiceInstance service) async {
     try {
       final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
-      );
-
-      // Pošalji na Supabase (ako je moguće)
+      );
       await _sendLocationToSupabase(position);
 
       // Invoke frontend sa novom pozicijom
@@ -146,7 +143,6 @@ Future<void> _sendLocationToSupabase(Position position) async {
 
       await GpsLokacijaService.saveGpsLokacija(gpsLokacija);
     }
-  } catch (e) {
-    // Ignoriši Supabase greške u background service
+  } catch (e) {
   }
 }

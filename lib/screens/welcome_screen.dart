@@ -7,8 +7,7 @@ import '../services/auth_manager.dart';
 import '../services/firebase_auth_service.dart';
 import '../services/local_notification_service.dart';
 import '../services/permission_service.dart';
-import '../services/realtime_notification_service.dart';
-// import '../main.dart' show globalThemeRefresher; // Removed - not used in simple version
+import '../services/realtime_notification_service.dart';
 import '../services/simplified_daily_checkin.dart';
 import '../theme.dart';
 import '../utils/vozac_boja.dart';
@@ -119,7 +118,6 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
     if (activeDriver != null && activeDriver.isNotEmpty) {
       // Vozač je već logovan - PROVERI DAILY CHECK-IN
-// 🎨 Theme refresh removed in simple version
 
       // 🔐 ZAHTEVAJ DOZVOLE PRI PRVOM POKRETANJU (auto-login)
       // ignore: use_build_context_synchronously

@@ -5,8 +5,7 @@ import '../models/gps_lokacija.dart';
 import '../models/putnik.dart';
 import '../utils/vozac_boja.dart';
 
-/// 🔥 FIRESTORE DATABASE SERVICE
-/// Zamena za Supabase sa istim API-jem
+/// 🔥 FIRESTORE DATABASE SERVICE
 class FirestoreService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -158,9 +157,7 @@ class FirestoreService {
         );
   }
 
-  /// 🧹 UTILITY METHODS
-
-  /// Cleanup nevalidni vozači (isti kao u Supabase)
+  /// 🧹 UTILITY METHODS
   static Future<int> cleanupNevalidneVozace() async {
     int obrisaneStavke = 0;
 

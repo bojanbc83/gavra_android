@@ -3,8 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/vozac.dart';
 
 /// 🔥 GAVRA 013 - VOZAC SERVICE (FIREBASE)
-///
-/// Migrirano sa Supabase na Firebase Firestore
+///
 /// Upravlja vozačima i njihovim podacima
 
 class VozacService {
