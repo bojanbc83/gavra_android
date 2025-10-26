@@ -123,8 +123,7 @@ class DailyCheckInService {
   /// 🤖 GENERIŠI AUTOMATSKI REPORT
   static Future<Map<String, dynamic>?> generateAutomaticReport(
       String vozac, DateTime targetDate) async {
-    try {
-      // Generiši simulirani report za test
+    try {
       final report = {
         'datum': targetDate.toIso8601String().split('T')[0],
         'vozac': vozac,

@@ -47,8 +47,7 @@ class FirestoreService {
     try {
       final docRef = await _putnici.add(putnik.toMap());
       return docRef.id;
-    } catch (e) {
-      // Debug removed
+    } catch (e) {
       return null;
     }
   }
@@ -59,8 +58,7 @@ class FirestoreService {
     try {
       await _putnici.doc(id).update(updates);
       return true;
-    } catch (e) {
-      // Debug removed
+    } catch (e) {
       return false;
     }
   }
@@ -70,8 +68,7 @@ class FirestoreService {
     try {
       await _putnici.doc(id).update({'obrisan': true});
       return true;
-    } catch (e) {
-      // Debug removed
+    } catch (e) {
       return false;
     }
   }
@@ -93,8 +90,7 @@ class FirestoreService {
           .map((doc) => DnevniPutnik.fromMap(
               {...doc.data() as Map<String, dynamic>, 'id': doc.id}))
           .toList();
-    } catch (e) {
-      // Debug removed
+    } catch (e) {
       return [];
     }
   }
@@ -120,8 +116,7 @@ class FirestoreService {
     try {
       final docRef = await _dnevniPutnici.add(putnik.toMap());
       return docRef.id;
-    } catch (e) {
-      // Debug removed
+    } catch (e) {
       return null;
     }
   }
@@ -132,8 +127,7 @@ class FirestoreService {
     try {
       await _dnevniPutnici.doc(id).update(updates);
       return true;
-    } catch (e) {
-      // Debug removed
+    } catch (e) {
       return false;
     }
   }
@@ -145,8 +139,7 @@ class FirestoreService {
     try {
       await _gpsLokacije.add(lokacija.toMap());
       return true;
-    } catch (e) {
-      // Debug removed
+    } catch (e) {
       return false;
     }
   }
@@ -202,12 +195,9 @@ class FirestoreService {
         }
       }
 
-      await dnevniBatch.commit();
-
-      // Debug removed
+      await dnevniBatch.commit();
       return obrisaneStavke;
-    } catch (e) {
-      // Debug removed
+    } catch (e) {
       return 0;
     }
   }
@@ -240,8 +230,7 @@ class FirestoreService {
       }
 
       return rezultat;
-    } catch (e) {
-      // Debug removed
+    } catch (e) {
       return rezultat;
     }
   }
@@ -259,8 +248,7 @@ class FirestoreService {
         final data = doc.data();
         return GPSLokacija.fromMap({...data, 'id': doc.id});
       }).toList();
-    } catch (e) {
-      // Debug removed
+    } catch (e) {
       return [];
     }
   }
@@ -293,8 +281,7 @@ class FirestoreService {
         final data = doc.data() as Map<String, dynamic>;
         return Putnik.fromMap({...data, 'id': doc.id});
       }).toList();
-    } catch (e) {
-      // Debug removed
+    } catch (e) {
       return [];
     }
   }
@@ -304,8 +291,7 @@ class FirestoreService {
     try {
       await _putnici.doc(putnikId).update({'duguje': noviDug});
       return true;
-    } catch (e) {
-      // Debug removed
+    } catch (e) {
       return false;
     }
   }

@@ -47,9 +47,7 @@ class FirebaseValidator {
       try {
         final firestore = FirebaseFirestore.instance;
         status['firestore_configured'] =
-            firestore.app.options.projectId.isNotEmpty;
-
-        // Test basic Firestore connection
+            firestore.app.options.projectId.isNotEmpty;
         await firestore.enableNetwork();
       } catch (e) {
         status['errors'].add('Firestore configuration error: ${e.toString()}');
@@ -59,9 +57,7 @@ class FirebaseValidator {
     }
 
     return status;
-  }
-
-  /// Test Firestore connection with a simple read operation
+  }
   static Future<bool> testFirestoreConnection() async {
     try {
       final firestore = FirebaseFirestore.instance;

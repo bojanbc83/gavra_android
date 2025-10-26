@@ -112,8 +112,7 @@ class _MesecniPutnikDetaljiScreenState extends State<MesecniPutnikDetaljiScreen>
 
       // 🔄 V3.0: Mark data stream as healthy after successful load
       _dataStreamHealthy.value = true;
-    } catch (e) {
-      // Debug logging removed for production
+    } catch (e) {
       if (!mounted) return; // 🔄 RESILIENCE: Check before updating state
 
       // 🔄 V3.0: Mark data stream as unhealthy on error

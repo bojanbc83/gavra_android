@@ -419,8 +419,7 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen>
       final yesterday = DateTime.now().subtract(const Duration(days: 1));
 
       // 🚫 PRESKAČI VIKENDE - ne radi se subotom i nedeljom
-      if (yesterday.weekday == 6 || yesterday.weekday == 7) {
-        // Debug logging removed for production
+      if (yesterday.weekday == 6 || yesterday.weekday == 7) {
         return;
       }
 
@@ -444,8 +443,7 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen>
           _showAutomaticReportDialog(automatskiPopis);
         }
       }
-    } catch (e) {
-      // Debug logging removed for production
+    } catch (e) {
     }
   }
 
@@ -920,18 +918,14 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen>
     try {
       // 📝 FUTURE: Firebase implementacija za daily reports
       // Trenutno se koristi lokalno čuvanje preko SharedPreferences
-      // Daily check-in je lokalna funkcionalnost i ne zahteva Firebase sync
-      // Debug logging removed for production
-    } on TimeoutException {
-      // Debug logging removed for production
+      // Daily check-in je lokalna funkcionalnost i ne zahteva Firebase sync
+    } on TimeoutException {
       throw Exception(
         'Nema internet konekcije. Kusur neće biti sačuvan u bazi.',
       );
-    } on SocketException {
-      // Debug logging removed for production
+    } on SocketException {
       throw Exception('Nema mrežne konekcije. Kusur neće biti sačuvan u bazi.');
-    } catch (e) {
-      // Debug logging removed for production
+    } catch (e) {
       throw Exception('Neočekivana greška pri ažuriranju kusura: $e');
     }
   }
@@ -957,12 +951,10 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen>
           'datum': DateTime.now().toIso8601String().split('T')[0],
           'timestamp': DateTime.now().toIso8601String(),
         }),
-      );
-      // Debug logging removed for production
+      );
 // Pokreni sync kada se vrati internet konekcija
       _scheduleOfflineSync();
-    } catch (e) {
-      // Debug logging removed for production
+    } catch (e) {
     }
   }
 
@@ -976,8 +968,7 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen>
         await _syncOfflineKusur();
         timer.cancel();
       } catch (e) {
-        // Još uvek nema internet, nastavi pokušaje
-        // Debug logging removed for production
+        // Još uvek nema internet, nastavi pokušaje
       }
     });
   }
@@ -993,11 +984,9 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen>
         // Daily check-in podatci se čuvaju lokalno preko SharedPreferences
 
         // Obriši offline podatke nakon uspešnog sync-a
-        await prefs.remove('offline_kusur_data');
-        // Debug logging removed for production
+        await prefs.remove('offline_kusur_data');
       }
-    } catch (e) {
-      // Debug logging removed for production
+    } catch (e) {
     }
   }
 }

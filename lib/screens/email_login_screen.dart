@@ -67,32 +67,27 @@ class _EmailLoginScreenState extends State<EmailLoginScreen>
       switch (driverName.toLowerCase()) {
         case 'svetlana':
           // 🎺 SVETLANINA SPECIJALNA PESMA - "Hiljson Mandela & Miach - Anđeo"
-          assetPath = 'assets/svetlana.mp3';
-          // Debug logging removed for production
+          assetPath = 'assets/svetlana.mp3';
           break;
 
         case 'bruda':
           // 🎵 BRUDINA SPECIJALNA PESMA
-          assetPath = 'assets/bruda.mp3';
-          // Debug logging removed for production
+          assetPath = 'assets/bruda.mp3';
           break;
 
         case 'bilevski':
           // 🎵 BILEVSKIJEVA SPECIJALNA PESMA
-          assetPath = 'assets/bilevski.mp3';
-          // Debug logging removed for production
+          assetPath = 'assets/bilevski.mp3';
           break;
 
         case 'bojan':
           // 🎵 BOJANOVA SPECIJALNA PESMA
-          assetPath = 'assets/gavra.mp3';
-          // Debug logging removed for production
+          assetPath = 'assets/gavra.mp3';
           break;
 
         default:
           // 🎵 Default pesma za ostale vozače
-          assetPath = 'assets/gavra.mp3';
-          // Debug logging removed for production
+          assetPath = 'assets/gavra.mp3';
           break;
       }
 
@@ -100,18 +95,15 @@ class _EmailLoginScreenState extends State<EmailLoginScreen>
       await _globalAudioPlayer!.setAsset(assetPath);
       await _globalAudioPlayer!.setVolume(volume);
       await _globalAudioPlayer!.setLoopMode(LoopMode.off); // Bez ponavljanja
-      await _globalAudioPlayer!.play();
-      // Debug logging removed for production
+      await _globalAudioPlayer!.play();
 // Postaviti listener da se audio player očisti kad pesma završi
       _globalAudioPlayer!.playerStateStream.listen((state) {
-        if (state.processingState == ProcessingState.completed) {
-          // Debug logging removed for production
+        if (state.processingState == ProcessingState.completed) {
           _globalAudioPlayer?.dispose();
           _globalAudioPlayer = null;
         }
       });
-    } catch (e) {
-      // Debug logging removed for production
+    } catch (e) {
     }
   }
 
@@ -471,28 +463,23 @@ class _EmailLoginScreenState extends State<EmailLoginScreen>
 
     try {
       final email = _emailController.text.trim();
-      final password = _passwordController.text;
-      // Debug logging removed for production
+      final password = _passwordController.text;
 
       // Koristi AuthManager umesto direktno EmailAuthService
       final result = await AuthManager.signInWithEmail(email, password);
 
-      if (result.isSuccess) {
-        // Debug logging removed for production
+      if (result.isSuccess) {
 
         // Dobij ime vozača iz trenutne auth session
         final user = AuthManager.getCurrentUser();
         final email = user?.email;
-        final driverName = VozacBoja.getVozacForEmail(email) ?? 'Vozač';
-
-        // Debug logging removed for production
+        final driverName = VozacBoja.getVozacForEmail(email) ?? 'Vozač';
 
         // 🔐 ZAHTEVAJ DOZVOLE PRI PRVOM POKRETANJU
         // ignore: use_build_context_synchronously
         await PermissionService.requestAllPermissionsOnFirstLaunch(context);
 
-        // 🎨 Theme refresh removed in simple version
-        // Debug logging removed for production
+        // 🎨 Theme refresh removed in simple version
 
         // 🎵 PUSTI PESMU NAKON EMAIL LOGIN-A
         await _EmailLoginScreenState._playDriverWelcomeSong(driverName);
@@ -545,8 +532,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen>
           );
         }
       }
-    } catch (e) {
-      // Debug logging removed for production
+    } catch (e) {
       _showErrorDialog(
         'Greška',
         'Došlo je do greške pri prijavi. Pokušajte ponovo.',
@@ -580,8 +566,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen>
       } else {
         _showErrorDialog('Greška', 'Nije moguće poslati email za reset šifre.');
       }
-    } catch (e) {
-      // Debug logging removed for production
+    } catch (e) {
       _showErrorDialog('Greška', 'Došlo je do greške. Pokušajte ponovo.');
     } finally {
       if (mounted) setState(() => _isLoading = false);

@@ -17,8 +17,7 @@ class _MonitoringEkranState extends State<MonitoringEkran> {
 
   @override
   void initState() {
-    super.initState();
-    // Koristi PostFrameCallback da izbegne debugBuildingDirtyElements greške
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _ucitajStatistiku();
     });

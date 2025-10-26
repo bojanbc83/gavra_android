@@ -10,13 +10,11 @@ class AdminSecurityService {
 
   /// 🔍 Proveri da li je vozač admin
   static bool isAdmin(String? driverName) {
-    if (driverName == null || driverName.isEmpty) {
-      // Debug logging removed for production
+    if (driverName == null || driverName.isEmpty) {
       return false;
     }
 
-    final isAdminUser = _adminUsers.contains(driverName);
-    // Debug logging removed for production
+    final isAdminUser = _adminUsers.contains(driverName);
     return isAdminUser;
   }
 

@@ -69,8 +69,7 @@ class _LoadingScreenState extends State<LoadingScreen>
   void _initializeV3Loading() {
     _initializeAnimations();
     _setupTimeout();
-    _startLoadingProcess();
-    // Debug logging removed for production
+    _startLoadingProcess();
   }
 
   void _initializeAnimations() {
@@ -108,8 +107,7 @@ class _LoadingScreenState extends State<LoadingScreen>
 
   void _setupTimeout() {
     _timeoutTimer = Timer(timeoutDuration, () {
-      if (mounted && !_hasError.value) {
-        // Debug logging removed for production
+      if (mounted && !_hasError.value) {
         _handleLoadingError('Učitavanje traje predugo. Pokušajte ponovo.');
       }
     });
@@ -122,8 +120,7 @@ class _LoadingScreenState extends State<LoadingScreen>
       if (mounted && !_hasError.value) {
         _navigateToMainApp();
       }
-    } catch (e) {
-      // Debug logging removed for production
+    } catch (e) {
       _handleLoadingError(e.toString());
     }
   }
@@ -134,16 +131,13 @@ class _LoadingScreenState extends State<LoadingScreen>
 
       // Update current stage
       _currentStage.value = stage;
-      _statusMessage.value = stage.message;
-      // Debug logging removed for production
+      _statusMessage.value = stage.message;
 // Simulate realistic loading with progressive delay
       final delay = stageDelay.inMilliseconds + (_retryCount * 200);
       await Future<void>.delayed(Duration(milliseconds: delay));
 
       // Update progress with smooth animation
-      _animateProgressTo(stage.progress);
-
-      // Add realistic failure simulation for testing resilience
+      _animateProgressTo(stage.progress);
       if (stage == LoadingStage.connectingDB && _shouldSimulateFailure()) {
         throw Exception('Neuspešna konekcija sa serverom');
       }
@@ -175,8 +169,7 @@ class _LoadingScreenState extends State<LoadingScreen>
     });
   }
 
-  bool _shouldSimulateFailure() {
-    // Simulate 5% failure rate for testing
+  bool _shouldSimulateFailure() {
     return false; // Set to true for testing error handling
   }
 
@@ -188,14 +181,12 @@ class _LoadingScreenState extends State<LoadingScreen>
       setState(() {
         _hasError.value = true;
         _errorMessage.value = error;
-      });
-    // Debug logging removed for production
+      });
   }
 
   void _navigateToMainApp() {
     _timeoutTimer?.cancel();
-    _loadingTimer?.cancel();
-    // Debug logging removed for production
+    _loadingTimer?.cancel();
     if (mounted) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute<void>(
@@ -221,8 +212,7 @@ class _LoadingScreenState extends State<LoadingScreen>
         _progress.value = 0.0;
         _currentStage.value = LoadingStage.initializing;
         _statusMessage.value = LoadingStage.initializing.message;
-      });
-    // Debug logging removed for production
+      });
 // Restart the process
     _initializeV3Loading();
   }
@@ -627,8 +617,7 @@ class _LoadingScreenState extends State<LoadingScreen>
                   // Cancel/Exit button
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () {
-                        // Debug logging removed for production
+                      onPressed: () {
                         SystemNavigator.pop();
                       },
                       icon: const Icon(

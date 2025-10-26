@@ -68,9 +68,7 @@ class VozacMappingService {
   static Future<String?> getVozacIme(String uuid) async {
     await _ensureMappingLoaded();
     return _vozacUuidToName?[uuid];
-  }
-
-  /// Dobij ime vozača sa fallback na null (trebalo bi da se koristi samo u debug slučajevima)
+  }
   static Future<String?> getVozacImeWithFallback(String? uuid) async {
     if (uuid == null || uuid.isEmpty) {
       return null; // Ne vraćaj 'Nepoznat', već null

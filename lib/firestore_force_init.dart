@@ -11,32 +11,16 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  print('🔥 GAVRA 013 - FIRESTORE FORCE INITIALIZER');
-  print('=' * 50);
-
   try {
     // Initialize Firebase
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    print('✅ Firebase initialized');
-
     // Get Firestore instance - this should force database creation
     final firestore = FirebaseFirestore.instance;
-    print('✅ Firestore instance obtained');
-
     // Try to create initial documents in each collection
     await forceCreateCollections(firestore);
-
-    print('');
-    print('🎉 FIRESTORE DATABASE FORCED CREATION COMPLETE!');
-    print(
-        '🔗 Check Firebase Console: https://console.firebase.google.com/project/gavra-notif-20250920162521/firestore');
-  } catch (e) {
-    print('❌ Error: $e');
-    print('');
-    print('🔧 FALLBACK: Manual Firebase Console setup required');
-  }
+  } catch (e) {}
 }
 
 Future<void> forceCreateCollections(FirebaseFirestore firestore) async {
@@ -48,8 +32,6 @@ Future<void> forceCreateCollections(FirebaseFirestore firestore) async {
 
   for (final collection in collections) {
     try {
-      print('📝 Creating collection: ${collection['name']}');
-
       // Create an initial document to force collection creation
       await firestore
           .collection(collection['name'] as String)
@@ -62,21 +44,12 @@ Future<void> forceCreateCollections(FirebaseFirestore firestore) async {
             'Initial document to force collection creation - can be deleted after import',
         'status': 'awaiting_csv_import'
       });
-
-      print(
-          '   ✅ Collection ${collection['name'] as String} created with init document');
-    } catch (e) {
-      print('   ❌ Error creating ${collection['name']}: $e');
-    }
+    } catch (e) {}
   }
 
-  // Test basic query to ensure database is working
   try {
-    print('🔍 Testing database connectivity...');
-    final snapshot = await firestore.collection('vozaci').limit(1).get();
-    print(
-        '   ✅ Database query successful - ${snapshot.docs.length} document(s) found');
+    await firestore.collection('vozaci').limit(1).get();
   } catch (e) {
-    print('   ❌ Database query failed: $e');
+    // Ignore connection errors during initialization
   }
 }

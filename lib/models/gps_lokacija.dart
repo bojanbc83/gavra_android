@@ -126,9 +126,7 @@ class GPSLokacija {
     final directions = ['S', 'SI', 'I', 'JI', 'J', 'JZ', 'Z', 'SZ'];
     final index = ((pravac! + 22.5) % 360 / 45).floor();
     return '${directions[index]} (${pravac!.toStringAsFixed(0)}°)';
-  }
-
-  /// ToString metoda za debugging
+  }
   @override
   String toString() {
     return 'GPSLokacija{id: $id, vozilo: $voziloId, vozac: $vozacId, '

@@ -38,11 +38,7 @@ void main() async {
       'created_at': FieldValue.serverTimestamp(),
       'message': 'Database created successfully!'
     });
-
-    print(
-        '🔗 Check: https://console.firebase.google.com/project/gavra-notif-20250920162521/firestore');
   } catch (e) {
-    print('❌ Error creating database: $e');
   }
 }
 

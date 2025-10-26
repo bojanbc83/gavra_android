@@ -76,22 +76,17 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       if (defaultTargetPlatform == TargetPlatform.android) {
         final status = await Permission.notification.status;
         if (!status.isGranted) {
-          await Permission.notification.request();
-          // Debug logging removed for production
-        } else {
-          // Debug logging removed for production
+          await Permission.notification.request();
+        } else {
         }
       }
 
       // Also request Firebase/iOS style permissions via RealtimeNotificationService
       try {
-        await RealtimeNotificationService.requestNotificationPermissions();
-        // Debug logging removed for production
-      } catch (e) {
-        // Debug logging removed for production
+        await RealtimeNotificationService.requestNotificationPermissions();
+      } catch (e) {
       }
-    } catch (e) {
-      // Debug logging removed for production
+    } catch (e) {
     }
   }
 
@@ -111,8 +106,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     // Ako je neko ulogovan u Firebase ALI nema saved driver, sinhronizuj
     if (currentUser != null &&
         (savedDriver == null ||
-            savedDriver != VozacBoja.getVozacForEmail(currentUser.email))) {
-      // Debug logging removed for production
+            savedDriver != VozacBoja.getVozacForEmail(currentUser.email))) {
       final driverName = VozacBoja.getVozacForEmail(currentUser.email);
       if (driverName != null) {
         await AuthManager.setCurrentDriver(driverName);
@@ -124,8 +118,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
         VozacBoja.getVozacForEmail(currentUser?.email) ?? savedDriver;
 
     if (activeDriver != null && activeDriver.isNotEmpty) {
-      // Vozač je već logovan - PROVERI DAILY CHECK-IN
-      // Debug logging removed for production
+      // Vozač je već logovan - PROVERI DAILY CHECK-IN
 // 🎨 Theme refresh removed in simple version
 
       // 🔐 ZAHTEVAJ DOZVOLE PRI PRVOM POKRETANJU (auto-login)
@@ -139,8 +132,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       if (!mounted) return;
 
       if (!hasCheckedIn) {
-        // POŠALJI NA DAILY CHECK-IN SCREEN
-        // Debug logging removed for production
+        // POŠALJI NA DAILY CHECK-IN SCREEN
         Navigator.pushReplacement(
           context,
           MaterialPageRoute<void>(
@@ -159,8 +151,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
           ),
         );
       } else {
-        // DIREKTNO NA HOME SCREEN
-        // Debug logging removed for production
+        // DIREKTNO NA HOME SCREEN
         Navigator.pushReplacement(
           context,
           MaterialPageRoute<void>(builder: (context) => const HomeScreen()),
@@ -228,10 +219,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>
         'Dozvoljen je samo login za: ${VozacBoja.validDrivers.join(", ")}',
       );
       return;
-    }
-    // Debug logging removed for production
-// VOZAČ MOŽE DA SE LOGUJE - IDI NA EMAIL LOGIN
-    // Debug logging removed for production
+    }
+// VOZAČ MOŽE DA SE LOGUJE - IDI NA EMAIL LOGIN
     if (!mounted) return;
     Navigator.push(
       context,

@@ -454,9 +454,7 @@ class MesecniPutnik {
     final tipText = isUcenik ? '👨‍🎓' : '👨‍💼';
     final statusText = aktivan ? '✅' : '❌';
     return '$tipText $putnikIme $statusText';
-  }
-
-  /// Detaljni opis za debug
+  }
   String get detailDescription {
     return 'MesecniPutnik(id: $id, ime: $putnikIme, tip: $tip, aktivan: $aktivan, status: $status, polasci: ${polasciPoDanu.length}, period: $formatiraniPeriod)';
   }

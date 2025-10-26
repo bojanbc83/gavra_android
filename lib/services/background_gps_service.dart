@@ -102,9 +102,7 @@ void onStart(ServiceInstance service) async {
       );
 
       // Pošalji na Supabase (ako je moguće)
-      await _sendLocationToSupabase(position);
-
-      // Debug removed
+      await _sendLocationToSupabase(position);
 
       // Invoke frontend sa novom pozicijom
       service.invoke('update', {
@@ -112,8 +110,7 @@ void onStart(ServiceInstance service) async {
         'longitude': position.longitude,
         'timestamp': DateTime.now().toIso8601String(),
       });
-    } catch (e) {
-      // Debug removed
+    } catch (e) {
     }
   });
 
@@ -150,7 +147,6 @@ Future<void> _sendLocationToSupabase(Position position) async {
       await GpsLokacijaService.saveGpsLokacija(gpsLokacija);
     }
   } catch (e) {
-    // Ignoriši Supabase greške u background service
-    // Debug removed
+    // Ignoriši Supabase greške u background service
   }
 }

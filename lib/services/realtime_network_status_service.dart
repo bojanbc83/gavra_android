@@ -67,9 +67,7 @@ class RealtimeNetworkStatusService {
     _healthCheckTimer = Timer.periodic(const Duration(seconds: 10), (_) {
       _performHealthCheck();
     });
-  }
-
-  /// 🏓 PERIODIC PING TEST
+  }
   void _startPeriodicPing() {
     _pingTimer = Timer.periodic(const Duration(seconds: 30), (_) {
       _performPingTest();
@@ -141,9 +139,7 @@ class RealtimeNetworkStatusService {
     }
 
     _updateNetworkStatus();
-  }
-
-  /// 🏓 PING TEST TO CHECK REAL CONNECTIVITY
+  }
   Future<void> _performPingTest() async {
     try {
       final stopwatch = Stopwatch()..start();

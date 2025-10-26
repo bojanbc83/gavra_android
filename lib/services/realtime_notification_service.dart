@@ -177,9 +177,7 @@ class RealtimeNotificationService {
     } catch (e) {
       // Logger removed
     }
-  }
-
-  /// Test notification functionality with multi-channel support
+  }
   static Future<void> sendTestNotification(String message) async {
     // Show local notification
     await LocalNotificationService.showRealtimeNotification(

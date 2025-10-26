@@ -63,8 +63,7 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
     // 🧹 SEARCH CLEANUP
     _searchSubject.close();
     _filterSubject.close();
-    _searchController.dispose();
-    // Debug logging removed for production
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -86,8 +85,7 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
       });
     }
 
-    _initializeRealtimeStream();
-    // Debug logging removed for production
+    _initializeRealtimeStream();
   }
 
   // 💓 HEARTBEAT MONITORING FUNCTIONS
@@ -103,8 +101,7 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
       final timeSinceLastHeartbeat = now.difference(entry.value);
       if (timeSinceLastHeartbeat.inSeconds > 90) {
         // 90 seconds timeout for admin stats
-        isHealthy = false;
-        // Debug logging removed for production
+        isHealthy = false;
         break;
       }
     }
@@ -123,8 +120,7 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
       _realtimeHealthStatus.value = 'stream_error';
     } else if (isHealthy) {
       _realtimeHealthStatus.value = 'healthy';
-    }
-    // Debug logging removed for production
+    }
   }
 
   // 🚀 ENHANCED REALTIME STREAM INITIALIZATION
@@ -160,9 +156,7 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
     if (mounted)
       setState(() {
         // Trigger rebuild with filtered data
-      });
-
-    // Debug logging removed for production
+      });
   }
 
   void _loadInitialData() {
@@ -187,8 +181,7 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
           });
 
         // Sort locations
-        _sortLocations();
-        // Debug logging removed for production
+        _sortLocations();
       }
     } catch (e) {
       if (mounted) {
@@ -197,12 +190,10 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
           setState(() {
             _isLoading = false;
             _errorMessage = e.toString();
-          });
-        // Debug logging removed for production
+          });
 // 🔄 AUTO RETRY after 10 seconds for admin screens
         Timer(const Duration(seconds: 10), () {
-          if (mounted && _autoRefreshEnabled) {
-            // Debug logging removed for production
+          if (mounted && _autoRefreshEnabled) {
             _loadData();
           }
         });
@@ -413,8 +404,7 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
               if (mounted)
                 setState(() {
                   _autoRefreshEnabled = !_autoRefreshEnabled;
-                });
-              // Debug logging removed for production
+                });
             },
             icon: Icon(
               _autoRefreshEnabled ? Icons.sync : Icons.sync_disabled,
@@ -555,8 +545,7 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
         if (mounted)
           setState(() {
             _selectedFilter = value;
-          });
-        // Debug logging removed for production
+          });
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -590,8 +579,7 @@ class _GeocodingAdminScreenState extends State<GeocodingAdminScreen> {
           setState(() {
             _sortBy = value;
             _sortLocations();
-          });
-        // Debug logging removed for production
+          });
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

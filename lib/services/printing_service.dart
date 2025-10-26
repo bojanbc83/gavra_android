@@ -8,8 +8,7 @@ class PrintingService {
     String selectedGrad,
     BuildContext context,
   ) async {
-    try {
-      // Temporarily disabled during Firebase migration testing
+    try {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

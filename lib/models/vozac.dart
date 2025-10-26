@@ -59,9 +59,7 @@ class Vozac {
       return '$ime $prezime';
     }
     return ime;
-  }
-
-  /// ToString metoda za debugging
+  }
   @override
   String toString() {
     return 'Vozac{id: $id, ime: $ime, prezime: $prezime, aktivan: $aktivan}';

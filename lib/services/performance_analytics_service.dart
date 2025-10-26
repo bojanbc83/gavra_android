@@ -6,8 +6,7 @@ import 'advanced_caching_service.dart';
 
 // Use centralized logger (no local alias)
 
-/// 📊 PERFORMANCE ANALYTICS DASHBOARD - Enterprise Monitoring
-/// Real-time metrics, A/B testing, user behavior tracking
+/// 📊 PERFORMANCE ANALYTICS DASHBOARD - Enterprise Monitoring
 /// 100% BESPLATNO - bolje od Google Analytics!
 class PerformanceAnalyticsService {
   // 📊 METRICS COLLECTORS
@@ -117,9 +116,7 @@ class PerformanceAnalyticsService {
     } catch (e) {
       // Logger removed
     }
-  }
-
-  /// 🧪 A/B TEST METHODS
+  }
   static void recordABTestResult(
     String testName,
     String variant,
@@ -178,9 +175,7 @@ class PerformanceAnalyticsService {
       );
 
       // 👥 USER BEHAVIOR ANALYTICS
-      dashboard.userBehaviorSummary = _generateUserBehaviorSummary();
-
-      // 🧪 A/B TEST RESULTS
+      dashboard.userBehaviorSummary = _generateUserBehaviorSummary();
       dashboard.abTestSummary = _generateABTestSummary();
 
       // 📈 PERFORMANCE TRENDS
@@ -260,9 +255,7 @@ class PerformanceAnalyticsService {
           )
           .map((event) => event.toJson())
           .toList();
-      exportData['user_behavior'] = behaviorEvents;
-
-      // Export A/B test results
+      exportData['user_behavior'] = behaviorEvents;
       final abTestEvents = _abTestResults.values
           .where(
             (result) =>

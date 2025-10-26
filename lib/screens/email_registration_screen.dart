@@ -38,8 +38,7 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen>
 
     // Postavi preselected driver ako je proslećen
     if (widget.preselectedDriverName != null) {
-      _selectedDriver = widget.preselectedDriverName;
-      // Debug logging removed for production
+      _selectedDriver = widget.preselectedDriverName;
     }
 
     _fadeController = AnimationController(
@@ -448,8 +447,7 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen>
         throw Exception('Vozač nije automatski prepoznat iz email adrese');
       }
 
-      final driverName = _selectedDriver!;
-      // Debug logging removed for production
+      final driverName = _selectedDriver!;
 
       // Koristi AuthManager umesto direktno EmailAuthService
       final result = await AuthManager.registerWithEmail(
@@ -461,13 +459,11 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen>
       // Sakrij loading dialog
       if (mounted) Navigator.of(context).pop();
 
-      if (result.isSuccess) {
-        // Debug logging removed for production
+      if (result.isSuccess) {
 
         // SAMO PRIKAŽI PORUKU - VOZAČ SE REGISTRUJE NAKON EMAIL VERIFIKACIJE
 
-        // Uspešno registrovan
-        // Debug logging removed for production
+        // Uspešno registrovan
 
         // Pokaži uspešnu poruju
         await _showSuccessDialog();
@@ -476,8 +472,7 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen>
         if (mounted) {
           Navigator.of(context).pop(true);
         }
-      } else {
-        // Debug logging removed for production
+      } else {
         _showErrorDialog(
           'Registracija neuspješna',
           result.message,
@@ -485,8 +480,7 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen>
       }
     } catch (e) {
       // Sakrij loading dialog ako je otvoren
-      if (mounted) Navigator.of(context).pop();
-      // Debug logging removed for production
+      if (mounted) Navigator.of(context).pop();
       _showErrorDialog(
         'Greška',
         'Došlo je do greške pri registraciji. Pokušajte ponovo.',

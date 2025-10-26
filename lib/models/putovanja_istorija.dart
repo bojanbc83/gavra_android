@@ -311,9 +311,7 @@ class PutovanjaIstorija {
             ? '❌'
             : '⏳';
     return '$tipIcon $putnikIme ($vremePolaska) $statusIcon';
-  }
-
-  /// Detaljni opis za debug
+  }
   String get detailDescription {
     return 'PutovanjaIstorija(id: $id, ime: $putnikIme, datum: $formatiraniDatum, vreme: $vremePolaska, tip: $tipPutnika, status: $status, cena: $cena)';
   }

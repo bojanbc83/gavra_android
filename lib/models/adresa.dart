@@ -516,9 +516,7 @@ class Adresa {
         .join(' ');
   }
 
-  double _toRadians(double degrees) => degrees * (math.pi / 180);
-
-  /// Enhanced toString for debugging
+  double _toRadians(double degrees) => degrees * (math.pi / 180);
   @override
   String toString() {
     return 'Adresa{id: $id, adresa: $standardizedAddress, '

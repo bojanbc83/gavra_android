@@ -78,8 +78,7 @@ class ConnectionResilienceService {
       final wasOnline = _isOnline;
       final isConnected = await _checkNetworkConnection();
 
-      if (wasOnline != isConnected) {
-        // Debug logging removed for production
+      if (wasOnline != isConnected) {
         _updateConnectionState(isConnected);
 
         if (isConnected && !_isSupabaseConnected) {
@@ -123,17 +122,14 @@ class ConnectionResilienceService {
       try {
         await _checkSupabaseConnection();
 
-        if (_isSupabaseConnected) {
-          // Debug logging removed for production
+        if (_isSupabaseConnected) {
           return;
         }
-      } catch (e) {
-        // Debug logging removed for production
+      } catch (e) {
       }
 
       if (attempt < _maxRetries) {
-        final delay = _baseRetryDelay * attempt;
-        // Debug logging removed for production
+        final delay = _baseRetryDelay * attempt;
         await Future<void>.delayed(delay);
       }
     }
@@ -167,9 +163,7 @@ class ConnectionResilienceService {
           isConnected ? 'Supabase Connected' : 'Supabase Disconnected';
       _connectionStatusController.add(status);
     }
-  }
-
-  /// 🧪 FORSIRAJ RECONNECT TEST
+  }
   static Future<void> forceReconnectTest() async {
     await _attemptSupabaseReconnect();
   }

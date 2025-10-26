@@ -23,8 +23,7 @@ class SimplifiedDailyCheckInService {
         _streamController.add(iznos);
       }
       return true;
-    } catch (e) {
-      // Debug logging removed for production
+    } catch (e) {
       return false;
     }
   }
@@ -55,8 +54,7 @@ class SimplifiedDailyCheckInService {
   static Future<bool> hasCheckedInToday(String vozac) async {
     try {
       return await DailyCheckInService.hasCheckedInToday(vozac);
-    } catch (e) {
-      // Debug logging removed for production
+    } catch (e) {
       return false;
     }
   }
@@ -86,8 +84,7 @@ class SimplifiedDailyCheckInService {
       String vozac, DateTime datum, Map<String, dynamic> podaci) async {
     try {
       await DailyCheckInService.saveDailyReport(vozac, datum, podaci);
-    } catch (e) {
-      // Debug logging removed for production
+    } catch (e) {
     }
   }
 

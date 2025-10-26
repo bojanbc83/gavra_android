@@ -77,8 +77,7 @@ class AdvancedCachingService {
   }) async {
     final stopwatch = Stopwatch()..start();
 
-    try {
-      // 1️⃣ LEVEL 1: Memory cache (fastest)
+    try {
       if (_level1MemoryCache.containsKey(key)) {
         final value = _level1MemoryCache[key];
         if (updateStats) {
@@ -186,9 +185,7 @@ class AdvancedCachingService {
     try {
       final ttl = customTTLSeconds != null
           ? Duration(seconds: customTTLSeconds)
-          : _cacheTTL[type] ?? const Duration(hours: 1);
-
-      // 1️⃣ LEVEL 1: Always set to memory for fastest access
+          : _cacheTTL[type] ?? const Duration(hours: 1);
       _level1MemoryCache[key] = value;
       _maintainL1Size();
 

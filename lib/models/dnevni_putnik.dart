@@ -344,9 +344,7 @@ class DnevniPutnik {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
     );
-  }
-
-  /// toString za debugging
+  }
   @override
   String toString() {
     return 'DnevniPutnik(id: $id, ime: $ime, datum: ${datumPutovanja.toIso8601String().split('T')[0]}, '
