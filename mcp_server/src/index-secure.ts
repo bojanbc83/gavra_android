@@ -133,7 +133,10 @@ async function main() {
   console.error('🔒 Gavra SECURE Firestore MCP server running (READ-ONLY mode)');
 }
 
-main().catch((error) => {
+// eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+try {
+  await main();
+} catch (error) {
   console.error('🚨 Server security error:', error);
   process.exit(1);
-});
+}

@@ -6,6 +6,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:supabase_flutter/supabase_flutter.dart'; // Firebase migration
 
+import '../models/gps_lokacija.dart';
+import 'firebase_auth_service.dart';
+import 'gps_lokacija_service.dart';
+
 /// 🛰️ BESPLATNO BACKGROUND GPS TRACKING (SIMPLIFIED)
 /// Kontinuirani GPS tracking koristeći samo flutter_background_service
 class BackgroundGpsService {
@@ -128,19 +132,23 @@ Future<bool> onIosBackground(ServiceInstance service) async {
 /// 📡 POŠALJI LOKACIJU NA SUPABASE
 Future<void> _sendLocationToSupabase(Position position) async {
   try {
-    // Firebase migration - GPS tracking will be implemented with Firestore
-    // TODO: Implement Firebase GPS tracking
-    /*
-    if (Supabase.instance.client.auth.currentUser != null) {
-      await Supabase.instance.client.from('gps_tracking').insert({
-        'user_id': Supabase.instance.client.auth.currentUser!.id,
-        'latitude': position.latitude,
-        'longitude': position.longitude,
-        'accuracy': position.accuracy,
-        'timestamp': DateTime.now().toIso8601String(),
-      });
+    // ✅ FIREBASE GPS TRACKING IMPLEMENTATION
+    final user = FirebaseAuthService.currentUser;
+    if (user != null) {
+      final gpsLokacija = GPSLokacija(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        vozacId: user.uid,
+        voziloId:
+            'default_vehicle', // 📝 FUTURE: Implementirati VoziloService.getCurrentVozilo() ili koristiti persistent storage
+        latitude: position.latitude,
+        longitude: position.longitude,
+        brzina: position.speed,
+        pravac: position.heading,
+        vreme: DateTime.now(),
+      );
+
+      await GpsLokacijaService.saveGpsLokacija(gpsLokacija);
     }
-    */
   } catch (e) {
     // Ignoriši Supabase greške u background service
     // Debug removed

@@ -1,0 +1,250 @@
+{
+    "name": "Firebase Development Optimization - Gavra Bus",
+    "version": "1.0.0",
+    "description": "Comprehensive Firebase development setup with rules highlighting, snippets, and configuration schema",
+    "firebaseRulesHighlighting": {
+        "enabled": true,
+        "extensions": [
+            "toba.vsfire"
+        ],
+        "fileAssociations": {
+            "*.rules": "firerules",
+            "firestore.rules": "firerules",
+            "firestore.rules.production": "firerules"
+        },
+        "syntaxHighlighting": {
+            "keywords": [
+                "match",
+                "allow",
+                "function",
+                "return",
+                "if",
+                "request",
+                "resource",
+                "rules_version",
+                "service"
+            ],
+            "functions": [
+                "isAuthenticated",
+                "isOwner",
+                "timestamp",
+                "date"
+            ],
+            "operations": [
+                "read",
+                "write",
+                "create",
+                "update",
+                "delete"
+            ]
+        }
+    },
+    "firebaseRulesSnippets": {
+        "enabled": true,
+        "customSnippets": {
+            "gavra-auth-check": {
+                "prefix": "gavra-auth",
+                "body": [
+                    "function isAuthenticated() {",
+                    "  return request.auth != null;",
+                    "}"
+                ],
+                "description": "Gavra Bus - Check if user is authenticated"
+            },
+            "gavra-owner-check": {
+                "prefix": "gavra-owner",
+                "body": [
+                    "function isOwner(uid) {",
+                    "  return request.auth.uid == uid;",
+                    "}"
+                ],
+                "description": "Gavra Bus - Check if user owns resource"
+            },
+            "gavra-driver-rules": {
+                "prefix": "gavra-driver",
+                "body": [
+                    "match /vozaci/{vozacId} {",
+                    "  allow read, write: if isAuthenticated() && isOwner(vozacId);",
+                    "}"
+                ],
+                "description": "Gavra Bus - Driver collection rules"
+            },
+            "gavra-passenger-rules": {
+                "prefix": "gavra-passenger",
+                "body": [
+                    "match /mesecni_putnici/{putnikId} {",
+                    "  allow read, write: if isAuthenticated() && isOwner(resource.data.vozac_id);",
+                    "  allow create: if isAuthenticated();",
+                    "}"
+                ],
+                "description": "Gavra Bus - Monthly passenger rules"
+            },
+            "gavra-gps-rules": {
+                "prefix": "gavra-gps",
+                "body": [
+                    "match /gps_lokacije/{lokacijaId} {",
+                    "  allow read: if isAuthenticated();",
+                    "  allow write: if isAuthenticated() && isOwner(resource.data.vozac_id);",
+                    "  allow create: if isAuthenticated();",
+                    "}"
+                ],
+                "description": "Gavra Bus - GPS location tracking rules"
+            }
+        }
+    },
+    "firebaseConfigurationSchema": {
+        "enabled": true,
+        "validations": {
+            "firebase.json": {
+                "required": [
+                    "flutter",
+                    "emulators"
+                ],
+                "flutter": {
+                    "required": [
+                        "platforms"
+                    ],
+                    "platforms": {
+                        "android": {
+                            "required": [
+                                "default"
+                            ],
+                            "default": {
+                                "required": [
+                                    "projectId",
+                                    "appId",
+                                    "fileOutput"
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "firestore.indexes.json": {
+                "required": [
+                    "indexes"
+                ],
+                "indexes": {
+                    "type": "array",
+                    "items": {
+                        "required": [
+                            "collectionGroup",
+                            "queryScope",
+                            "fields"
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "developmentWorkflows": {
+        "rulesDeployment": {
+            "name": "Deploy Firestore Rules",
+            "steps": [
+                "Validate rules syntax with Firebase Rules extension",
+                "Test rules in Firebase emulator",
+                "Deploy to staging environment",
+                "Validate in production"
+            ],
+            "commands": {
+                "validate": "firebase firestore:rules:validate firestore.rules",
+                "emulator": "firebase emulators:start --only firestore",
+                "deploy-staging": "firebase deploy --only firestore:rules --project gavra-staging",
+                "deploy-production": "firebase deploy --only firestore:rules --project gavra-production"
+            }
+        },
+        "indexOptimization": {
+            "name": "Optimize Firestore Indexes",
+            "steps": [
+                "Analyze query patterns in Gavra Bus app",
+                "Generate composite indexes for complex queries",
+                "Validate index performance",
+                "Deploy optimized indexes"
+            ],
+            "recommendedIndexes": [
+                {
+                    "collectionGroup": "mesecni_putnici",
+                    "queryScope": "COLLECTION",
+                    "fields": [
+                        {
+                            "fieldPath": "vozac_id",
+                            "order": "ASCENDING"
+                        },
+                        {
+                            "fieldPath": "datum_kreiranja",
+                            "order": "DESCENDING"
+                        }
+                    ]
+                },
+                {
+                    "collectionGroup": "gps_lokacije",
+                    "queryScope": "COLLECTION",
+                    "fields": [
+                        {
+                            "fieldPath": "vozac_id",
+                            "order": "ASCENDING"
+                        },
+                        {
+                            "fieldPath": "timestamp",
+                            "order": "DESCENDING"
+                        }
+                    ]
+                },
+                {
+                    "collectionGroup": "putovanja_istorija",
+                    "queryScope": "COLLECTION",
+                    "fields": [
+                        {
+                            "fieldPath": "vozac_id",
+                            "order": "ASCENDING"
+                        },
+                        {
+                            "fieldPath": "datum",
+                            "order": "DESCENDING"
+                        },
+                        {
+                            "fieldPath": "status",
+                            "order": "ASCENDING"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "performanceOptimization": {
+        "firestoreRules": {
+            "caching": {
+                "enabled": true,
+                "strategy": "aggressive",
+                "ttl": 3600
+            },
+            "indexing": {
+                "autoOptimize": true,
+                "compositeIndexes": true
+            }
+        },
+        "realtimeDatabase": {
+            "connectionPooling": true,
+            "offlineSupport": true
+        }
+    },
+    "debuggingTools": {
+        "firebaseEmulator": {
+            "enabled": true,
+            "ports": {
+                "firestore": 8080,
+                "auth": 9099,
+                "functions": 5001
+            }
+        },
+        "rulesPlayground": {
+            "enabled": true,
+            "testCases": [
+                "Authenticated driver accessing own data",
+                "Unauthenticated user trying to read",
+                "Driver accessing another driver's passengers",
+                "Creating new passenger record"
+            ]
+        }
+    }
+}

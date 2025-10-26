@@ -1,0 +1,274 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Firebase Configuration Schema for Gavra Bus",
+    "description": "JSON schema for validating Firebase configuration files in Gavra Bus project",
+    "definitions": {
+        "firebaseConfig": {
+            "type": "object",
+            "properties": {
+                "flutter": {
+                    "type": "object",
+                    "properties": {
+                        "platforms": {
+                            "type": "object",
+                            "properties": {
+                                "android": {
+                                    "type": "object",
+                                    "properties": {
+                                        "default": {
+                                            "type": "object",
+                                            "properties": {
+                                                "projectId": {
+                                                    "type": "string",
+                                                    "pattern": "^gavra-.*",
+                                                    "description": "Firebase project ID for Gavra Bus"
+                                                },
+                                                "appId": {
+                                                    "type": "string",
+                                                    "pattern": "^1:[0-9]+:android:[a-f0-9]+$",
+                                                    "description": "Firebase Android app ID"
+                                                },
+                                                "fileOutput": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "android/app/google-services.json"
+                                                    ],
+                                                    "description": "Path to google-services.json file"
+                                                }
+                                            },
+                                            "required": [
+                                                "projectId",
+                                                "appId",
+                                                "fileOutput"
+                                            ],
+                                            "additionalProperties": false
+                                        }
+                                    },
+                                    "required": [
+                                        "default"
+                                    ],
+                                    "additionalProperties": false
+                                }
+                            },
+                            "required": [
+                                "android"
+                            ],
+                            "additionalProperties": false
+                        }
+                    },
+                    "required": [
+                        "platforms"
+                    ],
+                    "additionalProperties": false
+                },
+                "emulators": {
+                    "type": "object",
+                    "properties": {
+                        "dataconnect": {
+                            "type": "object",
+                            "properties": {
+                                "dataDir": {
+                                    "type": "string",
+                                    "description": "Directory for data connect emulator data"
+                                }
+                            }
+                        },
+                        "firestore": {
+                            "type": "object",
+                            "properties": {
+                                "port": {
+                                    "type": "integer",
+                                    "minimum": 1024,
+                                    "maximum": 65535,
+                                    "default": 8080
+                                }
+                            }
+                        },
+                        "auth": {
+                            "type": "object",
+                            "properties": {
+                                "port": {
+                                    "type": "integer",
+                                    "minimum": 1024,
+                                    "maximum": 65535,
+                                    "default": 9099
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "required": [
+                "flutter"
+            ],
+            "additionalProperties": true
+        },
+        "firestoreIndexes": {
+            "type": "object",
+            "properties": {
+                "indexes": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "collectionGroup": {
+                                "type": "string",
+                                "enum": [
+                                    "vozaci",
+                                    "mesecni_putnici",
+                                    "dnevni_putnici",
+                                    "adrese",
+                                    "vozila",
+                                    "putovanja_istorija",
+                                    "gps_lokacije",
+                                    "rute",
+                                    "system_stats",
+                                    "notifications"
+                                ],
+                                "description": "Gavra Bus collection name"
+                            },
+                            "queryScope": {
+                                "type": "string",
+                                "enum": [
+                                    "COLLECTION",
+                                    "COLLECTION_GROUP"
+                                ]
+                            },
+                            "fields": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "fieldPath": {
+                                            "type": "string",
+                                            "description": "Field to index"
+                                        },
+                                        "order": {
+                                            "type": "string",
+                                            "enum": [
+                                                "ASCENDING",
+                                                "DESCENDING"
+                                            ]
+                                        },
+                                        "arrayConfig": {
+                                            "type": "string",
+                                            "enum": [
+                                                "CONTAINS"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "fieldPath"
+                                    ],
+                                    "additionalProperties": false
+                                },
+                                "minItems": 1
+                            }
+                        },
+                        "required": [
+                            "collectionGroup",
+                            "queryScope",
+                            "fields"
+                        ],
+                        "additionalProperties": false
+                    }
+                },
+                "fieldOverrides": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "collectionGroup": {
+                                "type": "string"
+                            },
+                            "fieldPath": {
+                                "type": "string"
+                            },
+                            "indexes": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "order": {
+                                            "type": "string",
+                                            "enum": [
+                                                "ASCENDING",
+                                                "DESCENDING"
+                                            ]
+                                        },
+                                        "arrayConfig": {
+                                            "type": "string",
+                                            "enum": [
+                                                "CONTAINS"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "required": [
+                            "collectionGroup",
+                            "fieldPath"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "indexes"
+            ],
+            "additionalProperties": false
+        },
+        "firebaseOptions": {
+            "type": "object",
+            "properties": {
+                "apiKey": {
+                    "type": "string",
+                    "pattern": "^AIza[0-9A-Za-z_-]{35}$",
+                    "description": "Firebase API key"
+                },
+                "appId": {
+                    "type": "string",
+                    "pattern": "^1:[0-9]+:android:[a-f0-9]+$",
+                    "description": "Firebase app ID"
+                },
+                "messagingSenderId": {
+                    "type": "string",
+                    "pattern": "^[0-9]+$",
+                    "description": "Firebase messaging sender ID"
+                },
+                "projectId": {
+                    "type": "string",
+                    "pattern": "^gavra-.*",
+                    "description": "Firebase project ID"
+                },
+                "storageBucket": {
+                    "type": "string",
+                    "pattern": "^gavra-.*\\..*\\.app$",
+                    "description": "Firebase storage bucket"
+                }
+            },
+            "required": [
+                "apiKey",
+                "appId",
+                "messagingSenderId",
+                "projectId"
+            ],
+            "additionalProperties": false
+        }
+    },
+    "oneOf": [
+        {
+            "title": "Firebase Config",
+            "$ref": "#/definitions/firebaseConfig"
+        },
+        {
+            "title": "Firestore Indexes",
+            "$ref": "#/definitions/firestoreIndexes"
+        },
+        {
+            "title": "Firebase Options",
+            "$ref": "#/definitions/firebaseOptions"
+        }
+    ]
+}

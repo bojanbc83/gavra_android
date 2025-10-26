@@ -16,7 +16,7 @@ class FirebaseImporter {
   /// 📁 Pronađi transformisane podatke
   static Future<Directory> findTransformedData() async {
     final backupRoot = Directory('backup');
-    if (!await backupRoot.exists()) {
+    if (!backupRoot.existsSync()) {
       throw Exception('Backup direktorij ne postoji!');
     }
 
@@ -30,7 +30,7 @@ class FirebaseImporter {
     for (final backupDir in backupDirs.reversed) {
       final firebaseDir =
           Directory(path.join(backupDir.path, 'firebase_ready'));
-      if (await firebaseDir.exists()) {
+      if (firebaseDir.existsSync()) {
         print('📁 Koristim transformisane podatke: ${firebaseDir.path}');
         return firebaseDir;
       }
@@ -46,7 +46,7 @@ class FirebaseImporter {
     String collectionName,
   ) async {
     final file = File(path.join(dataDir.path, '$collectionName.json'));
-    if (!await file.exists()) {
+    if (!file.existsSync()) {
       print('⚠️ Preskačem $collectionName - fajl ne postoji');
       return [];
     }

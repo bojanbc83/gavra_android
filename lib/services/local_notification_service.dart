@@ -8,7 +8,7 @@ import 'package:just_audio/just_audio.dart';
 // import 'package:supabase_flutter/supabase_flutter.dart'; // Firebase migration
 
 import '../globals.dart';
-// import '../models/mesecni_putnik.dart'; // Unused after Firebase migration
+import 'mesecni_putnik_service.dart';
 import '../screens/danas_screen.dart';
 // import 'supabase_safe.dart'; // Firebase migration
 
@@ -330,9 +330,10 @@ class LocalNotificationService {
     String putnikIme,
   ) async {
     try {
-      // TODO: Implement Firebase query for putnik search
-      // For now, return null indicating no passenger found
-      return null;
+      // ✅ KORISTI POSTOJEĆI FIREBASE SERVIS
+      final putnik =
+          await MesecniPutnikService.getMesecniPutnikByIme(putnikIme);
+      return putnik?.toMap();
     } catch (e) {
       print('Error fetching putnik data: $e');
       return null;

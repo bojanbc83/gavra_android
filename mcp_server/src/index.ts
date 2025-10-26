@@ -439,7 +439,10 @@ async function main() {
   console.error("Gavra Firestore MCP Server running on stdio");
 }
 
-main().catch((error) => {
+// eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+try {
+  await main();
+} catch (error) {
   console.error("Fatal error in main():", error);
   process.exit(1);
-});
+}

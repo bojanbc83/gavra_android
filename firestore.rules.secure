@@ -1,0 +1,55 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 👥 PUTNICI - Čitanje dozvoljeno, pisanje ograničeno
+    match /putnici/{putnikId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && isAuthorizedDriver();
+    }
+    
+    // 📅 DNEVNI PUTNICI - Čitanje dozvoljeno, pisanje ograničeno
+    match /dnevni_putnici/{putnikId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && isAuthorizedDriver();
+    }
+    
+    // 🚗 VOZAČI - Samo ovlašćeni pristup
+    match /vozaci/{vozacId} {
+      allow read, write: if isAuthenticated() && (
+        isAdmin() || 
+        resource.data.id == request.auth.uid
+      );
+    }
+    
+    // 📊 GPS LOKACIJE - Čitanje admin, pisanje vozači
+    match /gps_lokacije/{lokacijaId} {
+      allow read: if isAuthenticated() && isAdmin();
+      allow write: if isAuthenticated() && isAuthorizedDriver();
+    }
+    
+    // 🏢 ADMIN kolekcije - Samo admin
+    match /admin/{document=**} {
+      allow read, write: if isAuthenticated() && isAdmin();
+    }
+    
+    // 🚫 OSTALO - Zabranjeno
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // 🔐 HELPER FUNKCIJE
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return request.auth.token.admin == true;
+    }
+    
+    function isAuthorizedDriver() {
+      return request.auth.token.driver == true || isAdmin();
+    }
+  }
+}

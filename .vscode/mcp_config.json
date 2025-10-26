@@ -1,0 +1,178 @@
+{
+    "mcpServers": {
+        "gavra-firebase-mcp": {
+            "command": "firebase",
+            "args": [
+                "--project",
+                "gavra-notif-20250920162521"
+            ],
+            "env": {
+                "FIREBASE_CONFIG_PATH": "./firebase.json",
+                "FIRESTORE_EMULATOR_HOST": "localhost:8080"
+            },
+            "capabilities": [
+                "firestore-queries",
+                "auth-management",
+                "cloud-functions",
+                "analytics-data"
+            ]
+        },
+        "gavra-dart-mcp": {
+            "command": "dart",
+            "args": [
+                "run",
+                "mcp_server"
+            ],
+            "env": {
+                "DART_PROJECT_PATH": ".",
+                "PUB_CACHE": ".dart_tool"
+            },
+            "capabilities": [
+                "code-analysis",
+                "pub-dependencies",
+                "flutter-widgets",
+                "test-generation"
+            ]
+        },
+        "gavra-github-mcp": {
+            "command": "gh",
+            "args": [
+                "api"
+            ],
+            "env": {
+                "GITHUB_REPO": "bojanbc83/gavra_android",
+                "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+            },
+            "capabilities": [
+                "issue-management",
+                "pull-requests",
+                "repository-stats",
+                "deployment-status"
+            ]
+        },
+        "gavra-huawei-mcp": {
+            "command": "codearts",
+            "args": [
+                "--mcp-mode"
+            ],
+            "env": {
+                "HUAWEI_CLOUD_PROJECT": "gavra-mobile",
+                "HMS_API_KEY": "${HMS_API_KEY}"
+            },
+            "capabilities": [
+                "hms-integration",
+                "harmonyos-optimization",
+                "device-testing",
+                "app-gallery-deployment"
+            ]
+        }
+    },
+    "workflows": {
+        "auto-deploy-workflow": {
+            "trigger": "on-push-main",
+            "steps": [
+                {
+                    "mcp": "gavra-dart-mcp",
+                    "action": "run-tests",
+                    "params": {
+                        "test_dir": "test/"
+                    }
+                },
+                {
+                    "mcp": "gavra-firebase-mcp",
+                    "action": "deploy-functions",
+                    "params": {
+                        "environment": "production"
+                    }
+                },
+                {
+                    "mcp": "gavra-github-mcp",
+                    "action": "create-release",
+                    "params": {
+                        "tag": "auto-${timestamp}"
+                    }
+                }
+            ]
+        },
+        "passenger-analysis-workflow": {
+            "trigger": "daily-cron",
+            "steps": [
+                {
+                    "mcp": "gavra-firebase-mcp",
+                    "action": "query-passengers",
+                    "params": {
+                        "period": "last-24h"
+                    }
+                },
+                {
+                    "mcp": "gavra-dart-mcp",
+                    "action": "generate-statistics",
+                    "params": {
+                        "format": "csv"
+                    }
+                },
+                {
+                    "mcp": "gavra-github-mcp",
+                    "action": "create-issue",
+                    "params": {
+                        "title": "Daily Statistics Report",
+                        "body": "Generated statistics attached"
+                    }
+                }
+            ]
+        },
+        "huawei-optimization-workflow": {
+            "trigger": "on-demand",
+            "steps": [
+                {
+                    "mcp": "gavra-dart-mcp",
+                    "action": "analyze-widgets",
+                    "params": {
+                        "focus": "performance"
+                    }
+                },
+                {
+                    "mcp": "gavra-huawei-mcp",
+                    "action": "optimize-for-emui",
+                    "params": {
+                        "version": "12.0"
+                    }
+                },
+                {
+                    "mcp": "gavra-huawei-mcp",
+                    "action": "test-on-devices",
+                    "params": {
+                        "devices": [
+                            "P40",
+                            "Mate50",
+                            "Nova9"
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    "integrations": {
+        "firebase-dart": {
+            "shared_context": [
+                "project_structure",
+                "model_definitions"
+            ],
+            "data_flow": "firebase -> dart analysis -> code generation"
+        },
+        "github-firebase": {
+            "shared_context": [
+                "deployment_status",
+                "environment_config"
+            ],
+            "data_flow": "github actions -> firebase deployment -> status update"
+        },
+        "huawei-dart": {
+            "shared_context": [
+                "widget_tree",
+                "performance_metrics"
+            ],
+            "data_flow": "dart analysis -> huawei optimization -> device testing"
+        }
+    }
+}

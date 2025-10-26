@@ -39,12 +39,10 @@ class FirebaseAuthService {
       // Postavljanje display name-a na vozač ime
       await credential.user?.updateDisplayName(vozacName);
 
-      // Slanje email verifikacije
-      await credential.user?.sendEmailVerification();
-
+      // BEZ EMAIL VERIFIKACIJE - DIREKTNA REGISTRACIJA
       return AuthResult.success(
         user: credential.user,
-        message: 'Registracija uspešna! Proverite email za verifikaciju.',
+        message: 'Registracija uspešna! Možete se odmah prijaviti.',
       );
     } on FirebaseAuthException catch (e) {
       return AuthResult.failure(_getErrorMessage(e));
@@ -64,14 +62,7 @@ class FirebaseAuthService {
         password: password,
       );
 
-      // 🔒 VALIDACIJA: Email mora biti verifikovan
-      if (!credential.user!.emailVerified) {
-        await _auth.signOut();
-        return AuthResult.failure(
-          'Email nije verifikovan! Proverite inbox i kliknite na link za verifikaciju.',
-        );
-      }
-
+      // BEZ EMAIL VERIFIKACIJE - DIREKTNO ULOGOVANJE
       return AuthResult.success(
         user: credential.user,
         message: 'Uspešno ulogovanje!',
@@ -113,29 +104,7 @@ class FirebaseAuthService {
     return result.isSuccess;
   }
 
-  /// Ponovo pošalji email verifikaciju
-  static Future<AuthResult> resendEmailVerification() async {
-    try {
-      final user = currentUser;
-      if (user == null) {
-        return AuthResult.failure('Korisnik nije ulogovan');
-      }
-
-      await user.sendEmailVerification();
-      return AuthResult.success(
-        message: 'Email verifikacija je poslata!',
-      );
-    } on FirebaseAuthException catch (e) {
-      return AuthResult.failure(_getErrorMessage(e));
-    } catch (e) {
-      return AuthResult.failure('Neočekivana greška: $e');
-    }
-  }
-
-  /// Proveri da li je email verifikovan
-  static bool isEmailVerified() {
-    return currentUser?.emailVerified ?? false;
-  }
+  // EMAIL VERIFIKACIJA UKLONJENA - DIREKTNA REGISTRACIJA I LOGIN
 
   /// Konverzija Firebase grešaka u srpski
   static String _getErrorMessage(FirebaseAuthException e) {

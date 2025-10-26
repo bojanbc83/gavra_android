@@ -1,0 +1,122 @@
+{
+    "Gavra Bus Firebase Rules": {
+        "prefix": "gavra-complete-rules",
+        "body": [
+            "rules_version='2'",
+            "",
+            "service cloud.firestore {",
+            "  match /databases/{database}/documents {",
+            "    // 👤 AUTHENTICATED USERS ONLY",
+            "    function isAuthenticated() {",
+            "      return request.auth != null;",
+            "    }",
+            "",
+            "    // 👨‍💼 USER OWNS RESOURCE",
+            "    function isOwner(uid) {",
+            "      return request.auth.uid == uid;",
+            "    }",
+            "",
+            "    // 🚌 VOZACI COLLECTION - Only authenticated drivers",
+            "    match /vozaci/{vozacId} {",
+            "      allow read, write: if isAuthenticated() && isOwner(vozacId);",
+            "    }",
+            "",
+            "    // 👥 MESECNI PUTNICI - Driver-owned passengers",
+            "    match /mesecni_putnici/{putnikId} {",
+            "      allow read, write: if isAuthenticated() && isOwner(resource.data.vozac_id);",
+            "      allow create: if isAuthenticated();",
+            "    }",
+            "",
+            "    // 🎫 DNEVNI PUTNICI - Daily passengers",
+            "    match /dnevni_putnici/{putnikId} {",
+            "      allow read, write: if isAuthenticated() && isOwner(resource.data.vozac_id);",
+            "      allow create: if isAuthenticated();",
+            "    }",
+            "",
+            "    // 📍 GPS LOKACIJE - Real-time tracking",
+            "    match /gps_lokacije/{lokacijaId} {",
+            "      allow read: if isAuthenticated();",
+            "      allow write: if isAuthenticated() && isOwner(resource.data.vozac_id);",
+            "      allow create: if isAuthenticated();",
+            "    }",
+            "  }",
+            "}"
+        ],
+        "description": "Complete Gavra Bus Firestore rules template"
+    },
+    "Firebase Auth Function": {
+        "prefix": "fb-auth",
+        "body": [
+            "function isAuthenticated() {",
+            "  return request.auth != null;",
+            "}"
+        ],
+        "description": "Firebase authentication check function"
+    },
+    "Firebase Owner Check": {
+        "prefix": "fb-owner",
+        "body": [
+            "function isOwner(uid) {",
+            "  return request.auth.uid == uid;",
+            "}"
+        ],
+        "description": "Firebase resource owner check function"
+    },
+    "Gavra Driver Match": {
+        "prefix": "gavra-vozac",
+        "body": [
+            "match /vozaci/{vozacId} {",
+            "  allow read, write: if isAuthenticated() && isOwner(vozacId);",
+            "}"
+        ],
+        "description": "Firestore rules for Gavra Bus drivers collection"
+    },
+    "Gavra Passenger Match": {
+        "prefix": "gavra-putnik",
+        "body": [
+            "match /mesecni_putnici/{putnikId} {",
+            "  allow read, write: if isAuthenticated() && isOwner(resource.data.vozac_id);",
+            "  allow create: if isAuthenticated();",
+            "}"
+        ],
+        "description": "Firestore rules for Gavra Bus passengers collection"
+    },
+    "Gavra GPS Match": {
+        "prefix": "gavra-gps",
+        "body": [
+            "match /gps_lokacije/{lokacijaId} {",
+            "  allow read: if isAuthenticated();",
+            "  allow write: if isAuthenticated() && isOwner(resource.data.vozac_id);",
+            "  allow create: if isAuthenticated();",
+            "}"
+        ],
+        "description": "Firestore rules for Gavra Bus GPS tracking"
+    },
+    "Firebase Timestamp Check": {
+        "prefix": "fb-time",
+        "body": [
+            "allow read, write: if request.time < timestamp.date(${1:2025}, ${2:12}, ${3:31});"
+        ],
+        "description": "Time-based Firebase rule with expiration"
+    },
+    "Firebase Resource Validation": {
+        "prefix": "fb-validate",
+        "body": [
+            "allow write: if request.auth != null",
+            "  && resource.data.keys().hasAll(['${1:field1}', '${2:field2}'])",
+            "  && request.resource.data.${3:field} is string;"
+        ],
+        "description": "Firebase resource data validation"
+    },
+    "Firebase Collection Security": {
+        "prefix": "fb-secure",
+        "body": [
+            "match /${1:collection}/{${2:document}} {",
+            "  allow read: if isAuthenticated();",
+            "  allow write: if isAuthenticated() && isOwner(resource.data.user_id);",
+            "  allow create: if isAuthenticated();",
+            "}"
+        ],
+        "description": "Secure Firebase collection with authentication"
+    }
+}

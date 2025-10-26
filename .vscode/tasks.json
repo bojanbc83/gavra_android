@@ -1,0 +1,66 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "group": "build",
+      "args": [
+        "emulators:start",
+        "--only",
+        "firestore,auth"
+      ],
+      "type": "shell",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared",
+        "focus": false
+      },
+      "label": "Firebase: Start Emulators",
+      "command": "firebase",
+      "problemMatcher": [],
+      "isBackground": true
+    },
+    {
+      "label": "Firebase: Deploy Rules",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared",
+        "focus": false
+      },
+      "group": "build",
+      "type": "shell",
+      "args": [
+        "deploy",
+        "--only",
+        "firestore:rules"
+      ],
+      "command": "firebase"
+    },
+    {
+      "label": "Firebase: Deploy Indexes",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared",
+        "focus": false
+      },
+      "group": "build",
+      "type": "shell",
+      "args": [
+        "deploy",
+        "--only",
+        "firestore:indexes"
+      ],
+      "command": "firebase"
+    },
+    {
+      "dependsOrder": "sequence",
+      "label": "Gavra: Complete Firebase Setup",
+      "dependsOn": [
+        "Firebase: Deploy Rules",
+        "Firebase: Deploy Indexes"
+      ]
+    }
+  ]
+}

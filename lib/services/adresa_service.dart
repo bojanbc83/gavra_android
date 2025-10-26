@@ -1,4 +1,7 @@
 // import 'package:supabase_flutter/supabase_flutter.dart'; // REMOVED - migrated to Firebase
+import 'dart:math' as math;
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/adresa.dart';
 import 'cache_service.dart';
@@ -26,10 +29,9 @@ import 'cache_service.dart';
 ///
 /// OGRANIČENO NA: Bela Crkva i Vršac opštine samo
 class AdresaService {
-  // TODO: Implement Firebase client for address service
-  // AdresaService({SupabaseClient? supabaseClient})
-  //     : _supabase = supabaseClient ?? Supabase.instance.client;
-  // final SupabaseClient _supabase;
+  // ✅ FIREBASE CLIENT IMPLEMENTATION
+  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  static const String _collectionName = 'adrese';
 
   static const String _cachePrefix = 'adresa_';
   static const String _listCacheKey = 'adrese_list';
@@ -63,16 +65,17 @@ class AdresaService {
       // Logger removed
       _cacheMisses++;
 
-      // TODO: Implement Firebase adrese query
-      // final response = await _supabase
-      //     .from('adrese')
-      //     .select()
-      //     .order('updated_at', ascending: false);
+      // ✅ FIREBASE ADRESE QUERY IMPLEMENTATION
+      final snapshot = await _firestore
+          .collection(_collectionName)
+          .where('aktivan', isEqualTo: true)
+          .orderBy('updated_at', descending: true)
+          .get();
 
-      final adrese = <Adresa>[]; // PLACEHOLDER: empty list
-      // .map((json) => Adresa.fromMap(json as Map<String, dynamic>))
-      // .where((adresa) => adresa.isInServiceArea) // Filter service area
-      // .toList();
+      final adrese = snapshot.docs
+          .map((doc) => Adresa.fromMap({...doc.data(), 'id': doc.id}))
+          .where((adresa) => adresa.isInServiceArea) // Filter service area
+          .toList();
 
       // Cache the results
       await CacheService.saveToDisk(
@@ -106,12 +109,17 @@ class AdresaService {
       // Logger removed
       _cacheMisses++;
 
-      // TODO: Implement Firebase adrese query by id
-      // final response =
-      //     await _supabase.from('adrese').select().eq('id', id).single();
+      // ✅ FIREBASE ADRESE QUERY BY ID IMPLEMENTATION
+      final doc = await _firestore.collection(_collectionName).doc(id).get();
 
-      // PLACEHOLDER: return null (address not found)
-      return null;
+      if (!doc.exists) return null;
+
+      final adresa = Adresa.fromMap({...doc.data()!, 'id': doc.id});
+
+      // Cache the result
+      await CacheService.saveToDisk(cacheKey, adresa.toMap());
+
+      return adresa;
     } catch (e) {
       // Logger removed
       return null;
@@ -129,10 +137,33 @@ class AdresaService {
         throw Exception('Address validation failed: $errors');
       }
 
-      // TODO: Implement Firebase adrese insert
-      // final normalizedAdresa = adresa.normalize();
-      throw UnimplementedError(
-          'AdresaService.createAdresa not implemented for Firebase');
+      // ✅ FIREBASE ADRESE INSERT IMPLEMENTATION
+      final normalizedAdresa = adresa.normalize();
+      final now = DateTime.now();
+
+      final data = {
+        ...normalizedAdresa.toMap(),
+        'created_at': FieldValue.serverTimestamp(),
+        'updated_at': FieldValue.serverTimestamp(),
+        'search_terms': _generateSearchTerms(normalizedAdresa),
+        'last_optimized': FieldValue.serverTimestamp(),
+        'putnici_count': 0,
+        'putovanja_count': 0,
+      };
+
+      final docRef = await _firestore.collection(_collectionName).add(data);
+
+      // Return with generated ID
+      final createdAdresa = normalizedAdresa.copyWith(
+        id: docRef.id,
+        createdAt: now,
+        updatedAt: now,
+      );
+
+      // Clear cache
+      await _clearCache();
+
+      return createdAdresa;
     } catch (e) {
       // Logger removed
       rethrow;
@@ -144,12 +175,20 @@ class AdresaService {
     _incrementOperation();
 
     try {
-      // Add updated_at timestamp
-      updates['updated_at'] = DateTime.now().toIso8601String();
+      // ✅ FIREBASE ADRESE UPDATE IMPLEMENTATION
+      updates['updated_at'] = FieldValue.serverTimestamp();
+      updates['last_optimized'] = FieldValue.serverTimestamp();
 
-      // TODO: Implement Firebase adrese update
-      throw UnimplementedError(
-          'AdresaService.updateAdresa not implemented for Firebase');
+      await _firestore.collection(_collectionName).doc(id).update(updates);
+
+      // Get updated document
+      final doc = await _firestore.collection(_collectionName).doc(id).get();
+      final updatedAdresa = Adresa.fromMap({...doc.data()!, 'id': doc.id});
+
+      // Clear cache
+      await _clearCache();
+
+      return updatedAdresa;
     } catch (e) {
       // Logger removed
       rethrow;
@@ -161,9 +200,16 @@ class AdresaService {
     _incrementOperation();
 
     try {
-      // TODO: Implement Firebase adrese soft delete
-      throw UnimplementedError(
-          'AdresaService.deleteAdresa not implemented for Firebase');
+      // ✅ FIREBASE ADRESE SOFT DELETE IMPLEMENTATION
+      await _firestore.collection(_collectionName).doc(id).update({
+        'obrisan': true,
+        'aktivan': false,
+        'updated_at': FieldValue.serverTimestamp(),
+        'last_optimized': FieldValue.serverTimestamp(),
+      });
+
+      // Clear cache
+      await _clearCache();
 
       // Logger removed
     } catch (e) {
@@ -204,9 +250,37 @@ class AdresaService {
         throw Exception('No valid addresses to create');
       }
 
-      // TODO: Implement Firebase batch insert
-      throw UnimplementedError(
-          'AdresaService.createBatchAdrese not implemented for Firebase');
+      // ✅ FIREBASE BATCH INSERT IMPLEMENTATION
+      final batch = _firestore.batch();
+      final createdAdrese = <Adresa>[];
+      final now = DateTime.now();
+
+      for (final adresa in validAdrese) {
+        final docRef = _firestore.collection(_collectionName).doc();
+        final data = {
+          ...adresa.toMap(),
+          'created_at': FieldValue.serverTimestamp(),
+          'updated_at': FieldValue.serverTimestamp(),
+          'search_terms': _generateSearchTerms(adresa),
+          'last_optimized': FieldValue.serverTimestamp(),
+          'putnici_count': 0,
+          'putovanja_count': 0,
+        };
+
+        batch.set(docRef, data);
+        createdAdrese.add(adresa.copyWith(
+          id: docRef.id,
+          createdAt: now,
+          updatedAt: now,
+        ));
+      }
+
+      await batch.commit();
+
+      // Clear cache
+      await _clearCache();
+
+      return createdAdrese;
     } catch (e) {
       // Logger removed
       rethrow;
@@ -224,15 +298,24 @@ class AdresaService {
 
       // Logger removed
 
-      // Add updated_at to all updates
-      final now = DateTime.now().toIso8601String();
-      for (final update in updates.values) {
-        update['updated_at'] = now;
+      // ✅ FIREBASE BATCH UPDATES IMPLEMENTATION
+      final batch = _firestore.batch();
+
+      for (final entry in updates.entries) {
+        final id = entry.key;
+        final updateData = entry.value;
+
+        updateData['updated_at'] = FieldValue.serverTimestamp();
+        updateData['last_optimized'] = FieldValue.serverTimestamp();
+
+        batch.update(
+            _firestore.collection(_collectionName).doc(id), updateData);
       }
 
-      // TODO: Implement Firebase batch updates
-      throw UnimplementedError(
-          'AdresaService.updateBatchAdrese not implemented for Firebase');
+      await batch.commit();
+
+      // Clear cache
+      await _clearCache();
 
       // Logger removed
     } catch (e) {
@@ -248,9 +331,22 @@ class AdresaService {
     try {
       if (ids.isEmpty) return;
 
-      // TODO: Implement Firebase batch delete
-      throw UnimplementedError(
-          'AdresaService.deleteBatchAdrese not implemented for Firebase');
+      // ✅ FIREBASE BATCH DELETE IMPLEMENTATION
+      final batch = _firestore.batch();
+
+      for (final id in ids) {
+        batch.update(_firestore.collection(_collectionName).doc(id), {
+          'obrisan': true,
+          'aktivan': false,
+          'updated_at': FieldValue.serverTimestamp(),
+          'last_optimized': FieldValue.serverTimestamp(),
+        });
+      }
+
+      await batch.commit();
+
+      // Clear cache
+      await _clearCache();
 
       // Logger removed
     } catch (e) {
@@ -275,9 +371,61 @@ class AdresaService {
   }) async {
     _incrementOperation();
 
-    // TODO: Implement Firebase search functionality
-    throw UnimplementedError(
-        'AdresaService.searchAdrese not implemented for Firebase');
+    // ✅ FIREBASE SEARCH FUNCTIONALITY IMPLEMENTATION
+    try {
+      Query<Map<String, dynamic>> firebaseQuery = _firestore
+          .collection(_collectionName)
+          .where('aktivan', isEqualTo: true);
+
+      // Filter by grad if specified
+      if (grad != null && grad.isNotEmpty) {
+        firebaseQuery = firebaseQuery.where('grad', isEqualTo: grad);
+      }
+
+      // Filter addresses with coordinates
+      if (hasCoordinates == true) {
+        firebaseQuery = firebaseQuery.where('koordinate', isNull: false);
+      }
+
+      // Apply limit
+      if (limit != null) {
+        firebaseQuery = firebaseQuery.limit(limit);
+      }
+
+      final snapshot = await firebaseQuery.get();
+      var results = snapshot.docs
+          .map((doc) => Adresa.fromMap({...doc.data(), 'id': doc.id}))
+          .toList();
+
+      // Apply text search filter (client-side for complex search)
+      if (query != null && query.isNotEmpty) {
+        final searchLower = query.toLowerCase();
+        results = results.where((adresa) {
+          return adresa.displayAddress.toLowerCase().contains(searchLower) ||
+              adresa.grad.toLowerCase().contains(searchLower) ||
+              adresa.ulica.toLowerCase().contains(searchLower);
+        }).toList();
+      }
+
+      // Apply geo-location filter (client-side)
+      if (nearLatitude != null && nearLongitude != null && radiusKm != null) {
+        results = results.where((adresa) {
+          if (adresa.latitude == null || adresa.longitude == null) return false;
+          final distance = _calculateDistance(
+            nearLatitude,
+            nearLongitude,
+            adresa.latitude!,
+            adresa.longitude!,
+          );
+          return distance <= radiusKm;
+        }).toList();
+      }
+
+      return results;
+    } catch (e) {
+      // Logger removed
+      rethrow;
+    }
   }
 
   /// Get addresses grouped by municipality
@@ -427,14 +575,29 @@ class AdresaService {
 
   /// Real-time subscription to address changes
   Stream<List<Adresa>> watchAdrese() {
-    // TODO: Implement Firebase stream for addresses
-    return Stream.value(<Adresa>[]); // PLACEHOLDER: empty stream
+    // ✅ FIREBASE STREAM FOR ADDRESSES IMPLEMENTATION
+    return _firestore
+        .collection(_collectionName)
+        .where('aktivan', isEqualTo: true)
+        .orderBy('updated_at', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => Adresa.fromMap({...doc.data(), 'id': doc.id}))
+            .where((adresa) => adresa.isInServiceArea)
+            .toList());
   }
 
   /// Watch specific address by ID
   Stream<Adresa?> watchAdresa(String id) {
-    // TODO: Implement Firebase stream for single address
-    return Stream.value(null); // PLACEHOLDER: null stream
+    // ✅ FIREBASE STREAM FOR SINGLE ADDRESS IMPLEMENTATION
+    return _firestore
+        .collection(_collectionName)
+        .doc(id)
+        .snapshots()
+        .map((doc) {
+      if (!doc.exists) return null;
+      return Adresa.fromMap({...doc.data()!, 'id': doc.id});
+    });
   }
 
   // ✅ CACHE MANAGEMENT
@@ -495,5 +658,57 @@ class AdresaService {
       'lastOperation': _lastOperationTime?.toIso8601String(),
       'cacheSize': 'N/A', // Could be implemented with cache size tracking
     };
+  }
+
+  // ✅ HELPER METHODS FOR FIREBASE IMPLEMENTATION
+
+  /// Generate search terms for Firebase text search
+  static List<String> _generateSearchTerms(Adresa adresa) {
+    final terms = <String>[];
+
+    // Add core address components
+    terms.addAll([
+      adresa.grad.toLowerCase(),
+      adresa.ulica.toLowerCase(),
+      adresa.displayAddress.toLowerCase(),
+    ]);
+
+    // Add broj if exists
+    if (adresa.broj?.isNotEmpty == true) {
+      terms.add(adresa.broj!.toLowerCase());
+    }
+
+    // Add postanski_broj if exists
+    if (adresa.postanskiBroj?.isNotEmpty == true) {
+      terms.add(adresa.postanskiBroj!.toLowerCase());
+    }
+
+    return terms.where((term) => term.isNotEmpty).toList();
+  }
+
+  /// Calculate distance between two coordinates in km
+  static double _calculateDistance(
+      double lat1, double lon1, double lat2, double lon2) {
+    const double earthRadius = 6371; // Earth radius in km
+    final double dLat = _degreesToRadians(lat2 - lat1);
+    final double dLon = _degreesToRadians(lon2 - lon1);
+    final double a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(_degreesToRadians(lat1)) *
+            math.cos(_degreesToRadians(lat2)) *
+            math.sin(dLon / 2) *
+            math.sin(dLon / 2);
+    final double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
+    return earthRadius * c;
+  }
+
+  static double _degreesToRadians(double degrees) {
+    return degrees * (math.pi / 180);
+  }
+
+  /// Clear all caches
+  static Future<void> _clearCache() async {
+    await CacheService.clearFromDisk(_listCacheKey);
+    // Note: CacheService doesn't have clearByPattern, so we clear main cache
+    CacheService.clearFromMemory(_listCacheKey);
   }
 }

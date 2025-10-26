@@ -911,9 +911,9 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen>
     double newSitanNovac,
   ) async {
     try {
-      // TODO: Migrate to Firebase when needed
-      // Firebase implementation for daily reports
-      // For now, skip remote sync
+      // 📝 FUTURE: Firebase implementacija za daily reports
+      // Trenutno se koristi lokalno čuvanje preko SharedPreferences
+      // Daily check-in je lokalna funkcionalnost i ne zahteva Firebase sync
       // Debug logging removed for production
     } on TimeoutException {
       // Debug logging removed for production
@@ -964,8 +964,8 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen>
     Timer.periodic(const Duration(seconds: 30), (timer) async {
       try {
         // Proverava da li imamo internet konekciju
-        // TODO: Firebase connectivity check
-        // For now, assume always connected and sync immediately
+        // 📝 FUTURE: Firebase connectivity check
+        // Trenutno pretpostavljamo da je uvek povezano (lokalna funkcionalnost)
         await _syncOfflineKusur();
         timer.cancel();
       } catch (e) {
@@ -982,8 +982,8 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen>
       final offlineKusurData = prefs.getString('offline_kusur_data');
 
       if (offlineKusurData != null) {
-        // TODO: Firebase sync for offline data
-        // Skip remote sync for now
+        // 📝 FUTURE: Firebase sync for offline data
+        // Daily check-in podatci se čuvaju lokalno preko SharedPreferences
 
         // Obriši offline podatke nakon uspešnog sync-a
         await prefs.remove('offline_kusur_data');

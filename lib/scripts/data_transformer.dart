@@ -13,7 +13,7 @@ class DataTransformer {
   /// 📁 Pronađi najnoviji backup direktorij
   static Future<Directory> findLatestBackup() async {
     final backupRoot = Directory('backup');
-    if (!await backupRoot.exists()) {
+    if (!backupRoot.existsSync()) {
       throw Exception('Backup direktorij ne postoji! Pokreni export prvo.');
     }
 
@@ -39,7 +39,7 @@ class DataTransformer {
   static Future<Map<String, dynamic>> loadExportedData(
       Directory backupDir, String tableName) async {
     final file = File(path.join(backupDir.path, '$tableName.json'));
-    if (!await file.exists()) {
+    if (!file.existsSync()) {
       throw Exception('Fajl $tableName.json ne postoji u backup-u!');
     }
 

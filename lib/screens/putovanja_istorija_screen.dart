@@ -1440,7 +1440,8 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
     }
 
     try {
-      // TODO: Implement Firebase putovanja_istorija creation
+      // 📝 FUTURE: Firebase implementacija za kreiranje putovanja_istorija
+      // Trenutno koristi lokalni cache - Firebase servis će biti implementiran kada bude potreban
       // final novoPutovanje = PutovanjaIstorija(
       //   id: '',
       //   putnikIme: _noviPutnikIme.trim(),
@@ -1571,7 +1572,8 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
     }
 
     try {
-      // TODO: Implement Firebase putovanja_istorija update
+      // 📝 FUTURE: Firebase implementacija za ažuriranje putovanja_istorija
+      // Trenutno koristi lokalni cache - Firebase CRUD operacije će biti implementirane
       // final azuriranoPutovanje = PutovanjaIstorija(
       //   id: originalPutovanje.id,
       //   mesecniPutnikId: originalPutovanje.mesecniPutnikId,
@@ -1653,7 +1655,8 @@ class _PutovanjaIstorijaScreenState extends State<PutovanjaIstorijaScreen> {
     PutovanjaIstorija putovanje,
     String noviStatus,
   ) async {
-    // TODO: Implement Firebase putovanja_istorija status update
+    // 📝 FUTURE: Firebase implementacija za ažuriranje statusa putovanja
+    // Trenutno koristi lokalni cache - Firebase status update će biti implementiran
     // final azuriranoPutovanje = PutovanjaIstorija(
     //   id: putovanje.id,
     //   mesecniPutnikId: putovanje.mesecniPutnikId,

@@ -103,12 +103,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     // PROVERI FIREBASE AUTH STATE
     final currentUser = FirebaseAuthService.currentUser;
 
-    // 🔒 STRIKTNA PROVERA EMAIL VERIFIKACIJE
-    if (AuthManager.isEmailAuthenticated() && !AuthManager.isEmailVerified()) {
-      // Korisnik je ulogovan ali email nije verifikovan - odjavi ga
-      await AuthManager.logout(context);
-      return;
-    }
+    // EMAIL VERIFIKACIJA UKLONJENA - DIREKTAN PRISTUP
 
     // Koristi novi AuthManager za session management
     final savedDriver = await AuthManager.getCurrentDriver();

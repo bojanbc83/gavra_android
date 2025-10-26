@@ -286,10 +286,11 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen>
             color: Colors.blue,
           ),
           onPressed: () {
-            if (mounted)
+            if (mounted) {
               setState(() {
                 _isPasswordVisible = !_isPasswordVisible;
               });
+            }
           },
         ),
         filled: true,
@@ -340,10 +341,11 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen>
             color: Colors.blue,
           ),
           onPressed: () {
-            if (mounted)
+            if (mounted) {
               setState(() {
                 _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
               });
+            }
           },
         ),
         filled: true,
@@ -462,26 +464,7 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen>
       if (result.isSuccess) {
         // Debug logging removed for production
 
-        // 📧 PROVERI DA LI JE EMAIL VERIFICATION POTREBAN
-        final currentUser = FirebaseAuthService.currentUser;
-        final needsVerification =
-            (currentUser != null && !currentUser.emailVerified);
-
-        if (needsVerification) {
-          // Sakrij loading dialog
-          if (mounted) Navigator.of(context).pop();
-
-          // Pokaži poruku o email verification
-          await _showEmailVerificationDialog(email);
-
-          // Vrati false da signalizira da verifikacija čeka
-          if (mounted) {
-            Navigator.of(context).pop(false);
-          }
-          return;
-        }
-
-        // REGISTRUJ VOZAČA LOKALNO
+        // REGISTRUJ VOZAČA LOKALNO - BEZ EMAIL VERIFIKACIJE
         await AuthManager.setCurrentDriver(email);
 
         // Uspešno registrovan
@@ -607,7 +590,7 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen>
           ),
           child: SingleChildScrollView(
             child: Text(
-              'Vaš nalog je uspešno kreiran i možete se prijaviti.',
+              'Vaš nalog je uspešno kreiran! Možete se odmah prijaviti sa vašom email adresom i šifrom.',
               style:
                   TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 14),
             ),
@@ -623,49 +606,5 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen>
     );
   }
 
-  Future<void> _showEmailVerificationDialog(String email) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF1A1A2E),
-        title: const Row(
-          children: [
-            Icon(Icons.email, color: Colors.blue),
-            SizedBox(width: 8),
-            Text('Potvrda email adrese', style: TextStyle(color: Colors.white)),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Poslali smo vam konfirmacioni email na:',
-              style: TextStyle(color: Colors.white.withOpacity(0.8)),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              email,
-              style: const TextStyle(
-                color: Colors.blue,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Molimo kliknite na link u email-u da potvrdite vašu adresu. Nakon toga se možete prijaviti u aplikaciju.',
-              style: TextStyle(color: Colors.white.withOpacity(0.8)),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Razumem', style: TextStyle(color: Colors.blue)),
-          ),
-        ],
-      ),
-    );
-  }
+  // EMAIL VERIFIKACIJA DIALOG UKLONJEN
 }

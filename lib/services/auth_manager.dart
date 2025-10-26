@@ -135,10 +135,7 @@ class AuthManager {
     return FirebaseAuthService.isLoggedIn;
   }
 
-  /// 🔒 Da li je email potvrđen
-  static bool isEmailVerified() {
-    return FirebaseAuthService.isEmailVerified();
-  }
+  // EMAIL VERIFIKACIJA UKLONJENA
 
   /// Da li je postavljan bilo koji vozač
   static Future<bool> hasActiveDriver() async {

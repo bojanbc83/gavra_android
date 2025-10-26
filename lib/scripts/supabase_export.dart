@@ -126,8 +126,8 @@ class SupabaseExporter {
     for (final tableName in tablesToExport) {
       try {
         final file = File(path.join(backupDir.path, '$tableName.json'));
-        if (await file.exists()) {
-          final content = json.decode(await file.readAsString());
+        if (file.existsSync()) {
+          final content = json.decode(file.readAsStringSync());
           recordCounts[tableName] = (content['total_records'] as int?) ?? 0;
         }
       } catch (e) {
