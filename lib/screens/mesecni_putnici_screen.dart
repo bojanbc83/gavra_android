@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/mesecni_putnik.dart';
+import '../services/auth_manager.dart';
 import '../services/mesecni_putnik_service.dart'; // 🔥 FIREBASE MIGRATION COMPLETE
 import '../services/permission_service.dart'; // DODANO za konzistentnu telefon logiku
 import '../services/smart_address_autocomplete_service.dart';
@@ -16,8 +17,10 @@ import '../services/timer_manager.dart'; // 🔄 DODANO: TimerManager za memory 
 import '../services/vozac_mapping_service.dart';
 import '../theme.dart';
 import '../utils/mesecni_helpers.dart';
+
 import '../utils/time_validator.dart';
 import '../utils/vozac_boja.dart';
+
 import '../widgets/custom_back_button.dart';
 import '../widgets/realtime_error_widgets.dart'; // 🚨 REALTIME error handling
 
@@ -412,6 +415,32 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 🔐 AUTH PROVERA: Proveri da li je korisnik ulogovan
+    if (!AuthManager.isLoggedIn) {
+      return Scaffold(
+        appBar: AppBar(title: Text('Mesečni Putnici')),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.lock, size: 64, color: Colors.red),
+              SizedBox(height: 16),
+              Text('NISTE ULOGOVANI!',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              SizedBox(height: 8),
+              Text(
+                  'Potrebno je da se ulogujete da biste pristupili Firebase bazi.'),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Nazad na Login'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: PreferredSize(
@@ -627,6 +656,11 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
                     onPressed: () => _pokaziDijalogZaDodavanje(),
                     tooltip: 'Dodaj novog putnika',
                   ),
+                  IconButton(
+                    icon: const Icon(Icons.bug_report, color: Colors.yellow),
+                    onPressed: () => _dodajTestPutnika(),
+                    tooltip: 'DODAJ TEST PUTNIKA',
+                  ),
                 ],
               ),
             ),
@@ -705,7 +739,9 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
                 },
               ).distinct().debounceTime(const Duration(milliseconds: 100)),
               builder: (context, snapshot) {
-                // 🔄 OPTIMIZOVANO: Enhanced error handling sa retry opcijom
+                // � DEBUG: Privremeno logging za glavni stream
+
+                // �🔄 OPTIMIZOVANO: Enhanced error handling sa retry opcijom
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -3104,10 +3140,9 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
         // Ostali parametri imaju default vrednosti (aktivan: true, itd.)
       );
 
-      // 📝 FUTURE: Firebase implementacija za dodavanje mesečnog putnika
-      // Trenutno koristi placeholder objekat - MesecniPutnikService.dodajMesecnogPutnika() će biti implementiran
-      // final dodatiPutnik = await _mesecniPutnikService.dodajMesecnogPutnika(noviPutnik);
-      final dodatiPutnik = noviPutnik; // PLACEHOLDER: return same object
+      // ✅ FIREBASE IMPLEMENTACIJA: Dodaj mesečnog putnika u bazu
+      final dodatiPutnik =
+          await MesecniPutnikService.addMesecniPutnik(noviPutnik);
 
       // � FUTURE: Firebase implementacija za refresh mehanizam
       // Trenutno nema refresh - potrebno implementirati osvežavanje podataka nakon dodavanja
@@ -3287,28 +3322,16 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
 
     if (potvrda == true && mounted) {
       try {
-        // 📝 FUTURE: Firebase implementacija za brisanje mesečnog putnika
-        // Trenutno nema delete funkcionalnost - MesecniPutnikService.obrisiMesecniPutnik() će biti implementiran
-        // final success = await _mesecniPutnikService.obrisiMesecniPutnik(putnik.id);
-        // if (success && mounted) {
-        //   ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(
-        //       content: Text('${putnik.putnikIme} je uspešno obrisan'),
-        //       backgroundColor: Colors.green,
-        //       action: SnackBarAction(
-        //         label: 'SINHRONIZUJ STATISTIKE',
-        //         onPressed: () => _sinhronizujStatistike(putnik.id),
-        //       ),
-        //     ),
-        //   );
-        // } else if (mounted) {
-        //   ScaffoldMessenger.of(context).showSnackBar(
-        //     const SnackBar(
-        //       content: Text('Greška pri brisanju putnika'),
-        //       backgroundColor: Colors.red,
-        //     ),
-        //   );
-        // }
+        // ✅ FIREBASE IMPLEMENTACIJA: Deaktiviraj mesečnog putnika (soft delete)
+        await MesecniPutnikService.deactivateMesecniPutnik(putnik.id);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${putnik.putnikIme} je uspešno obrisan'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -3350,6 +3373,46 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
   //     }
   //   }
   // }
+
+  // 🚨 PRIVREMENO: Dodaj test putnika da vidim da li radi Firebase
+  Future<void> _dodajTestPutnika() async {
+    try {
+      final testPutnik = MesecniPutnik(
+        id: '', // Firebase će generisati
+        putnikIme: 'TEST PUTNIK ${DateTime.now().millisecond}',
+        tip: 'radnik',
+        polasciPoDanu: {
+          'pon': ['7:00 BC', '15:30 VS'],
+          'uto': ['7:00 BC', '15:30 VS'],
+        },
+        datumPocetkaMeseca: DateTime(DateTime.now().year, DateTime.now().month),
+        datumKrajaMeseca:
+            DateTime(DateTime.now().year, DateTime.now().month + 1, 0),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
+      await MesecniPutnikService.addMesecniPutnik(testPutnik);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('✅ TEST PUTNIK DODAT!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('❌ GREŠKA: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
 
   // Helper funkcija za brojanje kontakata
   int _prebrojKontakte(MesecniPutnik putnik) {
