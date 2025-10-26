@@ -223,21 +223,21 @@ class GpsDataMigrationService {
   static GPSLokacija _convertSupabaseToFirebase(
       Map<String, dynamic> supabaseRecord) {
     return GPSLokacija(
-        id: supabaseRecord['id']?.toString() ??
-            DateTime.now().millisecondsSinceEpoch.toString(),
-        voziloId: supabaseRecord['vozilo_id']?.toString() ?? 'unknown',
-        vozacId: supabaseRecord['vozac_id']?.toString() ?? '',
-        latitude: (supabaseRecord['latitude'] as num?)?.toDouble() ?? 0.0,
-        longitude: (supabaseRecord['longitude'] as num?)?.toDouble() ?? 0.0,
-        brzina: (supabaseRecord['brzina'] as num?)?.toDouble(),
-        pravac: (supabaseRecord['pravac'] as num?)?.toDouble(),
-        // Note: tacnost field from Supabase is not supported in current GPSLokacija model
-        vreme: supabaseRecord['vreme'] != null
-            ? DateTime.parse(supabaseRecord['vreme'] as String)
-            : DateTime.now(),
-        aktivan: true
-        // Note: obrisan field not supported in current GPSLokacija model
-        );
+      id: supabaseRecord['id']?.toString() ??
+          DateTime.now().millisecondsSinceEpoch.toString(),
+      voziloId: supabaseRecord['vozilo_id']?.toString() ?? 'unknown',
+      vozacId: supabaseRecord['vozac_id']?.toString() ?? '',
+      latitude: (supabaseRecord['latitude'] as num?)?.toDouble() ?? 0.0,
+      longitude: (supabaseRecord['longitude'] as num?)?.toDouble() ?? 0.0,
+      brzina: (supabaseRecord['brzina'] as num?)?.toDouble(),
+      pravac: (supabaseRecord['pravac'] as num?)?.toDouble(),
+      // Note: tacnost field from Supabase is not supported in current GPSLokacija model
+      vreme: supabaseRecord['vreme'] != null
+          ? DateTime.parse(supabaseRecord['vreme'] as String)
+          : DateTime.now(),
+      // aktivan: true - default value, removed redundant argument
+      // Note: obrisan field not supported in current GPSLokacija model
+    );
   }
 
   /// ✅ VERIFY MIGRATION SUCCESS
@@ -487,11 +487,11 @@ class GpsDataMigrationService {
     try {
       final file = File(csvFilePath);
 
-      if (!await file.exists()) {
+      if (!file.existsSync()) {
         throw Exception('CSV file does not exist: $csvFilePath');
       }
 
-      final contents = await file.readAsString();
+      final contents = file.readAsStringSync();
       final lines = contents.split('\n');
 
       if (lines.isEmpty) {

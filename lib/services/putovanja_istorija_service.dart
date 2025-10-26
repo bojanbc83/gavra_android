@@ -103,7 +103,7 @@ class PutovanjaIstorijaService {
   /// 📊 Dohvata ukupne statistike (sve godine)
   static Future<Map<String, dynamic>> getUkupneStatistike(
       String putnikId) async {
-    return await getStatistikePutnikId(putnikId);
+    return getStatistikePutnikId(putnikId);
   }
 
   /// 📆 Dohvata putovanja za određeni mesec i godinu
