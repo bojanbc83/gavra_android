@@ -535,10 +535,15 @@ class _EmailLoginScreenState extends State<EmailLoginScreen>
           }
         }
       } else {
-        _showErrorDialog(
-          'Neuspješna prijava',
-          result.message,
-        );
+        // Proveri da li je greška zbog email verifikacije
+        if (result.message.contains('nije verifikovana')) {
+          _showEmailVerificationDialog(result.message);
+        } else {
+          _showErrorDialog(
+            'Neuspješna prijava',
+            result.message,
+          );
+        }
       }
     } catch (e) {
       // Debug logging removed for production
@@ -649,5 +654,95 @@ class _EmailLoginScreenState extends State<EmailLoginScreen>
         ],
       ),
     );
+  }
+
+  void _showEmailVerificationDialog(String message) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(
+            color: Theme.of(context).colorScheme.outline,
+            width: 2,
+          ),
+        ),
+        title: Row(
+          children: [
+            const Icon(
+              Icons.email_outlined,
+              color: Colors.orange,
+              size: 24,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Email verifikacija',
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              message,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Možete zatražiti novi confirmation link:',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                fontSize: 13,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              'Otkaži',
+              style: TextStyle(color: Theme.of(context).colorScheme.outline),
+            ),
+          ),
+          ElevatedButton.icon(
+            onPressed: () async {
+              Navigator.of(context).pop();
+              await _resendEmailVerification();
+            },
+            icon: const Icon(Icons.refresh, size: 18),
+            label: const Text('Pošalji novi link'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.orange,
+              foregroundColor: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _resendEmailVerification() async {
+    try {
+      final result = await AuthManager.resendEmailVerification();
+      
+      if (result.isSuccess) {
+        _showSuccessDialog('Email poslat', result.message);
+      } else {
+        _showErrorDialog('Greška', result.message);
+      }
+    } catch (e) {
+      _showErrorDialog(
+        'Greška',
+        'Došlo je do greške pri slanju email-a. Pokušajte ponovo.',
+      );
+    }
   }
 }

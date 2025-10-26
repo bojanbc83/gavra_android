@@ -464,13 +464,13 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen>
       if (result.isSuccess) {
         // Debug logging removed for production
 
-        // REGISTRUJ VOZAČA LOKALNO - BEZ EMAIL VERIFIKACIJE
-        await AuthManager.setCurrentDriver(email);
+        // SAMO PRIKAŽI PORUKU - VOZAČ SE REGISTRUJE NAKON EMAIL VERIFIKACIJE
+        // await AuthManager.setCurrentDriver(email);
 
         // Uspešno registrovan
         // Debug logging removed for production
 
-        // Pokaži uspešnu poruku
+        // Pokaži uspešnu poruju
         await _showSuccessDialog();
 
         // Vrati true da signal uspješnu registraciju
@@ -589,10 +589,42 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen>
             maxHeight: MediaQuery.of(context).size.height * 0.4,
           ),
           child: SingleChildScrollView(
-            child: Text(
-              'Vaš nalog je uspešno kreiran! Možete se odmah prijaviti sa vašom email adresom i šifrom.',
-              style:
-                  TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 14),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.email_outlined,
+                  color: Colors.orange,
+                  size: 48,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Vaš nalog je uspešno kreiran!',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.9),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Poslali smo vam confirmation link na:\n${_emailController.text.trim()}',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.8),
+                    fontSize: 14,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Proverite svoj email i kliknite na link da biste aktivirali nalog. Zatim se možete prijaviti.',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.7),
+                    fontSize: 13,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
           ),
         ),

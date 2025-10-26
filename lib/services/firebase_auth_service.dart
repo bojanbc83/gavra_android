@@ -39,10 +39,13 @@ class FirebaseAuthService {
       // Postavljanje display name-a na vozač ime
       await credential.user?.updateDisplayName(vozacName);
 
-      // BEZ EMAIL VERIFIKACIJE - DIREKTNA REGISTRACIJA
+      // 📧 SLANJE EMAIL VERIFIKACIJE
+      await credential.user?.sendEmailVerification();
+
       return AuthResult.success(
         user: credential.user,
-        message: 'Registracija uspešna! Možete se odmah prijaviti.',
+        message:
+            'Registracija uspešna! Proverite svoj email za confirmation link.',
       );
     } on FirebaseAuthException catch (e) {
       return AuthResult.failure(_getErrorMessage(e));
@@ -62,7 +65,16 @@ class FirebaseAuthService {
         password: password,
       );
 
-      // BEZ EMAIL VERIFIKACIJE - DIREKTNO ULOGOVANJE
+      // 🔒 PROVERA EMAIL VERIFIKACIJE
+      if (credential.user != null && !credential.user!.emailVerified) {
+        // Automatski pošaljemo novi verification email
+        await credential.user!.sendEmailVerification();
+
+        return AuthResult.failure(
+          'Email adresa nije verifikovana. Novi confirmation link je poslat na $email. Proverite svoj inbox i kliknite na link.',
+        );
+      }
+
       return AuthResult.success(
         user: credential.user,
         message: 'Uspešno ulogovanje!',
@@ -91,6 +103,36 @@ class FirebaseAuthService {
     } catch (e) {
       return AuthResult.failure('Neočekivana greška: $e');
     }
+  }
+
+  /// Ponovno slanje email verifikacije
+  static Future<AuthResult> resendEmailVerification() async {
+    try {
+      final user = currentUser;
+      if (user == null) {
+        return AuthResult.failure('Nema aktivnog korisnika');
+      }
+
+      if (user.emailVerified) {
+        return AuthResult.success(
+          message: 'Email je već verifikovan',
+        );
+      }
+
+      await user.sendEmailVerification();
+      return AuthResult.success(
+        message: 'Novi confirmation link je poslat na ${user.email}',
+      );
+    } on FirebaseAuthException catch (e) {
+      return AuthResult.failure(_getErrorMessage(e));
+    } catch (e) {
+      return AuthResult.failure('Neočekivana greška: $e');
+    }
+  }
+
+  /// Provera da li je trenutni korisnik verifikovan
+  static bool get isEmailVerified {
+    return currentUser?.emailVerified ?? false;
   }
 
   /// Validacija email formata

@@ -120,12 +120,19 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen>
         );
 
         // Čekaj malo pa zatvori
-        await Future<void>.delayed(const Duration(milliseconds: 500));
+        await Future<void>.delayed(const Duration(milliseconds: 1500));
 
         // OBAVEZNO resetuj loading BEFORE onCompleted
-        setState(() => _isLoading = false);
+        if (mounted) {
+          setState(() => _isLoading = false);
 
-        widget.onCompleted();
+          // Pozovi callback u sledećem frame-u da izbegneš context probleme
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              widget.onCompleted();
+            }
+          });
+        }
       }
     } catch (e) {
       if (mounted) {

@@ -174,6 +174,30 @@ class AuthManager {
       await prefs.remove('selected_driver');
     }
   }
+
+  /// 📧 EMAIL VERIFICATION METHODS
+
+  /// Ponovno slanje email verifikacije
+  static Future<AuthResult> resendEmailVerification() async {
+    try {
+      final result = await FirebaseAuthService.resendEmailVerification();
+      return result.isSuccess
+          ? AuthResult.success(result.message)
+          : AuthResult.error(result.message);
+    } catch (e) {
+      return AuthResult.error(
+          'Greška pri slanju verifikacije: ${e.toString()}');
+    }
+  }
+
+  /// Provera da li je email verifikovan
+  static bool get isEmailVerified => FirebaseAuthService.isEmailVerified;
+
+  /// Provera da li je korisnik ulogovan
+  static bool get isLoggedIn => FirebaseAuthService.isLoggedIn;
+
+  /// Trenutni korisnik
+  static User? get currentUser => FirebaseAuthService.currentUser;
 }
 
 /// 📊 AUTH RESULT CLASS
