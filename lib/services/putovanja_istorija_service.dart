@@ -96,8 +96,11 @@ class PutovanjaIstorijaService {
     final startOfYear = DateTime(godina, 1, 1);
     final endOfYear = DateTime(godina, 12, 31);
 
-    return getStatistikePutnikId(putnikId,
-        startDate: startOfYear, endDate: endOfYear);
+    return getStatistikePutnikId(
+      putnikId,
+      startDate: startOfYear,
+      endDate: endOfYear,
+    );
   }
 
   /// 📊 Dohvata ukupne statistike (sve godine)
@@ -114,7 +117,8 @@ class PutovanjaIstorijaService {
   ) async {
     try {
       final startOfMonth = DateTime(godina, mesec, 1);
-      final endOfMonth = DateTime(godina, mesec + 1, 0); // Poslednji dan meseca
+      final endOfMonth = DateTime(godina, mesec + 1)
+          .subtract(const Duration(days: 1)); // Poslednji dan meseca
 
       final querySnapshot = await _firestore
           .collection(_collectionName)
