@@ -1,0 +1,71 @@
+{
+  "collection": "vozaci",
+  "count": 4,
+  "extracted_at": "2025-10-27T18:52:40.928Z",
+  "documents": [
+    {
+      "id": "5b379394-084e-1c7d-76bf-fc193a5b6c7d",
+      "ime": "Svetlana",
+      "aktivan": true,
+      "created_at": "2025-10-03T18:10:38.27787+00:00",
+      "updated_at": "2025-10-03T18:10:38.27787+00:00",
+      "kusur": 0,
+      "search_terms": "svetlana",
+      "putnici_count": 0,
+      "putovanja_count": 0,
+      "total_earnings": 0,
+      "last_optimized": {
+        "_seconds": 1761504949,
+        "_nanoseconds": 19000000
+      }
+    },
+    {
+      "id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+      "ime": "Bojan",
+      "aktivan": true,
+      "created_at": "2025-10-03T18:10:38.27787+00:00",
+      "updated_at": "2025-10-03T18:10:38.27787+00:00",
+      "kusur": 10,
+      "search_terms": "bojan",
+      "putnici_count": 0,
+      "putovanja_count": 0,
+      "total_earnings": 0,
+      "last_optimized": {
+        "_seconds": 1761504949,
+        "_nanoseconds": 19000000
+      }
+    },
+    {
+      "id": "7d59b5b6-2a4a-3e9f-98e1-1e3b4c7d8e9f",
+      "ime": "Bruda",
+      "aktivan": true,
+      "created_at": "2025-10-03T18:10:38.27787+00:00",
+      "updated_at": "2025-10-03T18:10:38.27787+00:00",
+      "kusur": 0,
+      "search_terms": "bruda",
+      "putnici_count": 0,
+      "putovanja_count": 0,
+      "total_earnings": 0,
+      "last_optimized": {
+        "_seconds": 1761504949,
+        "_nanoseconds": 19000000
+      }
+    },
+    {
+      "id": "8e68c6c7-3b8b-4f8a-a9d2-2f4b5c8d9e0f",
+      "ime": "Bilevski",
+      "aktivan": true,
+      "created_at": "2025-10-03T18:10:38.27787+00:00",
+      "updated_at": "2025-10-03T18:10:38.27787+00:00",
+      "kusur": 0,
+      "search_terms": "bilevski",
+      "putnici_count": 0,
+      "putovanja_count": 0,
+      "total_earnings": 0,
+      "last_optimized": {
+        "_seconds": 1761504949,
+        "_nanoseconds": 19000000
+      }
+    }
+  ]
+}

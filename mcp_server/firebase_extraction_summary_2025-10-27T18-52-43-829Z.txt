@@ -1,0 +1,62 @@
+🔥 FIREBASE FIRESTORE EXTRACTION REPORT
+=========================================
+
+📅 Datum izvlačenja: 27. 10. 2025. 19:52:40
+⏰ Timestamp: 2025-10-27T18:52:40.928Z
+
+📊 OSNOVNE STATISTIKE:
+• Ukupno kolekcija: 4
+• Ukupno dokumenata: 506
+• Kolekcije sa podacima: 4
+• Prazne kolekcije: 0
+
+✅ KOLEKCIJE SA PODACIMA:
+   • putnici: 285 dokumenata
+   • putovanja_istorija: 120 dokumenata
+   • mesecni_putnici: 97 dokumenata
+   • vozaci: 4 dokumenata
+
+🔍 SAMPLE PODACI (prvi dokument iz svake kolekcije):
+
+📋 MESECNI_PUTNICI:
+   • id: 001a34e6-e97b-41c1-a83b-b75eaa3a90d5
+   • putnik_ime: Mila Nikolic
+   • tip: ucenik
+   • tip_skole: Hemijska
+   • broj_telefona: 0637339995
+   • ... (još 25 polja)
+
+📋 PUTNICI:
+   • id: 05358026-6097-428f-a322-a2c31c0f31f0_cet_bc
+   • ime: Dr Perisic Ljiljana
+   • putnik_ime: Dr Perisic Ljiljana
+   • polazak: 13:00
+   • grad: Bela Crkva
+   • ... (još 9 polja)
+
+📋 PUTOVANJA_ISTORIJA:
+   • id: 065edf8f-d862-4d18-82ff-7da9f2780300
+   • mesecni_putnik_id: 5a439938-dc4d-4533-8104-44b757be6039
+   • datum_putovanja: 2025-10-20
+   • vreme_polaska: mesecno_placanje
+   • status: placeno
+   • ... (još 9 polja)
+
+📋 VOZACI:
+   • id: 5b379394-084e-1c7d-76bf-fc193a5b6c7d
+   • ime: Svetlana
+   • aktivan: true
+   • created_at: 2025-10-03T18:10:38.27787+00:00
+   • updated_at: 2025-10-03T18:10:38.27787+00:00
+   • ... (još 6 polja)
+
+📁 GENERISANI FAJLOVI:
+• firebase_complete_data_[timestamp].json - kompletni podaci
+• firebase_extraction_summary_[timestamp].txt - ovaj report
+• firebase_[collection]_[timestamp].json - individualni fajlovi
+
+🎯 NAPOMENE:
+• Svi podaci su izvučeni u JSON formatu
+• Timestamps su u ISO 8601 standardu
+• Individualni fajlovi su kreiran za lakši pristup
+• Podaci su ready za backup, migraciju ili analizu

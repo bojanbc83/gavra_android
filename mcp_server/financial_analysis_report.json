@@ -1,0 +1,137 @@
+{
+  "analysis_date": "2025-10-27T21:59:33.571Z",
+  "summary": {
+    "total_revenue": 1769700,
+    "total_passengers": 217,
+    "avg_revenue_per_passenger": 8155.299539170507,
+    "collections_analyzed": 2
+  },
+  "detailed_breakdown": {
+    "total_value": 1769700,
+    "currency_breakdown": {},
+    "by_collection": {
+      "mesecni_putnici": {
+        "total_value": 478400,
+        "passenger_count": 97,
+        "avg_per_passenger": 4931.958762886598,
+        "by_type": {
+          "ucenik": {
+            "count": 60,
+            "total": 360300,
+            "avg": 6005,
+            "min": 0,
+            "max": 25000,
+            "median": 6000
+          },
+          "radnik": {
+            "count": 37,
+            "total": 118100,
+            "avg": 3191.891891891892,
+            "min": 0,
+            "max": 15000,
+            "median": 0
+          }
+        }
+      },
+      "putovanja_istorija": {
+        "total_value": 1291300,
+        "trip_count": 120,
+        "avg_per_trip": 10760.833333333334,
+        "by_month": {
+          "2025-10": {
+            "count": 120,
+            "total": 1291300
+          }
+        },
+        "by_type": {
+          "mesecni": {
+            "count": 120,
+            "total": 1291300
+          }
+        }
+      }
+    },
+    "by_passenger_type": {},
+    "monthly_analysis": {
+      "2025-10": {
+        "count": 120,
+        "total": 1291300
+      }
+    },
+    "pricing_patterns": {
+      "standard_prices": {
+        "ucenik": {
+          "avg": 6005,
+          "min": 0,
+          "max": 25000,
+          "variation": "416.32%"
+        },
+        "radnik": {
+          "avg": 3191.891891891892,
+          "min": 0,
+          "max": 15000,
+          "variation": "469.94%"
+        }
+      },
+      "price_variations": {},
+      "optimization_opportunities": [
+        {
+          "type": "PRICE_STANDARDIZATION",
+          "category": "ucenik",
+          "description": "ucenik ima veliku varijaciju u cenama (416.32%)",
+          "potential_revenue": 36030.00000000006
+        },
+        {
+          "type": "PRICE_STANDARDIZATION",
+          "category": "radnik",
+          "description": "radnik ima veliku varijaciju u cenama (469.94%)",
+          "potential_revenue": 11810.00000000003
+        }
+      ]
+    },
+    "revenue_potential": {
+      "current_monthly": 478400,
+      "projected_monthly": 607530,
+      "projected_yearly": 7290360,
+      "growth_potential": {
+        "by_increasing_prices": 71760,
+        "by_adding_passengers": 119600,
+        "by_optimization": 23920
+      }
+    }
+  },
+  "recommendations": [
+    {
+      "category": "PRICING",
+      "priority": "HIGH",
+      "title": "Standardizacija Cena",
+      "description": "ucenik ima veliku varijaciju u cenama (416.32%)",
+      "potential_value": 36030.00000000006,
+      "action": "Standardizuj cene za ucenik tip putnika"
+    },
+    {
+      "category": "PRICING",
+      "priority": "HIGH",
+      "title": "Standardizacija Cena",
+      "description": "radnik ima veliku varijaciju u cenama (469.94%)",
+      "potential_value": 11810.00000000003,
+      "action": "Standardizuj cene za radnik tip putnika"
+    },
+    {
+      "category": "GROWTH",
+      "priority": "HIGH",
+      "title": "Ekspanzija Putnika",
+      "description": "Veći potencijal kroz dodavanje putnika nego povećanje cena",
+      "potential_value": 119600,
+      "action": "Fokusiraj se na marketing i privlačenje novih putnika"
+    },
+    {
+      "category": "SYSTEM",
+      "priority": "HIGH",
+      "title": "RSD Standardizacija",
+      "description": "Sve cene moraju biti u RSD dinara",
+      "potential_value": 0,
+      "action": "Implementiraj convertToRSD() funkciju u migraciji"
+    }
+  ]
+}

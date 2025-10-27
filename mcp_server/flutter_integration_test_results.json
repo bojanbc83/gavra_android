@@ -1,0 +1,262 @@
+{
+  "vozaci_tests": {
+    "count": 4,
+    "has_search_terms": true,
+    "has_required_fields": true,
+    "has_optimized_fields": true,
+    "sample_data": [
+      {
+        "id": "5b379394-084e-1c7d-76bf-fc193a5b6c7d",
+        "ime": "Svetlana",
+        "email": "",
+        "telefon": "",
+        "aktivan": true,
+        "created_at": "2025-10-03 18:10:38.27787+00",
+        "updated_at": "2025-10-03 18:10:38.27787+00",
+        "kusur": 0,
+        "search_terms": "svetlana",
+        "putnici_count": 0,
+        "putovanja_count": 0,
+        "total_earnings": 0,
+        "last_optimized": {
+          "_seconds": 1761602686,
+          "_nanoseconds": 619000000
+        }
+      },
+      {
+        "id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+        "ime": "Bojan",
+        "email": "",
+        "telefon": "",
+        "aktivan": true,
+        "created_at": "2025-10-03 18:10:38.27787+00",
+        "updated_at": "2025-10-03 18:10:38.27787+00",
+        "kusur": 10,
+        "search_terms": "bojan",
+        "putnici_count": 0,
+        "putovanja_count": 0,
+        "total_earnings": 0,
+        "last_optimized": {
+          "_seconds": 1761602688,
+          "_nanoseconds": 241000000
+        }
+      }
+    ],
+    "success": true
+  },
+  "mesecni_putnici_tests": {
+    "count": 10,
+    "has_search_terms": true,
+    "has_required_fields": true,
+    "has_price_fields": true,
+    "has_vozac_ime": true,
+    "search_results_count": 3,
+    "total_financial": 85000,
+    "sample_data": [
+      {
+        "id": "001a34e6-e97b-41c1-a83b-b75eaa3a90d5",
+        "putnik_ime": "Mila Nikolic",
+        "tip": "ucenik",
+        "tip_skole": "Hemijska",
+        "broj_telefona": "0637339995",
+        "broj_telefona_majke": "063428464",
+        "polasci_po_danu": {},
+        "adresa_bela_crkva": "Jovana Popovica",
+        "adresa_vrsac": "Dis",
+        "tip_prikazivanja": "standard",
+        "radni_dani": "pon,uto,sre,cet,pet",
+        "aktivan": true,
+        "status": "aktivan",
+        "datum_pocetka_meseca": "2025-10-01",
+        "datum_kraja_meseca": "2025-10-31",
+        "ukupna_cena_meseca": 25000,
+        "cena": 25000,
+        "broj_putovanja": 0,
+        "broj_otkazivanja": 0,
+        "vreme_placanja": "2025-10-21 21:27:34.171202+00",
+        "placeni_mesec": 10,
+        "placena_godina": 2025,
+        "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+        "pokupljen": false,
+        "statistics": {
+          "last_trip": null,
+          "trips_total": 0,
+          "cancellations_total": 0
+        },
+        "obrisan": false,
+        "created_at": "2025-10-21 21:27:07.521211+00",
+        "updated_at": "2025-10-21 21:27:34.171279+00",
+        "vozac_ime": "Bojan",
+        "search_terms": "mila nikolic ucenik bojan",
+        "last_optimized": {
+          "_seconds": 1761602688,
+          "_nanoseconds": 604000000
+        }
+      },
+      {
+        "id": "05358026-6097-428f-a322-a2c31c0f31f0",
+        "putnik_ime": "Dr Perisic Ljiljana",
+        "tip": "radnik",
+        "tip_skole": "Jasenovo ambulanta",
+        "broj_telefona": "",
+        "broj_telefona_majke": "",
+        "polasci_po_danu": {
+          "cet": {
+            "bc": "13:00",
+            "vs": "06:00"
+          },
+          "pet": {
+            "bc": "13:00",
+            "vs": "06:00"
+          },
+          "pon": {
+            "bc": "13:00",
+            "vs": "06:00"
+          },
+          "sre": {
+            "bc": "13:00",
+            "vs": "06:00"
+          },
+          "uto": {
+            "bc": "13:00",
+            "vs": "06:00"
+          }
+        },
+        "adresa_bela_crkva": "Karpatska",
+        "adresa_vrsac": "Jasenovo ambulanta",
+        "tip_prikazivanja": "standard",
+        "radni_dani": "pon,uto,sre,cet,pet",
+        "aktivan": true,
+        "status": "aktivan",
+        "datum_pocetka_meseca": "2025-10-01",
+        "datum_kraja_meseca": "2025-10-31",
+        "ukupna_cena_meseca": 12000,
+        "cena": 12000,
+        "broj_putovanja": 0,
+        "broj_otkazivanja": 0,
+        "vreme_placanja": "2025-10-21 21:07:47.493698+00",
+        "placeni_mesec": 10,
+        "placena_godina": 2025,
+        "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+        "pokupljen": false,
+        "statistics": {
+          "last_trip": null,
+          "trips_total": 0,
+          "cancellations_total": 0
+        },
+        "obrisan": false,
+        "created_at": "2025-10-21 21:07:13.02303+00",
+        "updated_at": "2025-10-21 21:07:47.493849+00",
+        "vozac_ime": "Bojan",
+        "search_terms": "dr perisic ljiljana radnik bojan",
+        "last_optimized": {
+          "_seconds": 1761602688,
+          "_nanoseconds": 722000000
+        }
+      }
+    ],
+    "success": true
+  },
+  "putovanja_tests": {
+    "count": 120,
+    "current_month": "2025-10",
+    "has_search_terms": true,
+    "has_required_fields": true,
+    "has_price_fields": true,
+    "has_vozac_ime": true,
+    "total_financial": 1291300,
+    "sample_data": [
+      {
+        "id": "375add2b-0ae2-4877-ab1f-c43020cba552",
+        "mesecni_putnik_id": "bb33972a-676a-4d6d-a0dd-898eec1eaa32",
+        "datum_putovanja": "2025-10-13",
+        "vreme_polaska": "mesecno_placanje",
+        "status": "placeno",
+        "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+        "napomene": "Mesečno plaćanje za 10/2025",
+        "obrisan": false,
+        "created_at": "2025-10-13 19:02:11.560232+00",
+        "updated_at": "2025-10-13 19:02:11.560232+00",
+        "cena": 14000,
+        "tip_putnika": "mesecni",
+        "putnik_ime": "Jovan Todorovic",
+        "vozac_ime": "Bojan",
+        "search_terms": "jovan todorovic bojan",
+        "last_optimized": {
+          "_seconds": 1761602702,
+          "_nanoseconds": 642000000
+        }
+      },
+      {
+        "id": "383f2a0e-a0ea-4c72-8e65-46e1f2242fdd",
+        "mesecni_putnik_id": "c048e395-5491-44a6-855b-694a640a3a76",
+        "datum_putovanja": "2025-10-17",
+        "vreme_polaska": "mesecno_placanje",
+        "status": "placeno",
+        "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+        "napomene": "Mesečno plaćanje za 10/2025",
+        "obrisan": false,
+        "created_at": "2025-10-17 19:35:37.344325+00",
+        "updated_at": "2025-10-17 19:35:37.344325+00",
+        "cena": 12000,
+        "tip_putnika": "mesecni",
+        "putnik_ime": "Ogi",
+        "vozac_ime": "Bojan",
+        "search_terms": "ogi bojan",
+        "last_optimized": {
+          "_seconds": 1761602702,
+          "_nanoseconds": 764000000
+        }
+      }
+    ],
+    "success": true
+  },
+  "dashboard_simulation": {
+    "success": true,
+    "load_time_ms": 354,
+    "data": {
+      "vozaci": {
+        "ukupno_vozaca": 4,
+        "vozaci_lista": [
+          {
+            "id": "5b379394-084e-1c7d-76bf-fc193a5b6c7d",
+            "ime": "Svetlana",
+            "total_earnings": 0
+          },
+          {
+            "id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+            "ime": "Bojan",
+            "total_earnings": 0
+          },
+          {
+            "id": "7d59b5b6-2a4a-3e9f-98e1-1e3b4c7d8e9f",
+            "ime": "Bruda",
+            "total_earnings": 0
+          },
+          {
+            "id": "8e68c6c7-3b8b-4f8a-a9d2-2f4b5c8d9e0f",
+            "ime": "Bilevski",
+            "total_earnings": 0
+          }
+        ]
+      },
+      "mesecni_putnici": {
+        "ukupno_putnika": 96,
+        "tip_statistike": {
+          "ucenik": 60,
+          "radnik": 36
+        },
+        "ukupna_vrednost_mesecnih_karata": 478400
+      },
+      "putovanja": {
+        "ukupno_putovanja_mesec": 120,
+        "ukupna_zarada_mesec": 1291300,
+        "trenutni_mesec": "2025-10"
+      },
+      "load_time_ms": 354,
+      "timestamp": "2025-10-27T22:16:40.887Z"
+    },
+    "performance_acceptable": true
+  },
+  "overall_success": true
+}

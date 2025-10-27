@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gavra Transport - Master Analiza Migracije</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header { text-align: center; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 20px; margin-bottom: 30px; }
+        .section { margin-bottom: 30px; }
+        .metric { display: inline-block; background: #3498db; color: white; padding: 15px 20px; margin: 10px; border-radius: 5px; text-align: center; min-width: 150px; }
+        .critical { background: #e74c3c; }
+        .warning { background: #f39c12; }
+        .success { background: #27ae60; }
+        .roadmap { background: #ecf0f1; padding: 15px; border-radius: 5px; margin: 10px 0; }
+        .phase { background: white; padding: 10px; margin: 5px 0; border-left: 4px solid #3498db; }
+        ul { list-style-type: none; padding-left: 20px; }
+        li:before { content: "✓ "; color: #27ae60; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 GAVRA TRANSPORT SYSTEM</h1>
+            <h2>Master Analiza Migracije Supabase → Firebase</h2>
+            <p>Datum: 27. 10. 2025.</p>
+        </div>
+        
+        <div class="section">
+            <h3>📊 Ključne Metrike</h3>
+            <div class="metric success">
+                <strong>0</strong><br>
+                Firebase Dokumenata
+            </div>
+            <div class="metric success">
+                <strong>0 RSD</strong><br>
+                Ukupna Vrednost
+            </div>
+            <div class="metric">
+                <strong>0</strong><br>
+                Ukupno Putnika
+            </div>
+            <div class="metric">
+                <strong>0/100</strong><br>
+                Finansijski Score
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>⚠️ Kritični Problemi</h3>
+            
+                <div class="roadmap warning">
+                    <strong>DATA_INTEGRITY:</strong> Nema analiziranih relacija između tabela<br>
+                    <em>Rešenje: Implementiraj relationship validation pre migracije</em>
+                </div>
+            
+                <div class="roadmap critical">
+                    <strong>CONNECTION:</strong> Supabase tabele nisu dostupne<br>
+                    <em>Rešenje: Konfiguriši Supabase kredencijale u config.js</em>
+                </div>
+            
+                <div class="roadmap success">
+                    <strong>CODE_COMPLETENESS:</strong> Nedostajale su migrateRute() i migrateDnevniPutnici() metode<br>
+                    <em>Rešenje: ✅ REŠENO - Metode su implementirane</em>
+                </div>
+            
+        </div>
+        
+        <div class="section">
+            <h3>🗺️ Roadmap Migracije</h3>
+            
+                <div class="phase">
+                    <h4>Faza 1: PRIPREMA I KONFIGURACIJA (1-2 dana)</h4>
+                    <ul>
+                        <li>Konfiguriši Supabase kredencijale (config.js)</li><li>Testuj konekciju na Supabase bazu</li><li>Validiraj Firebase konfiguraciju</li><li>Pripremi backup postojećih Firebase podataka</li>
+                    </ul>
+                    <p><strong>Uspeh:</strong> Uspešna konekcija na obe baze podataka</p>
+                </div>
+            
+                <div class="phase">
+                    <h4>Faza 2: DATA VALIDATION I CLEANUP (2-3 dana)</h4>
+                    <ul>
+                        <li>Analiziraj kvalitet Supabase podataka</li><li>Očisti orphaned zapise</li><li>Standardizuj cene u RSD dinara</li><li>Validiraj referentni integritet</li>
+                    </ul>
+                    <p><strong>Uspeh:</strong> Svi podaci su validni i spremni za migraciju</p>
+                </div>
+            
+                <div class="phase">
+                    <h4>Faza 3: MIGRACIJA OSNOVNIH TABELA (1 dan)</h4>
+                    <ul>
+                        <li>Migriraj vozače (migrateVozaci)</li><li>Migriraj adrese (migrateAdrese)</li><li>Migriraj rute (migrateRute)</li><li>Validiraj osnovne entitete</li>
+                    </ul>
+                    <p><strong>Uspeh:</strong> Svi osnovni entiteti su uspešno migrirani</p>
+                </div>
+            
+                <div class="phase">
+                    <h4>Faza 4: MIGRACIJA PUTNIKA I FINANSIJA (2 dana)</h4>
+                    <ul>
+                        <li>Migriraj mesečne putnike (migrateMesecniPutnici)</li><li>Migriraj dnevne putnike (migrateDnevniPutnici)</li><li>Migriraj istoriju putovanja (migratePutovanjaIstorija)</li><li>Validiraj finansijske podatke</li>
+                    </ul>
+                    <p><strong>Uspeh:</strong> Svi putnici i finansijski podaci su migrirani</p>
+                </div>
+            
+                <div class="phase">
+                    <h4>Faza 5: OPTIMIZACIJA I DENORMALIZACIJA (1 dan)</h4>
+                    <ul>
+                        <li>Generiši search_terms za sve kolekcije</li><li>Kalkuliraj cached fields (counts, totals)</li><li>Optimizuj indekse za pretraživanje</li><li>Testuj performance queries</li>
+                    </ul>
+                    <p><strong>Uspeh:</strong> Firebase baza je optimizovana za production</p>
+                </div>
+            
+                <div class="phase">
+                    <h4>Faza 6: FLUTTER INTEGRACIJA I TESTIRANJE (2-3 dana)</h4>
+                    <ul>
+                        <li>Testuj UnifiedDataService sa migriranim podacima</li><li>Validiraj dashboard funkcionalnost</li><li>Testuj real-time updates</li><li>Performance testiranje aplikacije</li>
+                    </ul>
+                    <p><strong>Uspeh:</strong> Flutter aplikacija radi sa migriranim podacima</p>
+                </div>
+            
+                <div class="phase">
+                    <h4>Faza 7: FINALIZACIJA I MONITORING (1 dan)</h4>
+                    <ul>
+                        <li>Setup monitoring i alerting</li><li>Dokumentuj migraciju</li><li>Backup finalne baze</li><li>Deaktiviraj Supabase pristup</li>
+                    </ul>
+                    <p><strong>Uspeh:</strong> Migracija je kompletna i sistém je u produkciji</p>
+                </div>
+            
+        </div>
+        
+        <div class="section">
+            <h3>🎯 Ključni Nalazi</h3>
+            <ul>
+                <li>Ukupno 0 dokumenata u Firebase bazi</li><li>Finansijska vrednost: 0 RSD</li><li>Prosečna vrednost po putniku: 0 RSD</li><li>Godišnja projekcija: 0 RSD</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

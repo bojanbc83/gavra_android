@@ -1,0 +1,42 @@
+[
+  {
+    "id": "5b379394-084e-1c7d-76bf-fc193a5b6c7d",
+    "ime": "Svetlana",
+    "email": "",
+    "telefon": "",
+    "aktivan": true,
+    "created_at": "2025-10-03 18:10:38.27787+00",
+    "updated_at": "2025-10-03 18:10:38.27787+00",
+    "kusur": 0
+  },
+  {
+    "id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+    "ime": "Bojan",
+    "email": "",
+    "telefon": "",
+    "aktivan": true,
+    "created_at": "2025-10-03 18:10:38.27787+00",
+    "updated_at": "2025-10-03 18:10:38.27787+00",
+    "kusur": 10
+  },
+  {
+    "id": "7d59b5b6-2a4a-3e9f-98e1-1e3b4c7d8e9f",
+    "ime": "Bruda",
+    "email": "",
+    "telefon": "",
+    "aktivan": true,
+    "created_at": "2025-10-03 18:10:38.27787+00",
+    "updated_at": "2025-10-03 18:10:38.27787+00",
+    "kusur": 0
+  },
+  {
+    "id": "8e68c6c7-3b8b-4f8a-a9d2-2f4b5c8d9e0f",
+    "ime": "Bilevski",
+    "email": "",
+    "telefon": "",
+    "aktivan": true,
+    "created_at": "2025-10-03 18:10:38.27787+00",
+    "updated_at": "2025-10-03 18:10:38.27787+00",
+    "kusur": 0
+  }
+]

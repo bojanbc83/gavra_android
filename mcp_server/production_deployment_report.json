@@ -1,0 +1,128 @@
+{
+  "deployment_timestamp": "2025-10-27T22:16:36.534Z",
+  "deployment_stats": {
+    "backup_created": true,
+    "old_collections_removed": true,
+    "new_collections_deployed": true,
+    "verification_passed": true,
+    "deployment_time": 27542,
+    "verification_results": {
+      "vozaci": {
+        "count": 4,
+        "has_search_terms": true,
+        "has_required_fields": true,
+        "sample_doc": {
+          "id": "5b379394-084e-1c7d-76bf-fc193a5b6c7d",
+          "ime": "Svetlana",
+          "email": "",
+          "telefon": "",
+          "aktivan": true,
+          "created_at": "2025-10-03 18:10:38.27787+00",
+          "updated_at": "2025-10-03 18:10:38.27787+00",
+          "kusur": 0,
+          "search_terms": "svetlana",
+          "putnici_count": 0,
+          "putovanja_count": 0,
+          "total_earnings": 0,
+          "last_optimized": {
+            "_seconds": 1761602686,
+            "_nanoseconds": 619000000
+          }
+        }
+      },
+      "mesecni_putnici": {
+        "count": 96,
+        "has_search_terms": true,
+        "has_required_fields": true,
+        "sample_doc": {
+          "id": "001a34e6-e97b-41c1-a83b-b75eaa3a90d5",
+          "putnik_ime": "Mila Nikolic",
+          "tip": "ucenik",
+          "tip_skole": "Hemijska",
+          "broj_telefona": "0637339995",
+          "broj_telefona_majke": "063428464",
+          "polasci_po_danu": {},
+          "adresa_bela_crkva": "Jovana Popovica",
+          "adresa_vrsac": "Dis",
+          "tip_prikazivanja": "standard",
+          "radni_dani": "pon,uto,sre,cet,pet",
+          "aktivan": true,
+          "status": "aktivan",
+          "datum_pocetka_meseca": "2025-10-01",
+          "datum_kraja_meseca": "2025-10-31",
+          "ukupna_cena_meseca": 25000,
+          "cena": 25000,
+          "broj_putovanja": 0,
+          "broj_otkazivanja": 0,
+          "vreme_placanja": "2025-10-21 21:27:34.171202+00",
+          "placeni_mesec": 10,
+          "placena_godina": 2025,
+          "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+          "pokupljen": false,
+          "statistics": {
+            "last_trip": null,
+            "trips_total": 0,
+            "cancellations_total": 0
+          },
+          "obrisan": false,
+          "created_at": "2025-10-21 21:27:07.521211+00",
+          "updated_at": "2025-10-21 21:27:34.171279+00",
+          "vozac_ime": "Bojan",
+          "search_terms": "mila nikolic ucenik bojan",
+          "last_optimized": {
+            "_seconds": 1761602688,
+            "_nanoseconds": 604000000
+          }
+        }
+      },
+      "putovanja_istorija": {
+        "count": 120,
+        "has_search_terms": true,
+        "has_required_fields": true,
+        "sample_doc": {
+          "id": "065edf8f-d862-4d18-82ff-7da9f2780300",
+          "mesecni_putnik_id": "5a439938-dc4d-4533-8104-44b757be6039",
+          "datum_putovanja": "2025-10-20",
+          "vreme_polaska": "mesecno_placanje",
+          "status": "placeno",
+          "vozac_id": "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+          "napomene": "Mesečno plaćanje za 10/2025",
+          "obrisan": false,
+          "created_at": "2025-10-20 20:33:32.770503+00",
+          "updated_at": "2025-10-20 20:33:32.770503+00",
+          "cena": 12000,
+          "tip_putnika": "mesecni",
+          "putnik_ime": "Bogdan",
+          "vozac_ime": "Bojan",
+          "search_terms": "bogdan bojan",
+          "last_optimized": {
+            "_seconds": 1761602699,
+            "_nanoseconds": 687000000
+          }
+        }
+      },
+      "financial": {
+        "mesecni_putnici_total": 478400,
+        "putovanja_total": 1291300,
+        "grand_total": 1769700,
+        "expected_total": 1769700,
+        "accuracy": "100.00%"
+      }
+    }
+  },
+  "success": true,
+  "collections_deployed": [
+    "vozaci",
+    "mesecni_putnici",
+    "putovanja_istorija"
+  ],
+  "total_documents": 220,
+  "financial_verification": {
+    "mesecni_putnici_total": 478400,
+    "putovanja_total": 1291300,
+    "grand_total": 1769700,
+    "expected_total": 1769700,
+    "accuracy": "100.00%"
+  },
+  "deployment_time_ms": 27542
+}

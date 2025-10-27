@@ -1,0 +1,1238 @@
+{
+  "analysis_timestamp": "2025-10-27T22:20:57.493Z",
+  "analysis_type": "SUPABASE_VS_FIRESTORE_COLUMN_ANALYSIS",
+  "summary": {
+    "supabase_collections": 2,
+    "firestore_collections": 3,
+    "total_differences": 3,
+    "total_recommendations": 5
+  },
+  "detailed_analysis": {
+    "supabase_schema": {
+      "vozaci": {
+        "total_columns": 8,
+        "columns": {
+          "id": {
+            "type": "uuid",
+            "nullable": false,
+            "sample_values": [
+              "5b379394-084e-1c7d-76bf-fc193a5b6c7d",
+              "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+              "7d59b5b6-2a4a-3e9f-98e1-1e3b4c7d8e9f"
+            ],
+            "unique_count": 4,
+            "total_samples": 4
+          },
+          "ime": {
+            "type": "text",
+            "nullable": false,
+            "sample_values": [
+              "Svetlana",
+              "Bojan",
+              "Bruda"
+            ],
+            "unique_count": 4,
+            "total_samples": 4
+          },
+          "email": {
+            "type": "unknown",
+            "nullable": true,
+            "sample_values": [],
+            "unique_count": 0,
+            "total_samples": 0
+          },
+          "telefon": {
+            "type": "unknown",
+            "nullable": true,
+            "sample_values": [],
+            "unique_count": 0,
+            "total_samples": 0
+          },
+          "aktivan": {
+            "type": "boolean",
+            "nullable": false,
+            "sample_values": [
+              "true",
+              "true",
+              "true"
+            ],
+            "unique_count": 1,
+            "total_samples": 4
+          },
+          "created_at": {
+            "type": "timestamp",
+            "nullable": false,
+            "sample_values": [
+              "2025-10-03 18:10:38.27787+00",
+              "2025-10-03 18:10:38.27787+00",
+              "2025-10-03 18:10:38.27787+00"
+            ],
+            "unique_count": 1,
+            "total_samples": 4
+          },
+          "updated_at": {
+            "type": "timestamp",
+            "nullable": false,
+            "sample_values": [
+              "2025-10-03 18:10:38.27787+00",
+              "2025-10-03 18:10:38.27787+00",
+              "2025-10-03 18:10:38.27787+00"
+            ],
+            "unique_count": 1,
+            "total_samples": 4
+          },
+          "kusur": {
+            "type": "integer",
+            "nullable": false,
+            "sample_values": [
+              "0.0",
+              "10.0",
+              "0.0"
+            ],
+            "unique_count": 2,
+            "total_samples": 4
+          }
+        },
+        "sample_row_count": 4
+      },
+      "putovanja_istorija": {
+        "total_columns": 16,
+        "columns": {
+          "id": {
+            "type": "uuid",
+            "nullable": false,
+            "sample_values": [
+              "065edf8f-d862-4d18-82ff-7da9f2780300",
+              "08b75a1b-a2ee-4c71-85fb-91de1f9c5222",
+              "09880ac4-0e4b-405c-a97f-af24cd941564"
+            ],
+            "unique_count": 5,
+            "total_samples": 5
+          },
+          "mesecni_putnik_id": {
+            "type": "uuid",
+            "nullable": false,
+            "sample_values": [
+              "5a439938-dc4d-4533-8104-44b757be6039",
+              "8bf8eaaf-f9b9-4068-8bef-e29c3206e035",
+              "4b2de29c-7d52-4d78-8259-ebb60996caf4"
+            ],
+            "unique_count": 5,
+            "total_samples": 5
+          },
+          "datum_putovanja": {
+            "type": "timestamp",
+            "nullable": false,
+            "sample_values": [
+              "2025-10-20",
+              "2025-10-21",
+              "2025-10-20"
+            ],
+            "unique_count": 2,
+            "total_samples": 5
+          },
+          "vreme_polaska": {
+            "type": "text",
+            "nullable": false,
+            "sample_values": [
+              "mesecno_placanje",
+              "mesecno_placanje",
+              "mesecno_placanje"
+            ],
+            "unique_count": 1,
+            "total_samples": 5
+          },
+          "status": {
+            "type": "text",
+            "nullable": false,
+            "sample_values": [
+              "placeno",
+              "placeno",
+              "placeno"
+            ],
+            "unique_count": 1,
+            "total_samples": 5
+          },
+          "vozac_id": {
+            "type": "text",
+            "nullable": false,
+            "sample_values": [
+              "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+              "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+              "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e"
+            ],
+            "unique_count": 1,
+            "total_samples": 5
+          },
+          "napomene": {
+            "type": "text",
+            "nullable": false,
+            "sample_values": [
+              "Mesečno plaćanje za 10/2025",
+              "Mesečno plaćanje za 9/2025",
+              "Mesečno plaćanje za 10/2025"
+            ],
+            "unique_count": 2,
+            "total_samples": 5
+          },
+          "obrisan": {
+            "type": "boolean",
+            "nullable": false,
+            "sample_values": [
+              "false",
+              "false",
+              "false"
+            ],
+            "unique_count": 1,
+            "total_samples": 5
+          },
+          "created_at": {
+            "type": "timestamp",
+            "nullable": false,
+            "sample_values": [
+              "2025-10-20 20:33:32.770503+00",
+              "2025-10-21 19:18:01.644591+00",
+              "2025-10-20 20:08:10.30715+00"
+            ],
+            "unique_count": 5,
+            "total_samples": 5
+          },
+          "updated_at": {
+            "type": "timestamp",
+            "nullable": false,
+            "sample_values": [
+              "2025-10-20 20:33:32.770503+00",
+              "2025-10-21 19:18:01.644591+00",
+              "2025-10-20 20:08:10.30715+00"
+            ],
+            "unique_count": 5,
+            "total_samples": 5
+          },
+          "ruta_id": {
+            "type": "unknown",
+            "nullable": true,
+            "sample_values": [],
+            "unique_count": 0,
+            "total_samples": 0
+          },
+          "vozilo_id": {
+            "type": "unknown",
+            "nullable": true,
+            "sample_values": [],
+            "unique_count": 0,
+            "total_samples": 0
+          },
+          "adresa_id": {
+            "type": "unknown",
+            "nullable": true,
+            "sample_values": [],
+            "unique_count": 0,
+            "total_samples": 0
+          },
+          "cena": {
+            "type": "integer",
+            "nullable": false,
+            "sample_values": [
+              "12000.0",
+              "9000.0",
+              "12000.0"
+            ],
+            "unique_count": 3,
+            "total_samples": 5
+          },
+          "tip_putnika": {
+            "type": "text",
+            "nullable": false,
+            "sample_values": [
+              "mesecni",
+              "mesecni",
+              "mesecni"
+            ],
+            "unique_count": 1,
+            "total_samples": 5
+          },
+          "putnik_ime": {
+            "type": "text",
+            "nullable": false,
+            "sample_values": [
+              "Bogdan",
+              "Nesa Carea",
+              "Sajic Dusan"
+            ],
+            "unique_count": 5,
+            "total_samples": 5
+          }
+        },
+        "sample_row_count": 5
+      }
+    },
+    "firestore_schema": {
+      "vozaci": {
+        "total_fields": 13,
+        "fields": {
+          "id": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "5b379394-084e-1c7d-76bf-fc193a5b6c7d",
+              "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+              "7d59b5b6-2a4a-3e9f-98e1-1e3b4c7d8e9f"
+            ],
+            "unique_count": 4,
+            "total_samples": 4
+          },
+          "ime": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "Svetlana",
+              "Bojan",
+              "Bruda"
+            ],
+            "unique_count": 4,
+            "total_samples": 4
+          },
+          "email": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "",
+              "",
+              ""
+            ],
+            "unique_count": 1,
+            "total_samples": 4
+          },
+          "telefon": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "",
+              "",
+              ""
+            ],
+            "unique_count": 1,
+            "total_samples": 4
+          },
+          "aktivan": {
+            "type": "boolean",
+            "nullable": false,
+            "sample_values": [
+              true,
+              true,
+              true
+            ],
+            "unique_count": 1,
+            "total_samples": 4
+          },
+          "created_at": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "2025-10-03 18:10:38.27787+00",
+              "2025-10-03 18:10:38.27787+00",
+              "2025-10-03 18:10:38.27787+00"
+            ],
+            "unique_count": 1,
+            "total_samples": 4
+          },
+          "updated_at": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "2025-10-03 18:10:38.27787+00",
+              "2025-10-03 18:10:38.27787+00",
+              "2025-10-03 18:10:38.27787+00"
+            ],
+            "unique_count": 1,
+            "total_samples": 4
+          },
+          "kusur": {
+            "type": "integer",
+            "nullable": false,
+            "sample_values": [
+              0,
+              10,
+              0
+            ],
+            "unique_count": 2,
+            "total_samples": 4
+          },
+          "search_terms": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "svetlana",
+              "bojan",
+              "bruda"
+            ],
+            "unique_count": 4,
+            "total_samples": 4
+          },
+          "putnici_count": {
+            "type": "integer",
+            "nullable": false,
+            "sample_values": [
+              0,
+              0,
+              0
+            ],
+            "unique_count": 1,
+            "total_samples": 4
+          },
+          "putovanja_count": {
+            "type": "integer",
+            "nullable": false,
+            "sample_values": [
+              0,
+              0,
+              0
+            ],
+            "unique_count": 1,
+            "total_samples": 4
+          },
+          "total_earnings": {
+            "type": "integer",
+            "nullable": false,
+            "sample_values": [
+              0,
+              0,
+              0
+            ],
+            "unique_count": 1,
+            "total_samples": 4
+          },
+          "last_optimized": {
+            "type": "timestamp",
+            "nullable": false,
+            "sample_values": [
+              {
+                "_seconds": 1761602686,
+                "_nanoseconds": 619000000
+              },
+              {
+                "_seconds": 1761602688,
+                "_nanoseconds": 241000000
+              },
+              {
+                "_seconds": 1761602688,
+                "_nanoseconds": 371000000
+              }
+            ],
+            "unique_count": 4,
+            "total_samples": 4
+          }
+        },
+        "sample_doc_count": 4,
+        "total_docs": 4
+      },
+      "mesecni_putnici": {
+        "total_fields": 31,
+        "fields": {
+          "id": {
+            "type": "uuid_string",
+            "nullable": false,
+            "sample_values": [
+              "001a34e6-e97b-41c1-a83b-b75eaa3a90d5",
+              "05358026-6097-428f-a322-a2c31c0f31f0",
+              "0d7e0eb2-aaef-4837-935b-8bb095ffc9f1"
+            ],
+            "unique_count": 10,
+            "total_samples": 10
+          },
+          "putnik_ime": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "Mila Nikolic",
+              "Dr Perisic Ljiljana",
+              "Maja Stojanovic"
+            ],
+            "unique_count": 10,
+            "total_samples": 10
+          },
+          "tip": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "ucenik",
+              "radnik",
+              "radnik"
+            ],
+            "unique_count": 2,
+            "total_samples": 10
+          },
+          "tip_skole": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "Hemijska",
+              "Jasenovo ambulanta",
+              "Hladnjaca"
+            ],
+            "unique_count": 5,
+            "total_samples": 10
+          },
+          "broj_telefona": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "0637339995",
+              "",
+              "063430612"
+            ],
+            "unique_count": 10,
+            "total_samples": 10
+          },
+          "broj_telefona_majke": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "063428464",
+              "",
+              ""
+            ],
+            "unique_count": 3,
+            "total_samples": 10
+          },
+          "polasci_po_danu": {
+            "type": "object",
+            "nullable": false,
+            "sample_values": [
+              {},
+              {
+                "cet": {
+                  "bc": "13:00",
+                  "vs": "06:00"
+                },
+                "pet": {
+                  "bc": "13:00",
+                  "vs": "06:00"
+                },
+                "pon": {
+                  "bc": "13:00",
+                  "vs": "06:00"
+                },
+                "sre": {
+                  "bc": "13:00",
+                  "vs": "06:00"
+                },
+                "uto": {
+                  "bc": "13:00",
+                  "vs": "06:00"
+                }
+              },
+              {
+                "cet": {
+                  "bc": "15:30",
+                  "vs": "07:00"
+                },
+                "pet": {
+                  "bc": "15:30",
+                  "vs": "07:00"
+                },
+                "pon": {
+                  "bc": "15:30",
+                  "vs": "07:00"
+                },
+                "sre": {
+                  "bc": "15:30",
+                  "vs": "07:00"
+                },
+                "uto": {
+                  "bc": "15:30",
+                  "vs": "07:00"
+                }
+              }
+            ],
+            "unique_count": 4,
+            "total_samples": 10
+          },
+          "adresa_bela_crkva": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "Jovana Popovica",
+              "Karpatska",
+              ""
+            ],
+            "unique_count": 9,
+            "total_samples": 10
+          },
+          "adresa_vrsac": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "Dis",
+              "Jasenovo ambulanta",
+              ""
+            ],
+            "unique_count": 4,
+            "total_samples": 10
+          },
+          "tip_prikazivanja": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "standard",
+              "standard",
+              "standard"
+            ],
+            "unique_count": 1,
+            "total_samples": 10
+          },
+          "radni_dani": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "pon,uto,sre,cet,pet",
+              "pon,uto,sre,cet,pet",
+              "pon,uto,sre,cet,pet"
+            ],
+            "unique_count": 1,
+            "total_samples": 10
+          },
+          "aktivan": {
+            "type": "boolean",
+            "nullable": false,
+            "sample_values": [
+              true,
+              true,
+              true
+            ],
+            "unique_count": 1,
+            "total_samples": 10
+          },
+          "status": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "aktivan",
+              "aktivan",
+              "aktivan"
+            ],
+            "unique_count": 1,
+            "total_samples": 10
+          },
+          "datum_pocetka_meseca": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "2025-10-01",
+              "2025-10-01",
+              "2025-10-01"
+            ],
+            "unique_count": 1,
+            "total_samples": 10
+          },
+          "datum_kraja_meseca": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "2025-10-31",
+              "2025-10-31",
+              "2025-10-31"
+            ],
+            "unique_count": 1,
+            "total_samples": 10
+          },
+          "ukupna_cena_meseca": {
+            "type": "integer",
+            "nullable": false,
+            "sample_values": [
+              25000,
+              12000,
+              0
+            ],
+            "unique_count": 3,
+            "total_samples": 10
+          },
+          "cena": {
+            "type": "integer",
+            "nullable": false,
+            "sample_values": [
+              25000,
+              12000,
+              0
+            ],
+            "unique_count": 3,
+            "total_samples": 10
+          },
+          "broj_putovanja": {
+            "type": "integer",
+            "nullable": false,
+            "sample_values": [
+              0,
+              0,
+              0
+            ],
+            "unique_count": 1,
+            "total_samples": 10
+          },
+          "broj_otkazivanja": {
+            "type": "integer",
+            "nullable": false,
+            "sample_values": [
+              0,
+              0,
+              0
+            ],
+            "unique_count": 1,
+            "total_samples": 10
+          },
+          "vreme_placanja": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "2025-10-21 21:27:34.171202+00",
+              "2025-10-21 21:07:47.493698+00",
+              "2025-10-21 21:30:15.925552+00"
+            ],
+            "unique_count": 10,
+            "total_samples": 10
+          },
+          "placeni_mesec": {
+            "type": "integer",
+            "nullable": false,
+            "sample_values": [
+              10,
+              10,
+              9
+            ],
+            "unique_count": 3,
+            "total_samples": 10
+          },
+          "placena_godina": {
+            "type": "integer",
+            "nullable": false,
+            "sample_values": [
+              2025,
+              2025,
+              2025
+            ],
+            "unique_count": 2,
+            "total_samples": 10
+          },
+          "vozac_id": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+              "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+              "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e"
+            ],
+            "unique_count": 1,
+            "total_samples": 10
+          },
+          "pokupljen": {
+            "type": "boolean",
+            "nullable": false,
+            "sample_values": [
+              false,
+              false,
+              false
+            ],
+            "unique_count": 1,
+            "total_samples": 10
+          },
+          "statistics": {
+            "type": "object",
+            "nullable": false,
+            "sample_values": [
+              {
+                "last_trip": null,
+                "trips_total": 0,
+                "cancellations_total": 0
+              },
+              {
+                "last_trip": null,
+                "trips_total": 0,
+                "cancellations_total": 0
+              },
+              {
+                "last_trip": null,
+                "trips_total": 0,
+                "cancellations_total": 0
+              }
+            ],
+            "unique_count": 1,
+            "total_samples": 10
+          },
+          "obrisan": {
+            "type": "boolean",
+            "nullable": false,
+            "sample_values": [
+              false,
+              false,
+              false
+            ],
+            "unique_count": 1,
+            "total_samples": 10
+          },
+          "created_at": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "2025-10-21 21:27:07.521211+00",
+              "2025-10-21 21:07:13.02303+00",
+              "2025-10-21 11:37:26.70602+00"
+            ],
+            "unique_count": 10,
+            "total_samples": 10
+          },
+          "updated_at": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "2025-10-21 21:27:34.171279+00",
+              "2025-10-21 21:07:47.493849+00",
+              "2025-10-21 22:48:01.202986+00"
+            ],
+            "unique_count": 10,
+            "total_samples": 10
+          },
+          "vozac_ime": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "Bojan",
+              "Bojan",
+              "Bojan"
+            ],
+            "unique_count": 1,
+            "total_samples": 10
+          },
+          "search_terms": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "mila nikolic ucenik bojan",
+              "dr perisic ljiljana radnik bojan",
+              "maja stojanovic radnik bojan"
+            ],
+            "unique_count": 10,
+            "total_samples": 10
+          },
+          "last_optimized": {
+            "type": "timestamp",
+            "nullable": false,
+            "sample_values": [
+              {
+                "_seconds": 1761602688,
+                "_nanoseconds": 604000000
+              },
+              {
+                "_seconds": 1761602688,
+                "_nanoseconds": 722000000
+              },
+              {
+                "_seconds": 1761602688,
+                "_nanoseconds": 844000000
+              }
+            ],
+            "unique_count": 10,
+            "total_samples": 10
+          }
+        },
+        "sample_doc_count": 10,
+        "total_docs": 96
+      },
+      "putovanja_istorija": {
+        "total_fields": 16,
+        "fields": {
+          "id": {
+            "type": "uuid_string",
+            "nullable": false,
+            "sample_values": [
+              "065edf8f-d862-4d18-82ff-7da9f2780300",
+              "08b75a1b-a2ee-4c71-85fb-91de1f9c5222",
+              "09880ac4-0e4b-405c-a97f-af24cd941564"
+            ],
+            "unique_count": 10,
+            "total_samples": 10
+          },
+          "mesecni_putnik_id": {
+            "type": "uuid_string",
+            "nullable": false,
+            "sample_values": [
+              "5a439938-dc4d-4533-8104-44b757be6039",
+              "8bf8eaaf-f9b9-4068-8bef-e29c3206e035",
+              "4b2de29c-7d52-4d78-8259-ebb60996caf4"
+            ],
+            "unique_count": 10,
+            "total_samples": 10
+          },
+          "datum_putovanja": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "2025-10-20",
+              "2025-10-21",
+              "2025-10-20"
+            ],
+            "unique_count": 2,
+            "total_samples": 10
+          },
+          "vreme_polaska": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "mesecno_placanje",
+              "mesecno_placanje",
+              "mesecno_placanje"
+            ],
+            "unique_count": 1,
+            "total_samples": 10
+          },
+          "status": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "placeno",
+              "placeno",
+              "placeno"
+            ],
+            "unique_count": 1,
+            "total_samples": 10
+          },
+          "vozac_id": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+              "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e",
+              "6c48a4a5-194f-2d8e-87d0-0d2a3b6c7d8e"
+            ],
+            "unique_count": 1,
+            "total_samples": 10
+          },
+          "napomene": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "Mesečno plaćanje za 10/2025",
+              "Mesečno plaćanje za 9/2025",
+              "Mesečno plaćanje za 10/2025"
+            ],
+            "unique_count": 2,
+            "total_samples": 10
+          },
+          "obrisan": {
+            "type": "boolean",
+            "nullable": false,
+            "sample_values": [
+              false,
+              false,
+              false
+            ],
+            "unique_count": 1,
+            "total_samples": 10
+          },
+          "created_at": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "2025-10-20 20:33:32.770503+00",
+              "2025-10-21 19:18:01.644591+00",
+              "2025-10-20 20:08:10.30715+00"
+            ],
+            "unique_count": 10,
+            "total_samples": 10
+          },
+          "updated_at": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "2025-10-20 20:33:32.770503+00",
+              "2025-10-21 19:18:01.644591+00",
+              "2025-10-20 20:08:10.30715+00"
+            ],
+            "unique_count": 10,
+            "total_samples": 10
+          },
+          "cena": {
+            "type": "integer",
+            "nullable": false,
+            "sample_values": [
+              12000,
+              9000,
+              12000
+            ],
+            "unique_count": 4,
+            "total_samples": 10
+          },
+          "tip_putnika": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "mesecni",
+              "mesecni",
+              "mesecni"
+            ],
+            "unique_count": 1,
+            "total_samples": 10
+          },
+          "putnik_ime": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "Bogdan",
+              "Nesa Carea",
+              "Sajic Dusan"
+            ],
+            "unique_count": 10,
+            "total_samples": 10
+          },
+          "vozac_ime": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "Bojan",
+              "Bojan",
+              "Bojan"
+            ],
+            "unique_count": 1,
+            "total_samples": 10
+          },
+          "search_terms": {
+            "type": "string",
+            "nullable": false,
+            "sample_values": [
+              "bogdan bojan",
+              "nesa carea bojan",
+              "sajic dusan bojan"
+            ],
+            "unique_count": 10,
+            "total_samples": 10
+          },
+          "last_optimized": {
+            "type": "timestamp",
+            "nullable": false,
+            "sample_values": [
+              {
+                "_seconds": 1761602699,
+                "_nanoseconds": 687000000
+              },
+              {
+                "_seconds": 1761602699,
+                "_nanoseconds": 801000000
+              },
+              {
+                "_seconds": 1761602699,
+                "_nanoseconds": 924000000
+              }
+            ],
+            "unique_count": 10,
+            "total_samples": 10
+          }
+        },
+        "sample_doc_count": 10,
+        "total_docs": 120
+      }
+    },
+    "column_mapping": {
+      "vozaci": {
+        "common_fields": [
+          "id",
+          "ime",
+          "email",
+          "telefon",
+          "aktivan",
+          "created_at",
+          "updated_at",
+          "kusur"
+        ],
+        "supabase_only": [],
+        "firestore_only": [
+          "search_terms",
+          "putnici_count",
+          "putovanja_count",
+          "total_earnings",
+          "last_optimized"
+        ],
+        "field_differences": {
+          "id": [
+            "Type mismatch: uuid vs string"
+          ],
+          "ime": [
+            "Type mismatch: text vs string"
+          ],
+          "email": [
+            "Type mismatch: unknown vs string",
+            "Nullability mismatch: true vs false"
+          ],
+          "telefon": [
+            "Type mismatch: unknown vs string",
+            "Nullability mismatch: true vs false"
+          ],
+          "created_at": [
+            "Type mismatch: timestamp vs string"
+          ],
+          "updated_at": [
+            "Type mismatch: timestamp vs string"
+          ]
+        }
+      },
+      "putovanja_istorija": {
+        "common_fields": [
+          "id",
+          "mesecni_putnik_id",
+          "datum_putovanja",
+          "vreme_polaska",
+          "status",
+          "vozac_id",
+          "napomene",
+          "obrisan",
+          "created_at",
+          "updated_at",
+          "cena",
+          "tip_putnika",
+          "putnik_ime"
+        ],
+        "supabase_only": [
+          "ruta_id",
+          "vozilo_id",
+          "adresa_id"
+        ],
+        "firestore_only": [
+          "vozac_ime",
+          "search_terms",
+          "last_optimized"
+        ],
+        "field_differences": {
+          "id": [
+            "Type mismatch: uuid vs uuid_string"
+          ],
+          "mesecni_putnik_id": [
+            "Type mismatch: uuid vs uuid_string"
+          ],
+          "datum_putovanja": [
+            "Type mismatch: timestamp vs string"
+          ],
+          "vreme_polaska": [
+            "Type mismatch: text vs string"
+          ],
+          "status": [
+            "Type mismatch: text vs string"
+          ],
+          "vozac_id": [
+            "Type mismatch: text vs string"
+          ],
+          "napomene": [
+            "Type mismatch: text vs string"
+          ],
+          "created_at": [
+            "Type mismatch: timestamp vs string"
+          ],
+          "updated_at": [
+            "Type mismatch: timestamp vs string"
+          ],
+          "tip_putnika": [
+            "Type mismatch: text vs string"
+          ],
+          "putnik_ime": [
+            "Type mismatch: text vs string"
+          ]
+        }
+      }
+    },
+    "differences": [
+      {
+        "collection": "vozaci",
+        "type": "added_in_firestore",
+        "fields": [
+          "search_terms",
+          "putnici_count",
+          "putovanja_count",
+          "total_earnings",
+          "last_optimized"
+        ],
+        "impact": "medium"
+      },
+      {
+        "collection": "putovanja_istorija",
+        "type": "missing_in_firestore",
+        "fields": [
+          "ruta_id",
+          "vozilo_id",
+          "adresa_id"
+        ],
+        "impact": "high"
+      },
+      {
+        "collection": "putovanja_istorija",
+        "type": "added_in_firestore",
+        "fields": [
+          "vozac_ime",
+          "search_terms",
+          "last_optimized"
+        ],
+        "impact": "medium"
+      }
+    ],
+    "recommendations": [
+      {
+        "type": "optimization",
+        "collection": "vozaci",
+        "recommendation": "Search terms field detected - excellent for query optimization",
+        "priority": "low",
+        "implemented": true
+      },
+      {
+        "type": "optimization",
+        "collection": "mesecni_putnici",
+        "recommendation": "Search terms field detected - excellent for query optimization",
+        "priority": "low",
+        "implemented": true
+      },
+      {
+        "type": "optimization",
+        "collection": "putovanja_istorija",
+        "recommendation": "Search terms field detected - excellent for query optimization",
+        "priority": "low",
+        "implemented": true
+      },
+      {
+        "type": "data_integrity",
+        "collection": "putovanja_istorija",
+        "recommendation": "Missing fields in Firestore: ruta_id, vozilo_id, adresa_id",
+        "priority": "high",
+        "implemented": false
+      },
+      {
+        "type": "performance",
+        "collection": "putovanja_istorija",
+        "recommendation": "Large collection (120 docs) - ensure proper indexing",
+        "priority": "medium",
+        "implemented": true
+      }
+    ]
+  },
+  "migration_assessment": {
+    "data_integrity": {
+      "score": 80,
+      "status": "good",
+      "issues": [
+        "Missing critical fields in putovanja_istorija: ruta_id, vozilo_id, adresa_id"
+      ]
+    },
+    "schema_compatibility": {
+      "compatibility_percentage": "87.50",
+      "status": "medium",
+      "migrated_fields": 21,
+      "total_original_fields": 24
+    },
+    "performance_optimization": {
+      "optimizations_count": 6,
+      "optimizations": [
+        "vozaci: Search optimization implemented",
+        "vozaci: Timestamp indexing available",
+        "mesecni_putnici: Search optimization implemented",
+        "mesecni_putnici: Timestamp indexing available",
+        "putovanja_istorija: Search optimization implemented",
+        "putovanja_istorija: Timestamp indexing available"
+      ],
+      "status": "excellent"
+    }
+  }
+}
