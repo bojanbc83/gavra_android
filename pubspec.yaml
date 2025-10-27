@@ -40,6 +40,10 @@ dependencies:
   shimmer: ^3.0.0
   device_info_plus: ^10.1.0
   android_intent_plus: ^5.3.0
+  
+  # 📱 UNIVERSAL NOTIFICATIONS - za sve tipove telefona
+  process_run: ^0.13.0          # Za detection Google Services
+  
   # flutter_sms: ^2.3.3 # Problematičan namespace - zamijenjen sa url_launcher SMS pozivima
   # sms_advanced: ^1.0.1 # Alternativa sa automatskim slanjem - isto ima namespace problem
   # Vraćam se na URL launcher pristup - jedini koji radi

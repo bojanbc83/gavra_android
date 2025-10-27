@@ -2,14 +2,14 @@
   "message": {
     "topic": "gavra_all_drivers",
     "notification": {
-      "title": "🚌 GAVRA NOTIFIKACIJA RADI!",
-      "body": "Samsung notifikacije omogućene ✅ Vreme: 00:42"
+      "title": "🚌 GAVRA TEST NOTIFICATION",
+      "body": "Test Firebase notifikacije - Vreme: 09:21"
     },
     "data": {
       "type": "dodat",
       "datum": "2025-10-27",
-      "action": "test_samsung",
-      "timestamp": "2025-10-27T00:42:00"
+      "action": "test_notification",
+      "timestamp": "2025-10-27T09:21:00"
     },
     "android": {
       "notification": {

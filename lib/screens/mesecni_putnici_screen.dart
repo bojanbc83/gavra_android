@@ -3458,9 +3458,8 @@ class _MesecniPutniciScreenState extends State<MesecniPutniciScreen> {
 
   Future<void> _pozovi(String brojTelefona) async {
     try {
-      // 📞 HUAWEI KOMPATIBILNO - koristi Huawei specifičnu logiku (konzistentno sa putnik_card)
-      final hasPermission =
-          await PermissionService.ensurePhonePermissionHuawei();
+      // 📞 Standard phone permission (konzistentno sa putnik_card)
+      final hasPermission = await PermissionService.ensurePhonePermission();
       if (!hasPermission) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(

@@ -40,7 +40,7 @@
 • Poboljšana navigacija sa OpenStreetMap
 • Optimizovane performanse za Android 14+
 • Ispravke bagova u notifikacijama
-• Bolja kompatibilnost sa Huawei uređajima
+• Poboljšana kompatibilnost sa svim Android uređajima
 • Ažurirane sigurnosne biblioteke
 
 🔧 TEHNIČKA POBOLJŠANJA:

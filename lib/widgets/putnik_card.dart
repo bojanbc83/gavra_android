@@ -510,9 +510,8 @@ class _PutnikCardState extends State<PutnikCard> {
   Future<void> _pozoviBroj() async {
     if (_putnik.brojTelefona != null && _putnik.brojTelefona!.isNotEmpty) {
       try {
-        // 📞 HUAWEI KOMPATIBILNO - koristi Huawei specifičnu logiku
-        final hasPermission =
-            await PermissionService.ensurePhonePermissionHuawei();
+        // 📞 Standard phone permission
+        final hasPermission = await PermissionService.ensurePhonePermission();
         if (!hasPermission) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -554,9 +553,8 @@ class _PutnikCardState extends State<PutnikCard> {
   /// Pozovi roditelja na telefon (otac ili majka)
   Future<void> _pozoviBrojRoditelja(String brojTelefona) async {
     try {
-      // 📞 HUAWEI KOMPATIBILNO - koristi Huawei specifičnu logiku
-      final hasPermission =
-          await PermissionService.ensurePhonePermissionHuawei();
+      // 📞 Standard phone permission
+      final hasPermission = await PermissionService.ensurePhonePermission();
       if (!hasPermission) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -1479,15 +1477,15 @@ class _PutnikCardState extends State<PutnikCard> {
         throw Exception('Koordinate nisu validni brojevi: $lat, $lng');
       }
 
-      // 🚗 LISTA NAVIGACIJSKIH APLIKACIJA (Huawei/GBox kompatibilno)
+      // 🚗 LISTA NAVIGACIJSKIH APLIKACIJA
       final navigacijeUrls = [
         // Google Maps (ako je dostupan)
         'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng',
 
-        // Petal Maps (Huawei)
+        // Petal Maps
         'petalmaps://route?daddr=$lat,$lng',
 
-        // HERE WeGo (Huawei kompatibilan)
+        // HERE WeGo
         'here-route://mylocation/$lat,$lng',
 
         // Waze
@@ -1563,7 +1561,7 @@ class _PutnikCardState extends State<PutnikCard> {
                 const Text('Problem sa navigacijom'),
                 Text('Greška: ${e.toString()}'),
                 const Text('Pokušajte instalirati:'),
-                const Text('• Google Maps ili Petal Maps (Huawei)'),
+                const Text('• Google Maps ili Petal Maps'),
                 const Text('• HERE WeGo ili Waze'),
               ],
             ),
