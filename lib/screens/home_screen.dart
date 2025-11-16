@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -16,7 +17,6 @@ import '../services/realtime_notification_service.dart';
 import '../services/realtime_service.dart';
 import '../services/theme_manager.dart'; // 🎨 Tema sistem
 import '../services/timer_manager.dart'; // 🕐 TIMER MANAGEMENT
-import '../services/update_service.dart'; // 🔄 Vraćeno: Update sistem
 import '../theme.dart'; // 🎨 Import za prelepe gradijente
 import '../utils/animation_utils.dart';
 import '../utils/date_utils.dart' as app_date_utils;
@@ -55,6 +55,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   // Stream kontroleri za reaktivno ažuriranje
   final StreamController<String> _selectedGradSubject = StreamController<String>.broadcast();
+  // Key and overlay entry for custom days dropdown
+  // (removed overlay support for now) - will use DropdownButton2 built-in overlay
 
   String? _currentDriver;
 
@@ -260,8 +262,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       LocalNotificationService.initialize(context);
       RealtimeNotificationService.listenForForegroundNotifications(context);
 
-      // 🔄 Pokreni automatski update sistem
-      UpdateService.startBackgroundUpdateCheck();
+      // 🔄 Auto-update removed per request
 
       // Inicijalizuj realtime notifikacije za aktivnog vozača
       FirebaseService.getCurrentDriver().then((driver) {
@@ -700,7 +701,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     Text(
                                       'Izaberite mesečnog putnika:',
                                       style: TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w500,
                                         color: Colors.green.shade700,
                                       ),
@@ -1343,7 +1344,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     if (_isLoading) {
       return Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(80),
+          preferredSize: const Size.fromHeight(78),
           child: Container(
             decoration: BoxDecoration(
               gradient: ThemeManager().currentGradient, // 🎨 Dinamički gradijent iz tema
@@ -1500,7 +1501,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         if (snapshot.hasError) {
           return Scaffold(
             appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(95),
+              preferredSize: const Size.fromHeight(93),
               child: Container(
                 decoration: BoxDecoration(
                   gradient: ThemeManager().currentGradient, // 🎨 Dinamički gradijent iz tema
@@ -1743,7 +1744,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             backgroundColor: Colors.transparent, // Transparentna pozadina
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(
-                95,
+                93,
               ), // Povećano sa 80 na 95 zbog sezonskog indikatora
               child: Container(
                 decoration: BoxDecoration(
@@ -1778,7 +1779,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           child: const Text(
                             'R E Z E R V A C I J E',
                             style: TextStyle(
-                              fontSize: 17,
+                              fontSize: 21,
                               fontWeight: FontWeight.w800,
                               color: Colors.white, // Bela boja za bolju vidljivost
                               letterSpacing: 1.8,
@@ -1809,19 +1810,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               Expanded(
                                 flex: 35,
                                 child: Container(
-                                  height: 32,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
+                                    height: 38,
+                                  padding: const EdgeInsets.all(6),
                                   decoration: BoxDecoration(
-                                    color: VozacBoja.get(_currentDriver),
-                                    borderRadius: BorderRadius.circular(14),
+                                    color: VozacBoja.get(_currentDriver).withValues(alpha: 0.2),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: Theme.of(context).glassBorder,
+                                      width: 1.5,
+                                    ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: VozacBoja.get(_currentDriver).withValues(alpha: 0.3),
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 2),
+                                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                                        blurRadius: 12,
+                                        offset: const Offset(0, 4),
+                                        spreadRadius: 1,
                                       ),
                                     ],
                                   ),
@@ -1829,9 +1832,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     child: Text(
                                       _currentDriver!,
                                       style: const TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 16,
                                         color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
                                         shadows: [
                                           Shadow(
                                             blurRadius: 8,
@@ -1854,54 +1857,49 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                             const SizedBox(width: 2),
 
-                            // TEMA - levo-sredina
+                            // TEMA - levo-sredina (sada konzistentan sa dugmićima ispod appbara)
                             Expanded(
                               flex: 25,
                               child: InkWell(
                                 onTap: () async {
-                                  // 🎨 TEMA CYCLING - jednostavno
                                   await ThemeManager().nextTheme();
                                   if (mounted) setState(() {});
                                 },
-                                borderRadius: BorderRadius.circular(14),
+                                borderRadius: BorderRadius.circular(12),
                                 child: Container(
-                                  height: 32,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 4,
-                                    vertical: 2,
-                                  ),
+                                  height: 38,
+                                  padding: const EdgeInsets.all(6),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.2),
-                                    borderRadius: BorderRadius.circular(14),
+                                    color: Theme.of(context).glassContainer,
+                                    borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
-                                      color: Colors.white.withValues(alpha: 0.4),
+                                      color: Theme.of(context).glassBorder,
+                                      width: 1.5,
                                     ),
-                                  ),
-                                  child: const Center(
-                                    child: FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: Text(
-                                        'Tema',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 26,
-                                          color: Colors.white,
-                                          shadows: [
-                                            Shadow(
-                                              blurRadius: 8,
-                                              color: Colors.black87,
-                                            ),
-                                            Shadow(
-                                              offset: Offset(1, 1),
-                                              blurRadius: 4,
-                                              color: Colors.black54,
-                                            ),
-                                          ],
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.center,
-                                        maxLines: 1,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                                        blurRadius: 12,
+                                        offset: const Offset(0, 4),
+                                        spreadRadius: 1,
                                       ),
+                                    ],
+                                  ),
+                                  child: Center(
+                                    child: const Text(
+                                      'Tema',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        shadows: [
+                                          Shadow(blurRadius: 8, color: Colors.black87),
+                                          Shadow(offset: Offset(1, 1), blurRadius: 4, color: Colors.black54),
+                                        ],
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
                                     ),
                                   ),
                                 ),
@@ -1910,35 +1908,65 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                             const SizedBox(width: 2),
 
-                            // DROPDOWN - desno
+                            // DROPDOWN - desno (sada ima isti glassmorphism izgled kao dugmad)
                             Expanded(
                               flex: 35,
                               child: Container(
-                                height: 32,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 2,
-                                ),
+                                height: 38,
+                                padding: const EdgeInsets.all(6),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.25),
+                                  color: Theme.of(context).glassContainer,
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
-                                    color: Colors.white.withValues(alpha: 0.3),
+                                    color: Theme.of(context).glassBorder,
+                                    width: 1.5,
                                   ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                                      blurRadius: 12,
+                                      offset: const Offset(0, 4),
+                                      spreadRadius: 1,
+                                    ),
+                                  ],
                                 ),
                                 child: DropdownButtonHideUnderline(
-                                  child: DropdownButton<String>(
+                                  child: DropdownButton2<String>(
                                     value: _selectedDay,
-                                    icon: Icon(
-                                      Icons.keyboard_arrow_down_rounded,
-                                      size: 14,
-                                      color: Theme.of(context).colorScheme.onPrimary,
+                                    // custom button will include arrow icon to preserve layout
+                                    customButton: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Expanded(
+                                          child: Center(
+                                            child: Text(
+                                              _selectedDay,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 14,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    dropdownColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.95),
+                                    dropdownStyleData: DropdownStyleData(
+                                      decoration: BoxDecoration(
+                                        gradient: Theme.of(context).backgroundGradient,
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                          color: Theme.of(context).glassBorder,
+                                          width: 1.5,
+                                        ),
+                                      ),
+                                      elevation: 8,
+                                    ),
                                     style: const TextStyle(
                                       color: Colors.white,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
                                       shadows: [
                                         Shadow(
                                           blurRadius: 8,
@@ -1951,36 +1979,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                         ),
                                       ],
                                     ),
-                                    borderRadius: BorderRadius.circular(12),
+                                    // button decoration: keep a glass look for the closed button
+                                    buttonStyleData: ButtonStyleData(
+                                      padding: const EdgeInsets.all(6),
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).glassContainer,
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: Theme.of(context).glassBorder,
+                                          width: 1.5,
+                                        ),
+                                      ),
+                                    ),
                                     isExpanded: true,
-                                    selectedItemBuilder: (BuildContext context) {
-                                      return _dani.map<Widget>((String value) {
-                                        return Center(
-                                          child: Text(
-                                            value,
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: 15,
-                                              shadows: [
-                                                Shadow(
-                                                  blurRadius: 8,
-                                                  color: Colors.black87,
-                                                ),
-                                                Shadow(
-                                                  offset: Offset(1, 1),
-                                                  blurRadius: 4,
-                                                  color: Colors.black54,
-                                                ),
-                                              ],
-                                            ),
-                                            textAlign: TextAlign.center,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                          ),
-                                        );
-                                      }).toList();
-                                    },
+                                    // using customButton, selectedItemBuilder is not needed
                                     items: _dani
                                         .map(
                                           (dan) => DropdownMenuItem(
@@ -1988,10 +2000,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                             child: Center(
                                               child: Text(
                                                 dan,
-                                                style: TextStyle(
-                                                  color: Theme.of(context).colorScheme.onPrimary,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
                                                   fontWeight: FontWeight.w700,
-                                                  fontSize: 14,
+                                                  fontSize: 16,
                                                 ),
                                                 textAlign: TextAlign.center,
                                                 overflow: TextOverflow.ellipsis,
@@ -2212,6 +2224,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       _networkStatusSubscription?.cancel();
     } catch (e) {}
 
+    // No overlay cleanup needed currently
+
     // 🧹 SAFE DISPOSAL ValueNotifier-a
     try {
       if (mounted) {
@@ -2382,7 +2396,7 @@ class _HomeScreenButton extends StatelessWidget {
               label,
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 12, // Povećano sa 11 na 12
+                fontSize: 12, // restored to original for non-appbar buttons
                 fontWeight: FontWeight.w600,
                 shadows: [
                   Shadow(
